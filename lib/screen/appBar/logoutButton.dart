@@ -1,8 +1,7 @@
 // ignore_for_file: file_names
-
 import 'package:flutter/material.dart';
-import 'package:sdp/API/userAPI.dart';
 import 'package:sdp/Login/EmailSignIn.dart';
+import 'package:sdp/firebase/firebase_auth_api.dart';
 
 class LogoutButton extends StatelessWidget {
   const LogoutButton({super.key});
@@ -45,7 +44,7 @@ class LogoutButton extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () {
-                  UserAPI().logout();
+                  FirebaseAuthentication().signOut();
                   Navigator.push(context, MaterialPageRoute(
                     builder: (context) {
                       return const EmailSignIn();

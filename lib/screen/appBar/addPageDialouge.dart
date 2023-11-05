@@ -3,15 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:intl/intl.dart';
-import 'package:sdp/API/paliaaAPI.dart';
-import 'package:sdp/API/userAPI.dart';
-import 'package:sdp/Models/sammilaniModel.dart';
-import 'package:sdp/Models/userDetailsModel.dart';
-import 'package:sdp/Models/vaktaModel.dart';
+import 'package:sdp/API/get_devotee.dart';
+import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/sammilani_list.dart';
 import 'package:sdp/sanghalist.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
-import 'package:uuid/uuid.dart';
 
 class AddPageDilouge extends StatefulWidget {
   const AddPageDilouge({super.key});
@@ -32,31 +28,10 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   final remarkController = TextEditingController();
   final sammilaniNumberController = TextEditingController();
   final receiptNumberController = TextEditingController();
-  UserDetailsModel? currentPalia;
+  DevoteeModel? currentPalia;
   String formattedDate =
       DateFormat('dd-MMM-yyyy  hh:mm a').format(DateTime.now());
 
-  currentUser() async {
-    final currentUser = await UserAPI().getCurrentUserData();
-    setState(() {
-      currentPalia = currentUser;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    currentUser();
-//Initial Value
-    pranamiController.text = '1101';
-    paliDateController.text =
-        DateFormat('dd-MMM-yyyy').format(DateTime.parse('2024-02-01'));
-    sammilaniNumberController.text = '73';
-    sammilaniYearController.text = '2024';
-    sammilaniPlaceController.text = 'Pune';
-    receiptDateController.text =
-        DateFormat('dd-MMM-yyyy').format(DateTime.now());
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -225,10 +200,11 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                         // ),
                         )),
                 suggestionsCallback: (pattern) async {
-                  final sammilaniNumber =
-                      SammilaniUtility.getAllSammilaniName();
-                  return sammilaniNumber.where((element) =>
-                      element.sammilaniNumber!.contains(pattern.toLowerCase()));
+                  // final sammilaniNumber =
+                  //     SammilaniUtility.getAllSammilaniName();
+                  // return sammilaniNumber.where((element) =>
+                  //     element.sammilaniNumber!.contains(pattern.toLowerCase()));
+                  return [];
 
                   // return await BackendService.getSuggestions(pattern);
                 },
@@ -244,11 +220,11 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   child: Text('No Sammilani Number Found'),
                 ),
                 onSuggestionSelected: (value) {
-                  sammilaniNumberController.text =
-                      value.sammilaniNumber.toString();
-                  sammilaniPlaceController.text =
-                      value.sammilaniPlace.toString();
-                  sammilaniYearController.text = value.sammilaniYear.toString();
+                  // sammilaniNumberController.text =
+                  //     value?.sammilaniNumber.toString();
+                  // sammilaniPlaceController.text =
+                  //     value?.sammilaniPlace.toString();
+                  // sammilaniYearController.text = value.sammilaniYear.toString();
                 },
               ),
               // TextFormField(
@@ -376,30 +352,30 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   onPressed: () async {
                     if (_formKey.currentState != null) {
                       if (_formKey.currentState!.validate()) {
-                        final addUser = VaktaModel(
-                          sammilaniData: SammilaniModel(
-                              sammilaniNumber:
-                                  sammilaniNumberController.text.trim(),
-                              sammilaniYear:
-                                  sammilaniYearController.text.trim(),
-                              sammilaniPlace:
-                                  sammilaniPlaceController.text.trim()),
-                          name: paliaNameController.text.trim(),
-                          createdBy: currentPalia?.name,
-                          createdOn: formattedDate.toString(),
-                          // formatted.toString(),
-                          docId: const Uuid().v1(),
-                          pranaami: double.parse(
-                              pranamiController.text.trim() == ''
-                                  ? '0.0'
-                                  : pranamiController.text.trim()),
-                          remark: remarkController.text.trim(),
-                          sangha: sanghaNameController.text.trim(),
-                          paaliDate: paliDateController.text,
-                          receiptDate: receiptDateController.text,
-                          receiptNo: receiptNumberController.text,
-                        );
-                        await PaliaAPI().addUser(addUser);
+                        // final addUser = VaktaModel(
+                        //   sammilaniData: SammilaniModel(
+                        //       sammilaniNumber:
+                        //           sammilaniNumberController.text.trim(),
+                        //       sammilaniYear:
+                        //           sammilaniYearController.text.trim(),
+                        //       sammilaniPlace:
+                        //           sammilaniPlaceController.text.trim()),
+                        //   name: paliaNameController.text.trim(),
+                        //   createdBy: currentPalia?.name,
+                        //   createdOn: formattedDate.toString(),
+                        //   // formatted.toString(),
+                        //   docId: const Uuid().v1(),
+                        //   pranaami: double.parse(
+                        //       pranamiController.text.trim() == ''
+                        //           ? '0.0'
+                        //           : pranamiController.text.trim()),
+                        //   remark: remarkController.text.trim(),
+                        //   sangha: sanghaNameController.text.trim(),
+                        //   paaliDate: paliDateController.text,
+                        //   receiptDate: receiptDateController.text,
+                        //   receiptNo: receiptNumberController.text,
+                        // );
+                        // await PostDevoteeAPI().addDevotee(addUser);
                         // ignore: use_build_context_synchronously
                         Navigator.popUntil(context, (route) => route.isFirst);
                         // ignore: use_build_context_synchronously

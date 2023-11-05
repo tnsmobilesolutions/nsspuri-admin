@@ -1,11 +1,12 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
-import 'package:sdp/Models/vaktaModel.dart';
+import 'package:sdp/model/devotee_model.dart';
+
 
 class ViewPalia extends StatefulWidget {
   const ViewPalia({Key? key, required this.item}) : super(key: key);
-  final VaktaModel item;
+  final DevoteeModel item;
 
   @override
   State<ViewPalia> createState() => _ViewPaliaState();
@@ -72,7 +73,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                       'Pali Date',
                       style: TextStyle(color: Colors.grey),
                     ),
-                    Text(widget.item.paaliDate.toString())
+                    Text(widget.item.createdAt.toString())
                   ],
                 ),
                 Column(
@@ -82,7 +83,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                       'Pranaami',
                       style: TextStyle(color: Colors.grey),
                     ),
-                    Text('₹${widget.item.pranaami}')
+                    Text('₹${widget.item.bloodGroup}')
                   ],
                 ),
               ],
@@ -100,7 +101,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                       'Sammilani No.',
                       style: TextStyle(color: Colors.grey),
                     ),
-                    Text('${widget.item.sammilaniData?.sammilaniNumber}')
+                    Text('${widget.item.bloodGroup}')
                   ],
                 ),
                 Column(
@@ -110,7 +111,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                       'Sammilani Year',
                       style: TextStyle(color: Colors.grey),
                     ),
-                    Text('${widget.item.sammilaniData?.sammilaniYear},')
+                    Text('${widget.item.bloodGroup},')
                   ],
                 ),
                 Column(
@@ -120,7 +121,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                       'Sammilani Place',
                       style: TextStyle(color: Colors.grey),
                     ),
-                    Text('${widget.item.sammilaniData?.sammilaniPlace}')
+                    Text('${widget.item.bloodGroup}')
                   ],
                 ),
               ],
@@ -138,7 +139,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                       'Receipt No.',
                       style: TextStyle(color: Colors.grey),
                     ),
-                    Text('${widget.item.receiptNo}')
+                    Text('${widget.item.bloodGroup}')
                   ],
                 ),
                 Column(
@@ -148,7 +149,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                       'Receipt Date',
                       style: TextStyle(color: Colors.grey),
                     ),
-                    Text('${widget.item.receiptDate}')
+                    Text('${widget.item.bloodGroup}')
                   ],
                 ),
               ],
@@ -163,7 +164,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                   'Remark',
                   style: TextStyle(color: Colors.grey),
                 ),
-                Text(widget.item.remark.toString())
+                Text(widget.item.bloodGroup.toString())
               ],
             ),
             const Divider(
@@ -179,7 +180,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                       'Created By',
                       style: TextStyle(color: Colors.grey),
                     ),
-                    Text(widget.item.createdBy.toString())
+                    Text(widget.item.bloodGroup.toString())
                   ],
                 ),
                 Column(
@@ -189,7 +190,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                       'Created On',
                       style: TextStyle(color: Colors.grey),
                     ),
-                    Text(widget.item.createdOn.toString())
+                    Text(widget.item.createdAt.toString())
                   ],
                 ),
               ],
@@ -197,7 +198,7 @@ class _ViewPaliaState extends State<ViewPalia> {
             const Divider(
               thickness: 0.5,
             ),
-            if (widget.item.updatedBy != null)
+            if (widget.item.createdAt != null)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -208,7 +209,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                         'Updated By',
                         style: TextStyle(color: Colors.grey),
                       ),
-                      Text(widget.item.updatedBy.toString())
+                      Text(widget.item.createdAt.toString())
                     ],
                   ),
                   Column(
@@ -218,7 +219,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                         'Updated On',
                         style: TextStyle(color: Colors.grey),
                       ),
-                      Text(widget.item.updatedOn.toString())
+                      Text(widget.item.createdAt.toString())
                     ],
                   ),
                 ],

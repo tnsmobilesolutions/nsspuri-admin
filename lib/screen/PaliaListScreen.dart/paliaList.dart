@@ -7,8 +7,7 @@ import 'package:sdp/screen/PaliaListScreen.dart/paliaScreenBody.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
 
 class PaliaListPage extends StatefulWidget {
-  PaliaListPage({Key? key, required this.year}) : super(key: key);
-  String year;
+  PaliaListPage({Key? key}) : super(key: key);
 
   @override
   State<PaliaListPage> createState() => _PaliaListPageState();
@@ -31,16 +30,13 @@ class _PaliaListPageState extends State<PaliaListPage> {
             ));
           },
           child: const Text(
-            'ସମ୍ମିଳନୀ ଦିନିକିଆ ପାଳି',
+            'nsspuri-admin',
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
         ),
         actions: const [ActionWidget()],
       ),
-      body: SafeArea(
-          child: PaliaListBodyPage(
-        year: widget.year,
-      )),
+      body: SafeArea(child: PaliaListBodyPage()),
     );
   }
 }

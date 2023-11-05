@@ -1,10 +1,10 @@
 // ignore_for_file: file_names, must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:sdp/API/paliaaAPI.dart';
-import 'package:sdp/Models/vaktaModel.dart';
+import 'package:sdp/model/devotee_model.dart';
+
 import 'package:sdp/screen/PaliaListScreen.dart/editPalia.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/paliaList.dart';
+
 import 'package:sdp/screen/PaliaListScreen.dart/viewDevotee.dart';
 
 class PaliaTableRow extends StatefulWidget {
@@ -16,7 +16,7 @@ class PaliaTableRow extends StatefulWidget {
     required this.isCheckedBoolValue,
     this.allCheck,
   }) : super(key: key);
-  final VaktaModel paliaDetails;
+  final DevoteeModel paliaDetails;
   final int slNo;
   Function isCheckedBoolValue;
   // Function isallCheckedBoolValue;
@@ -79,7 +79,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
             ),
             Expanded(
               child: Text(
-                '${widget.paliaDetails.paaliDate}',
+                '${widget.paliaDetails.createdAt}',
                 textAlign: TextAlign.center,
               ),
             ),
@@ -133,7 +133,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                                 ],
                               ),
                               content: EditPaliadilougePage(
-                                  paliaDetails: widget.paliaDetails),
+                                  devoteeDetails: widget.paliaDetails),
                             );
                           },
                         );
@@ -171,16 +171,16 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  PaliaAPI()
-                                      .removePalia(widget.paliaDetails.docId);
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) {
-                                      return PaliaListPage(
-                                        year:
-                                            '${widget.paliaDetails.sammilaniData?.sammilaniYear}',
-                                      );
-                                    },
-                                  ));
+                                  // PaliaAPI()
+                                  //     .removePalia(widget.paliaDetails.docId);
+                                  // Navigator.push(context, MaterialPageRoute(
+                                  //   builder: (context) {
+                                  //     return PaliaListPage(
+                                  //       year:
+                                  //           '${widget.paliaDetails.sammilaniData?.sammilaniYear}',
+                                  //     );
+                                  //   },
+                                  // ));
                                 },
                                 child: const Text('OK'),
                               ),

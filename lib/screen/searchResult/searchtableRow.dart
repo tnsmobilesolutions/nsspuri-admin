@@ -1,10 +1,10 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
-import 'package:sdp/API/paliaaAPI.dart';
-import 'package:sdp/Models/vaktaModel.dart';
+import 'package:sdp/model/devotee_model.dart';
+
 import 'package:sdp/screen/PaliaListScreen.dart/editPalia.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/paliaList.dart';
+
 import 'package:sdp/screen/PaliaListScreen.dart/viewDevotee.dart';
 
 // ignore: must_be_immutable
@@ -17,7 +17,7 @@ class SearchTableRow extends StatefulWidget {
     required this.isCheckedBoolValue,
     this.allCheck,
   }) : super(key: key);
-  final VaktaModel searchpaliaDetails;
+  final DevoteeModel searchpaliaDetails;
   final int slNo;
   bool showMenu;
   Function isCheckedBoolValue;
@@ -81,7 +81,7 @@ class _SearchTableRowState extends State<SearchTableRow> {
             ),
             Expanded(
               child: Text(
-                '${widget.searchpaliaDetails.paaliDate}',
+                '${widget.searchpaliaDetails.createdAt}',
                 textAlign: TextAlign.center,
               ),
             ),
@@ -133,7 +133,7 @@ class _SearchTableRowState extends State<SearchTableRow> {
                                 ],
                               ),
                               content: EditPaliadilougePage(
-                                  paliaDetails: widget.searchpaliaDetails),
+                                  devoteeDetails: widget.searchpaliaDetails),
                             );
                           },
                         );
@@ -169,17 +169,7 @@ class _SearchTableRowState extends State<SearchTableRow> {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  // dashboardindexNumber = 0;
-                                  PaliaAPI().removePalia(
-                                      widget.searchpaliaDetails.docId);
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) {
-                                      return PaliaListPage(
-                                        year:
-                                            '${widget.searchpaliaDetails.sammilaniData?.sammilaniYear}',
-                                      );
-                                    },
-                                  ));
+                           
                                 },
                                 child: const Text('OK'),
                               ),

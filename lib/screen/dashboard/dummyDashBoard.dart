@@ -16,16 +16,16 @@ class DummyDashBoard extends StatelessWidget {
           ),
           itemCount: 1,
           itemBuilder: (BuildContext context, int index) {
-            return Padding(
-              padding: const EdgeInsets.all(10.0),
+            return const Padding(
+              padding: EdgeInsets.all(10.0),
               child: Card(
                 elevation: 10,
-                shadowColor: const Color(0XFF3f51b5),
+                shadowColor: Color(0XFF3f51b5),
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(8.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       // Row(
                       //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       //   children: const [

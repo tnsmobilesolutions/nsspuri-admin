@@ -2,7 +2,8 @@
 
 import 'package:authentication/EmailLogin/authentication_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:sdp/API/userAPI.dart';
+import 'package:sdp/API/get_devotee.dart';
+import 'package:sdp/firebase/firebase_auth_api.dart';
 
 import 'package:sdp/screen/dashboard/dashboard.dart';
 
@@ -32,9 +33,12 @@ class _EmailSignInState extends State<EmailSignIn> {
                 cardHeight: 310,
                 loginImage: const AssetImage('assets/images/login.png'),
                 onEmailLoginPressed: (userEmail, userPassword) async {
-                  final user = await UserAPI().signIn(userEmail, userPassword);
+                  String? uid = await FirebaseAuthentication()
+                      .signinWithFirebase(userEmail, userPassword);
 
-                  if (user != null) {
+                  if (uid != null) {
+                    GetDevoteeAPI().loginDevotee(uid);
+
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -64,7 +68,7 @@ class _EmailSignInState extends State<EmailSignIn> {
                 isImageVisible: true,
                 textFieldBorderColor: Colors.white,
                 //  Color(0xFFeb1589),
-                cardColor: Color.fromARGB(255, 253, 253, 253),
+                cardColor: const Color.fromARGB(255, 253, 253, 253),
                 textfieldHintColor: Colors.white,
                 // emailHintTextStyle: const TextStyle(color: Colors.white),
                 // passwordHintTextStyle: const TextStyle(color: Colors.white),

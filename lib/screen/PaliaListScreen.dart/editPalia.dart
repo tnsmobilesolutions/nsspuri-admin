@@ -3,19 +3,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:intl/intl.dart';
-import 'package:sdp/API/paliaaAPI.dart';
-import 'package:sdp/API/userAPI.dart';
-import 'package:sdp/Models/sammilaniModel.dart';
-import 'package:sdp/Models/userDetailsModel.dart';
-import 'package:sdp/Models/vaktaModel.dart';
+import 'package:sdp/API/get_devotee.dart';
+import 'package:sdp/model/devotee_model.dart';
+
 import 'package:sdp/sammilani_list.dart';
 import 'package:sdp/sanghalist.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/paliaList.dart';
 
 class EditPaliadilougePage extends StatefulWidget {
-  EditPaliadilougePage({Key? key, required this.paliaDetails})
+  EditPaliadilougePage({Key? key, required this.devoteeDetails})
       : super(key: key);
-  VaktaModel paliaDetails;
+  DevoteeModel devoteeDetails;
 
   @override
   State<EditPaliadilougePage> createState() => _EditPaliadilougePageState();
@@ -33,12 +30,13 @@ class _EditPaliadilougePageState extends State<EditPaliadilougePage> {
   final remarkController = TextEditingController();
   final sammilaniNumberController = TextEditingController();
   final receiptNumberController = TextEditingController();
-  UserDetailsModel? currentPalia;
+  DevoteeModel? currentPalia;
   String formattedDate =
       DateFormat('dd-MMM-yyyy  hh:mm a').format(DateTime.now());
 
   currentUser() async {
-    final currentUser = await UserAPI().getCurrentUserData();
+    final currentUserData = await GetDevoteeAPI().currentDevotee();
+    final currentUser = currentUserData?["data"];
     setState(() {
       currentPalia = currentUser;
     });
@@ -48,19 +46,19 @@ class _EditPaliadilougePageState extends State<EditPaliadilougePage> {
   void initState() {
     currentUser();
     super.initState();
-    paliaNameController.text = widget.paliaDetails.name ?? '';
-    sanghaNameController.text = widget.paliaDetails.sangha ?? '';
-    paliDateController.text = widget.paliaDetails.paaliDate ?? '';
-    receiptDateController.text = widget.paliaDetails.receiptDate ?? '';
-    sammilaniPlaceController.text =
-        widget.paliaDetails.sammilaniData?.sammilaniPlace ?? '';
-    sammilaniNumberController.text =
-        widget.paliaDetails.sammilaniData?.sammilaniNumber ?? '';
-    sammilaniYearController.text =
-        widget.paliaDetails.sammilaniData?.sammilaniYear ?? '';
-    pranamiController.text = widget.paliaDetails.pranaami.toString();
-    remarkController.text = widget.paliaDetails.remark ?? '';
-    receiptNumberController.text = widget.paliaDetails.receiptNo ?? '';
+    // paliaNameController.text = widget.devoteeDetails.name ?? '';
+    // sanghaNameController.text = widget.devoteeDetails.sangha ?? '';
+    // paliDateController.text = widget.devoteeDetails.dob ?? '';
+    // receiptDateController.text = widget.devoteeDetails.receiptDate ?? '';
+    // sammilaniPlaceController.text =
+    //     widget.devoteeDetails.sammilaniData?.sammilaniPlace ?? '';
+    // sammilaniNumberController.text =
+    //     widget.devoteeDetails.sammilaniData?.sammilaniNumber ?? '';
+    // sammilaniYearController.text =
+    //     widget.devoteeDetails.sammilaniData?.sammilaniYear ?? '';
+    // pranamiController.text = widget.devoteeDetails.pranaami.toString();
+    // remarkController.text = widget.devoteeDetails.remark ?? '';
+    // receiptNumberController.text = widget.devoteeDetails.receiptNo ?? '';
   }
 
   @override
@@ -413,40 +411,16 @@ class _EditPaliadilougePageState extends State<EditPaliadilougePage> {
                           ),
                           TextButton(
                             onPressed: () {
-                              VaktaModel editUser = VaktaModel(
-                                  name: paliaNameController.text.trim(),
-                                  updatedBy: currentPalia?.name,
-                                  updatedOn: formattedDate.toString(),
-                                  pranaami: double.parse(
-                                      pranamiController.text.trim() == ''
-                                          ? '0.0'
-                                          : pranamiController.text.trim()),
-                                  remark: remarkController.text.trim(),
-                                  sammilaniData: SammilaniModel(
-                                    sammilaniNumber:
-                                        sammilaniNumberController.text.trim(),
-                                    sammilaniYear:
-                                        sammilaniYearController.text.trim(),
-                                    sammilaniPlace:
-                                        sammilaniPlaceController.text.trim(),
-                                  ),
-                                  sangha: sanghaNameController.text.trim(),
-                                  paaliDate: paliDateController.text,
-                                  receiptDate: receiptDateController.text,
-                                  receiptNo: receiptNumberController.text,
-                                  docId: widget.paliaDetails.docId
-                                  //
-                                  );
-                              PaliaAPI().editPaliaDetails(editUser);
-                              Navigator.popUntil(
-                                  context, (route) => route.isFirst);
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) {
-                                  return PaliaListPage(
-                                      year:
-                                          '${widget.paliaDetails.sammilaniData?.sammilaniYear}');
-                                },
-                              ));
+                            
+                              // Navigator.popUntil(
+                              //     context, (route) => route.isFirst);
+                              // Navigator.push(context, MaterialPageRoute(
+                              //   builder: (context) {
+                              //     return PaliaListPage(
+                              //         year:
+                              //             '${widget.devoteeDetails.sammilaniData?.sammilaniYear}');
+                              //   },
+                              // ));
                             },
                             child: const Text('Update'),
                           ),

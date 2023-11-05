@@ -2,11 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:intl/intl.dart';
-
-import 'package:sdp/API/paliaaAPI.dart';
 import 'package:sdp/sammilani_list.dart';
 import 'package:sdp/sanghalist.dart';
-import 'package:sdp/screen/searchResult/searchResultScreen.dart';
 
 class SearchSDP extends StatefulWidget {
   SearchSDP({
@@ -115,14 +112,14 @@ class _SearchSDPState extends State<SearchSDP> {
                           child: TypeAheadField(
                             textFieldConfiguration: TextFieldConfiguration(
                                 onSubmitted: (value) async {
-                                  final result = await PaliaAPI().searchSDP(
-                                      _selectedSearchType,
-                                      sdpSearchController.text,
-                                      searchSanghaController.text);
-                                  widget.onSubmitPress(
-                                      result,
-                                      _selectedSearchType,
-                                      sdpSearchController.text);
+                                  // final result = await PaliaAPI().searchSDP(
+                                  //     _selectedSearchType,
+                                  //     sdpSearchController.text,
+                                  //     searchSanghaController.text);
+                                  // widget.onSubmitPress(
+                                  //     result,
+                                  //     _selectedSearchType,
+                                  //     sdpSearchController.text);
                                 },
                                 controller: sdpSearchController,
                                 decoration: InputDecoration(
@@ -294,15 +291,15 @@ class _SearchSDPState extends State<SearchSDP> {
                                       height: 50,
                                       child: TextFormField(
                                         onFieldSubmitted: (value) async {
-                                          final result = await PaliaAPI()
-                                              .searchSDP(
-                                                  _selectedSearchType,
-                                                  sdpSearchController.text,
-                                                  searchSanghaController.text);
-                                          widget.onSubmitPress(
-                                              result,
-                                              _selectedSearchType,
-                                              sdpSearchController.text);
+                                          // final result = await PaliaAPI()
+                                          //     .searchSDP(
+                                          //         _selectedSearchType,
+                                          //         sdpSearchController.text,
+                                          //         searchSanghaController.text);
+                                          // widget.onSubmitPress(
+                                          //     result,
+                                          //     _selectedSearchType,
+                                          //     sdpSearchController.text);
                                         },
 
                                         autofocus: false,
@@ -457,34 +454,7 @@ class _SearchSDPState extends State<SearchSDP> {
             padding: const EdgeInsets.only(right: 5),
             child: ElevatedButton(
               onPressed: () async {
-                widget.searchDasboardIndexNumber = 0;
-                widget.dashboardindexNumber = 0;
-                final result = await PaliaAPI().searchSDP(_selectedSearchType,
-                    sdpSearchController.text, searchSanghaController.text);
-                widget.onSubmitPress(
-                    result, _selectedSearchType, sdpSearchController.text);
-
-                if (result != null) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            SearchResultPage(searchReslt: result),
-                      ));
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('Please put some Data to Search'),
-                      action: SnackBarAction(
-                        label: 'Exit',
-                        onPressed: () {
-                          // Code to execute.
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ),
-                  );
-                }
+              
               },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(

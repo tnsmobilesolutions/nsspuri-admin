@@ -4,21 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:sdp/API/paliaaAPI.dart';
-import 'package:sdp/Models/vaktaModel.dart';
+import 'package:sdp/API/get_devotee.dart';
+import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/editPaliMultiple.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/paliaTableRow.dart';
 
 class PaliaListBodyPage extends StatefulWidget {
-  PaliaListBodyPage({Key? key, required this.year}) : super(key: key);
-  String year;
+  PaliaListBodyPage({Key? key}) : super(key: key);
 
   @override
   State<PaliaListBodyPage> createState() => _PaliaListBodyPageState();
 }
 
 class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
-  List<VaktaModel>? allPaliaList;
+  List<DevoteeModel>? allPaliaList;
   List<String> selectedPalia = [];
   bool checkedValue = false;
   bool? allCheck;
@@ -170,7 +169,7 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
                                           ),
                                           pw.Expanded(
                                             child: pw.Text(
-                                              '${allPaliaList?[index].paaliDate}',
+                                              '${allPaliaList?[index].createdAt}',
                                               textAlign: pw.TextAlign.center,
                                             ),
                                           ),
@@ -207,28 +206,28 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
                   child: Checkbox(
                       value: allCheck ?? false,
                       onChanged: (value) async {
-                        var alldata =
-                            await PaliaAPI().fetchAllByYearPalias(widget.year);
+                        // var alldata =
+                        //     await PaliaAPI().fetchAllByYearPalias(widget.year);
 
-                        setState(() {
-                          allCheck = value!;
+                        // setState(() {
+                        //   allCheck = value!;
 
-                          for (var e in alldata) {
-                            if (allCheck == true) {
-                              // editpaliDate = true;
-                              if (!selectedPalia.contains(e)) {
-                                selectedPalia.add(e.docId.toString());
-                              }
-                            } else if (allCheck == false) {
-                              editpaliDate = false;
-                              selectedPalia.remove(e.docId);
+                        //   for (var e in alldata) {
+                        //     if (allCheck == true) {
+                        //       // editpaliDate = true;
+                        //       if (!selectedPalia.contains(e)) {
+                        //         selectedPalia.add(e.docId.toString());
+                        //       }
+                        //     } else if (allCheck == false) {
+                        //       editpaliDate = false;
+                        //       selectedPalia.remove(e.docId);
 
-                              if (selectedPalia == []) {
-                                setState(() {});
-                              }
-                            }
-                          }
-                        });
+                        //       if (selectedPalia == []) {
+                        //         setState(() {});
+                        //       }
+                        //     }
+                        //   }
+                        // });
                       }),
                 )),
                 headingText('କ୍ରମିକ ନଂ'),
@@ -243,44 +242,6 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
           ),
           const SizedBox(
             height: 12,
-          ),
-          FutureBuilder(
-            future: PaliaAPI().fetchAllByYearPalias(widget.year),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              allPaliaList = snapshot.data;
-              if (snapshot.hasError) {
-                return const Text('SNAPSHOT ERROR');
-              }
-              if (snapshot.connectionState == ConnectionState.done) {
-                return Expanded(
-                  child: ListView.builder(
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      //Table firebase Data
-                      return PaliaTableRow(
-                        showMenu: showMenu,
-                        slNo: index + 1,
-                        allCheck: allCheck,
-                        paliaDetails: snapshot.data[index],
-                        isCheckedBoolValue: (isCheckedValue) {
-                          // checkedValue = isCheckedValuee;
-                          if (isCheckedValue == true) {
-                            editpaliDate = true;
-                            if (!selectedPalia
-                                .contains(snapshot.data[index].docId)) {
-                              selectedPalia.add(snapshot.data[index].docId);
-                            }
-                          } else {
-                            selectedPalia.remove(snapshot.data[index].docId);
-                          }
-                        },
-                      );
-                    },
-                  ),
-                );
-              }
-              return const Center(child: CircularProgressIndicator());
-            },
           ),
         ],
       ),

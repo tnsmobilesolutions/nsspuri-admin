@@ -2,9 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sdp/API/paliaaAPI.dart';
-import 'package:sdp/Models/vaktaModel.dart';
-import 'package:sdp/screen/dashboard/dashboard.dart';
 
 class MultipleEditPali extends StatefulWidget {
   MultipleEditPali({Key? key, required this.docIds}) : super(key: key);
@@ -62,64 +59,7 @@ class _MultipleEditPaliState extends State<MultipleEditPali> {
               ),
             ),
             ElevatedButton(
-              onPressed: () async {
-                final a = VaktaModel(
-                  paaliDate: editPaliDatecontroller.text,
-                );
-                if (a.paaliDate == "") {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content:
-                          Text('Plese choose a paali date you want to update!'),
-                    ),
-                  );
-                } else if (widget.docIds.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content:
-                          Text('Plese select any Palia you want to update!'),
-                    ),
-                  );
-                } else {
-                  showDialog<String>(
-                    context: context,
-                    builder: (BuildContext context) => AlertDialog(
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Update Paali Date'),
-                          IconButton(
-                              color: const Color(0XFF3f51b5),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              icon: const Icon(Icons.close))
-                        ],
-                      ),
-                      content: const Text(
-                          'Do you want to update the paali date for selected paalia?'),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, 'Cancel'),
-                          child: const Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () async {
-                            await PaliaAPI()
-                                .editPaliDateMultiple(widget.docIds, a);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DashboardPage(),
-                                ));
-                          },
-                          child: const Text('OK'),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-              },
+              onPressed: () async {},
               style: ButtonStyle(
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(

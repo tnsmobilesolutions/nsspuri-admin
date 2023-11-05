@@ -465,7 +465,7 @@
 //         leading: const LeadingImage(),
 //         automaticallyImplyLeading: false,
 //         title: const Text(
-//           'ସମ୍ମିଳନୀ ଦିନିକିଆ ପାଳି',
+//           'nsspuri-admin',
 //         ),
 //         actions: const [ActionWidget()],
 //       ),

@@ -48,6 +48,7 @@ dependencies:
   material_color_generator: ^1.1.0
   printing: ^5.11.0
   flutter_typeahead: ^4.1.1
+  dio: ^5.3.3
  
   
 

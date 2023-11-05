@@ -1,5 +1,6 @@
-import 'package:sdp/API/paliaaAPI.dart';
-import 'package:sdp/Models/sammilaniModel.dart';
+
+
+import 'package:sdp/model/sammilani_model.dart';
 
 class SammilaniUtility {
   static List<SammilaniModel> getAllSammilaniName() {
@@ -16,10 +17,10 @@ class SammilaniUtility {
     return f.toList().reversed.toList();
   }
 
-  static Future<int> paliaNumber(year) async {
-    var f = await PaliaAPI().fetchAllByYearPalias(year);
-    return f.toList().length;
-  }
+  // static Future<int> paliaNumber(year) async {
+  //   var f = await PaliaAPI().fetchAllByYearPalias(year);
+  //   return f.toList().length;
+  // }
 }
 
 // class SammilaniList {

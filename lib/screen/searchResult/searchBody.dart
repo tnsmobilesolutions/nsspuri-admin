@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:sdp/Models/vaktaModel.dart';
+import 'package:sdp/model/devotee_model.dart';
+
 import 'package:sdp/screen/PaliaListScreen.dart/editPaliMultiple.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
 import 'package:sdp/screen/searchResult/searchtableRow.dart';
@@ -12,7 +13,7 @@ import 'package:sdp/screen/searchResult/searchtableRow.dart';
 // ignore: must_be_immutable
 class SearchresultBodyPage extends StatefulWidget {
   SearchresultBodyPage({Key? key, required this.searchModel}) : super(key: key);
-  List<VaktaModel> searchModel;
+  List<DevoteeModel> searchModel;
 
   @override
   State<SearchresultBodyPage> createState() => _SearchresultBodyPageState();
@@ -180,7 +181,7 @@ class _SearchresultBodyPageState extends State<SearchresultBodyPage> {
                                           ),
                                           pw.Expanded(
                                             child: pw.Text(
-                                              '${widget.searchModel[index].paaliDate}',
+                                              '${widget.searchModel[index].createdAt}',
                                               textAlign: pw.TextAlign.center,
                                             ),
                                           ),
@@ -225,10 +226,10 @@ class _SearchresultBodyPageState extends State<SearchresultBodyPage> {
                           for (var e in widget.searchModel) {
                             if (allCheck == true) {
                               if (!selectedPalia.contains(e)) {
-                                selectedPalia.add(e.docId.toString());
+                                selectedPalia.add(e.devoteeId.toString());
                               }
                             } else if (allCheck == false) {
-                              selectedPalia.remove(e.docId);
+                              selectedPalia.remove(e.devoteeId);
                             }
                           }
                         });
@@ -261,12 +262,12 @@ class _SearchresultBodyPageState extends State<SearchresultBodyPage> {
                     checkedValue = isCheckedValuee;
                     if (isCheckedValuee == true) {
                       if (!selectedPalia
-                          .contains(widget.searchModel[index].docId)) {
+                          .contains(widget.searchModel[index].devoteeId)) {
                         selectedPalia
-                            .add(widget.searchModel[index].docId.toString());
+                            .add(widget.searchModel[index].devoteeId.toString());
                       }
                     } else {
-                      selectedPalia.remove(widget.searchModel[index].docId);
+                      selectedPalia.remove(widget.searchModel[index].devoteeId);
                     }
                   },
                 );

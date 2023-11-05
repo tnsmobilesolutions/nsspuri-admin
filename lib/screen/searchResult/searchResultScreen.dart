@@ -1,14 +1,14 @@
 // ignore_for_file: file_names, must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:sdp/Models/vaktaModel.dart';
+import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/appBar/actionWidget.dart';
 import 'package:sdp/screen/appBar/leadingImage.dart';
 import 'package:sdp/screen/searchResult/searchBody.dart';
 
 class SearchResultPage extends StatefulWidget {
   SearchResultPage({Key? key, required this.searchReslt}) : super(key: key);
-  List<VaktaModel> searchReslt;
+  List<DevoteeModel> searchReslt;
 
   @override
   State<SearchResultPage> createState() => _SearchResultPageState();
@@ -23,7 +23,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
         leading: const LeadingImage(),
         automaticallyImplyLeading: false,
         title: const Text(
-          'ସମ୍ମିଳନୀ ଦିନିକିଆ ପାଳି',
+          'nsspuri-admin',
         ),
         actions: const [ActionWidget()],
       ),
