@@ -35,7 +35,7 @@ class AddPaliaButton extends StatelessWidget {
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Add Palia Details'),
+                  Text('Create delegate'),
                   IconButton(
                       color: const Color(0XFF3f51b5),
                       onPressed: () {

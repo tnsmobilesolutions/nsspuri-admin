@@ -27,11 +27,15 @@ class _EmailSignInState extends State<EmailSignIn> {
               padding: const EdgeInsets.all(20),
               child: AuthenticationWidget(
                 shouldEmailAuthentication: true,
-                imageWidth: 245,
-                imageHeight: 230,
+                imageWidth: 150,
+                imageHeight: 150,
                 cardWidth: 245,
-                cardHeight: 310,
+                cardHeight: 280,
                 loginImage: const AssetImage('assets/images/login.png'),
+                title: const Text(
+                  'Sammilani Delegate Admin',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
                 onEmailLoginPressed: (userEmail, userPassword) async {
                   String? uid = await FirebaseAuthentication()
                       .signinWithFirebase(userEmail, userPassword);

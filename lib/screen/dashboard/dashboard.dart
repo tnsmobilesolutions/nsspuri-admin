@@ -17,7 +17,7 @@ class DashboardPage extends StatelessWidget {
         leading: const LeadingImage(),
         automaticallyImplyLeading: false,
         title: const Text(
-          'nsspuri-admin',
+          'Sammilani Delegate Admin',
         ),
         actions: const [ActionWidget()],
       ),

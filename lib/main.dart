@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'nsspuri-admin',
+      title: 'Sammilani Delegate Admin',
       theme: ThemeData(
         primarySwatch: generateMaterialColor(color: Color(0XFF3f51b5)),
       ),
