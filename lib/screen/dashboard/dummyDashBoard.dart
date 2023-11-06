@@ -20,7 +20,7 @@ class DummyDashBoard extends StatelessWidget {
               padding: EdgeInsets.all(10.0),
               child: Card(
                 elevation: 10,
-                shadowColor: Color(0XFF3f51b5),
+                shadowColor: Color.fromARGB(255, 0, 0, 0),
                 child: Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Column(

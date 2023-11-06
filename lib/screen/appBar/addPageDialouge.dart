@@ -83,14 +83,6 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   leading: const Icon(Icons.photo_album),
                   title: const Text("Select from Gallery"),
                 ),
-                ListTile(
-                  onTap: () {
-                    Navigator.pop(context);
-                    selectImage(ImageSource.camera);
-                  },
-                  leading: const Icon(Icons.camera_alt),
-                  title: const Text("Take a photo"),
-                ),
               ],
             ),
           );
@@ -121,11 +113,19 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     );
   }
 
-  Future<String?> uploadImageToFirebaseStorage(XFile image, String name) async {
-    // print('**************${getImageName(image)}**************');
+  Future<String?> uploadImageToFirebaseStorage(
+      XFile? image, String name) async {
+    if (image == null) {
+      return null;
+    }
+
+    final byteData = await image.readAsBytes();
+    final buffer = byteData.buffer.asUint8List();
+
     Reference storage =
-        FirebaseStorage.instance.ref('${name}/${getImageName(image)}');
-    await storage.putFile(File(image.path));
+        FirebaseStorage.instance.ref('$name/${getImageName(image)}');
+    await storage.putData(buffer);
+
     return await storage.getDownloadURL();
   }
 
