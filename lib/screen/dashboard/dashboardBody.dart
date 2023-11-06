@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:sdp/API/get_devotee.dart';
+import 'package:sdp/constant/dashboard_list.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/paliaList.dart';
 import 'package:sdp/screen/dashboard/dummyDashBoard.dart';
 
@@ -15,10 +16,11 @@ class DashboardBody extends StatefulWidget {
 class _DashboardBodyState extends State<DashboardBody> {
   @override
   Widget build(BuildContext context) {
+    var list = DelegateStatusList().getAllSammilaniName();
     return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3, childAspectRatio: 1.5),
-      itemCount: 6,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: list.length ~/ 2, childAspectRatio: 1.5),
+      itemCount: list.length,
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int index) {
         return FutureBuilder(
@@ -36,18 +38,24 @@ class _DashboardBodyState extends State<DashboardBody> {
                       },
                     ));
                   },
-                  child: const Card(
+                  child: Card(
                     elevation: 10,
                     shadowColor: Color(0XFF3f51b5),
                     child: Padding(
                       padding: EdgeInsets.all(15.0),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [],
+                          Text(
+                            list[index].status.toString(),
+                            style: const TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
                           ),
+                          Text(
+                            list[index].count.toString(),
+                            style: const TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          )
                         ],
                       ),
                     ),

@@ -1,37 +1,138 @@
 // ignore_for_file: file_names
 
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:sdp/API/get_devotee.dart';
+import 'package:sdp/API/post_devotee.dart';
+import 'package:sdp/API/put_devotee.dart';
+import 'package:sdp/constant/sangha_list.dart';
+import 'package:sdp/model/address_model.dart';
 import 'package:sdp/model/devotee_model.dart';
-import 'package:sdp/sammilani_list.dart';
-import 'package:sdp/sanghalist.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
+import 'package:sdp/utilities/color_palette.dart';
 
 class AddPageDilouge extends StatefulWidget {
-  const AddPageDilouge({super.key});
+  AddPageDilouge({super.key, required this.title, this.devotee});
+  String title;
+  DevoteeModel? devotee;
 
   @override
   State<AddPageDilouge> createState() => _AddPageDilougeState();
 }
 
 class _AddPageDilougeState extends State<AddPageDilouge> {
-  final _formKey = GlobalKey<FormState>();
-  final paliaNameController = TextEditingController();
-  final paliDateController = TextEditingController();
-  final receiptDateController = TextEditingController();
-  final sanghaNameController = TextEditingController();
-  final sammilaniPlaceController = TextEditingController();
-  final pranamiController = TextEditingController();
-  final sammilaniYearController = TextEditingController();
-  final remarkController = TextEditingController();
-  final sammilaniNumberController = TextEditingController();
-  final receiptNumberController = TextEditingController();
-  DevoteeModel? currentPalia;
+  final nameController = TextEditingController();
+  final mobileController = TextEditingController();
+  final sanghaController = TextEditingController();
+  TextEditingController dateinput = TextEditingController();
+  final addressLine1Controller = TextEditingController();
+  final addressLine2Controller = TextEditingController();
+  final cityController = TextEditingController();
+  final stateController = TextEditingController();
+  final countryController = TextEditingController();
+  final postalCodeController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+  String? bloodGroupController;
+
+  List gender = ["Male", "Female"];
+  int genderController = 0;
+  String? profileURL;
+
+  String? profileImage;
+  XFile? previewImage;
+  List<String> bloodGrouplist = <String>[
+    'A+',
+    'A-',
+    'B+',
+    'B-',
+    'O+',
+    'O-',
+    'AB+',
+    'AB-',
+    "Don't know",
+  ];
+
+  get districtList => null;
+
+  void selectImage(ImageSource source) async {
+    XFile? pickedFile = await ImagePicker().pickImage(source: source);
+    setState(() {
+      previewImage = pickedFile;
+    });
+  }
+
+  void showPhotoOptions() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Upload Profile Picture"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  onTap: () {
+                    Navigator.pop(context);
+                    selectImage(ImageSource.gallery);
+                  },
+                  leading: const Icon(Icons.photo_album),
+                  title: const Text("Select from Gallery"),
+                ),
+                ListTile(
+                  onTap: () {
+                    Navigator.pop(context);
+                    selectImage(ImageSource.camera);
+                  },
+                  leading: const Icon(Icons.camera_alt),
+                  title: const Text("Take a photo"),
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+  String? select;
   String formattedDate =
       DateFormat('dd-MMM-yyyy  hh:mm a').format(DateTime.now());
 
+  Row addRadioButton(int btnValue, String title) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Radio(
+          activeColor: Theme.of(context).primaryColor,
+          value: gender[btnValue],
+          groupValue: select,
+          onChanged: (value) {
+            setState(() {
+              print(value);
+              select = value;
+            });
+          },
+        ),
+        Text(title)
+      ],
+    );
+  }
+
+  Future<String?> uploadImageToFirebaseStorage(XFile image, String name) async {
+    // print('**************${getImageName(image)}**************');
+    Reference storage =
+        FirebaseStorage.instance.ref('${name}/${getImageName(image)}');
+    await storage.putFile(File(image.path));
+    return await storage.getDownloadURL();
+  }
+
+  // return image name
+  String getImageName(XFile image) {
+    return image.path.split("/").last;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,353 +144,524 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
       height: 435,
       width: 400,
       child: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              //Palia Name
-              TextFormField(
-                controller: paliaNameController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Name',
-                ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please Enter Name';
-                  }
-
-                  return null;
-                },
-              ),
-
-              const SizedBox(height: 10),
-              //Sangha Name
-              TypeAheadField(
-                textFieldConfiguration: TextFieldConfiguration(
-                    controller: sanghaNameController,
-                    decoration: const InputDecoration(
-                        labelText: 'Search Sangha Names',
-                        border: OutlineInputBorder()
-                        // OutlineInputBorder(
-                        //   borderRadius: BorderRadius.circular(15.0),
-                        // ),
-                        )),
-                suggestionsCallback: (pattern) async {
-                  final sanghaList = SanghaUtility.getAllSanghaName();
-                  return sanghaList.where((element) =>
-                      element!.toLowerCase().contains(pattern.toLowerCase()));
-
-                  // return await BackendService.getSuggestions(pattern);
-                },
-                itemBuilder: (context, suggestion) {
-                  return ListTile(
-                    title: Text(suggestion.toString()),
-                  );
-                },
-                getImmediateSuggestions: true,
-                hideOnEmpty: false,
-                noItemsFoundBuilder: (context) => const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text('No Sangha Name Found'),
-                ),
-                onSuggestionSelected: (String? value) {
-                  sanghaNameController.text = value.toString();
-                },
-              ),
-
-              const SizedBox(height: 10),
-              // Pranami
-              TextFormField(
-                focusNode: FocusNode(
-                  descendantsAreFocusable: false,
-                ),
-                controller: pranamiController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Pranami',
-                ),
-              ),
-              // Pali Date
-              const SizedBox(height: 10),
-              TextFormField(
-                focusNode: FocusNode(
-                  descendantsAreFocusable: false,
-                ),
-                controller: paliDateController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  suffixIcon: IconButton(
-                      onPressed: () async {
-                        DateTime? selectedDate = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.parse('2024-02-01'),
-                            firstDate: DateTime(1947),
-                            lastDate: DateTime(2050));
-                        if (selectedDate != null) {
-                          setState(() {
-                            paliDateController.text =
-                                DateFormat('dd-MMM-yyyy').format(selectedDate);
-                          });
-                        } else {
-                          paliDateController.text = '';
-                        }
-                      },
-                      icon: const Icon(Icons.calendar_month_rounded)),
-                  border: const OutlineInputBorder(),
-                  labelText: 'Pali Date (DD-MMM-YYYY)',
-                ),
-              ),
-              const SizedBox(height: 10),
-              // Receipt Date
-              TextFormField(
-                focusNode: FocusNode(
-                  descendantsAreFocusable: false,
-                ),
-                controller: receiptDateController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  suffixIcon: IconButton(
-                      onPressed: () async {
-                        DateTime? selectedDate = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime(1947),
-                            lastDate: DateTime(2050));
-                        if (selectedDate != null) {
-                          setState(() {
-                            receiptDateController.text =
-                                DateFormat('dd-MMM-yyyy').format(selectedDate);
-                          });
-                        } else {
-                          receiptDateController.text = '';
-                        }
-                      },
-                      icon: const Icon(Icons.calendar_month_rounded)),
-                  border: const OutlineInputBorder(),
-                  labelText: 'Receipt Date (DD-MMM-YYYY)',
-                ),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              // receipt Number
-              TextFormField(
-                focusNode: FocusNode(
-                  descendantsAreFocusable: false,
-                ),
-                controller: receiptNumberController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Receipt Number',
-                ),
-              ),
-              const SizedBox(height: 10),
-              // Sammilani Number
-              TypeAheadField(
-                textFieldConfiguration: TextFieldConfiguration(
-                    controller: sammilaniNumberController,
-                    decoration: const InputDecoration(
-                        labelText: 'Add Sammilani Number',
-                        border: OutlineInputBorder()
-                        // OutlineInputBorder(
-                        //   borderRadius: BorderRadius.circular(15.0),
-                        // ),
-                        )),
-                suggestionsCallback: (pattern) async {
-                  // final sammilaniNumber =
-                  //     SammilaniUtility.getAllSammilaniName();
-                  // return sammilaniNumber.where((element) =>
-                  //     element.sammilaniNumber!.contains(pattern.toLowerCase()));
-                  return [];
-
-                  // return await BackendService.getSuggestions(pattern);
-                },
-                itemBuilder: (context, suggestion) {
-                  return ListTile(
-                    title: Text(suggestion.sammilaniNumber.toString()),
-                  );
-                },
-                getImmediateSuggestions: true,
-                hideOnEmpty: false,
-                noItemsFoundBuilder: (context) => const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text('No Sammilani Number Found'),
-                ),
-                onSuggestionSelected: (value) {
-                  // sammilaniNumberController.text =
-                  //     value?.sammilaniNumber.toString();
-                  // sammilaniPlaceController.text =
-                  //     value?.sammilaniPlace.toString();
-                  // sammilaniYearController.text = value.sammilaniYear.toString();
-                },
-              ),
-              // TextFormField(
-              //   focusNode: FocusNode(
-              //     descendantsAreFocusable: false,
-              //   ),
-              //   controller: sammilaniNumberController,
-              //   keyboardType: TextInputType.number,
-              //   decoration: const InputDecoration(
-              //     border: OutlineInputBorder(),
-              //     labelText: 'Sammilani Number',
-              //   ),
-              // ),
-              const SizedBox(height: 10),
-              // Sammilani Year
-              TypeAheadField(
-                textFieldConfiguration: TextFieldConfiguration(
-                    controller: sammilaniYearController,
-                    decoration: const InputDecoration(
-                        labelText: 'Add Sammilani Year',
-                        border: OutlineInputBorder()
-                        // OutlineInputBorder(
-                        //   borderRadius: BorderRadius.circular(15.0),
-                        // ),
-                        )),
-                suggestionsCallback: (pattern) async {
-                  final sammilanimodelist =
-                      SammilaniUtility.getAllSammilaniName();
-                  return sammilanimodelist.where((element) =>
-                      element.sammilaniYear!.contains(pattern.toLowerCase()));
-
-                  // return await BackendService.getSuggestions(pattern);
-                },
-                itemBuilder: (context, suggestion) {
-                  return ListTile(
-                    title: Text(suggestion.sammilaniYear.toString()),
-                  );
-                },
-                getImmediateSuggestions: true,
-                hideOnEmpty: false,
-                noItemsFoundBuilder: (context) => const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text('No Sammilani Year Found'),
-                ),
-                onSuggestionSelected: (value) {
-                  sammilaniNumberController.text =
-                      value.sammilaniNumber.toString();
-                  sammilaniPlaceController.text =
-                      value.sammilaniPlace.toString();
-                  sammilaniYearController.text = value.sammilaniYear.toString();
-                },
-              ),
-              // TextFormField(
-              //   focusNode: FocusNode(
-              //     descendantsAreFocusable: false,
-              //   ),
-              //   controller: sammilaniYearController,
-              //   decoration: const InputDecoration(
-              //     border: OutlineInputBorder(),
-              //     labelText: 'sammilani Year',
-              //   ),
-              // ),
-
-              const SizedBox(height: 10),
-              // Sammilani Place
-              TypeAheadField(
-                textFieldConfiguration: TextFieldConfiguration(
-                    controller: sammilaniPlaceController,
-                    decoration: const InputDecoration(
-                        labelText: 'Add Sammilani Place',
-                        border: OutlineInputBorder()
-                        // OutlineInputBorder(
-                        //   borderRadius: BorderRadius.circular(15.0),
-                        // ),
-                        )),
-                suggestionsCallback: (pattern) async {
-                  final sammilaniNumber =
-                      SammilaniUtility.getAllSammilaniName();
-                  return sammilaniNumber.where((element) => element
-                      .sammilaniPlace!
-                      .toLowerCase()
-                      .contains(pattern.toLowerCase()));
-
-                  // return await BackendService.getSuggestions(pattern);
-                },
-                itemBuilder: (context, suggestion) {
-                  return ListTile(
-                    title: Text(suggestion.sammilaniPlace.toString()),
-                  );
-                },
-                getImmediateSuggestions: true,
-                hideOnEmpty: false,
-                noItemsFoundBuilder: (context) => const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text('No Sangha Name Found'),
-                ),
-                onSuggestionSelected: (value) {
-                  sammilaniNumberController.text =
-                      value.sammilaniNumber.toString();
-                  sammilaniPlaceController.text =
-                      value.sammilaniPlace.toString();
-                  sammilaniYearController.text = value.sammilaniYear.toString();
-                },
-              ),
-
-              const SizedBox(height: 10),
-              // Remark
-              TextFormField(
-                focusNode: FocusNode(
-                  descendantsAreFocusable: false,
-                ),
-                controller: remarkController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Remark',
-                ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        const Color(0XFF3f51b5)),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          MaterialButton(
+            onPressed: () {
+              showPhotoOptions();
+            },
+            child: CircleAvatar(
+              backgroundImage:
+                  previewImage != null && previewImage!.path.isNotEmpty
+                      ? Image.file(
+                          File('${previewImage?.path}'),
+                          fit: BoxFit.cover,
+                        ).image
+                      : Image.network(profileURL.toString()).image,
+              radius: 60,
+              child: const Align(
+                alignment: Alignment.bottomRight,
+                child: CircleAvatar(
+                  backgroundColor: CircleAvatarClor,
+                  radius: 20.0,
+                  child: Icon(
+                    Icons.camera_alt,
+                    size: 18.0,
                   ),
-                  child: const Text('Add Palia'),
-                  onPressed: () async {
-                    if (_formKey.currentState != null) {
-                      if (_formKey.currentState!.validate()) {
-                        // final addUser = VaktaModel(
-                        //   sammilaniData: SammilaniModel(
-                        //       sammilaniNumber:
-                        //           sammilaniNumberController.text.trim(),
-                        //       sammilaniYear:
-                        //           sammilaniYearController.text.trim(),
-                        //       sammilaniPlace:
-                        //           sammilaniPlaceController.text.trim()),
-                        //   name: paliaNameController.text.trim(),
-                        //   createdBy: currentPalia?.name,
-                        //   createdOn: formattedDate.toString(),
-                        //   // formatted.toString(),
-                        //   docId: const Uuid().v1(),
-                        //   pranaami: double.parse(
-                        //       pranamiController.text.trim() == ''
-                        //           ? '0.0'
-                        //           : pranamiController.text.trim()),
-                        //   remark: remarkController.text.trim(),
-                        //   sangha: sanghaNameController.text.trim(),
-                        //   paaliDate: paliDateController.text,
-                        //   receiptDate: receiptDateController.text,
-                        //   receiptNo: receiptNumberController.text,
-                        // );
-                        // await PostDevoteeAPI().addDevotee(addUser);
-                        // ignore: use_build_context_synchronously
-                        Navigator.popUntil(context, (route) => route.isFirst);
-                        // ignore: use_build_context_synchronously
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) {
-                            return DashboardPage();
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          TextFormField(
+            controller: nameController,
+            onSaved: (newValue) => nameController,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp("[a-z A-Z]"))
+            ],
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter name';
+              }
+              return null;
+            },
+            decoration: InputDecoration(
+              labelText: "Name",
+              filled: true,
+              floatingLabelBehavior: FloatingLabelBehavior.never,
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                  borderSide:
+                      const BorderSide(width: 0, style: BorderStyle.none)),
+            ),
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          const SizedBox(height: 10),
+          TextFormField(
+            keyboardType: TextInputType.phone,
+            controller: mobileController,
+            onSaved: (newValue) => mobileController,
+            validator: (value) {
+              RegExp regex = RegExp(r'^.{10}$');
+              if (value!.isEmpty) {
+                return ("Please enter Phone Number");
+              }
+              if (!regex.hasMatch(value) && value.length != 10) {
+                return ("Enter 10 Digit Mobile Number");
+              }
+              return null;
+            },
+            decoration: InputDecoration(
+              labelText: "Mobile Number",
+              filled: true,
+              floatingLabelBehavior: FloatingLabelBehavior.never,
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                  borderSide:
+                      const BorderSide(width: 0, style: BorderStyle.none)),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              const Text(
+                'Gender',
+              ),
+              Column(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 1,
+                        child: RadioListTile(
+                          value: 0,
+                          groupValue: genderController,
+                          title: const Text(
+                            "Male",
+                          ),
+                          onChanged: (newValue) =>
+                              setState(() => genderController = newValue ?? 0),
+                          activeColor: RadioButtonColor,
+                          // Set the unselected color to blue
+                          selectedTileColor:
+                              RadioButtonColor, // Set the selected color
+                          selected: false,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: RadioListTile(
+                          value: 1,
+                          groupValue: genderController,
+
+                          title: const Text(
+                            "Female",
+                          ),
+                          onChanged: (newValue) {
+                            setState(() {
+                              genderController = newValue ?? 0;
+                            });
                           },
-                        ));
-                      }
-                    }
-                  })
+                          activeColor: RadioButtonColor,
+                          // Set the unselected color to blue
+                          selectedTileColor:
+                              RadioButtonColor, // Set the selected color
+                          selected: false,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ],
           ),
-        ),
+          const SizedBox(
+            height: 20,
+          ),
+          GestureDetector(
+            child: TextField(
+              controller: dateinput, //editing controller of this TextField
+              decoration: InputDecoration(
+                labelText: "Date Of Birth",
+                filled: true,
+                floatingLabelBehavior: FloatingLabelBehavior.never,
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    borderSide:
+                        const BorderSide(width: 0, style: BorderStyle.none)),
+              ),
+              readOnly:
+                  true, //set it true, so that user will not able to edit text
+              onTap: () async {
+                DateTime? pickedDate = await showDatePicker(
+                    initialEntryMode:
+                        DatePickerEntryMode.calendarOnly, // Hide edit button
+                    fieldHintText: 'dd-MM-yyyy',
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(
+                        1900), //DateTime.now() - not to allow to choose before today.
+                    lastDate: DateTime.now());
+
+                if (pickedDate != null) {
+                  print(
+                      pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
+                  String formattedDate =
+                      DateFormat('dd-MM-yyyy').format(pickedDate);
+                  print(
+                      formattedDate); //formatted date output using intl package =>  2021-03-16
+                  //you can implement different kind of Date Format here according to your requirement
+
+                  setState(() {
+                    dateinput.text =
+                        formattedDate; //set output date to TextField value.
+                  });
+                } else {
+                  print("Date is not selected");
+                }
+              },
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: DropdownButtonFormField(
+                  value: bloodGroupController,
+
+                  elevation: 16,
+                  decoration: InputDecoration(
+                    labelText: "Blood Group",
+                    filled: true,
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        borderSide: const BorderSide(
+                            width: 0, style: BorderStyle.none)),
+                  ),
+                  // style: const TextStyle(color: Colors.deepPurple),
+
+                  onChanged: (String? value) {
+                    // This is called when the user selects an item.
+                    setState(() {
+                      bloodGroupController = value!;
+                    });
+                  },
+                  items: bloodGrouplist
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          TypeAheadFormField(
+            noItemsFoundBuilder: (context) => const SizedBox(
+              height: 70,
+              child: Center(
+                child: Text('No Item Found'),
+              ),
+            ),
+            suggestionsBoxDecoration: const SuggestionsBoxDecoration(
+                color: SuggestionBoxColor,
+                elevation: 5,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
+                )),
+            debounceDuration: const Duration(milliseconds: 400),
+            textFieldConfiguration: TextFieldConfiguration(
+              controller: sanghaController,
+              decoration: InputDecoration(
+                labelText: "Sangha Name",
+                filled: true,
+                floatingLabelBehavior: FloatingLabelBehavior.never,
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    borderSide:
+                        const BorderSide(width: 0, style: BorderStyle.none)),
+              ),
+            ),
+            suggestionsCallback: (value) {
+              return SanghaList.getSuggestions(value);
+            },
+            itemBuilder: (context, String suggestion) {
+              return Row(
+                children: [
+                  const SizedBox(
+                    width: 10,
+                    height: 50,
+                  ),
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: Text(
+                        suggestion,
+                        maxLines: 6,
+                      ),
+                    ),
+                  )
+                ],
+              );
+            },
+            onSuggestionSelected: (String suggestion) {
+              setState(() {
+                sanghaController.text = suggestion;
+              });
+            },
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          TextFormField(
+            controller: addressLine1Controller,
+            onSaved: (newValue) => addressLine1Controller,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter address line 1';
+              }
+              return null;
+            },
+            decoration: InputDecoration(
+              labelText: "Address line 1",
+              filled: true,
+              floatingLabelBehavior: FloatingLabelBehavior.never,
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                  borderSide:
+                      const BorderSide(width: 0, style: BorderStyle.none)),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          TextFormField(
+            controller: addressLine2Controller,
+            onSaved: (newValue) => addressLine2Controller,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter address line 2';
+              }
+              return null;
+            },
+            decoration: InputDecoration(
+              labelText: "Address line 2",
+              filled: true,
+              floatingLabelBehavior: FloatingLabelBehavior.never,
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                  borderSide:
+                      const BorderSide(width: 0, style: BorderStyle.none)),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          TextFormField(
+            controller: cityController,
+            onSaved: (newValue) => cityController,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter city name';
+              }
+              return null;
+            },
+            decoration: InputDecoration(
+              labelText: "City Name",
+              filled: true,
+              floatingLabelBehavior: FloatingLabelBehavior.never,
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                  borderSide:
+                      const BorderSide(width: 0, style: BorderStyle.none)),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          TextFormField(
+            controller: stateController,
+            onSaved: (newValue) => stateController,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter state name';
+              }
+              return null;
+            },
+            decoration: InputDecoration(
+              labelText: "State Name",
+              filled: true,
+              floatingLabelBehavior: FloatingLabelBehavior.never,
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                  borderSide:
+                      const BorderSide(width: 0, style: BorderStyle.none)),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          TextFormField(
+            controller: countryController,
+            onSaved: (newValue) => addressLine1Controller,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter country name';
+              }
+              return null;
+            },
+            decoration: InputDecoration(
+              labelText: "Country Name",
+              filled: true,
+              floatingLabelBehavior: FloatingLabelBehavior.never,
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                  borderSide:
+                      const BorderSide(width: 0, style: BorderStyle.none)),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          TextFormField(
+            controller: postalCodeController,
+            onSaved: (newValue) => postalCodeController,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter postal code';
+              }
+              return null;
+            },
+            decoration: InputDecoration(
+              labelText: "PIN Code",
+              filled: true,
+              floatingLabelBehavior: FloatingLabelBehavior.never,
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                  borderSide:
+                      const BorderSide(width: 0, style: BorderStyle.none)),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: 50,
+            margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(90)),
+            child: ElevatedButton(
+              onPressed: () async {
+                showDialog(
+                  context: context,
+                  barrierDismissible:
+                      false, // Prevent dismissing by tapping outside
+                  builder: (BuildContext context) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
+                );
+                await Future.delayed(
+                    const Duration(seconds: 1)); // Simulating a delay
+                try {
+                  profileURL = previewImage != null
+                      ? await uploadImageToFirebaseStorage(
+                          previewImage as XFile, nameController.text)
+                      : null;
+                  DevoteeModel updateDevotee = DevoteeModel(
+                      bloodGroup: bloodGroupController,
+                      name: nameController.text,
+                      gender: gender[genderController],
+                      profilePhotoUrl: profileURL,
+                      sangha: sanghaController.text,
+                      dob: dateinput.text,
+                      mobileNumber: mobileController.text,
+                      updatedAt: DateTime.now().toString(),
+                      address: AddressModel(
+                          addressLine2: addressLine2Controller.text,
+                          addressLine1: addressLine1Controller.text,
+                          country: countryController.text,
+                          postalCode: int.tryParse(postalCodeController.text),
+                          city: cityController.text,
+                          state: stateController.text));
+                  Map<String, dynamic> response;
+                  if (widget.title == "edit") {
+                    response = await PutDevoteeAPI().updateDevotee(
+                        updateDevotee, widget.devotee?.devoteeId ?? "");
+                  } else {
+                    response = await PostDevoteeAPI()
+                        .addRelativeDevotee(updateDevotee);
+                  }
+
+                  if (response["statusCode"] == 200) {
+                    // Show a circular progress indicator while navigating
+                    // ignore: use_build_context_synchronously
+                    showDialog(
+                      context: context,
+                      barrierDismissible:
+                          false, // Prevent dismissing by tapping outside
+                      builder: (BuildContext context) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                    );
+                    Navigator.of(context)
+                        .pop(); // Close the circular progress indicator
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DashboardPage(),
+                        ));
+                  } else {
+                    Navigator.of(context)
+                        .pop(); // Close the circular progress indicator
+                    // ignore: use_build_context_synchronously
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('devotee update issue')));
+                  }
+                } catch (e) {
+                  Navigator.of(context)
+                      .pop(); // Close the circular progress indicator
+                  // ignore: use_build_context_synchronously
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text(e.toString())));
+                  print(e);
+                }
+              },
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.resolveWith((states) {
+                    if (states.contains(MaterialState.pressed)) {
+                      return ButtonColor;
+                    }
+                    return ButtonColor;
+                  }),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(90)))),
+              child: const Text(
+                'Next',
+              ),
+
+              //Row
+            ),
+          ),
+        ]),
       ),
     );
   }

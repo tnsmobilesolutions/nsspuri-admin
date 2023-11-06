@@ -33,7 +33,7 @@ class GetDevoteeAPI extends DioFuctionAPI {
     try {
       final response = await getAPI("devotee");
       print(response);
-      return {"statusCode": 200, "data": response["data"]};
+      return {"statusCode": 200, "data": response["data"]["allDevotee"]};
     } catch (e) {
       print(e);
       return {"statusCode": 500, "data": null};
@@ -43,7 +43,17 @@ class GetDevoteeAPI extends DioFuctionAPI {
     try {
       final response = await getAPI("devotee/search?devoteeName=$devoteeName");
       print(response);
-      return {"statusCode": 200, "data": response["data"]};
+      return {"statusCode": 200, "data": response["data"]["searchDevotee"]};
+    } catch (e) {
+      print(e);
+      return {"statusCode": 500, "data": null};
+    }
+  }
+  Future<Map<String, dynamic>?> searchDevoteeByStatus(String status) async {
+    try {
+      final response = await getAPI("devotee/search?status=$status");
+      print(response);
+      return {"statusCode": 200, "data": response["data"]["searchDevotee"]};
     } catch (e) {
       print(e);
       return {"statusCode": 500, "data": null};
