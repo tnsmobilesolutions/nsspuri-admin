@@ -44,9 +44,10 @@ class _EmailSignInState extends State<EmailSignIn> {
 
                     if (uid != null) {
                       final response = await GetDevoteeAPI().loginDevotee(uid);
-                      print("----------$response---------");
-
-                      if (response?["statusCode"] == 200) {
+                      DevoteeModel resDevoteeData = response?["data"];
+                      print("*****$resDevoteeData*******");
+                      if (response?["statusCode"] == 200 &&
+                          resDevoteeData.isAdmin == true) {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
