@@ -10,16 +10,13 @@ import 'package:sdp/screen/PaliaListScreen.dart/viewDevotee.dart';
 class PaliaTableRow extends StatefulWidget {
   PaliaTableRow({
     Key? key,
-    required this.paliaDetails,
+    required this.devoteeDetails,
     required this.slNo,
     required this.showMenu,
-    required this.isCheckedBoolValue,
     this.allCheck,
   }) : super(key: key);
-  final DevoteeModel paliaDetails;
+  DevoteeModel devoteeDetails;
   final int slNo;
-  Function isCheckedBoolValue;
-  // Function isallCheckedBoolValue;
   bool showMenu;
   bool? allCheck;
 
@@ -45,21 +42,6 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
         Row(
           children: [
             Expanded(
-              child: Checkbox(
-                value: widget.allCheck ?? isCheck,
-                onChanged: (value) {
-                  setState(() {
-                    isCheck = value!;
-
-                    widget.isCheckedBoolValue(value);
-                    // widget.isallCheckedBoolValue(value);
-                  });
-
-                  // print('*************$selectedPalia**************');
-                },
-              ),
-            ),
-            Expanded(
               child: Text(
                 (widget.slNo).toString(),
                 textAlign: TextAlign.center,
@@ -67,19 +49,25 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
             ),
             Expanded(
               child: Text(
-                '${widget.paliaDetails.name}',
+                '${widget.devoteeDetails.name}',
                 textAlign: TextAlign.center,
               ),
             ),
             Expanded(
               child: Text(
-                '${widget.paliaDetails.sangha}',
+                '${widget.devoteeDetails.sangha}',
                 textAlign: TextAlign.center,
               ),
             ),
             Expanded(
               child: Text(
-                '${widget.paliaDetails.createdAt}',
+                '${widget.devoteeDetails.dob}',
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Expanded(
+              child: Text(
+                '${widget.devoteeDetails.status}',
                 textAlign: TextAlign.center,
               ),
             ),
@@ -102,7 +90,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                                     icon: const Icon(Icons.close))
                               ],
                             ),
-                            content: ViewPalia(item: widget.paliaDetails),
+                            content: ViewPalia(item: widget.devoteeDetails),
                           ),
                         );
                       },
@@ -133,7 +121,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                                 ],
                               ),
                               content: EditPaliadilougePage(
-                                  devoteeDetails: widget.paliaDetails),
+                                  devoteeDetails: widget.devoteeDetails),
                             );
                           },
                         );

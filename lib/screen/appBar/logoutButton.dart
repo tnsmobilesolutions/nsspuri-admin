@@ -9,10 +9,6 @@ class LogoutButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
-      // style: ButtonStyle(
-      //   shape: MaterialStateProperty.all(RoundedRectangleBorder(
-      //       borderRadius: BorderRadius.circular(15.0))),
-      // ),
       style: OutlinedButton.styleFrom(
         side: const BorderSide(
           width: 1.0,
@@ -50,7 +46,7 @@ class LogoutButton extends StatelessWidget {
                       return const EmailSignIn();
                     },
                   ));
-                  Navigator.popUntil(context, (route) => route.isFirst);
+                  // Navigator.popUntil(context, (route) => route.isFirst);
                 },
                 child: const Text('OK'),
               ),

@@ -13,9 +13,11 @@ class DevoteeModel {
   String? sangha;
   String? uid;
   String? dob;
+  String? status;
   String? createdAt;
   String? updatedAt;
   AddressModel? address;
+  bool? isAdmin;
   DevoteeModel({
     this.devoteeId,
     this.name,
@@ -27,9 +29,11 @@ class DevoteeModel {
     this.sangha,
     this.uid,
     this.dob,
+    this.status,
     this.createdAt,
     this.updatedAt,
     this.address,
+    this.isAdmin,
   });
 
   DevoteeModel copyWith({
@@ -43,9 +47,11 @@ class DevoteeModel {
     String? sangha,
     String? uid,
     String? dob,
+    String? status,
     String? createdAt,
     String? updatedAt,
     AddressModel? address,
+    bool? isAdmin,
   }) {
     return DevoteeModel(
       devoteeId: devoteeId ?? this.devoteeId,
@@ -58,55 +64,63 @@ class DevoteeModel {
       sangha: sangha ?? this.sangha,
       uid: uid ?? this.uid,
       dob: dob ?? this.dob,
+      status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       address: address ?? this.address,
+      isAdmin: isAdmin ?? this.isAdmin,
     );
   }
 
   Map<String, dynamic> toMap() {
     final result = <String, dynamic>{};
-
-    if (devoteeId != null) {
+  
+    if(devoteeId != null){
       result.addAll({'devoteeId': devoteeId});
     }
-    if (name != null) {
+    if(name != null){
       result.addAll({'name': name});
     }
-    if (emailId != null) {
+    if(emailId != null){
       result.addAll({'emailId': emailId});
     }
-    if (mobileNumber != null) {
+    if(mobileNumber != null){
       result.addAll({'mobileNumber': mobileNumber});
     }
-    if (bloodGroup != null) {
+    if(bloodGroup != null){
       result.addAll({'bloodGroup': bloodGroup});
     }
-    if (profilePhotoUrl != null) {
+    if(profilePhotoUrl != null){
       result.addAll({'profilePhotoUrl': profilePhotoUrl});
     }
-    if (gender != null) {
+    if(gender != null){
       result.addAll({'gender': gender});
     }
-    if (sangha != null) {
+    if(sangha != null){
       result.addAll({'sangha': sangha});
     }
-    if (uid != null) {
+    if(uid != null){
       result.addAll({'uid': uid});
     }
-    if (dob != null) {
+    if(dob != null){
       result.addAll({'dob': dob});
     }
-    if (createdAt != null) {
+    if(status != null){
+      result.addAll({'status': status});
+    }
+    if(createdAt != null){
       result.addAll({'createdAt': createdAt});
     }
-    if (updatedAt != null) {
+    if(updatedAt != null){
       result.addAll({'updatedAt': updatedAt});
     }
-    if (address != null) {
+    if(address != null){
       result.addAll({'address': address!.toMap()});
     }
-
+    if(isAdmin != null){
+      result.addAll({'isAdmin': isAdmin});
+    }
+  
     return result;
   }
 
@@ -122,10 +136,11 @@ class DevoteeModel {
       sangha: map['sangha'],
       uid: map['uid'],
       dob: map['dob'],
+      status: map['status'],
       createdAt: map['createdAt'],
       updatedAt: map['updatedAt'],
-      address:
-          map['address'] != null ? AddressModel.fromMap(map['address']) : null,
+      address: map['address'] != null ? AddressModel.fromMap(map['address']) : null,
+      isAdmin: map['isAdmin'],
     );
   }
 
@@ -136,43 +151,47 @@ class DevoteeModel {
 
   @override
   String toString() {
-    return 'DevoteeModel(devoteeId: $devoteeId, name: $name, emailId: $emailId, mobileNumber: $mobileNumber, bloodGroup: $bloodGroup, profilePhotoUrl: $profilePhotoUrl, gender: $gender, sangha: $sangha, uid: $uid, dob: $dob, createdAt: $createdAt, updatedAt: $updatedAt, address: $address)';
+    return 'DevoteeModel(devoteeId: $devoteeId, name: $name, emailId: $emailId, mobileNumber: $mobileNumber, bloodGroup: $bloodGroup, profilePhotoUrl: $profilePhotoUrl, gender: $gender, sangha: $sangha, uid: $uid, dob: $dob, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, address: $address, isAdmin: $isAdmin)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-
+  
     return other is DevoteeModel &&
-        other.devoteeId == devoteeId &&
-        other.name == name &&
-        other.emailId == emailId &&
-        other.mobileNumber == mobileNumber &&
-        other.bloodGroup == bloodGroup &&
-        other.profilePhotoUrl == profilePhotoUrl &&
-        other.gender == gender &&
-        other.sangha == sangha &&
-        other.uid == uid &&
-        other.dob == dob &&
-        other.createdAt == createdAt &&
-        other.updatedAt == updatedAt &&
-        other.address == address;
+      other.devoteeId == devoteeId &&
+      other.name == name &&
+      other.emailId == emailId &&
+      other.mobileNumber == mobileNumber &&
+      other.bloodGroup == bloodGroup &&
+      other.profilePhotoUrl == profilePhotoUrl &&
+      other.gender == gender &&
+      other.sangha == sangha &&
+      other.uid == uid &&
+      other.dob == dob &&
+      other.status == status &&
+      other.createdAt == createdAt &&
+      other.updatedAt == updatedAt &&
+      other.address == address &&
+      other.isAdmin == isAdmin;
   }
 
   @override
   int get hashCode {
     return devoteeId.hashCode ^
-        name.hashCode ^
-        emailId.hashCode ^
-        mobileNumber.hashCode ^
-        bloodGroup.hashCode ^
-        profilePhotoUrl.hashCode ^
-        gender.hashCode ^
-        sangha.hashCode ^
-        uid.hashCode ^
-        dob.hashCode ^
-        createdAt.hashCode ^
-        updatedAt.hashCode ^
-        address.hashCode;
+      name.hashCode ^
+      emailId.hashCode ^
+      mobileNumber.hashCode ^
+      bloodGroup.hashCode ^
+      profilePhotoUrl.hashCode ^
+      gender.hashCode ^
+      sangha.hashCode ^
+      uid.hashCode ^
+      dob.hashCode ^
+      status.hashCode ^
+      createdAt.hashCode ^
+      updatedAt.hashCode ^
+      address.hashCode ^
+      isAdmin.hashCode;
   }
 }

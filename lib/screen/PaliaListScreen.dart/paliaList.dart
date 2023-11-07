@@ -7,8 +7,8 @@ import 'package:sdp/screen/PaliaListScreen.dart/paliaScreenBody.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
 
 class PaliaListPage extends StatefulWidget {
-  PaliaListPage({Key? key}) : super(key: key);
-
+  PaliaListPage({Key? key, required this.status}) : super(key: key);
+  String status;
   @override
   State<PaliaListPage> createState() => _PaliaListPageState();
 }
@@ -36,7 +36,7 @@ class _PaliaListPageState extends State<PaliaListPage> {
         ),
         actions: const [ActionWidget()],
       ),
-      body: SafeArea(child: PaliaListBodyPage()),
+      body: SafeArea(child: PaliaListBodyPage(status: widget.status)),
     );
   }
 }
