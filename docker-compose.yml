@@ -1,0 +1,17 @@
+version: "3.9"
+
+# Define the services that make up the application
+services:
+  # Service named 'prod'
+  prod:
+    # Build the service using Dockerfile in the current directory
+    build: .
+    # Always restart the service if it goes down
+    restart: always
+    # Map port 80 inside the container to port 6111 on the host
+    ports:
+      - 5500:80
+    # Mount a volume from host to the container's path
+    volumes:
+      - /usr/share/nginx/html
+
