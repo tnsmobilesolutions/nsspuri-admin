@@ -49,19 +49,25 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
             ),
             Expanded(
               child: Text(
-                '${widget.devoteeDetails.name}',
+                widget.devoteeDetails.name != null
+                    ? '${widget.devoteeDetails.name}'
+                    : "-",
                 textAlign: TextAlign.center,
               ),
             ),
             Expanded(
               child: Text(
-                '${widget.devoteeDetails.sangha}',
+                widget.devoteeDetails.sangha != null
+                    ? '${widget.devoteeDetails.sangha}'
+                    : "-",
                 textAlign: TextAlign.center,
               ),
             ),
             Expanded(
               child: Text(
-                '${widget.devoteeDetails.dob}',
+                widget.devoteeDetails.dob != null
+                    ? '${widget.devoteeDetails.dob}'
+                    : "-",
                 textAlign: TextAlign.center,
               ),
             ),
@@ -90,7 +96,8 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                                     icon: const Icon(Icons.close))
                               ],
                             ),
-                            content: ViewPalia(item: widget.devoteeDetails),
+                            content: ViewPalia(
+                                devoteeDetails: widget.devoteeDetails),
                           ),
                         );
                       },

@@ -9,8 +9,15 @@ import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/paliaTableRow.dart';
 
 class PaliaListBodyPage extends StatefulWidget {
-  PaliaListBodyPage({Key? key, required this.status}) : super(key: key);
+  PaliaListBodyPage(
+      {Key? key,
+      required this.status,
+      required this.pageFrom,
+      this.searchValue})
+      : super(key: key);
   String status;
+  String pageFrom;
+  String? searchValue;
 
   @override
   State<PaliaListBodyPage> createState() => _PaliaListBodyPageState();
@@ -211,9 +218,16 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
             height: 12,
           ),
           FutureBuilder(
-            future: widget.status == "allDevotee"
+            future: (widget.status == "allDevotee" &&
+                    widget.pageFrom == "Dashboard")
                 ? GetDevoteeAPI().allDevotee()
-                : GetDevoteeAPI().searchDevotee(widget.status, "status"),
+                : (widget.status != "allDevotee" &&
+                        widget.pageFrom == "Dashboard")
+                    ? GetDevoteeAPI().searchDevotee(widget.status, "status")
+                    : (widget.pageFrom == "Search")
+                        ? GetDevoteeAPI().searchDevotee(
+                            widget.searchValue.toString(), "devoteeName")
+                        : null,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasError) {
                 return const Text('SNAPSHOT ERROR');

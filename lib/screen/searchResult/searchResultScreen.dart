@@ -20,7 +20,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        leading: const LeadingImage(),
+        leading: const TitleAppBar(),
         automaticallyImplyLeading: false,
         title: const Text(
           'nsspuri-admin',
