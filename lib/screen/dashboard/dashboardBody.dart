@@ -40,6 +40,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                       Navigator.push(context, MaterialPageRoute(
                         builder: (context) {
                           return PaliaListPage(
+                            pageFrom: "Dashboard",
                             status: dashboarddata.status ?? "",
                           );
                         },
@@ -54,7 +55,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              dashboarddata.status.toString(),
+                              dashboarddata.message.toString(),
                               style: const TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.bold),
                             ),

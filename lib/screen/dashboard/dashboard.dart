@@ -14,11 +14,10 @@ class DashboardPage extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        leading: const LeadingImage(),
+        toolbarHeight: 70,
         automaticallyImplyLeading: false,
-        title: const Text(
-          'Sammilani Delegate Admin',
-        ),
+        centerTitle: false,
+        title: const TitleAppBar(),
         actions: const [ActionWidget()],
       ),
       body: const SafeArea(

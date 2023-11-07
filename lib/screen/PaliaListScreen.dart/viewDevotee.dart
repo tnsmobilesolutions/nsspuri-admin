@@ -3,10 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:sdp/model/devotee_model.dart';
 
-
 class ViewPalia extends StatefulWidget {
-  const ViewPalia({Key? key, required this.item}) : super(key: key);
-  final DevoteeModel item;
+  const ViewPalia({Key? key, required this.devoteeDetails}) : super(key: key);
+  final DevoteeModel devoteeDetails;
 
   @override
   State<ViewPalia> createState() => _ViewPaliaState();
@@ -42,7 +41,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                   'Name',
                   style: TextStyle(color: Colors.grey),
                 ),
-                Text(widget.item.name.toString())
+                Text(widget.devoteeDetails.name.toString())
               ],
             ),
             const Divider(
@@ -57,7 +56,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                   'Sangha',
                   style: TextStyle(color: Colors.grey),
                 ),
-                Text(widget.item.sangha.toString())
+                Text(widget.devoteeDetails.sangha.toString())
               ],
             ),
             const Divider(
@@ -70,10 +69,10 @@ class _ViewPaliaState extends State<ViewPalia> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Pali Date',
+                      'DOB',
                       style: TextStyle(color: Colors.grey),
                     ),
-                    Text(widget.item.createdAt.toString())
+                    Text(widget.devoteeDetails.dob.toString())
                   ],
                 ),
                 Column(
@@ -83,7 +82,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                       'Pranaami',
                       style: TextStyle(color: Colors.grey),
                     ),
-                    Text('₹${widget.item.bloodGroup}')
+                    Text('₹${widget.devoteeDetails.bloodGroup}')
                   ],
                 ),
               ],
@@ -101,7 +100,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                       'Sammilani No.',
                       style: TextStyle(color: Colors.grey),
                     ),
-                    Text('${widget.item.bloodGroup}')
+                    Text('${widget.devoteeDetails.bloodGroup}')
                   ],
                 ),
                 Column(
@@ -111,7 +110,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                       'Sammilani Year',
                       style: TextStyle(color: Colors.grey),
                     ),
-                    Text('${widget.item.bloodGroup},')
+                    Text('${widget.devoteeDetails.bloodGroup},')
                   ],
                 ),
                 Column(
@@ -121,7 +120,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                       'Sammilani Place',
                       style: TextStyle(color: Colors.grey),
                     ),
-                    Text('${widget.item.bloodGroup}')
+                    Text('${widget.devoteeDetails.bloodGroup}')
                   ],
                 ),
               ],
@@ -139,7 +138,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                       'Receipt No.',
                       style: TextStyle(color: Colors.grey),
                     ),
-                    Text('${widget.item.bloodGroup}')
+                    Text('${widget.devoteeDetails.bloodGroup}')
                   ],
                 ),
                 Column(
@@ -149,7 +148,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                       'Receipt Date',
                       style: TextStyle(color: Colors.grey),
                     ),
-                    Text('${widget.item.bloodGroup}')
+                    Text('${widget.devoteeDetails.bloodGroup}')
                   ],
                 ),
               ],
@@ -164,7 +163,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                   'Remark',
                   style: TextStyle(color: Colors.grey),
                 ),
-                Text(widget.item.bloodGroup.toString())
+                Text(widget.devoteeDetails.bloodGroup.toString())
               ],
             ),
             const Divider(
@@ -180,7 +179,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                       'Created By',
                       style: TextStyle(color: Colors.grey),
                     ),
-                    Text(widget.item.bloodGroup.toString())
+                    Text(widget.devoteeDetails.bloodGroup.toString())
                   ],
                 ),
                 Column(
@@ -190,7 +189,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                       'Created On',
                       style: TextStyle(color: Colors.grey),
                     ),
-                    Text(widget.item.createdAt.toString())
+                    Text(widget.devoteeDetails.createdAt.toString())
                   ],
                 ),
               ],
@@ -198,7 +197,7 @@ class _ViewPaliaState extends State<ViewPalia> {
             const Divider(
               thickness: 0.5,
             ),
-            if (widget.item.createdAt != null)
+            if (widget.devoteeDetails.createdAt != null)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -209,7 +208,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                         'Updated By',
                         style: TextStyle(color: Colors.grey),
                       ),
-                      Text(widget.item.createdAt.toString())
+                      Text(widget.devoteeDetails.createdAt.toString())
                     ],
                   ),
                   Column(
@@ -219,7 +218,7 @@ class _ViewPaliaState extends State<ViewPalia> {
                         'Updated On',
                         style: TextStyle(color: Colors.grey),
                       ),
-                      Text(widget.item.createdAt.toString())
+                      Text(widget.devoteeDetails.createdAt.toString())
                     ],
                   ),
                 ],
