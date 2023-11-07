@@ -200,6 +200,7 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
                 headingText('Devotee Name'),
                 headingText('Sangha'),
                 headingText('DOB'),
+                headingText('Status'),
                 if (showMenu == true) headingText('View'),
                 if (showMenu == true) headingText('Edit'),
                 if (showMenu == true) headingText('Delete'),
