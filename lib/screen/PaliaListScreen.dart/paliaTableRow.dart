@@ -84,18 +84,32 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                         showDialog<String>(
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text('View Palia Details'),
-                                IconButton(
-                                    color: const Color(0XFF3f51b5),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    icon: const Icon(Icons.close))
-                              ],
+                            title: Container(
+                              color: Colors.blue,
+                              height: MediaQuery.of(context).size.height / 10,
+                              width: MediaQuery.of(context).size.width,
+                              child: Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      'Devotee Name',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    IconButton(
+                                        color:
+                                            Color.fromARGB(255, 255, 255, 255),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        icon: const Icon(Icons.close))
+                                  ],
+                                ),
+                              ),
                             ),
+                            
                             content: ViewPalia(
                                 devoteeDetails: widget.devoteeDetails),
                           ),

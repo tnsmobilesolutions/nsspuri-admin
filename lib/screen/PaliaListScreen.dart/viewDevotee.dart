@@ -1,6 +1,5 @@
-// ignore_for_file: file_names
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sdp/model/devotee_model.dart';
 
 class ViewPalia extends StatefulWidget {
@@ -11,221 +10,94 @@ class ViewPalia extends StatefulWidget {
   State<ViewPalia> createState() => _ViewPaliaState();
 }
 
-class _ViewPaliaState extends State<ViewPalia> {
-  // viewDetails(String heading, String value) {
-  //   Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Text(
-  //         heading,
-  //         style: TextStyle(color: Colors.grey),
-  //       ),
-  //       Text(value)
-  //     ],
-  //   );
-  // }
+class _ViewPaliaState extends State<ViewPalia>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  final nameController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController =
+        TabController(length: 2, vsync: this); // 2 tabs in this example
+  }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 550,
       width: 500,
-      child: SingleChildScrollView(
-        child: ListBody(
-          children: [
-            // viewDetails('Name', widget.item.name.toString()),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Name',
-                  style: TextStyle(color: Colors.grey),
+      child: Column(
+        children: [
+          TabBar(
+            controller: _tabController,
+            tabs: const [
+              Tab(
+                child: Text(
+                  "Devotee Info",
+                  style: TextStyle(color: Colors.black),
                 ),
-                Text(widget.devoteeDetails.name.toString())
-              ],
-            ),
-            const Divider(
-              thickness: 0.5,
-            ),
-            // viewDetails('Sangha', widget.item.sangha.toString()),
-
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Sangha',
-                  style: TextStyle(color: Colors.grey),
-                ),
-                Text(widget.devoteeDetails.sangha.toString())
-              ],
-            ),
-            const Divider(
-              thickness: 0.5,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'DOB',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    Text(widget.devoteeDetails.dob.toString())
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    const Text(
-                      'Pranaami',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    Text('₹${widget.devoteeDetails.bloodGroup}')
-                  ],
-                ),
-              ],
-            ),
-            const Divider(
-              thickness: 0.5,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Sammilani No.',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    Text('${widget.devoteeDetails.bloodGroup}')
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    const Text(
-                      'Sammilani Year',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    Text('${widget.devoteeDetails.bloodGroup},')
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    const Text(
-                      'Sammilani Place',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    Text('${widget.devoteeDetails.bloodGroup}')
-                  ],
-                ),
-              ],
-            ),
-            const Divider(
-              thickness: 0.5,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Receipt No.',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    Text('${widget.devoteeDetails.bloodGroup}')
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    const Text(
-                      'Receipt Date',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    Text('${widget.devoteeDetails.bloodGroup}')
-                  ],
-                ),
-              ],
-            ),
-            const Divider(
-              thickness: 0.5,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Remark',
-                  style: TextStyle(color: Colors.grey),
-                ),
-                Text(widget.devoteeDetails.bloodGroup.toString())
-              ],
-            ),
-            const Divider(
-              thickness: 0.5,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Created By',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    Text(widget.devoteeDetails.bloodGroup.toString())
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    const Text(
-                      'Created On',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    Text(widget.devoteeDetails.createdAt.toString())
-                  ],
-                ),
-              ],
-            ),
-            const Divider(
-              thickness: 0.5,
-            ),
-            if (widget.devoteeDetails.createdAt != null)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Updated By',
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      Text(widget.devoteeDetails.createdAt.toString())
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      const Text(
-                        'Updated On',
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      Text(widget.devoteeDetails.createdAt.toString())
-                    ],
-                  ),
-                ],
               ),
-          ],
-        ),
+              Tab(
+                child: Text(
+                  "Sammilani Delegate Info",
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+            ],
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                // Tab 1 content
+                Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 18),
+                      child: Container(
+                        margin: EdgeInsets.only(right: 300),
+                        height: 50,
+                        width: MediaQuery.of(context).size.width / 2,
+                        child: TextFormField(
+                          textCapitalization: TextCapitalization.words,
+                          style: Theme.of(context).textTheme.displaySmall,
+                          controller: nameController,
+                          onSaved: (newValue) => nameController,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                                RegExp("[a-z A-Z]"))
+                          ],
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter name';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey))),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                // Tab 2 content
+                Center(
+                  child: Text('Sammilani Delegate Info',
+                      style: TextStyle(color: Colors.black)),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 }
