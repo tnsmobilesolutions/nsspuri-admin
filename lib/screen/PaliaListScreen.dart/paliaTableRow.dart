@@ -85,6 +85,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
                             title: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
                                   mainAxisAlignment:
@@ -109,7 +110,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                       },
                       icon: const Icon(
                         Icons.info,
-                        color: Color(0XFF3f51b5),
+                        color: Colors.black
                       ))),
             if (widget.showMenu == true)
               Expanded(
