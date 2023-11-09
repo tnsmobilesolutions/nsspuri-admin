@@ -84,16 +84,22 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                         showDialog<String>(
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            title: Column(
                               children: [
-                                const Text('View Palia Details'),
-                                IconButton(
-                                    color: const Color(0XFF3f51b5),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    icon: const Icon(Icons.close))
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(widget.devoteeDetails.name.toString()),
+                                    IconButton(
+                                        color: const Color(0XFF3f51b5),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        icon: const Icon(Icons.close))
+                                  ],
+                                ),
+                                Text(widget.devoteeDetails.sangha.toString()),
                               ],
                             ),
                             content: ViewPalia(
