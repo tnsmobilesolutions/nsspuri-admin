@@ -7,6 +7,7 @@ class ViewPalia extends StatefulWidget {
   const ViewPalia({Key? key, required this.devoteeDetails}) : super(key: key);
   final DevoteeModel devoteeDetails;
 
+
   @override
   State<ViewPalia> createState() => _ViewPaliaState();
 }
@@ -15,6 +16,7 @@ class _ViewPaliaState extends State<ViewPalia>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final nameController = TextEditingController();
+  late Map<String, dynamic> devoteeData;
 
   @override
   void initState() {
@@ -22,14 +24,10 @@ class _ViewPaliaState extends State<ViewPalia>
     _tabController = TabController(length: 2, vsync: this);
   }
 
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
+    final devotees = devoteeData["data"];
     return SizedBox(
       height: 500,
       width: 500,
@@ -63,16 +61,36 @@ class _ViewPaliaState extends State<ViewPalia>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // viewDetails('Sangha', widget.item.sangha.toString()),
+                           Column(
+                             children: [
+                               Container(
+                                          height: 150,
+                                          width: 120,
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: const Color.fromARGB(
+                                                  255, 92, 32, 183),
+                                              width: 1,
+                                            ),
+                                            shape: BoxShape
+                                                .rectangle, // This makes the container circular
+                                            image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: NetworkImage(widget.devoteeDetails
+                                                  .profilePhotoUrl
+                                                  .toString()),
+                                            ),
+                                          ),
+                                        ),
+                             ],
+                           ),
 
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(
-                                height: 22,
-                                child: const Text(
-                                  'DOB',
-                                  style: TextStyle(color: Colors.grey),
-                                ),
+                              const Text(
+                                'Mobile Number',
+                                style: TextStyle(color: Colors.grey),
                               ),
                               Text(widget.devoteeDetails.dob.toString())
                             ],
@@ -84,7 +102,7 @@ class _ViewPaliaState extends State<ViewPalia>
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               const Text(
-                                'Pranaami',
+                                'Email ID',
                                 style: TextStyle(color: Colors.grey),
                               ),
                               Text('₹${widget.devoteeDetails.bloodGroup}')
@@ -100,7 +118,7 @@ class _ViewPaliaState extends State<ViewPalia>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const Text(
-                                    'Sammilani No.',
+                                    'Date Of Birth',
                                     style: TextStyle(color: Colors.grey),
                                   ),
                                   Text('${widget.devoteeDetails.bloodGroup}')
@@ -110,7 +128,7 @@ class _ViewPaliaState extends State<ViewPalia>
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   const Text(
-                                    'Sammilani Year',
+                                    'Blood Group',
                                     style: TextStyle(color: Colors.grey),
                                   ),
                                   Text('${widget.devoteeDetails.bloodGroup},')
@@ -120,12 +138,146 @@ class _ViewPaliaState extends State<ViewPalia>
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   const Text(
-                                    'Sammilani Place',
+                                    'Gender',
                                     style: TextStyle(color: Colors.grey),
                                   ),
                                   Text('${widget.devoteeDetails.bloodGroup}')
                                 ],
                               ),
+                            ],
+                          ),
+                          const Divider(
+                            thickness: 0.5,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Sangha',
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                  Text('${widget.devoteeDetails.bloodGroup}')
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  const Text(
+                                    'Jilla Sangha',
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                  Text('${widget.devoteeDetails.bloodGroup}')
+                                ],
+                              ),
+                            ],
+                          ),
+
+                          if (widget.devoteeDetails.createdAt != null)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Updated By',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                    Text(widget.devoteeDetails.createdAt
+                                        .toString())
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    const Text(
+                                      'Updated On',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                    Text(widget.devoteeDetails.createdAt
+                                        .toString())
+                                  ],
+                                ),
+                              ],
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // viewDetails('Sangha', widget.item.sangha.toString()),
+
+                          const Divider(
+                            thickness: 0.5,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Sammilani No.',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              Text('${widget.devoteeDetails.bloodGroup}')
+                            ],
+                          ),
+                          const Divider(
+                            thickness: 0.5,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              const Text(
+                                'Sammilani Year',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              Text('${widget.devoteeDetails.bloodGroup},')
+                            ],
+                          ),
+                          const Divider(
+                            thickness: 0.5,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              const Text(
+                                'Sammilani Place',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              Text('${widget.devoteeDetails.bloodGroup}')
+                            ],
+                          ),
+
+                          const Divider(
+                            thickness: 0.5,
+                          ),
+
+                          Column(
+                            children: [
+                              const Text(
+                                'Delegate Fee',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              Text('${widget.devoteeDetails.bloodGroup}')
+                            ],
+                          ),
+                          const Divider(
+                            thickness: 0.5,
+                          ),
+                          Column(
+                            children: [
+                              const Text(
+                                'Fee Status',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              Text('${widget.devoteeDetails.bloodGroup}')
                             ],
                           ),
                           const Divider(
@@ -232,181 +384,6 @@ class _ViewPaliaState extends State<ViewPalia>
                             ),
                         ],
                       ),
-                    ),
-                  ),
-                  Center(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // viewDetails('Sangha', widget.item.sangha.toString()),
-
-                        const Divider(
-                          thickness: 0.5,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Sammilani No.',
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                            Text('${widget.devoteeDetails.bloodGroup}')
-                          ],
-                        ),
-                        const Divider(
-                          thickness: 0.5,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            const Text(
-                              'Sammilani Year',
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                            Text('${widget.devoteeDetails.bloodGroup},')
-                          ],
-                        ),
-                        const Divider(
-                          thickness: 0.5,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            const Text(
-                              'Sammilani Place',
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                            Text('${widget.devoteeDetails.bloodGroup}')
-                          ],
-                        ),
-
-                        const Divider(
-                          thickness: 0.5,
-                        ),
-
-                        Column(
-                          children: [
-                            Text(
-                              'Delegate Fee',
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                            Text('${widget.devoteeDetails.bloodGroup}')
-                          ],
-                        ),
-                        const Divider(
-                          thickness: 0.5,
-                        ),
-                        Column(
-                          children: [
-                            Text(
-                              'Fee Status',
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                            Text('${widget.devoteeDetails.bloodGroup}')
-                          ],
-                        ),
-                        const Divider(
-                          thickness: 0.5,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Receipt No.',
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                                Text('${widget.devoteeDetails.bloodGroup}')
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                const Text(
-                                  'Receipt Date',
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                                Text('${widget.devoteeDetails.bloodGroup}')
-                              ],
-                            ),
-                          ],
-                        ),
-                        const Divider(
-                          thickness: 0.5,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Remark',
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                            Text(widget.devoteeDetails.bloodGroup.toString())
-                          ],
-                        ),
-                        const Divider(
-                          thickness: 0.5,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Created By',
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                                Text(
-                                    widget.devoteeDetails.bloodGroup.toString())
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                const Text(
-                                  'Created On',
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                                Text(widget.devoteeDetails.createdAt.toString())
-                              ],
-                            ),
-                          ],
-                        ),
-                        const Divider(
-                          thickness: 0.5,
-                        ),
-                        if (widget.devoteeDetails.createdAt != null)
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'Updated By',
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                  Text(widget.devoteeDetails.createdAt
-                                      .toString())
-                                ],
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  const Text(
-                                    'Updated On',
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                  Text(widget.devoteeDetails.createdAt
-                                      .toString())
-                                ],
-                              ),
-                            ],
-                          ),
-                      ],
                     ),
                   ),
                 ]),

@@ -93,7 +93,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                                   children: [
                                     Text(widget.devoteeDetails.name.toString()),
                                     IconButton(
-                                        color: const Color(0XFF3f51b5),
+                                        color: Colors.black,
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
@@ -110,7 +110,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                       },
                       icon: const Icon(
                         Icons.info,
-                        color: Colors.black
+                        color: const Color(0XFF3f51b5),
                       ))),
             if (widget.showMenu == true)
               Expanded(
