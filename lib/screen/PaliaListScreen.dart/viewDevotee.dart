@@ -7,16 +7,15 @@ class ViewPalia extends StatefulWidget {
   const ViewPalia({Key? key, required this.devoteeDetails}) : super(key: key);
   final DevoteeModel devoteeDetails;
 
-
   @override
   State<ViewPalia> createState() => _ViewPaliaState();
 }
 
 class _ViewPaliaState extends State<ViewPalia>
     with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+  TabController? _tabController;
   final nameController = TextEditingController();
-  late Map<String, dynamic> devoteeData;
+  Map<String, dynamic>? devoteeData;
 
   @override
   void initState() {
@@ -24,10 +23,9 @@ class _ViewPaliaState extends State<ViewPalia>
     _tabController = TabController(length: 2, vsync: this);
   }
 
-
   @override
   Widget build(BuildContext context) {
-    final devotees = devoteeData["data"];
+    final devotees = devoteeData?["data"];
     return SizedBox(
       height: 500,
       width: 500,
@@ -61,29 +59,29 @@ class _ViewPaliaState extends State<ViewPalia>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // viewDetails('Sangha', widget.item.sangha.toString()),
-                           Column(
-                             children: [
-                               Container(
-                                          height: 150,
-                                          width: 120,
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                              color: const Color.fromARGB(
-                                                  255, 92, 32, 183),
-                                              width: 1,
-                                            ),
-                                            shape: BoxShape
-                                                .rectangle, // This makes the container circular
-                                            image: DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image: NetworkImage(widget.devoteeDetails
-                                                  .profilePhotoUrl
-                                                  .toString()),
-                                            ),
-                                          ),
-                                        ),
-                             ],
-                           ),
+                          Column(
+                            children: [
+                              Container(
+                                height: 150,
+                                width: 120,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color:
+                                        const Color.fromARGB(255, 92, 32, 183),
+                                    width: 1,
+                                  ),
+                                  shape: BoxShape
+                                      .rectangle, // This makes the container circular
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(widget
+                                        .devoteeDetails.profilePhotoUrl
+                                        .toString()),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
 
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

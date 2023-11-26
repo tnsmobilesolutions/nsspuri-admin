@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/API/post_devotee.dart';
 import 'package:sdp/API/put_devotee.dart';
 import 'package:sdp/constant/sangha_list.dart';
@@ -15,27 +16,33 @@ import 'package:sdp/model/address_model.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
 import 'package:sdp/utilities/color_palette.dart';
+import 'package:uuid/uuid.dart';
 
 class AddPageDilouge extends StatefulWidget {
-  AddPageDilouge({super.key, required this.title, this.devotee});
+  AddPageDilouge({
+    super.key,
+    required this.title,
+    required this.devoteeId,
+  });
   String title;
-  DevoteeModel? devotee;
+  String devoteeId;
 
   @override
   State<AddPageDilouge> createState() => _AddPageDilougeState();
 }
 
 class _AddPageDilougeState extends State<AddPageDilouge> {
-  final nameController = TextEditingController();
-  final mobileController = TextEditingController();
-  final sanghaController = TextEditingController();
-  TextEditingController dateinput = TextEditingController();
-  final addressLine1Controller = TextEditingController();
-  final addressLine2Controller = TextEditingController();
-  final cityController = TextEditingController();
-  final stateController = TextEditingController();
-  final countryController = TextEditingController();
-  final postalCodeController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController mobileController = TextEditingController();
+  TextEditingController sanghaController = TextEditingController();
+  TextEditingController dateOfBirth = TextEditingController();
+  TextEditingController addressLine1Controller = TextEditingController();
+  TextEditingController addressLine2Controller = TextEditingController();
+  TextEditingController cityController = TextEditingController();
+  TextEditingController stateController = TextEditingController();
+  TextEditingController countryController = TextEditingController();
+  TextEditingController postalCodeController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   String? bloodGroupController;
 
@@ -64,6 +71,26 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     setState(() {
       previewImage = pickedFile;
     });
+  }
+
+  populateData() async {
+    if (widget.title == "edit") {
+     final  devoteeData = await GetDevoteeAPI().DevoteeDetailsById(widget.devoteeId);
+     if(devoteeData?["statusCode"] == 200){
+  nameController.text = devoteeData?["data"].name;
+   emailController.text = devoteeData?["data"].emailId;
+   mobileController.text = devoteeData?["data"].mobileNumber;
+   sanghaController.text = devoteeData?["data"].sangha;
+   dateOfBirth.text = devoteeData?["data"].dob;
+   addressLine1Controller.text = devoteeData?["data"];
+   addressLine2Controller.text = devoteeData?["data"];
+   cityController.text = devoteeData?["data"];
+   stateController.text = devoteeData?["data"];
+   countryController.text = devoteeData?["data"];
+   postalCodeController.text = devoteeData?["data"];
+     }
+ 
+    }
   }
 
   void showPhotoOptions() {
@@ -199,6 +226,26 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
           ),
           const SizedBox(height: 10),
           TextFormField(
+            controller: emailController,
+            onSaved: (newValue) => emailController,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter Email';
+              }
+              return null;
+            },
+            decoration: InputDecoration(
+              labelText: "Email Id",
+              filled: true,
+              floatingLabelBehavior: FloatingLabelBehavior.never,
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                  borderSide:
+                      const BorderSide(width: 0, style: BorderStyle.none)),
+            ),
+          ),
+          const SizedBox(height: 10),
+          TextFormField(
             keyboardType: TextInputType.phone,
             controller: mobileController,
             onSaved: (newValue) => mobileController,
@@ -285,7 +332,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
           ),
           GestureDetector(
             child: TextField(
-              controller: dateinput, //editing controller of this TextField
+              controller: dateOfBirth, //editing controller of this TextField
               decoration: InputDecoration(
                 labelText: "Date Of Birth",
                 filled: true,
@@ -318,7 +365,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   //you can implement different kind of Date Format here according to your requirement
 
                   setState(() {
-                    dateinput.text =
+                    dateOfBirth.text =
                         formattedDate; //set output date to TextField value.
                   });
                 } else {
@@ -583,15 +630,23 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                       ? await uploadImageToFirebaseStorage(
                           previewImage as XFile, nameController.text)
                       : null;
+                  String uniqueDeviteeId = Uuid().v1();
                   DevoteeModel updateDevotee = DevoteeModel(
+                      isAdmin: false,
+                      status: "dataSubmitted",
+                      devoteeId: widget.title == "edit"
+                          ? widget.devoteeId
+                          : uniqueDeviteeId,
                       bloodGroup: bloodGroupController,
                       name: nameController.text,
                       gender: gender[genderController],
                       profilePhotoUrl: profileURL,
                       sangha: sanghaController.text,
-                      dob: dateinput.text,
+                      dob: dateOfBirth.text,
                       mobileNumber: mobileController.text,
                       updatedAt: DateTime.now().toString(),
+                      emailId: emailController.text,
+                      // emailId: ,
                       address: AddressModel(
                           addressLine2: addressLine2Controller.text,
                           addressLine1: addressLine1Controller.text,
@@ -601,8 +656,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                           state: stateController.text));
                   Map<String, dynamic> response;
                   if (widget.title == "edit") {
-                    response = await PutDevoteeAPI().updateDevotee(
-                        updateDevotee, widget.devotee?.devoteeId ?? "");
+                    response = await PutDevoteeAPI()
+                        .updateDevotee(updateDevotee, widget.devoteeId);
                   } else {
                     response = await PostDevoteeAPI()
                         .addRelativeDevotee(updateDevotee);

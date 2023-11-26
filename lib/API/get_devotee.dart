@@ -28,6 +28,19 @@ class GetDevoteeAPI extends DioFuctionAPI {
     }
   }
 
+  Future<Map<String, dynamic>?> DevoteeDetailsById(String devoteeId) async {
+    try {
+      final response = await getAPI("devotee/$devoteeId");
+      print(response);
+      DevoteeModel devotee =
+          DevoteeModel.fromMap(response["data"]["singleDevotee"]);
+      return {"statusCode": 200, "data": devotee};
+    } catch (e) {
+      print(e);
+      return {"statusCode": 500, "data": null};
+    }
+  }
+
   Future<Map<String, dynamic>?> allDevotee() async {
     try {
       List<DevoteeModel> devotees = [];
@@ -54,7 +67,7 @@ class GetDevoteeAPI extends DioFuctionAPI {
     }
   }
 
-  Future<Map<String, dynamic>?> searchDevotee(
+  Future<Map<String, dynamic>> searchDevotee(
       String query, String searchBy) async {
     try {
       Map<String, dynamic> response;

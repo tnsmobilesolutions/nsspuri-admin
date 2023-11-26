@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
+import 'package:uuid/uuid.dart';
 
 class CreateDelegateButton extends StatelessWidget {
   CreateDelegateButton({super.key});
@@ -46,6 +47,7 @@ class CreateDelegateButton extends StatelessWidget {
                 ),
                 content: AddPageDilouge(
                   title: "addDevotee",
+                  devoteeId: "",
                 ));
           },
         );
