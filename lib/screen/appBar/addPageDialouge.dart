@@ -853,8 +853,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(90)))),
-              child: const Text(
-                'Next',
+              child: Text(
+                widget.title == "edit" ? "Update" : "Add",
               ),
 
               //Row
