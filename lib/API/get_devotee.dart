@@ -28,12 +28,13 @@ class GetDevoteeAPI extends DioFuctionAPI {
     }
   }
 
-  Future<Map<String, dynamic>?> DevoteeDetailsById(String devoteeId) async {
+  Future<Map<String, dynamic>?> devoteeDetailsById(String devoteeId) async {
     try {
-      final response = await getAPI("devotee/$devoteeId");
-      print(response);
+      final response = await getAPI("devoteeById/$devoteeId");
+      // final decodeddevotee = json.decode(response["data"]["singleDevotee"]);
+      // print("devotee in api - $decodeddevotee");
       DevoteeModel devotee =
-          DevoteeModel.fromMap(response["data"]["singleDevotee"]);
+          DevoteeModel.fromMap(response["data"]["singleDevotee"][0]);
       return {"statusCode": 200, "data": devotee};
     } catch (e) {
       print(e);
