@@ -1,12 +1,8 @@
 // ignore_for_file: file_names
-
-import 'dart:io';
-
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:image_picker/image_picker.dart';
+
 import 'package:intl/intl.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/API/post_devotee.dart';
@@ -16,6 +12,7 @@ import 'package:sdp/model/address_model.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
 import 'package:sdp/utilities/color_palette.dart';
+import 'package:sdp/utilities/custom_circle_avtar.dart';
 import 'package:uuid/uuid.dart';
 
 class AddPageDilouge extends StatefulWidget {
@@ -45,13 +42,29 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   TextEditingController postalCodeController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   String? bloodGroupController;
-
+  String profilePhotoUrl = "";
   List gender = ["Male", "Female"];
   int genderController = 0;
-  String? profileURL;
+  String profileURL =
+      "https://firebasestorage.googleapis.com/v0/b/nsspuridelegate-dev.appspot.com/o/3d%20profile%20icon.png?alt=media&token=9e216c52-8517-4983-a695-9f0741d6dd02";
+  String selectedStatus = 'dataSubmitted'; // Initially selected status
+  bool isAdmin = false;
+  bool isKYDVerified = false;
+  bool isApproved = false;
+  bool isGruhasanaApproved = false;
 
+  List<String> statusOptions = [
+    'dataSubmitted',
+    'paid',
+    'rejected',
+    'accepted',
+    'printed',
+    'withdrawn',
+    'lost',
+    'reissued',
+  ];
   String? profileImage;
-  XFile? previewImage;
+
   List<String> bloodGrouplist = <String>[
     'A+',
     'A-',
@@ -66,54 +79,39 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
 
   get districtList => null;
 
-  void selectImage(ImageSource source) async {
-    XFile? pickedFile = await ImagePicker().pickImage(source: source);
-    setState(() {
-      previewImage = pickedFile;
-    });
-  }
-
+  DevoteeModel? selectedDevotee;
   populateData() async {
     if (widget.title == "edit") {
-     final  devoteeData = await GetDevoteeAPI().DevoteeDetailsById(widget.devoteeId);
-     if(devoteeData?["statusCode"] == 200){
-  nameController.text = devoteeData?["data"].name;
-   emailController.text = devoteeData?["data"].emailId;
-   mobileController.text = devoteeData?["data"].mobileNumber;
-   sanghaController.text = devoteeData?["data"].sangha;
-   dateOfBirth.text = devoteeData?["data"].dob;
-   addressLine1Controller.text = devoteeData?["data"];
-   addressLine2Controller.text = devoteeData?["data"];
-   cityController.text = devoteeData?["data"];
-   stateController.text = devoteeData?["data"];
-   countryController.text = devoteeData?["data"];
-   postalCodeController.text = devoteeData?["data"];
-     }
- 
+      final devoteeData =
+          await GetDevoteeAPI().devoteeDetailsById(widget.devoteeId);
+      setState(() {
+        selectedDevotee = devoteeData?["data"];
+        if (devoteeData?["statusCode"] == 200) {
+          selectedStatus = selectedDevotee?.status ?? "dataSubmitted";
+          nameController.text = selectedDevotee?.name ?? "";
+          emailController.text = selectedDevotee?.emailId ?? "";
+          mobileController.text = selectedDevotee?.mobileNumber ?? "";
+          sanghaController.text = selectedDevotee?.sangha ?? "";
+          dateOfBirth.text = selectedDevotee?.dob ?? "";
+          addressLine1Controller.text =
+              selectedDevotee?.address?.addressLine1 ?? "";
+          addressLine2Controller.text =
+              selectedDevotee?.address?.addressLine2 ?? "";
+          cityController.text = selectedDevotee?.address?.city ?? "";
+          stateController.text = selectedDevotee?.address?.state ?? "";
+          countryController.text = selectedDevotee?.address?.country ?? "";
+          postalCodeController.text =
+              selectedDevotee?.address?.postalCode.toString() ?? "";
+          profilePhotoUrl = selectedDevotee?.profilePhotoUrl ??
+              "https://firebasestorage.googleapis.com/v0/b/nsspuridelegate-dev.appspot.com/o/3d%20profile%20icon.png?alt=media&token=9e216c52-8517-4983-a695-9f0741d6dd02";
+          isAdmin = selectedDevotee?.isAdmin ?? false;
+          isKYDVerified = selectedDevotee?.isKYDVerified ?? false;
+          isApproved = selectedDevotee?.isApproved ?? false;
+          isGruhasanaApproved = selectedDevotee?.isGruhasanaApproved ?? false;
+          bloodGroupController = selectedDevotee?.bloodGroup ?? "Don't know";
+        }
+      });
     }
-  }
-
-  void showPhotoOptions() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text("Upload Profile Picture"),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  onTap: () {
-                    Navigator.pop(context);
-                    selectImage(ImageSource.gallery);
-                  },
-                  leading: const Icon(Icons.photo_album),
-                  title: const Text("Select from Gallery"),
-                ),
-              ],
-            ),
-          );
-        });
   }
 
   String? select;
@@ -129,10 +127,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
           value: gender[btnValue],
           groupValue: select,
           onChanged: (value) {
-            setState(() {
-              print(value);
-              select = value;
-            });
+            // Update state from outside the build method
+            handleRadioButtonChange(value);
           },
         ),
         Text(title)
@@ -140,29 +136,32 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     );
   }
 
-  Future<String?> uploadImageToFirebaseStorage(
-      XFile? image, String name) async {
-    if (image == null) {
-      return null;
-    }
-
-    final byteData = await image.readAsBytes();
-    final buffer = byteData.buffer.asUint8List();
-
-    Reference storage =
-        FirebaseStorage.instance.ref('$name/${getImageName(image)}');
-    await storage.putData(buffer);
-
-    return await storage.getDownloadURL();
+  void handleRadioButtonChange(dynamic value) {
+    setState(() {
+      select = value;
+    });
   }
 
-  // return image name
-  String getImageName(XFile image) {
-    return image.path.split("/").last;
+  @override
+  void initState() {
+    super.initState();
+    populateData();
   }
 
   @override
   Widget build(BuildContext context) {
+    Color getColor(Set<MaterialState> states) {
+      const Set<MaterialState> interactiveStates = <MaterialState>{
+        MaterialState.pressed,
+        // MaterialState.hovered,
+        MaterialState.focused,
+      };
+      if (states.any(interactiveStates.contains)) {
+        return Colors.blue;
+      }
+      return Colors.white;
+    }
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(2.0),
@@ -173,32 +172,173 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
       child: SingleChildScrollView(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           MaterialButton(
-            onPressed: () {
-              showPhotoOptions();
-            },
-            child: CircleAvatar(
-              backgroundImage:
-                  previewImage != null && previewImage!.path.isNotEmpty
-                      ? Image.file(
-                          File('${previewImage?.path}'),
-                          fit: BoxFit.cover,
-                        ).image
-                      : Image.network(profileURL.toString()).image,
-              radius: 60,
-              child: const Align(
-                alignment: Alignment.bottomRight,
-                child: CircleAvatar(
-                  backgroundColor: CircleAvatarClor,
-                  radius: 20.0,
-                  child: Icon(
-                    Icons.camera_alt,
-                    size: 18.0,
+            onPressed: () {},
+            child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.blue, // Set the border color
+                    width: 1.0, // Set the border width
                   ),
                 ),
-              ),
-            ),
+                child: widget.title != "edit"
+                    ? customCircleAvtar(
+                        imageURL:
+                            "https://firebasestorage.googleapis.com/v0/b/nsspuridelegate-dev.appspot.com/o/3d%20profile%20icon.png?alt=media&token=9e216c52-8517-4983-a695-9f0741d6dd02",
+                      )
+                    : profilePhotoUrl.isNotEmpty
+                        ? customCircleAvtar(
+                            imageURL: profilePhotoUrl,
+                          )
+                        : CircleAvatar(
+                            radius: 50,
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          )
+                //  CircleAvatar(
+                //   radius: 40.0,
+                //   backgroundImage: NetworkImage('$profilePhotoUrl'),
+                //   backgroundColor: Colors.transparent,
+                //   child: const Align(
+                //     alignment: Alignment.bottomRight,
+                //     child: CircleAvatar(
+                //       backgroundColor: CircleAvatarClor,
+                //       radius: 20.0,
+                //       child: Icon(
+                //         Icons.collections,
+                //         size: 18.0,
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                ),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
+          widget.title == "edit"
+              ? DropdownButton<String>(
+                  value: selectedStatus,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedStatus = newValue!;
+                    });
+                  },
+                  underline: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey), // Border color
+                      borderRadius:
+                          BorderRadius.circular(30.0), // Border radius
+                    ),
+                  ),
+                  elevation: 16,
+                  style: TextStyle(color: Colors.black), // Dropdown text color
+                  items: statusOptions
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(value),
+                      ),
+                    );
+                  }).toList(),
+                )
+              : SizedBox(
+                  height: 0,
+                  width: 0,
+                ),
+          widget.title == "edit"
+              ? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('isAdmin'),
+                      Checkbox(
+                        checkColor: Colors.blue,
+                        fillColor: MaterialStateProperty.resolveWith(getColor),
+                        value: isAdmin,
+                        onChanged: (bool? value) {},
+                      ),
+                    ],
+                  ),
+                )
+              : SizedBox(
+                  height: 0,
+                  width: 0,
+                ),
+          widget.title == "edit"
+              ? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('isGruhasanaApproved'),
+                      Checkbox(
+                        checkColor: Colors.blue,
+                        fillColor: MaterialStateProperty.resolveWith(getColor),
+                        value: isGruhasanaApproved,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            isGruhasanaApproved = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                )
+              : SizedBox(
+                  height: 0,
+                  width: 0,
+                ),
+          widget.title == "edit"
+              ? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('isKYDVerified'),
+                      Checkbox(
+                        checkColor: Colors.blue,
+                        fillColor: MaterialStateProperty.resolveWith(getColor),
+                        value: isKYDVerified,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            isKYDVerified = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                )
+              : SizedBox(
+                  height: 0,
+                  width: 0,
+                ),
+          widget.title == "edit"
+              ? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('isApproved'),
+                      Checkbox(
+                        checkColor: Colors.blue,
+                        fillColor: MaterialStateProperty.resolveWith(getColor),
+                        value: isApproved,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            isApproved = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                )
+              : SizedBox(
+                  height: 0,
+                  width: 0,
+                ),
           TextFormField(
             controller: nameController,
             onSaved: (newValue) => nameController,
@@ -626,14 +766,16 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                 await Future.delayed(
                     const Duration(seconds: 1)); // Simulating a delay
                 try {
-                  profileURL = previewImage != null
-                      ? await uploadImageToFirebaseStorage(
-                          previewImage as XFile, nameController.text)
-                      : null;
-                  String uniqueDeviteeId = Uuid().v1();
+                  String uniqueDeviteeId = const Uuid().v1();
                   DevoteeModel updateDevotee = DevoteeModel(
-                      isAdmin: false,
-                      status: "dataSubmitted",
+                      isAdmin: selectedDevotee?.isAdmin ?? false,
+                      createdById: widget.title == "edit"
+                          ? widget.devoteeId
+                          : uniqueDeviteeId,
+                      status: selectedStatus,
+                      createdOn: selectedDevotee?.createdOn ??
+                          DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now()),
+                      isApproved: false,
                       devoteeId: widget.title == "edit"
                           ? widget.devoteeId
                           : uniqueDeviteeId,
@@ -644,9 +786,11 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                       sangha: sanghaController.text,
                       dob: dateOfBirth.text,
                       mobileNumber: mobileController.text,
-                      updatedAt: DateTime.now().toString(),
+                      updatedOn: DateTime.now().toString(),
                       emailId: emailController.text,
-                      // emailId: ,
+                      isGruhasanaApproved: isGruhasanaApproved,
+                      isKYDVerified: isKYDVerified,
+                      uid: selectedDevotee?.uid ?? "",
                       address: AddressModel(
                           addressLine2: addressLine2Controller.text,
                           addressLine1: addressLine1Controller.text,

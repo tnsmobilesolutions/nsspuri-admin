@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:sdp/model/address_model.dart';
 
 class DevoteeModel {
-  String? devoteeId;
+   String? devoteeId;
   String? name;
   String? emailId;
   String? mobileNumber;
@@ -13,11 +13,15 @@ class DevoteeModel {
   String? sangha;
   String? uid;
   String? dob;
-  String? status;
-  String? createdAt;
-  String? updatedAt;
-  AddressModel? address;
+  bool? isKYDVerified;
+  bool? isApproved;
   bool? isAdmin;
+  bool? isGruhasanaApproved;
+  String? createdOn;
+  String? updatedOn;
+  String? status;
+  String? createdById;
+  AddressModel? address;
   DevoteeModel({
     this.devoteeId,
     this.name,
@@ -29,11 +33,15 @@ class DevoteeModel {
     this.sangha,
     this.uid,
     this.dob,
-    this.status,
-    this.createdAt,
-    this.updatedAt,
-    this.address,
+    this.isKYDVerified,
+    this.isApproved,
     this.isAdmin,
+    this.isGruhasanaApproved,
+    this.createdOn,
+    this.updatedOn,
+    this.status,
+    this.createdById,
+    this.address,
   });
 
   DevoteeModel copyWith({
@@ -47,11 +55,15 @@ class DevoteeModel {
     String? sangha,
     String? uid,
     String? dob,
-    String? status,
-    String? createdAt,
-    String? updatedAt,
-    AddressModel? address,
+    bool? isKYDVerified,
+    bool? isApproved,
     bool? isAdmin,
+    bool? isGruhasanaApproved,
+    String? createdOn,
+    String? updatedOn,
+    String? status,
+    String? createdById,
+    AddressModel? address,
   }) {
     return DevoteeModel(
       devoteeId: devoteeId ?? this.devoteeId,
@@ -64,11 +76,15 @@ class DevoteeModel {
       sangha: sangha ?? this.sangha,
       uid: uid ?? this.uid,
       dob: dob ?? this.dob,
-      status: status ?? this.status,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      address: address ?? this.address,
+      isKYDVerified: isKYDVerified ?? this.isKYDVerified,
+      isApproved: isApproved ?? this.isApproved,
       isAdmin: isAdmin ?? this.isAdmin,
+      isGruhasanaApproved: isGruhasanaApproved ?? this.isGruhasanaApproved,
+      createdOn: createdOn ?? this.createdOn,
+      updatedOn: updatedOn ?? this.updatedOn,
+      status: status ?? this.status,
+      createdById: createdById ?? this.createdById,
+      address: address ?? this.address,
     );
   }
 
@@ -105,20 +121,32 @@ class DevoteeModel {
     if(dob != null){
       result.addAll({'dob': dob});
     }
-    if(status != null){
-      result.addAll({'status': status});
+    if(isKYDVerified != null){
+      result.addAll({'isKYDVerified': isKYDVerified});
     }
-    if(createdAt != null){
-      result.addAll({'createdAt': createdAt});
-    }
-    if(updatedAt != null){
-      result.addAll({'updatedAt': updatedAt});
-    }
-    if(address != null){
-      result.addAll({'address': address!.toMap()});
+    if(isApproved != null){
+      result.addAll({'isApproved': isApproved});
     }
     if(isAdmin != null){
       result.addAll({'isAdmin': isAdmin});
+    }
+    if(isGruhasanaApproved != null){
+      result.addAll({'isGruhasanaApproved': isGruhasanaApproved});
+    }
+    if(createdOn != null){
+      result.addAll({'createdOn': createdOn});
+    }
+    if(updatedOn != null){
+      result.addAll({'updatedOn': updatedOn});
+    }
+    if(status != null){
+      result.addAll({'status': status});
+    }
+    if(createdById != null){
+      result.addAll({'createdById': createdById});
+    }
+    if(address != null){
+      result.addAll({'address': address!.toMap()});
     }
   
     return result;
@@ -136,11 +164,15 @@ class DevoteeModel {
       sangha: map['sangha'],
       uid: map['uid'],
       dob: map['dob'],
-      status: map['status'],
-      createdAt: map['createdAt'],
-      updatedAt: map['updatedAt'],
-      address: map['address'] != null ? AddressModel.fromMap(map['address']) : null,
+      isKYDVerified: map['isKYDVerified'],
+      isApproved: map['isApproved'],
       isAdmin: map['isAdmin'],
+      isGruhasanaApproved: map['isGruhasanaApproved'],
+      createdOn: map['createdOn'],
+      updatedOn: map['updatedOn'],
+      status: map['status'],
+      createdById: map['createdById'],
+      address: map['address'] != null ? AddressModel.fromMap(map['address']) : null,
     );
   }
 
@@ -151,7 +183,7 @@ class DevoteeModel {
 
   @override
   String toString() {
-    return 'DevoteeModel(devoteeId: $devoteeId, name: $name, emailId: $emailId, mobileNumber: $mobileNumber, bloodGroup: $bloodGroup, profilePhotoUrl: $profilePhotoUrl, gender: $gender, sangha: $sangha, uid: $uid, dob: $dob, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, address: $address, isAdmin: $isAdmin)';
+    return 'DevoteeModel(devoteeId: $devoteeId, name: $name, emailId: $emailId, mobileNumber: $mobileNumber, bloodGroup: $bloodGroup, profilePhotoUrl: $profilePhotoUrl, gender: $gender, sangha: $sangha, uid: $uid, dob: $dob, isKYDVerified: $isKYDVerified, isApproved: $isApproved, isAdmin: $isAdmin, isGruhasanaApproved: $isGruhasanaApproved, createdOn: $createdOn, updatedOn: $updatedOn, status: $status, createdById: $createdById, address: $address)';
   }
 
   @override
@@ -169,11 +201,15 @@ class DevoteeModel {
       other.sangha == sangha &&
       other.uid == uid &&
       other.dob == dob &&
+      other.isKYDVerified == isKYDVerified &&
+      other.isApproved == isApproved &&
+      other.isAdmin == isAdmin &&
+      other.isGruhasanaApproved == isGruhasanaApproved &&
+      other.createdOn == createdOn &&
+      other.updatedOn == updatedOn &&
       other.status == status &&
-      other.createdAt == createdAt &&
-      other.updatedAt == updatedAt &&
-      other.address == address &&
-      other.isAdmin == isAdmin;
+      other.createdById == createdById &&
+      other.address == address;
   }
 
   @override
@@ -188,10 +224,14 @@ class DevoteeModel {
       sangha.hashCode ^
       uid.hashCode ^
       dob.hashCode ^
+      isKYDVerified.hashCode ^
+      isApproved.hashCode ^
+      isAdmin.hashCode ^
+      isGruhasanaApproved.hashCode ^
+      createdOn.hashCode ^
+      updatedOn.hashCode ^
       status.hashCode ^
-      createdAt.hashCode ^
-      updatedAt.hashCode ^
-      address.hashCode ^
-      isAdmin.hashCode;
+      createdById.hashCode ^
+      address.hashCode;
   }
 }

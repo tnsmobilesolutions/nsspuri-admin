@@ -81,7 +81,7 @@ class _SearchTableRowState extends State<SearchTableRow> {
             ),
             Expanded(
               child: Text(
-                '${widget.searchpaliaDetails.createdAt}',
+                '${widget.searchpaliaDetails.createdOn}',
                 textAlign: TextAlign.center,
               ),
             ),

@@ -6,6 +6,7 @@ import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/editPalia.dart';
 
 import 'package:sdp/screen/PaliaListScreen.dart/viewDevotee.dart';
+import 'package:sdp/screen/appBar/addPageDialouge.dart';
 
 class PaliaTableRow extends StatefulWidget {
   PaliaTableRow({
@@ -121,22 +122,24 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text('Edit Palia Details'),
-                                  IconButton(
-                                      color: const Color(0XFF3f51b5),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      icon: const Icon(Icons.close))
-                                ],
-                              ),
-                              content: EditPaliadilougePage(
-                                  devoteeDetails: widget.devoteeDetails),
-                            );
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text('Edit Palia Details'),
+                                    IconButton(
+                                        color: const Color(0XFF3f51b5),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        icon: const Icon(Icons.close))
+                                  ],
+                                ),
+                                content: AddPageDilouge(
+                                  devoteeId: widget.devoteeDetails.devoteeId
+                                      .toString(),
+                                  title: "edit",
+                                ));
                           },
                         );
                       },

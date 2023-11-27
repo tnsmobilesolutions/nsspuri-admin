@@ -181,7 +181,7 @@ class _SearchresultBodyPageState extends State<SearchresultBodyPage> {
                                           ),
                                           pw.Expanded(
                                             child: pw.Text(
-                                              '${widget.searchModel[index].createdAt}',
+                                              '${widget.searchModel[index].createdOn}',
                                               textAlign: pw.TextAlign.center,
                                             ),
                                           ),
@@ -263,8 +263,8 @@ class _SearchresultBodyPageState extends State<SearchresultBodyPage> {
                     if (isCheckedValuee == true) {
                       if (!selectedPalia
                           .contains(widget.searchModel[index].devoteeId)) {
-                        selectedPalia
-                            .add(widget.searchModel[index].devoteeId.toString());
+                        selectedPalia.add(
+                            widget.searchModel[index].devoteeId.toString());
                       }
                     } else {
                       selectedPalia.remove(widget.searchModel[index].devoteeId);

@@ -173,7 +173,7 @@ class _ViewPaliaState extends State<ViewPalia>
                             ],
                           ),
 
-                          if (widget.devoteeDetails.createdAt != null)
+                          if (widget.devoteeDetails.createdOn != null)
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -184,7 +184,7 @@ class _ViewPaliaState extends State<ViewPalia>
                                       'Updated By',
                                       style: TextStyle(color: Colors.grey),
                                     ),
-                                    Text(widget.devoteeDetails.createdAt
+                                    Text(widget.devoteeDetails.createdOn
                                         .toString())
                                   ],
                                 ),
@@ -195,7 +195,7 @@ class _ViewPaliaState extends State<ViewPalia>
                                       'Updated On',
                                       style: TextStyle(color: Colors.grey),
                                     ),
-                                    Text(widget.devoteeDetails.createdAt
+                                    Text(widget.devoteeDetails.createdOn
                                         .toString())
                                   ],
                                 ),
@@ -343,7 +343,7 @@ class _ViewPaliaState extends State<ViewPalia>
                                     'Created On',
                                     style: TextStyle(color: Colors.grey),
                                   ),
-                                  Text(widget.devoteeDetails.createdAt
+                                  Text(widget.devoteeDetails.createdOn
                                       .toString())
                                 ],
                               ),
@@ -352,7 +352,7 @@ class _ViewPaliaState extends State<ViewPalia>
                           const Divider(
                             thickness: 0.5,
                           ),
-                          if (widget.devoteeDetails.createdAt != null)
+                          if (widget.devoteeDetails.createdOn != null)
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -363,7 +363,7 @@ class _ViewPaliaState extends State<ViewPalia>
                                       'Updated By',
                                       style: TextStyle(color: Colors.grey),
                                     ),
-                                    Text(widget.devoteeDetails.createdAt
+                                    Text(widget.devoteeDetails.createdOn
                                         .toString())
                                   ],
                                 ),
@@ -374,7 +374,7 @@ class _ViewPaliaState extends State<ViewPalia>
                                       'Updated On',
                                       style: TextStyle(color: Colors.grey),
                                     ),
-                                    Text(widget.devoteeDetails.createdAt
+                                    Text(widget.devoteeDetails.createdOn
                                         .toString())
                                   ],
                                 ),
@@ -559,7 +559,7 @@ class _ViewPaliaState extends State<ViewPalia>
               //                       'Created On',
               //                       style: TextStyle(color: Colors.grey),
               //                     ),
-              //                     Text(widget.devoteeDetails.createdAt
+              //                     Text(widget.devoteeDetails.createdOn
               //                         .toString())
               //                   ],
               //                 ),
@@ -568,7 +568,7 @@ class _ViewPaliaState extends State<ViewPalia>
               //             const Divider(
               //               thickness: 0.5,
               //             ),
-              //             if (widget.devoteeDetails.createdAt != null)
+              //             if (widget.devoteeDetails.createdOn != null)
               //               Row(
               //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
               //                 children: [
@@ -579,7 +579,7 @@ class _ViewPaliaState extends State<ViewPalia>
               //                         'Updated By',
               //                         style: TextStyle(color: Colors.grey),
               //                       ),
-              //                       Text(widget.devoteeDetails.createdAt
+              //                       Text(widget.devoteeDetails.createdOn
               //                           .toString())
               //                     ],
               //                   ),
@@ -590,7 +590,7 @@ class _ViewPaliaState extends State<ViewPalia>
               //                         'Updated On',
               //                         style: TextStyle(color: Colors.grey),
               //                       ),
-              //                       Text(widget.devoteeDetails.createdAt
+              //                       Text(widget.devoteeDetails.createdOn
               //                           .toString())
               //                     ],
               //                   ),
