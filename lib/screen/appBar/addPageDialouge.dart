@@ -766,20 +766,20 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                 await Future.delayed(
                     const Duration(seconds: 1)); // Simulating a delay
                 try {
-                  String uniqueDeviteeId = const Uuid().v1();
+                  String uniqueDevoteeId = const Uuid().v1();
                   DevoteeModel updateDevotee = DevoteeModel(
                       devoteeCode: selectedDevotee?.devoteeCode?.toInt() ?? 0,
                       isAdmin: selectedDevotee?.isAdmin ?? false,
                       createdById: widget.title == "edit"
                           ? widget.devoteeId
-                          : uniqueDeviteeId,
+                          : uniqueDevoteeId,
                       status: selectedStatus,
                       createdOn: selectedDevotee?.createdOn ??
                           DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now()),
                       isApproved: false,
                       devoteeId: widget.title == "edit"
                           ? widget.devoteeId
-                          : uniqueDeviteeId,
+                          : uniqueDevoteeId,
                       bloodGroup: bloodGroupController,
                       name: nameController.text,
                       gender: gender[genderController],
