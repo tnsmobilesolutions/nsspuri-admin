@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:sdp/model/address_model.dart';
 
 class DevoteeModel {
-   String? devoteeId;
+  String? devoteeId;
+  int? devoteeCode;
+  bool? isAllowedToScanPrasad;
   String? name;
   String? emailId;
   String? mobileNumber;
@@ -24,6 +26,8 @@ class DevoteeModel {
   AddressModel? address;
   DevoteeModel({
     this.devoteeId,
+    this.devoteeCode,
+    this.isAllowedToScanPrasad,
     this.name,
     this.emailId,
     this.mobileNumber,
@@ -46,6 +50,8 @@ class DevoteeModel {
 
   DevoteeModel copyWith({
     String? devoteeId,
+    int? devoteeCode,
+    bool? isAllowedToScanPrasad,
     String? name,
     String? emailId,
     String? mobileNumber,
@@ -67,6 +73,8 @@ class DevoteeModel {
   }) {
     return DevoteeModel(
       devoteeId: devoteeId ?? this.devoteeId,
+      devoteeCode: devoteeCode ?? this.devoteeCode,
+      isAllowedToScanPrasad: isAllowedToScanPrasad ?? this.isAllowedToScanPrasad,
       name: name ?? this.name,
       emailId: emailId ?? this.emailId,
       mobileNumber: mobileNumber ?? this.mobileNumber,
@@ -93,6 +101,12 @@ class DevoteeModel {
   
     if(devoteeId != null){
       result.addAll({'devoteeId': devoteeId});
+    }
+    if(devoteeCode != null){
+      result.addAll({'devoteeCode': devoteeCode});
+    }
+    if(isAllowedToScanPrasad != null){
+      result.addAll({'isAllowedToScanPrasad': isAllowedToScanPrasad});
     }
     if(name != null){
       result.addAll({'name': name});
@@ -155,6 +169,8 @@ class DevoteeModel {
   factory DevoteeModel.fromMap(Map<String, dynamic> map) {
     return DevoteeModel(
       devoteeId: map['devoteeId'],
+      devoteeCode: map['devoteeCode']?.toInt(),
+      isAllowedToScanPrasad: map['isAllowedToScanPrasad'],
       name: map['name'],
       emailId: map['emailId'],
       mobileNumber: map['mobileNumber'],
@@ -183,7 +199,7 @@ class DevoteeModel {
 
   @override
   String toString() {
-    return 'DevoteeModel(devoteeId: $devoteeId, name: $name, emailId: $emailId, mobileNumber: $mobileNumber, bloodGroup: $bloodGroup, profilePhotoUrl: $profilePhotoUrl, gender: $gender, sangha: $sangha, uid: $uid, dob: $dob, isKYDVerified: $isKYDVerified, isApproved: $isApproved, isAdmin: $isAdmin, isGruhasanaApproved: $isGruhasanaApproved, createdOn: $createdOn, updatedOn: $updatedOn, status: $status, createdById: $createdById, address: $address)';
+    return 'DevoteeModel(devoteeId: $devoteeId, devoteeCode: $devoteeCode, isAllowedToScanPrasad: $isAllowedToScanPrasad, name: $name, emailId: $emailId, mobileNumber: $mobileNumber, bloodGroup: $bloodGroup, profilePhotoUrl: $profilePhotoUrl, gender: $gender, sangha: $sangha, uid: $uid, dob: $dob, isKYDVerified: $isKYDVerified, isApproved: $isApproved, isAdmin: $isAdmin, isGruhasanaApproved: $isGruhasanaApproved, createdOn: $createdOn, updatedOn: $updatedOn, status: $status, createdById: $createdById, address: $address)';
   }
 
   @override
@@ -192,6 +208,8 @@ class DevoteeModel {
   
     return other is DevoteeModel &&
       other.devoteeId == devoteeId &&
+      other.devoteeCode == devoteeCode &&
+      other.isAllowedToScanPrasad == isAllowedToScanPrasad &&
       other.name == name &&
       other.emailId == emailId &&
       other.mobileNumber == mobileNumber &&
@@ -215,6 +233,8 @@ class DevoteeModel {
   @override
   int get hashCode {
     return devoteeId.hashCode ^
+      devoteeCode.hashCode ^
+      isAllowedToScanPrasad.hashCode ^
       name.hashCode ^
       emailId.hashCode ^
       mobileNumber.hashCode ^

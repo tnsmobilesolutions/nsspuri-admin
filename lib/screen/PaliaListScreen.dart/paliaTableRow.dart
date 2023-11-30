@@ -1,12 +1,14 @@
 // ignore_for_file: file_names, must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:sdp/API/delete_devotee.dart';
 import 'package:sdp/model/devotee_model.dart';
 
 import 'package:sdp/screen/PaliaListScreen.dart/editPalia.dart';
 
 import 'package:sdp/screen/PaliaListScreen.dart/viewDevotee.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
+import 'package:sdp/screen/dashboard/dashboard.dart';
 
 class PaliaTableRow extends StatefulWidget {
   PaliaTableRow({
@@ -46,6 +48,14 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
               child: Text(
                 (widget.slNo).toString(),
                 textAlign: TextAlign.center,
+              ),
+            ),
+            Expanded(
+              child: CircleAvatar(
+                radius: 20,
+                backgroundImage: Image.network(
+                        widget.devoteeDetails.profilePhotoUrl.toString())
+                    .image,
               ),
             ),
             Expanded(
@@ -175,17 +185,15 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                                 child: const Text('Cancel'),
                               ),
                               TextButton(
-                                onPressed: () {
-                                  // PaliaAPI()
-                                  //     .removePalia(widget.paliaDetails.docId);
-                                  // Navigator.push(context, MaterialPageRoute(
-                                  //   builder: (context) {
-                                  //     return PaliaListPage(
-                                  //       year:
-                                  //           '${widget.paliaDetails.sammilaniData?.sammilaniYear}',
-                                  //     );
-                                  //   },
-                                  // ));
+                                onPressed: () async {
+                                  await DeleteDevoteeAPI().deleteSingleDevotee(
+                                      widget.devoteeDetails.devoteeId
+                                          .toString());
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DashboardPage(),
+                                      ));
                                 },
                                 child: const Text('OK'),
                               ),

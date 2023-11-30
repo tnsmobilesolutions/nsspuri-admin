@@ -182,4 +182,49 @@ abstract class DioFuctionAPI {
       }
     }
   }
+ deleteAPI(String url) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? jwttoken = prefs.getString('jwtToken');
+
+      if (jwttoken == null) {
+        throw Exception('JWT token is null');
+      }
+
+      final response = await dio.delete(
+        baseUrl + url,
+        options: Options(headers: {'Authorization': 'Bearer $jwttoken'}),
+      );
+
+      if (response.statusCode == 200) {
+        return {"statusCode": response.statusCode, "data": response.data};
+      } else {
+        return {
+          "statusCode": response.statusCode,
+          "error": "Error in Post API"
+        };
+      }
+    } catch (e) {
+      if (e is DioException) {
+        if (e.response != null) {
+          print("error message : ${e.response!.data["message"]}");
+          return {
+            "statusCode": 500,
+            "error": [e.response!.data["message"], false]
+          };
+        } else {
+          return {
+            "statusCode": 500,
+            "error": [e.response!.data["message"], false]
+          };
+          // return ['Dio error: ${e.message}', false];
+        }
+      } else {
+        return {
+          "statusCode": 500,
+          "error": ['An error occurred: ${e.toString()}', false]
+        };
+      }
+    }
+  }
 }

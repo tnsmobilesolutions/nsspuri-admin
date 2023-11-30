@@ -768,6 +768,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                 try {
                   String uniqueDeviteeId = const Uuid().v1();
                   DevoteeModel updateDevotee = DevoteeModel(
+                      devoteeCode: selectedDevotee?.devoteeCode?.toInt() ?? 0,
                       isAdmin: selectedDevotee?.isAdmin ?? false,
                       createdById: widget.title == "edit"
                           ? widget.devoteeId
