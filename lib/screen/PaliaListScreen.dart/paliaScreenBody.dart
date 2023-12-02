@@ -211,7 +211,7 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
                 headingText('Status'),
                 if (showMenu == true) headingText('View'),
                 if (showMenu == true) headingText('Edit'),
-                if (showMenu == true) headingText('Delete'),
+                // if (showMenu == true) headingText('Delete'),
               ],
             ),
           ),
@@ -234,7 +234,6 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
                 return const Text('SNAPSHOT ERROR');
               }
               if (snapshot.connectionState == ConnectionState.done) {
-               
                 allPaliaList = snapshot.data["data"];
                 return Expanded(
                   child: ListView.builder(

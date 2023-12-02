@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/dashboard_card_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/paliaList.dart';
@@ -48,12 +49,30 @@ class _DashboardBodyState extends State<DashboardBody> {
                     },
                     child: Card(
                       elevation: 10,
-                      shadowColor: const Color(0XFF3f51b5),
+                      shadowColor: dashboarddata.title ==
+                              DateFormat('yyyy-MM-dd').format(DateTime.now())
+                          ? Colors.yellow
+                          : dashboarddata.title ==
+                                  DateFormat('yyyy-MM-dd').format(DateTime.now()
+                                      .subtract(Duration(days: 1)))
+                              ? Colors.lightGreen
+                              : dashboarddata.title ==
+                                      DateFormat('yyyy-MM-dd').format(
+                                          DateTime.now()
+                                              .subtract(Duration(days: 1)))
+                                  ? Colors.lightBlue
+                                  : Color.fromARGB(255, 253, 253, 253),
                       child: Padding(
                         padding: const EdgeInsets.all(15.0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            if (dashboarddata.title != "")
+                              Text(
+                                dashboarddata.title.toString(),
+                                style: const TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
                             Text(
                               dashboarddata.message.toString(),
                               style: const TextStyle(
@@ -62,7 +81,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                             Text(
                               dashboarddata.count.toString(),
                               style: const TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
+                                  fontSize: 40, fontWeight: FontWeight.bold),
                             )
                           ],
                         ),

@@ -43,7 +43,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   final formKey = GlobalKey<FormState>();
   String? bloodGroupController;
   String profilePhotoUrl = "";
-  List gender = ["Male", "Female"];
+  List gender = ["Bhai", "Maa"];
   int genderController = 0;
   String profileURL =
       "https://firebasestorage.googleapis.com/v0/b/nsspuridelegate-dev.appspot.com/o/3d%20profile%20icon.png?alt=media&token=9e216c52-8517-4983-a695-9f0741d6dd02";
@@ -62,6 +62,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'withdrawn',
     'lost',
     'reissued',
+    "blacklisted"
   ];
   String? profileImage;
 
