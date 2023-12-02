@@ -25,7 +25,7 @@ class _DashboardBodyState extends State<DashboardBody> {
           } else {
             return GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: (snapshot.data["data"].length) ~/ 2,
+                  crossAxisCount: (snapshot.data["data"].length) ~/ 3,
                   childAspectRatio: 1.5),
               itemCount: snapshot.data["data"].length,
               shrinkWrap: true,
