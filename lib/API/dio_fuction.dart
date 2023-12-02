@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-String baseUrl = "https://staging-api.nsspuri.org/";
+// String baseUrl = "https://staging-api.nsspuri.org/";
+String baseUrl = "http://34.136.15.208:4400/";
 
 abstract class DioFuctionAPI {
   final dio = Dio();
@@ -182,7 +182,8 @@ abstract class DioFuctionAPI {
       }
     }
   }
- deleteAPI(String url) async {
+
+  deleteAPI(String url) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? jwttoken = prefs.getString('jwtToken');
