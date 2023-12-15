@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Sammilani Delegate Admin',
         theme: ThemeData(
-          appBarTheme: AppBarTheme(color: Color.fromARGB(255, 95, 53, 210)),
+          appBarTheme: AppBarTheme(color: Color.fromARGB(255, 132, 102, 214)),
           primarySwatch: generateMaterialColor(color: Color(0XFF3f51b5)),
         ),
         home: AuthState());
