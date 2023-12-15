@@ -6,19 +6,26 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/devotee_model.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/editPaliMultiple.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/paliaTableRow.dart';
 
 class PaliaListBodyPage extends StatefulWidget {
-  PaliaListBodyPage({Key? key}) : super(key: key);
+  PaliaListBodyPage(
+      {Key? key,
+      required this.status,
+      required this.pageFrom,
+      this.searchValue})
+      : super(key: key);
+  String status;
+  String pageFrom;
+  String? searchValue;
 
   @override
   State<PaliaListBodyPage> createState() => _PaliaListBodyPageState();
 }
 
 class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
-  List<DevoteeModel>? allPaliaList;
-  List<String> selectedPalia = [];
+  List<DevoteeModel> allPaliaList = [];
+
   bool checkedValue = false;
   bool? allCheck;
   bool editpaliDate = false;
@@ -58,11 +65,6 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: MultipleEditPali(
-                    docIds: selectedPalia,
-                  )),
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(
@@ -121,9 +123,9 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
                                         pw.MainAxisAlignment.spaceBetween,
                                     children: [
                                       pw.Text(
-                                          'Total Record - ${allPaliaList?.length}'),
+                                          'Total Record - ${allPaliaList.length}'),
                                       pw.Text(
-                                          'Total Pranami - ${allPaliaList?.length} × 1101 = ${(allPaliaList != null ? (allPaliaList?.length)! : 0) * (1101)}'),
+                                          'Total Pranami - ${allPaliaList.length} × 1101 = ${(allPaliaList.isNotEmpty ? (allPaliaList.length) : 0) * (1101)}'),
                                     ],
                                   )
                                 ],
@@ -135,14 +137,15 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
                               pw.SizedBox(height: 20),
                               pw.Row(children: [
                                 printSearchheadingText('Sl no.'),
-                                printSearchheadingText('Palia Name'),
+                                printSearchheadingText('Devotee Name'),
                                 printSearchheadingText('Sangha'),
-                                printSearchheadingText('pali Date'),
+                                printSearchheadingText('DOB'),
+                                printSearchheadingText('Status'),
                               ]),
                               pw.Divider(thickness: 0.5),
                               pw.ListView.builder(
-                                itemCount: allPaliaList != null
-                                    ? allPaliaList!.length
+                                itemCount: allPaliaList.isNotEmpty
+                                    ? allPaliaList.length
                                     : 0,
                                 itemBuilder: (pw.Context context, int index) {
                                   return pw.Column(
@@ -157,19 +160,19 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
                                           ),
                                           pw.Expanded(
                                             child: pw.Text(
-                                              '${allPaliaList?[index].name}',
+                                              '${allPaliaList[index].name}',
                                               textAlign: pw.TextAlign.center,
                                             ),
                                           ),
                                           pw.Expanded(
                                             child: pw.Text(
-                                              '${allPaliaList?[index].sangha}',
+                                              '${allPaliaList[index].sangha}',
                                               textAlign: pw.TextAlign.center,
                                             ),
                                           ),
                                           pw.Expanded(
                                             child: pw.Text(
-                                              '${allPaliaList?[index].createdAt}',
+                                              '${allPaliaList[index].dob}',
                                               textAlign: pw.TextAlign.center,
                                             ),
                                           ),
@@ -200,48 +203,54 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                Expanded(
-                    child: Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: Checkbox(
-                      value: allCheck ?? false,
-                      onChanged: (value) async {
-                        // var alldata =
-                        //     await PaliaAPI().fetchAllByYearPalias(widget.year);
-
-                        // setState(() {
-                        //   allCheck = value!;
-
-                        //   for (var e in alldata) {
-                        //     if (allCheck == true) {
-                        //       // editpaliDate = true;
-                        //       if (!selectedPalia.contains(e)) {
-                        //         selectedPalia.add(e.docId.toString());
-                        //       }
-                        //     } else if (allCheck == false) {
-                        //       editpaliDate = false;
-                        //       selectedPalia.remove(e.docId);
-
-                        //       if (selectedPalia == []) {
-                        //         setState(() {});
-                        //       }
-                        //     }
-                        //   }
-                        // });
-                      }),
-                )),
-                headingText('କ୍ରମିକ ନଂ'),
-                headingText('ପାଳିଆ ନାମ'),
-                headingText('ସଂଘ'),
-                headingText('ପାଳି ତାରିଖ'),
+                headingText('Sl No.'),
+                headingText('Profile Imgae'),
+                headingText('Devotee Name'),
+                headingText('Sangha'),
+                headingText('DOB'),
+                headingText('Status'),
                 if (showMenu == true) headingText('View'),
                 if (showMenu == true) headingText('Edit'),
-                if (showMenu == true) headingText('Delete'),
+                // if (showMenu == true) headingText('Delete'),
               ],
             ),
           ),
           const SizedBox(
             height: 12,
+          ),
+          FutureBuilder(
+            future: (widget.status == "allDevotee" &&
+                    widget.pageFrom == "Dashboard")
+                ? GetDevoteeAPI().allDevotee()
+                : (widget.status != "allDevotee" &&
+                        widget.pageFrom == "Dashboard")
+                    ? GetDevoteeAPI().searchDevotee(widget.status, "status")
+                    : (widget.pageFrom == "Search")
+                        ? GetDevoteeAPI().searchDevotee(
+                            widget.searchValue.toString(), "devoteeName")
+                        : null,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasError) {
+                return const Text('SNAPSHOT ERROR');
+              }
+              if (snapshot.connectionState == ConnectionState.done) {
+                allPaliaList = snapshot.data["data"];
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: allPaliaList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      //Table firebase Data
+                      return PaliaTableRow(
+                        showMenu: showMenu,
+                        slNo: index + 1,
+                        devoteeDetails: allPaliaList[index],
+                      );
+                    },
+                  ),
+                );
+              }
+              return const Center(child: CircularProgressIndicator());
+            },
           ),
         ],
       ),

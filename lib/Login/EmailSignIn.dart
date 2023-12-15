@@ -4,6 +4,7 @@ import 'package:authentication/EmailLogin/authentication_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/firebase/firebase_auth_api.dart';
+import 'package:sdp/model/devotee_model.dart';
 
 import 'package:sdp/screen/dashboard/dashboard.dart';
 
@@ -37,25 +38,42 @@ class _EmailSignInState extends State<EmailSignIn> {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 onEmailLoginPressed: (userEmail, userPassword) async {
-                  String? uid = await FirebaseAuthentication()
-                      .signinWithFirebase(userEmail, userPassword);
+                  try {
+                    String? uid = await FirebaseAuthentication()
+                        .signinWithFirebase(userEmail, userPassword);
 
-                  if (uid != null) {
-                    GetDevoteeAPI().loginDevotee(uid);
-
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DashboardPage(),
+                    if (uid != null) {
+                      final response = await GetDevoteeAPI().loginDevotee(uid);
+                      DevoteeModel resDevoteeData = response?["data"];
+                    
+                      if (response?["statusCode"] == 200 &&
+                          resDevoteeData.isAdmin == true) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DashboardPage(),
+                            ));
+                      } else {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          elevation: 6,
+                          behavior: SnackBarBehavior.floating,
+                          content: Text(
+                            'You are not an Admin',
+                          ),
                         ));
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      elevation: 6,
-                      behavior: SnackBarBehavior.floating,
-                      content: Text(
-                        'Please Check your Email/Password',
-                      ),
-                    ));
+                      }
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        elevation: 6,
+                        behavior: SnackBarBehavior.floating,
+                        content: Text(
+                          'Please Check your Email/Password',
+                        ),
+                      ));
+                    }
+                  } catch (e) {
+                    print(e.toString());
                   }
                 },
                 phoneAuthentication: false,

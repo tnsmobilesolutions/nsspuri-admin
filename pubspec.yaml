@@ -42,13 +42,19 @@ dependencies:
   date_time_picker: ^2.1.0
   firebase_core: ^2.1.1
   firebase_auth: ^4.1.0
-  cloud_firestore: ^4.0.3
   intl: ^0.17.0
-  uuid: ^3.0.6
   material_color_generator: ^1.1.0
   printing: ^5.11.0
-  flutter_typeahead: ^4.1.1
+  url_launcher: ^6.1.14
+  shared_preferences: ^2.2.2
+  dob_input_field: ^2.0.0
+  uuid: ^3.0.7
+  firebase_storage: ^11.2.8
+  flutter_onboarding_slider: ^1.0.10
+  flutter_typeahead: ^4.8.0
   dio: ^5.3.3
+  photo_view: ^0.14.0
+
  
   
 

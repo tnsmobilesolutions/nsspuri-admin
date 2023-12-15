@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:sdp/screen/appBar/actionWidget.dart';
 import 'package:sdp/screen/appBar/leadingImage.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/paliaScreenBody.dart';
-import 'package:sdp/screen/dashboard/dashboard.dart';
+
 
 class PaliaListPage extends StatefulWidget {
-  PaliaListPage({Key? key}) : super(key: key);
-
+  PaliaListPage({Key? key, required this.status, required this.pageFrom, this.searchValue}) : super(key: key);
+ String status;
+  String pageFrom;
+  String? searchValue;
   @override
   State<PaliaListPage> createState() => _PaliaListPageState();
 }
@@ -19,24 +21,12 @@ class _PaliaListPageState extends State<PaliaListPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        leading: const LeadingImage(),
+        toolbarHeight: 70,
         automaticallyImplyLeading: false,
-        title: TextButton(
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(
-              builder: (context) {
-                return DashboardPage();
-              },
-            ));
-          },
-          child: const Text(
-            'nsspuri-admin',
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-        ),
+        title: TitleAppBar(),
         actions: const [ActionWidget()],
       ),
-      body: SafeArea(child: PaliaListBodyPage()),
+      body: SafeArea(child: PaliaListBodyPage(status: widget.status,pageFrom: widget.pageFrom,searchValue: widget.searchValue,)),
     );
   }
 }

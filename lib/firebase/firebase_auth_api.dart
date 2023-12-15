@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FirebaseAuthentication {
   Future<String?> signinWithFirebase(String email, String password) async {
@@ -55,6 +56,10 @@ class FirebaseAuthentication {
 
   void signOut() async {
     try {
+      // Obtain shared preferences.
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+// Remove data for the 'counter' key.
+      await prefs.remove('jwtToken');
       await FirebaseAuth.instance.signOut();
     } catch (e) {
       print(e.toString());

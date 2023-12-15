@@ -81,7 +81,7 @@ class _SearchTableRowState extends State<SearchTableRow> {
             ),
             Expanded(
               child: Text(
-                '${widget.searchpaliaDetails.createdAt}',
+                '${widget.searchpaliaDetails.createdOn}',
                 textAlign: TextAlign.center,
               ),
             ),
@@ -105,7 +105,8 @@ class _SearchTableRowState extends State<SearchTableRow> {
                                     icon: const Icon(Icons.close))
                               ],
                             ),
-                            content: ViewPalia(item: widget.searchpaliaDetails),
+                            content: ViewPalia(
+                                devoteeDetails: widget.searchpaliaDetails),
                           ),
                         );
                       },
@@ -168,9 +169,7 @@ class _SearchTableRowState extends State<SearchTableRow> {
                                 child: const Text('Cancel'),
                               ),
                               TextButton(
-                                onPressed: () {
-                           
-                                },
+                                onPressed: () {},
                                 child: const Text('OK'),
                               ),
                             ],

@@ -3,8 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
 
-class AddPaliaButton extends StatelessWidget {
-  AddPaliaButton({super.key});
+
+class CreateDelegateButton extends StatelessWidget {
+  CreateDelegateButton({super.key});
   // final _formKey = GlobalKey<FormState>();
   final paliaNameController = TextEditingController();
   final paliDateController = TextEditingController();
@@ -32,25 +33,27 @@ class AddPaliaButton extends StatelessWidget {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Create delegate'),
-                  IconButton(
-                      color: const Color(0XFF3f51b5),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: const Icon(Icons.close))
-                ],
-              ),
-              content: AddPageDilouge(),
-            );
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Create delegate'),
+                    IconButton(
+                        color: const Color(0XFF3f51b5),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: const Icon(Icons.close))
+                  ],
+                ),
+                content: AddPageDilouge(
+                  title: "addDevotee",
+                  devoteeId: "",
+                ));
           },
         );
       }),
       child: const Text(
-        'Add Palia',
+        'Create delegate',
         style: TextStyle(color: Colors.white),
       ),
     );
