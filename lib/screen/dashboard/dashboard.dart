@@ -15,6 +15,7 @@ class DashboardPage extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         toolbarHeight: 70,
+        backgroundColor: const Color.fromARGB(255, 6, 36, 61),
         automaticallyImplyLeading: false,
         centerTitle: false,
         title: const TitleAppBar(),
