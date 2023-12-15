@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// String baseUrl = "https://staging-api.nsspuri.org/";
-String baseUrl = "http://34.136.15.208:4400/";
+String baseUrl = "https://staging-api.nsspuri.org/";
+// String baseUrl = "http://34.136.15.208:4400/";
 
 abstract class DioFuctionAPI {
   final dio = Dio();
@@ -162,7 +162,7 @@ abstract class DioFuctionAPI {
     } catch (e) {
       if (e is DioException) {
         if (e.response != null) {
-          print("error message : ${e.response!.data["message"]}");
+          // print("error message : ${e.response!.data["message"]}");
           return {
             "statusCode": 500,
             "error": [e.response!.data["message"], false]
@@ -208,7 +208,7 @@ abstract class DioFuctionAPI {
     } catch (e) {
       if (e is DioException) {
         if (e.response != null) {
-          print("error message : ${e.response!.data["message"]}");
+          // print("error message : ${e.response!.data["message"]}");
           return {
             "statusCode": 500,
             "error": [e.response!.data["message"], false]
