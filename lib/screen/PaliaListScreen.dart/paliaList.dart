@@ -5,10 +5,14 @@ import 'package:sdp/screen/appBar/actionWidget.dart';
 import 'package:sdp/screen/appBar/leadingImage.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/paliaScreenBody.dart';
 
-
 class PaliaListPage extends StatefulWidget {
-  PaliaListPage({Key? key, required this.status, required this.pageFrom, this.searchValue}) : super(key: key);
- String status;
+  PaliaListPage(
+      {Key? key,
+      required this.status,
+      required this.pageFrom,
+      this.searchValue})
+      : super(key: key);
+  String status;
   String pageFrom;
   String? searchValue;
   @override
@@ -26,7 +30,12 @@ class _PaliaListPageState extends State<PaliaListPage> {
         title: TitleAppBar(),
         actions: const [ActionWidget()],
       ),
-      body: SafeArea(child: PaliaListBodyPage(status: widget.status,pageFrom: widget.pageFrom,searchValue: widget.searchValue,)),
+      body: SafeArea(
+          child: PaliaListBodyPage(
+        status: widget.status,
+        pageFrom: widget.pageFrom,
+        searchValue: widget.searchValue,
+      )),
     );
   }
 }
