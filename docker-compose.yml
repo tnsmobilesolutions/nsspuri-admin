@@ -8,10 +8,22 @@ services:
     build: .
     # Always restart the service if it goes down
     restart: always
-    # Map port 80 inside the container to port 6111 on the host
+    # Map port 80 inside the container to port 6600 on the host
     ports:
-      - 5500:80
+      - 6600:80
     # Mount a volume from host to the container's path
     volumes:
       - /usr/share/nginx/html
 
+  # Service named 'dev'
+  dev:
+    # Build the service using Dockerfile in the current directory
+    build: .
+    # Always restart the service if it goes down
+    restart: always
+    # Map port 80 inside the container to port 7700 on the host
+    ports:
+      - 7700:80
+    # Mount a volume from host to the container's path
+    volumes:
+      - /usr/share/nginx/html
