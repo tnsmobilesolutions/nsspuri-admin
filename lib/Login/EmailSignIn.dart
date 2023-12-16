@@ -45,7 +45,7 @@ class _EmailSignInState extends State<EmailSignIn> {
                     if (uid != null) {
                       final response = await GetDevoteeAPI().loginDevotee(uid);
                       DevoteeModel resDevoteeData = response?["data"];
-                    
+
                       if (response?["statusCode"] == 200 &&
                           resDevoteeData.isAdmin == true) {
                         Navigator.push(
@@ -78,22 +78,39 @@ class _EmailSignInState extends State<EmailSignIn> {
                 },
                 phoneAuthentication: false,
                 isSignUpVisible: false,
-                buttonColor: const Color(0xFFeb1589),
+                buttonColor: Colors.deepOrange,
                 loginButonTextColor: Colors.white,
 
                 // titleTextColor: Colors.white,
-                loginPageTextStyle: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
-                ),
+
                 isImageVisible: true,
-                textFieldBorderColor: Colors.white,
+
                 //  Color(0xFFeb1589),
                 cardColor: const Color.fromARGB(255, 253, 253, 253),
                 textfieldHintColor: Colors.white,
-                // emailHintTextStyle: const TextStyle(color: Colors.white),
-                // passwordHintTextStyle: const TextStyle(color: Colors.white),
+
+                emailFieldDecoration: InputDecoration(
+                  label: Text('Email'),
+                  labelStyle: TextStyle(color: Colors.grey[800]),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.deepOrange),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Colors.black.withOpacity(0.5)),
+                  ),
+                ),
+                passwordFieldDecoration: InputDecoration(
+                  label: Text('Password'),
+                  labelStyle: TextStyle(color: Colors.grey[800]),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.deepOrange),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Colors.black.withOpacity(0.5)),
+                  ),
+                ),
               )),
         ),
       ),

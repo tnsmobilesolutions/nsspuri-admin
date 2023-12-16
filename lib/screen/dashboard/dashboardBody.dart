@@ -25,8 +25,7 @@ class _DashboardBodyState extends State<DashboardBody> {
           } else {
             return GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: (snapshot.data["data"].length) ~/ 3,
-                  childAspectRatio: 1.5),
+                  crossAxisCount: 5, childAspectRatio: 1.5),
               itemCount: snapshot.data["data"].length,
               shrinkWrap: true,
               itemBuilder: (BuildContext context, int index) {
@@ -51,16 +50,16 @@ class _DashboardBodyState extends State<DashboardBody> {
                       elevation: 10,
                       shadowColor: dashboarddata.title ==
                               DateFormat('yyyy-MM-dd').format(DateTime.now())
-                          ? Colors.yellow
+                          ? Colors.black
                           : dashboarddata.title ==
                                   DateFormat('yyyy-MM-dd').format(DateTime.now()
                                       .subtract(Duration(days: 1)))
-                              ? Colors.lightGreen
+                              ? Colors.black
                               : dashboarddata.title ==
                                       DateFormat('yyyy-MM-dd').format(
                                           DateTime.now()
                                               .subtract(Duration(days: 1)))
-                                  ? Colors.lightBlue
+                                  ? Colors.black
                                   : Color.fromARGB(255, 253, 253, 253),
                       child: Padding(
                         padding: const EdgeInsets.all(15.0),
