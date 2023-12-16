@@ -53,9 +53,13 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
             Expanded(
               child: CircleAvatar(
                 radius: 20,
-                backgroundImage: Image.network(
-                        widget.devoteeDetails.profilePhotoUrl.toString())
-                    .image,
+                backgroundImage: widget.devoteeDetails.profilePhotoUrl !=
+                            null &&
+                        widget.devoteeDetails.profilePhotoUrl!.isNotEmpty
+                    ? Image.network(widget.devoteeDetails.profilePhotoUrl!)
+                        .image
+                    : AssetImage(
+                        'assets/images/profile.jpeg'), // Replace with your actual asset path
               ),
             ),
             Expanded(
@@ -104,7 +108,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                                   children: [
                                     Text(widget.devoteeDetails.name.toString()),
                                     IconButton(
-                                        color: Colors.black,
+                                        color: Colors.deepOrange,
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
@@ -119,14 +123,11 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                           ),
                         );
                       },
-                      icon: const Icon(
-                        Icons.info,
-                        color: const Color(0XFF3f51b5),
-                      ))),
+                      icon: const Icon(Icons.info, color: Colors.deepOrange))),
             if (widget.showMenu == true)
               Expanded(
                   child: IconButton(
-                      color: const Color(0XFF3f51b5),
+                      color: Colors.deepOrange,
                       onPressed: () {
                         showDialog<void>(
                           context: context,
@@ -142,7 +143,10 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
-                                        icon: const Icon(Icons.close))
+                                        icon: const Icon(
+                                          Icons.close,
+                                          color: Colors.deepOrange,
+                                        ))
                                   ],
                                 ),
                                 content: AddPageDilouge(
@@ -155,6 +159,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                       },
                       icon: const Icon(
                         Icons.edit,
+                        color: Colors.deepOrange,
                       ))),
             // if (widget.showMenu == true)
             //   Expanded(

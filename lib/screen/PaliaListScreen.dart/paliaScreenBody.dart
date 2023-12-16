@@ -67,12 +67,9 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
             children: [
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
-                  side: const BorderSide(
-                    width: 1.0,
-                    color: Color(0XFF3f51b5),
-                  ),
-                  foregroundColor: const Color(0XFF3f51b5),
-                ),
+                    side:
+                        const BorderSide(width: 1.5, color: Colors.deepOrange),
+                    foregroundColor: Colors.black),
                 onPressed: () {
                   setState(() {
                     showMenu = !showMenu;
@@ -87,12 +84,11 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
                 padding: const EdgeInsets.only(right: 15),
                 child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(
-                        width: 1.0,
-                        color: Color(0XFF3f51b5),
-                      ),
-                      foregroundColor: const Color(0XFF3f51b5),
-                    ),
+                        side: const BorderSide(
+                          width: 1.5,
+                          color: Colors.deepOrange,
+                        ),
+                        foregroundColor: Colors.black),
                     onPressed: () async {
                       final baloobhaina2font =
                           await PdfGoogleFonts.balooBhaina2Regular();
