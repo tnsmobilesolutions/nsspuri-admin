@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
 
-
 class CreateDelegateButton extends StatelessWidget {
   CreateDelegateButton({super.key});
   // final _formKey = GlobalKey<FormState>();
@@ -38,11 +37,11 @@ class CreateDelegateButton extends StatelessWidget {
                   children: [
                     Text('Create delegate'),
                     IconButton(
-                        color: const Color(0XFF3f51b5),
+                        color: Colors.deepOrange,
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        icon: const Icon(Icons.close))
+                        icon: const Icon(Icons.close,color: Colors.deepOrange,))
                   ],
                 ),
                 content: AddPageDilouge(

@@ -256,7 +256,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     children: [
                       Text('isAdmin'),
                       Checkbox(
-                        checkColor: Colors.blue,
+                        checkColor: Colors.deepOrange,
                         fillColor: MaterialStateProperty.resolveWith(getColor),
                         value: isAdmin,
                         onChanged: (bool? value) {},
@@ -276,7 +276,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     children: [
                       Text('isGruhasanaApproved'),
                       Checkbox(
-                        checkColor: Colors.blue,
+                        checkColor: Colors.deepOrange,
                         fillColor: MaterialStateProperty.resolveWith(getColor),
                         value: isGruhasanaApproved,
                         onChanged: (bool? value) {
@@ -300,7 +300,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     children: [
                       Text('isKYDVerified'),
                       Checkbox(
-                        checkColor: Colors.blue,
+                        checkColor: Colors.deepOrange,
                         fillColor: MaterialStateProperty.resolveWith(getColor),
                         value: isKYDVerified,
                         onChanged: (bool? value) {
@@ -324,7 +324,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     children: [
                       Text('isApproved'),
                       Checkbox(
-                        checkColor: Colors.blue,
+                        checkColor: Colors.deepOrange,
                         fillColor: MaterialStateProperty.resolveWith(getColor),
                         value: isApproved,
                         onChanged: (bool? value) {

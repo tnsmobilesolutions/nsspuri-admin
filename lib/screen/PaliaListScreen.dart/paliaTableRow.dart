@@ -56,10 +56,9 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                 backgroundImage: widget.devoteeDetails.profilePhotoUrl !=
                             null &&
                         widget.devoteeDetails.profilePhotoUrl!.isNotEmpty
-                    ? Image.network(widget.devoteeDetails.profilePhotoUrl!)
-                        .image
-                    : AssetImage(
-                        'assets/images/profile.jpeg'), // Replace with your actual asset path
+                    ? NetworkImage(widget.devoteeDetails.profilePhotoUrl!)
+                        as ImageProvider
+                    : AssetImage('assets/images/profile.jpeg') as ImageProvider,
               ),
             ),
             Expanded(

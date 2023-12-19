@@ -23,72 +23,91 @@ class _DashboardBodyState extends State<DashboardBody> {
           } else if (snapshot.hasError) {
             return const Center(child: CircularProgressIndicator());
           } else {
-            return GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 5, childAspectRatio: 1.5),
-              itemCount: snapshot.data["data"].length,
-              shrinkWrap: true,
-              itemBuilder: (BuildContext context, int index) {
-                DashboardStatusModel dashboarddata =
-                    DashboardStatusModel.fromMap(snapshot.data["data"][index]);
+            return Column(
+              children: [
+                GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 5, childAspectRatio: 1.5),
+                  itemCount: snapshot.data["data"].length,
+                  shrinkWrap: true,
+                  itemBuilder: (BuildContext context, int index) {
+                    DashboardStatusModel dashboarddata =
+                        DashboardStatusModel.fromMap(
+                            snapshot.data["data"][index]);
 
-                return Padding(
-                  padding: const EdgeInsets.all(17.0),
-                  child: InkWell(
-                    highlightColor: const Color.fromARGB(255, 0, 0, 0),
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          return PaliaListPage(
-                            pageFrom: "Dashboard",
-                            status: dashboarddata.status ?? "",
-                          );
+                    return Padding(
+                      padding: const EdgeInsets.all(17.0),
+                      child: InkWell(
+                        highlightColor: const Color.fromARGB(255, 0, 0, 0),
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) {
+                              return PaliaListPage(
+                                pageFrom: "Dashboard",
+                                status: dashboarddata.status ?? "",
+                              );
+                            },
+                          ));
                         },
-                      ));
-                    },
-                    child: Card(
-                      elevation: 10,
-                      shadowColor: dashboarddata.title ==
-                              DateFormat('yyyy-MM-dd').format(DateTime.now())
-                          ? Colors.black
-                          : dashboarddata.title ==
-                                  DateFormat('yyyy-MM-dd').format(DateTime.now()
-                                      .subtract(Duration(days: 1)))
+                        child: Card(
+                          elevation: 10,
+                          shadowColor: dashboarddata.title ==
+                                  DateFormat('yyyy-MM-dd')
+                                      .format(DateTime.now())
                               ? Colors.black
                               : dashboarddata.title ==
                                       DateFormat('yyyy-MM-dd').format(
                                           DateTime.now()
                                               .subtract(Duration(days: 1)))
                                   ? Colors.black
-                                  : Color.fromARGB(255, 253, 253, 253),
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (dashboarddata.title != "")
-                              Text(
-                                dashboarddata.title.toString(),
-                                style: const TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
-                            Text(
-                              dashboarddata.message.toString(),
-                              style: const TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
+                                  : dashboarddata.title ==
+                                          DateFormat('yyyy-MM-dd').format(
+                                              DateTime.now()
+                                                  .subtract(Duration(days: 1)))
+                                      ? Colors.black
+                                      : Color.fromARGB(255, 253, 253, 253),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                if (dashboarddata.title != "")
+                                  Text(
+                                    dashboarddata.title.toString(),
+                                    style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                Text(
+                                  dashboarddata.message.toString(),
+                                  style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  dashboarddata.count.toString(),
+                                  style: const TextStyle(
+                                      fontSize: 40,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              ],
                             ),
-                            Text(
-                              dashboarddata.count.toString(),
-                              style: const TextStyle(
-                                  fontSize: 40, fontWeight: FontWeight.bold),
-                            )
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                );
-              },
+                    );
+                  },
+                ),
+                Text(
+                  DateFormat('yyyy-MM-dd')
+                      .format(DateTime.now().subtract(Duration(days: 1))),
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                Row(
+                  children: [],
+                )
+              ],
             );
           }
         });
