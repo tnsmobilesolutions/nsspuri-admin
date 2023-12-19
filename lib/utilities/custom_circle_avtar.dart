@@ -14,25 +14,17 @@ class customCircleAvtar extends StatelessWidget {
         child: InkWell(
           onTap: (() {}),
           child: Stack(
+            clipBehavior: Clip.none,
             children: [
               Image.network(
                 "https://firebasestorage.googleapis.com/v0/b/nsspuridelegate-dev.appspot.com/o/3d%20profile%20icon.png?alt=media&token=9e216c52-8517-4983-a695-9f0741d6dd02",
                 fit: BoxFit.cover,
               ),
               Positioned(
-                bottom: 0,
+                top: 50,
                 right: 0,
-                child: Container(
-                  padding: EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                  ),
-                  child: Icon(
-                    Icons.camera_alt,
-                    color: Colors.grey,
-                  ),
-                ),
+                left: 90,
+                child: Icon(Icons.camera_alt, color: Colors.deepOrange),
               ),
             ],
           ),
