@@ -1,4 +1,8 @@
 // ignore_for_file: file_names
+import 'dart:convert';
+import 'dart:html' as html;
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -43,11 +47,58 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   final formKey = GlobalKey<FormState>();
   String? bloodGroupController;
   String profilePhotoUrl = "";
-  List gender = ["Bhai", "Maa"];
+  List gender = ["Male", "Female"];
   int genderController = 0;
-  String profileURL =
-      "https://firebasestorage.googleapis.com/v0/b/nsspuridelegate-dev.appspot.com/o/3d%20profile%20icon.png?alt=media&token=9e216c52-8517-4983-a695-9f0741d6dd02";
   String selectedStatus = 'dataSubmitted'; // Initially selected status
+  List<int>? selectedimage;
+  Uint8List? imageasbytes;
+  File? imagefile;
+  String? imageName;
+  bool isAvailable = false;
+
+  webPicker() async {
+    // Create an instance of FileUploadInputElement
+    html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
+    uploadInput.multiple = false;
+    uploadInput.draggable = true;
+    uploadInput.click();
+
+    uploadInput.onChange.listen((event) {
+      final inputImageFile = uploadInput.files![0];
+      const maxSizeBytes = 1 * 1024 * 1024;
+      if (!inputImageFile.type.toLowerCase().startsWith('image/')) {
+        print("Invalid format !");
+        // Message().customMessage(context, MediaQuery.of(context).size.width,
+        //     "Invalid format !", CustomColor.errorColor);
+        return;
+      }
+      if (inputImageFile.size > maxSizeBytes) {
+        // Message().customMessage(
+        //     context,
+        //     MediaQuery.of(context).size.width,
+        //     "File size exceeds the limit (1MB). Please choose a smaller file.",
+        //     CustomColor.actionColor);
+        print(
+            'File size exceeds the limit (1MB). Please choose a smaller file.');
+        return;
+      }
+
+      imageName = inputImageFile.name;
+      final reader = html.FileReader();
+
+      reader.onLoadEnd.listen((event) {
+        setState(() {
+          imageasbytes = const Base64Decoder()
+              .convert(reader.result.toString().split(",").last);
+          selectedimage = imageasbytes;
+          isAvailable = true;
+          imagefile = inputImageFile;
+        });
+      });
+      reader.readAsDataUrl(inputImageFile);
+    });
+  }
+
   bool isAdmin = false;
   bool isKYDVerified = false;
   bool isApproved = false;
@@ -191,31 +242,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                         ? customCircleAvtar(
                             imageURL: profilePhotoUrl,
                           )
-                        : CircleAvatar(
+                        : const CircleAvatar(
                             radius: 50,
                             child: Center(
                               child: CircularProgressIndicator(),
                             ),
-                          )
-                //  CircleAvatar(
-                //   radius: 40.0,
-                //   backgroundImage: NetworkImage('$profilePhotoUrl'),
-                //   backgroundColor: Colors.transparent,
-                //   child: const Align(
-                //     alignment: Alignment.bottomRight,
-                //     child: CircleAvatar(
-                //       backgroundColor: CircleAvatarClor,
-                //       radius: 20.0,
-                //       child: Icon(
-                //         Icons.collections,
-                //         size: 18.0,
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                ),
+                          )),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           widget.title == "edit"
               ? DropdownButton<String>(
                   value: selectedStatus,
@@ -232,7 +266,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     ),
                   ),
                   elevation: 16,
-                  style: TextStyle(color: Colors.black), // Dropdown text color
+                  style: const TextStyle(
+                      color: Colors.black), // Dropdown text color
                   items: statusOptions
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
@@ -244,7 +279,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     );
                   }).toList(),
                 )
-              : SizedBox(
+              : const SizedBox(
                   height: 0,
                   width: 0,
                 ),
@@ -254,7 +289,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('isAdmin'),
+                      const Text('isAdmin'),
                       Checkbox(
                         checkColor: Colors.deepOrange,
                         fillColor: MaterialStateProperty.resolveWith(getColor),
@@ -264,7 +299,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     ],
                   ),
                 )
-              : SizedBox(
+              : const SizedBox(
                   height: 0,
                   width: 0,
                 ),
@@ -274,7 +309,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('isGruhasanaApproved'),
+                      const Text('isGruhasanaApproved'),
                       Checkbox(
                         checkColor: Colors.deepOrange,
                         fillColor: MaterialStateProperty.resolveWith(getColor),
@@ -288,7 +323,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     ],
                   ),
                 )
-              : SizedBox(
+              : const SizedBox(
                   height: 0,
                   width: 0,
                 ),
@@ -298,7 +333,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('isKYDVerified'),
+                      const Text('isKYDVerified'),
                       Checkbox(
                         checkColor: Colors.deepOrange,
                         fillColor: MaterialStateProperty.resolveWith(getColor),
@@ -312,7 +347,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     ],
                   ),
                 )
-              : SizedBox(
+              : const SizedBox(
                   height: 0,
                   width: 0,
                 ),
@@ -322,7 +357,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('isApproved'),
+                      const Text('isApproved'),
                       Checkbox(
                         checkColor: Colors.deepOrange,
                         fillColor: MaterialStateProperty.resolveWith(getColor),
@@ -336,7 +371,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     ],
                   ),
                 )
-              : SizedBox(
+              : const SizedBox(
                   height: 0,
                   width: 0,
                 ),
@@ -784,7 +819,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                       bloodGroup: bloodGroupController,
                       name: nameController.text,
                       gender: gender[genderController],
-                      profilePhotoUrl: profileURL,
+                      profilePhotoUrl: profilePhotoUrl,
                       sangha: sanghaController.text,
                       dob: dateOfBirth.text,
                       mobileNumber: mobileController.text,

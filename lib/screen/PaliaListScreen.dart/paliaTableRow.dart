@@ -53,14 +53,15 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
             Expanded(
               child: CircleAvatar(
                 radius: 20,
-                backgroundImage: widget.devoteeDetails.profilePhotoUrl !=
-                            null &&
-                        widget.devoteeDetails.profilePhotoUrl!.isNotEmpty
-                    ? NetworkImage(widget.devoteeDetails.profilePhotoUrl!)
-                        as ImageProvider
-                    : AssetImage('assets/images/profile.jpeg') as ImageProvider,
+                backgroundImage:
+                    NetworkImage(widget.devoteeDetails.profilePhotoUrl ?? ''),
+                onBackgroundImageError: (exception, stackTrace) {
+                  print('Error loading image: $exception');
+                  // Handle the error, e.g., show a placeholder image or display an error message
+                },
               ),
             ),
+
             Expanded(
               child: Text(
                 widget.devoteeDetails.name != null
