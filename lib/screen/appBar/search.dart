@@ -46,6 +46,10 @@ class _SearchSDPState extends State<SearchSDP> {
                   suffixIcon: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Colors.deepOrange, // Set the background color
+                        ),
                         onPressed: sdpSearchController.text.isNotEmpty
                             ? () async {
                                 List<DevoteeModel> devoteeList = [];
