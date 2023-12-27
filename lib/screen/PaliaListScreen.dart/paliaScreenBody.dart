@@ -231,7 +231,7 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
               }
               if (snapshot.connectionState == ConnectionState.done) {
                 allPaliaList = snapshot.data["data"];
-                return Expanded(
+                return Flexible(
                   child: ListView.builder(
                     itemCount: allPaliaList.length,
                     itemBuilder: (BuildContext context, int index) {

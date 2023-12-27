@@ -138,7 +138,6 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                                   children: [
                                     const Text('Edit Palia Details'),
                                     IconButton(
-                                        color: const Color(0XFF3f51b5),
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
