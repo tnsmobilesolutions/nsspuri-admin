@@ -69,11 +69,24 @@ class _DashboardBodyState extends State<DashboardBody> {
                       return Padding(
                           padding: const EdgeInsets.only(
                               right: 8.0), // Adjust spacing between items
-                          child: Card(
-                              color: Colors.yellowAccent,
-                              child: DashBoardData(
-                                  dashBoardDevoteeData:
-                                      emptyTitleData[index])));
+                          child: InkWell(
+                            highlightColor: const Color.fromARGB(255, 0, 0, 0),
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) {
+                                  return PaliaListPage(
+                                    pageFrom: "Dashboard",
+                                    status: emptyTitleData[index].status ?? "",
+                                  );
+                                },
+                              ));
+                            },
+                            child: Card(
+                                color: Colors.yellowAccent,
+                                child: DashBoardData(
+                                    dashBoardDevoteeData:
+                                        emptyTitleData[index])),
+                          ));
                     },
                   )),
                   Row(
@@ -98,10 +111,24 @@ class _DashboardBodyState extends State<DashboardBody> {
                       return Padding(
                           padding: const EdgeInsets.only(
                               right: 8.0), // Adjust spacing between items
-                          child: Card(
-                              color: Colors.yellowAccent,
-                              child: DashBoardData(
-                                  dashBoardDevoteeData: todayDateData[index])));
+                          child: InkWell(
+                            highlightColor: const Color.fromARGB(255, 0, 0, 0),
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) {
+                                  return PaliaListPage(
+                                    pageFrom: "Dashboard",
+                                    status: todayDateData[index].status ?? "",
+                                  );
+                                },
+                              ));
+                            },
+                            child: Card(
+                                color: Colors.yellowAccent,
+                                child: DashBoardData(
+                                    dashBoardDevoteeData:
+                                        todayDateData[index])),
+                          ));
                     },
                   )),
                   Row(
@@ -125,11 +152,25 @@ class _DashboardBodyState extends State<DashboardBody> {
                       return Padding(
                           padding: const EdgeInsets.only(
                               right: 8.0), // Adjust spacing between items
-                          child: Card(
-                              color: Colors.yellowAccent,
-                              child: DashBoardData(
-                                  dashBoardDevoteeData:
-                                      yesterdayDatesData[index])));
+                          child: InkWell(
+                            highlightColor: const Color.fromARGB(255, 0, 0, 0),
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) {
+                                  return PaliaListPage(
+                                    pageFrom: "Dashboard",
+                                    status:
+                                        yesterdayDatesData[index].status ?? "",
+                                  );
+                                },
+                              ));
+                            },
+                            child: Card(
+                                color: Colors.yellowAccent,
+                                child: DashBoardData(
+                                    dashBoardDevoteeData:
+                                        yesterdayDatesData[index])),
+                          ));
                     },
                   )),
                   Row(
@@ -153,11 +194,26 @@ class _DashboardBodyState extends State<DashboardBody> {
                       return Padding(
                           padding: const EdgeInsets.only(
                               right: 8.0), // Adjust spacing between items
-                          child: Card(
-                              color: Colors.yellowAccent,
-                              child: DashBoardData(
-                                  dashBoardDevoteeData:
-                                      dayBeforeYesterdayDatesData[index])));
+                          child: InkWell(
+                            highlightColor: const Color.fromARGB(255, 0, 0, 0),
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) {
+                                  return PaliaListPage(
+                                    pageFrom: "Dashboard",
+                                    status: dayBeforeYesterdayDatesData[index]
+                                            .status ??
+                                        "",
+                                  );
+                                },
+                              ));
+                            },
+                            child: Card(
+                                color: Colors.yellowAccent,
+                                child: DashBoardData(
+                                    dashBoardDevoteeData:
+                                        dayBeforeYesterdayDatesData[index])),
+                          ));
                     },
                   )),
                 ],
