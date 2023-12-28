@@ -50,15 +50,31 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                 textAlign: TextAlign.center,
               ),
             ),
-            Expanded(
-              child: CircleAvatar(
-                radius: 20,
-                backgroundImage:
-                    NetworkImage(widget.devoteeDetails.profilePhotoUrl ?? ''),
-                onBackgroundImageError: (exception, stackTrace) {
-                  print('Error loading image: $exception');
-                  // Handle the error, e.g., show a placeholder image or display an error message
-                },
+            // Expanded(
+            //   child: CircleAvatar(
+            //     radius: 20,
+            //     backgroundImage: AssetImage('assets/images.profile.jpeg'),
+            //     // NetworkImage(widget.devoteeDetails.profilePhotoUrl ?? ''),
+            //     onBackgroundImageError: (exception, stackTrace) {
+            //       print('Error loading image: $exception');
+            //       // Handle the error, e.g., show a placeholder image or display an error message
+            //     },
+            //   ),
+            // ),
+            CircleAvatar(
+              radius: 25, // Adjust the radius as needed
+
+              child: Container(
+                height: 60,
+                width: 60,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: AssetImage(
+                        'assets/images/profile.jpeg'), // Adjust the file path
+                  ),
+                ),
               ),
             ),
 
