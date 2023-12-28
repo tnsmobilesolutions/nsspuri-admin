@@ -38,7 +38,10 @@ class _EmailSignInState extends State<EmailSignIn> {
                   loginImage: const AssetImage('assets/images/login.png'),
                   title: const Text(
                     'Sammilani Delegate Admin',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
                   onEmailLoginPressed: (userEmail, userPassword) async {
                     try {
