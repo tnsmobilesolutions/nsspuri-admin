@@ -57,13 +57,11 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                   width: 2.0,
                 ),
               ),
-              child: ClipOval(
-                child: widget.devoteeDetails.profilePhotoUrl != null &&
-                        widget.devoteeDetails.profilePhotoUrl!.isNotEmpty
-                    ? Image.network(widget.devoteeDetails.profilePhotoUrl ?? '')
-                    : const Image(
-                        image: AssetImage('assets/images/profile.jpeg')),
-              ),
+              child: widget.devoteeDetails.profilePhotoUrl != null &&
+                      widget.devoteeDetails.profilePhotoUrl!.isNotEmpty
+                  ? Image.network(widget.devoteeDetails.profilePhotoUrl ?? '')
+                  : const Image(
+                      image: AssetImage('assets/images/profile.jpeg')),
             )),
             Expanded(
               child: Text(

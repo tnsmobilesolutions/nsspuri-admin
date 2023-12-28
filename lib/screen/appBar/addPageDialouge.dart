@@ -93,7 +93,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     return image.path.split("/").last;
   }
 
-  Future<String?> uploadImageToFirebaseStorage(XFile image, String name) async {
+  Future<String?> uploadImageToFirebaseStorage(
+      XFile image, String? name) async {
     Reference storage =
         FirebaseStorage.instance.ref('$name/${getImageName(image)}');
     await storage.putFile(File(image.path));
@@ -816,6 +817,10 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                 await Future.delayed(
                     const Duration(seconds: 1)); // Simulating a delay
                 try {
+                  String? profileURL = profileImage != null
+                      ? await uploadImageToFirebaseStorage(
+                          profileImage as XFile, nameController.text)
+                      : selectedDevotee?.profilePhotoUrl;
                   String uniqueDevoteeId = const Uuid().v1();
                   DevoteeModel updateDevotee = DevoteeModel(
                       devoteeCode: selectedDevotee?.devoteeCode?.toInt() ?? 0,
@@ -833,7 +838,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                       bloodGroup: bloodGroupController,
                       name: nameController.text,
                       gender: gender[genderController],
-                      profilePhotoUrl: profilePhotoUrl,
+                      profilePhotoUrl: profileURL,
                       sangha: sanghaController.text,
                       dob: dateOfBirth.text,
                       mobileNumber: mobileController.text,
