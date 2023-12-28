@@ -19,6 +19,7 @@ class TitleAppBar extends StatelessWidget {
           Spacer(),
           Text(
             'Sammilani Delegate Admin',
+            style: TextStyle(color: Colors.white),
           ),
         ],
       ),
