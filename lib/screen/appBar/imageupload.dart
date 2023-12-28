@@ -1,8 +1,5 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:sdp/utilities/custom_circle_avtar.dart';
 
 class UploadProfileImage extends StatefulWidget {
   const UploadProfileImage({
@@ -25,7 +22,6 @@ class _UploadProfileImageState extends State<UploadProfileImage> {
   XFile? pickImage;
   Future<void> _getImage(ImageSource source) async {
     final pickedFile = await ImagePicker().pickImage(source: source);
-
     if (pickedFile != null) {
       final List<int> bytes = await pickedFile.readAsBytes();
       setState(() {

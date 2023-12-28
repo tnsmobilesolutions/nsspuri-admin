@@ -89,16 +89,41 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   get districtList => null;
 
   DevoteeModel? selectedDevotee;
+  Map<String, dynamic>? image;
+  XFile? pickImage;
+
+  Future<void> _getImage(ImageSource source) async {
+    final pickedFile = await ImagePicker().pickImage(source: source);
+    if (pickedFile != null) {
+      final List<int> bytes = await pickedFile.readAsBytes();
+      setState(() {
+        image = {'selectedImage': bytes};
+        pickImage = pickedFile;
+      });
+      // widget.onImageSelected(image, pickImage);
+    }
+  }
+
   String getImageName(XFile image) {
     return image.path.split("/").last;
   }
 
   Future<String?> uploadImageToFirebaseStorage(
-      XFile image, String? name) async {
-    Reference storage =
-        FirebaseStorage.instance.ref('$name/${getImageName(image)}');
-    await storage.putFile(File(image.path));
-    return await storage.getDownloadURL();
+      List<int> imageData, String? name) async {
+    try {
+      Uint8List bytes = Uint8List.fromList(imageData);
+      Reference storage = FirebaseStorage.instance
+          .ref('$name/${DateTime.now().millisecondsSinceEpoch}.jpg');
+      UploadTask uploadTask = storage.putData(bytes);
+
+      TaskSnapshot snapshot = await uploadTask;
+      String downloadURL = await snapshot.ref.getDownloadURL();
+
+      return downloadURL;
+    } catch (e) {
+      print('Error uploading image: $e');
+      return null;
+    }
   }
 
   populateData() async {
@@ -194,17 +219,39 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
         width: 400,
         child: SingleChildScrollView(
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            UploadProfileImage(
-              selectedImage: selectedImage,
-              // data: widget.carousalData,
-              onImageSelected: (image, xfileImage) {
-                setState(() {
-                  selectedImage = image?['selectedImage'];
-                  imageName = image?['fileName'];
-                  fileImage = xfileImage;
-                });
-              },
+            CircleAvatar(
+              backgroundImage: (image?["selectedImage"] != null &&
+                      image?["selectedImage"].path.isNotEmpty)
+                  ? Image.memory(image?['selectedImage']).image
+                  : (profilePhotoUrl.isNotEmpty)
+                      ? Image.network(profilePhotoUrl.toString()).image
+                      : const AssetImage(
+                          'assets/images/profile.jpeg'), // Set your default image asset path here
+              radius: 60,
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: IconButton(
+                    onPressed: () {
+                      _getImage(ImageSource.camera);
+                    },
+                    icon: const Icon(
+                      Icons.camera_alt,
+                      color: Colors.blue,
+                    )),
+              ),
             ),
+
+            // UploadProfileImage(
+            //   selectedImage: selectedImage,
+            //   // data: widget.carousalData,
+            //   onImageSelected: (image, xfileImage) {
+            //     setState(() {
+            //       selectedImage = image?['selectedImage'];
+            //       imageName = image?['fileName'];
+            //       fileImage = xfileImage;
+            //     });
+            //   },
+            // ),
             const SizedBox(height: 10),
             widget.title == "edit"
                 ? DropdownButton<String>(
@@ -768,9 +815,10 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     await Future.delayed(
                         const Duration(seconds: 1)); // Simulating a delay
                     try {
-                      String? profileURL = fileImage != null
+                      String? profileURL = image?["selectedImage"] != null
                           ? await uploadImageToFirebaseStorage(
-                              fileImage as XFile, nameController.text)
+                              image?["selectedImage"] as List<int>,
+                              nameController.text)
                           : selectedDevotee?.profilePhotoUrl;
                       print("profileURL -------------$profileURL");
                       String uniqueDevoteeId = const Uuid().v1();
