@@ -826,7 +826,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                       devoteeCode: selectedDevotee?.devoteeCode?.toInt() ?? 0,
                       isAdmin: selectedDevotee?.isAdmin ?? false,
                       createdById: widget.title == "edit"
-                          ? widget.devoteeId
+                          ? selectedDevotee?.createdById
                           : uniqueDevoteeId,
                       status: selectedStatus,
                       createdOn: selectedDevotee?.createdOn ??
