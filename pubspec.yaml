@@ -54,6 +54,7 @@ dependencies:
   flutter_typeahead: ^4.8.0
   dio: ^5.3.3
   photo_view: ^0.14.0
+  image_picker_web: ^3.1.1
 
  
   

@@ -7,6 +7,7 @@ import 'package:printing/printing.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/paliaTableRow.dart';
+import 'package:image_picker_web/image_picker_web.dart';
 
 class PaliaListBodyPage extends StatefulWidget {
   PaliaListBodyPage(
@@ -200,7 +201,7 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
             child: Row(
               children: [
                 headingText('Sl No.'),
-                headingText('Profile Imgae'),
+                headingText('Profile Image'),
                 headingText('Devotee Name'),
                 headingText('Sangha'),
                 headingText('DOB'),
