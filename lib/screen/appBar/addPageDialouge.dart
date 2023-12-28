@@ -104,9 +104,9 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     }
   }
 
-  String getImageName(XFile image) {
-    return image.path.split("/").last;
-  }
+  // String getImageName(XFile image) {
+  //   return image.path.split("/").last;
+  // }
 
   Future<String?> uploadImageToFirebaseStorage(
       List<int> imageData, String? name) async {
@@ -220,14 +220,13 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
         child: SingleChildScrollView(
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             CircleAvatar(
-              backgroundImage: (image?["selectedImage"] != null &&
-                      image?["selectedImage"].path.isNotEmpty)
+              backgroundImage: image?["selectedImage"] != null
                   ? Image.memory(image?['selectedImage']).image
                   : (profilePhotoUrl.isNotEmpty)
                       ? Image.network(profilePhotoUrl.toString()).image
                       : const AssetImage(
                           'assets/images/profile.jpeg'), // Set your default image asset path here
-              radius: 60,
+              radius: 40,
               child: Align(
                 alignment: Alignment.bottomRight,
                 child: IconButton(
