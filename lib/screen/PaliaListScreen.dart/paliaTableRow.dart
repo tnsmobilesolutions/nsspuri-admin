@@ -46,20 +46,13 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
               ),
             ),
             Expanded(
-                child: Container(
-              width: 50.0,
-              height: 50.0,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-                border: Border.all(
-                  color: Colors.blue,
-                  width: 2.0,
-                ),
-              ),
+                child: SizedBox(
+              height: 50,
+              width: 50,
+
               child: widget.devoteeDetails.profilePhotoUrl != null &&
                       widget.devoteeDetails.profilePhotoUrl!.isNotEmpty
-                  ? Image.network(widget.devoteeDetails.profilePhotoUrl ?? '')
+                  ? Image.network(widget.devoteeDetails.profilePhotoUrl ?? '',width: 50,height: 50,)
                   : const Image(
                       image: AssetImage('assets/images/profile.jpeg')),
             )),
