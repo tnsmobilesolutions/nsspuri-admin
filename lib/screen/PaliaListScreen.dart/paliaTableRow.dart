@@ -1,14 +1,9 @@
 // ignore_for_file: file_names, must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:sdp/API/delete_devotee.dart';
 import 'package:sdp/model/devotee_model.dart';
-
-import 'package:sdp/screen/PaliaListScreen.dart/editPalia.dart';
-
 import 'package:sdp/screen/PaliaListScreen.dart/viewDevotee.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
-import 'package:sdp/screen/dashboard/dashboard.dart';
 
 class PaliaTableRow extends StatefulWidget {
   PaliaTableRow({
@@ -51,13 +46,16 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
               ),
             ),
             Expanded(
-              child: CircleAvatar(
-                radius: 20,
-                backgroundImage: Image.network(
-                        widget.devoteeDetails.profilePhotoUrl.toString())
-                    .image,
-              ),
-            ),
+                child: SizedBox(
+              height: 50,
+              width: 50,
+
+              child: widget.devoteeDetails.profilePhotoUrl != null &&
+                      widget.devoteeDetails.profilePhotoUrl!.isNotEmpty
+                  ? Image.network(widget.devoteeDetails.profilePhotoUrl ?? '',width: 50,height: 50,)
+                  : const Image(
+                      image: AssetImage('assets/images/profile.jpeg')),
+            )),
             Expanded(
               child: Text(
                 widget.devoteeDetails.name != null
@@ -104,7 +102,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                                   children: [
                                     Text(widget.devoteeDetails.name.toString()),
                                     IconButton(
-                                        color: Colors.black,
+                                        color: Colors.deepOrange,
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
@@ -119,14 +117,11 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                           ),
                         );
                       },
-                      icon: const Icon(
-                        Icons.info,
-                        color: const Color(0XFF3f51b5),
-                      ))),
+                      icon: const Icon(Icons.info, color: Colors.deepOrange))),
             if (widget.showMenu == true)
               Expanded(
                   child: IconButton(
-                      color: const Color(0XFF3f51b5),
+                      color: Colors.deepOrange,
                       onPressed: () {
                         showDialog<void>(
                           context: context,
@@ -138,11 +133,13 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                                   children: [
                                     const Text('Edit Palia Details'),
                                     IconButton(
-                                        color: const Color(0XFF3f51b5),
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
-                                        icon: const Icon(Icons.close))
+                                        icon: const Icon(
+                                          Icons.close,
+                                          color: Colors.deepOrange,
+                                        ))
                                   ],
                                 ),
                                 content: AddPageDilouge(
@@ -155,6 +152,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                       },
                       icon: const Icon(
                         Icons.edit,
+                        color: Colors.deepOrange,
                       ))),
             // if (widget.showMenu == true)
             //   Expanded(

@@ -356,17 +356,6 @@ class _EditPaliadilougePageState extends State<EditPaliadilougePage> {
                 },
               ),
 
-              // TextFormField(
-              //   focusNode: FocusNode(
-              //     descendantsAreFocusable: false,
-              //   ),
-              //   controller: sammilaniPlaceController,
-              //   decoration: const InputDecoration(
-              //     border: OutlineInputBorder(),
-              //     labelText: 'sammilani Place',
-              //   ),
-              // ),
-
               const SizedBox(height: 10),
               // Remark
               TextFormField(
@@ -395,11 +384,11 @@ class _EditPaliadilougePageState extends State<EditPaliadilougePage> {
                           children: [
                             const Text('Edit Palia Details'),
                             IconButton(
-                                color: const Color(0XFF3f51b5),
+                                color: Colors.deepOrange,
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                icon: const Icon(Icons.close))
+                                icon: const Icon(Icons.close,color: Colors.deepOrange,))
                           ],
                         ),
                         content:
@@ -411,7 +400,6 @@ class _EditPaliadilougePageState extends State<EditPaliadilougePage> {
                           ),
                           TextButton(
                             onPressed: () {
-                            
                               // Navigator.popUntil(
                               //     context, (route) => route.isFirst);
                               // Navigator.push(context, MaterialPageRoute(

@@ -14,6 +14,7 @@ class DashboardPage extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        backgroundColor: Color(0xff0064B4),
         toolbarHeight: 70,
         automaticallyImplyLeading: false,
         centerTitle: false,

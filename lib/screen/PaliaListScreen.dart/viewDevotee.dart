@@ -44,6 +44,7 @@ class _ViewPaliaState extends State<ViewPalia>
                     Tab(
                       text: 'Devotee Info',
                     ),
+
                     // Tab(
                     //   text: 'Sammilani Delegate Info',
                     // ),
@@ -66,8 +67,7 @@ class _ViewPaliaState extends State<ViewPalia>
                                 width: 120,
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                    color:
-                                        const Color.fromARGB(255, 92, 32, 183),
+                                    color: Colors.deepOrange,
                                     width: 1,
                                   ),
                                   shape: BoxShape
@@ -104,7 +104,7 @@ class _ViewPaliaState extends State<ViewPalia>
                                 'Email ID',
                                 style: TextStyle(color: Colors.grey),
                               ),
-                              Text('₹${widget.devoteeDetails.emailId}')
+                              Text('${widget.devoteeDetails.emailId}')
                             ],
                           ),
                           const Divider(
@@ -130,7 +130,7 @@ class _ViewPaliaState extends State<ViewPalia>
                                     'Blood Group',
                                     style: TextStyle(color: Colors.grey),
                                   ),
-                                  Text('${widget.devoteeDetails.bloodGroup},')
+                                  Text('${widget.devoteeDetails.bloodGroup}')
                                 ],
                               ),
                               Column(

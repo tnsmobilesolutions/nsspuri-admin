@@ -110,32 +110,82 @@ class DevoteeModel {
   }
 
   Map<String, dynamic> toMap() {
-    return {
-      'devoteeId': devoteeId,
-      'devoteeCode': devoteeCode,
-      'isAllowedToScanPrasad': isAllowedToScanPrasad,
-      'name': name,
-      'emailId': emailId,
-      'mobileNumber': mobileNumber,
-      'bloodGroup': bloodGroup,
-      'profilePhotoUrl': profilePhotoUrl,
-      'gender': gender,
-      'sangha': sangha,
-      'uid': uid,
-      'isGuest': isGuest,
-      'isOrganizer': isOrganizer,
-      'isSpeciallyAbled': isSpeciallyAbled,
-      'dob': dob,
-      'isKYDVerified': isKYDVerified,
-      'isApproved': isApproved,
-      'isAdmin': isAdmin,
-      'isGruhasanaApproved': isGruhasanaApproved,
-      'createdOn': createdOn,
-      'updatedOn': updatedOn,
-      'status': status,
-      'createdById': createdById,
-      'address': address?.toMap(),
-    };
+    final result = <String, dynamic>{};
+  
+    if(devoteeId != null){
+      result.addAll({'devoteeId': devoteeId});
+    }
+    if(devoteeCode != null){
+      result.addAll({'devoteeCode': devoteeCode});
+    }
+    if(isAllowedToScanPrasad != null){
+      result.addAll({'isAllowedToScanPrasad': isAllowedToScanPrasad});
+    }
+    if(name != null){
+      result.addAll({'name': name});
+    }
+    if(emailId != null){
+      result.addAll({'emailId': emailId});
+    }
+    if(mobileNumber != null){
+      result.addAll({'mobileNumber': mobileNumber});
+    }
+    if(bloodGroup != null){
+      result.addAll({'bloodGroup': bloodGroup});
+    }
+    if(profilePhotoUrl != null){
+      result.addAll({'profilePhotoUrl': profilePhotoUrl});
+    }
+    if(gender != null){
+      result.addAll({'gender': gender});
+    }
+    if(sangha != null){
+      result.addAll({'sangha': sangha});
+    }
+    if(uid != null){
+      result.addAll({'uid': uid});
+    }
+    if(isGuest != null){
+      result.addAll({'isGuest': isGuest});
+    }
+    if(isOrganizer != null){
+      result.addAll({'isOrganizer': isOrganizer});
+    }
+    if(isSpeciallyAbled != null){
+      result.addAll({'isSpeciallyAbled': isSpeciallyAbled});
+    }
+    if(dob != null){
+      result.addAll({'dob': dob});
+    }
+    if(isKYDVerified != null){
+      result.addAll({'isKYDVerified': isKYDVerified});
+    }
+    if(isApproved != null){
+      result.addAll({'isApproved': isApproved});
+    }
+    if(isAdmin != null){
+      result.addAll({'isAdmin': isAdmin});
+    }
+    if(isGruhasanaApproved != null){
+      result.addAll({'isGruhasanaApproved': isGruhasanaApproved});
+    }
+    if(createdOn != null){
+      result.addAll({'createdOn': createdOn});
+    }
+    if(updatedOn != null){
+      result.addAll({'updatedOn': updatedOn});
+    }
+    if(status != null){
+      result.addAll({'status': status});
+    }
+    if(createdById != null){
+      result.addAll({'createdById': createdById});
+    }
+    if(address != null){
+      result.addAll({'address': address!.toMap()});
+    }
+  
+    return result;
   }
 
   factory DevoteeModel.fromMap(Map<String, dynamic> map) {
