@@ -141,7 +141,9 @@ class _ViewPaliaState extends State<ViewPalia>
                                       'Gender',
                                       style: TextStyle(color: Colors.grey),
                                     ),
-                                    Text('${widget.devoteeDetails.gender}')
+                                    Text(widget.devoteeDetails.gender == "Male"
+                                        ? 'Bhai'
+                                        : "Maa")
                                   ],
                                 ),
                               ],

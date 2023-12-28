@@ -5,11 +5,13 @@ class DashboardStatusModel {
   String? message;
   String? status;
   int? count;
+  String? translate;
   DashboardStatusModel({
     this.title,
     this.message,
     this.status,
     this.count,
+    this.translate,
   });
 
   DashboardStatusModel copyWith({
@@ -17,31 +19,36 @@ class DashboardStatusModel {
     String? message,
     String? status,
     int? count,
+    String? translate,
   }) {
     return DashboardStatusModel(
       title: title ?? this.title,
       message: message ?? this.message,
       status: status ?? this.status,
       count: count ?? this.count,
+      translate: translate ?? this.translate,
     );
   }
 
   Map<String, dynamic> toMap() {
     final result = <String, dynamic>{};
-  
-    if(title != null){
+
+    if (title != null) {
       result.addAll({'title': title});
     }
-    if(message != null){
+    if (message != null) {
       result.addAll({'message': message});
     }
-    if(status != null){
+    if (status != null) {
       result.addAll({'status': status});
     }
-    if(count != null){
+    if (count != null) {
       result.addAll({'count': count});
     }
-  
+    if (translate != null) {
+      result.addAll({'translate': translate});
+    }
+
     return result;
   }
 
@@ -51,6 +58,7 @@ class DashboardStatusModel {
       message: map['message'],
       status: map['status'],
       count: map['count']?.toInt(),
+      translate: map['translate'],
     );
   }
 
@@ -61,25 +69,27 @@ class DashboardStatusModel {
 
   @override
   String toString() {
-    return 'DashboardStatusModel(title: $title, message: $message, status: $status, count: $count)';
+    return 'DashboardStatusModel(title: $title, message: $message, status: $status, count: $count, translate: $translate)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
+
     return other is DashboardStatusModel &&
-      other.title == title &&
-      other.message == message &&
-      other.status == status &&
-      other.count == count;
+        other.title == title &&
+        other.message == message &&
+        other.status == status &&
+        other.count == count &&
+        other.translate == translate;
   }
 
   @override
   int get hashCode {
     return title.hashCode ^
-      message.hashCode ^
-      status.hashCode ^
-      count.hashCode;
+        message.hashCode ^
+        status.hashCode ^
+        count.hashCode ^
+        translate.hashCode;
   }
 }
