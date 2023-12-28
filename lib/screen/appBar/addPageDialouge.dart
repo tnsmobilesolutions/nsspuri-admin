@@ -1,7 +1,15 @@
 // ignore_for_file: file_names
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:html' as html;
 
 import 'package:intl/intl.dart';
 import 'package:sdp/API/get_devotee.dart';
@@ -10,6 +18,7 @@ import 'package:sdp/API/put_devotee.dart';
 import 'package:sdp/constant/sangha_list.dart';
 import 'package:sdp/model/address_model.dart';
 import 'package:sdp/model/devotee_model.dart';
+import 'package:sdp/screen/appBar/imageupload.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
 import 'package:sdp/utilities/color_palette.dart';
 import 'package:sdp/utilities/custom_circle_avtar.dart';
@@ -149,6 +158,28 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     populateData();
   }
 
+  Uint8List? imageasbytes;
+  List<int>? selectedimage;
+  bool isAvailable = false;
+  List<int>? selectedImage;
+  String? imageUploadData;
+  File? imagefile;
+  String? imageName;
+
+  // Future<void> uploadImageToFirebase(File file) async {
+  //   try {
+  //     String fileName = 'images/${DateTime.now().millisecondsSinceEpoch}.png';
+  //     Reference storageReference =
+  //         FirebaseStorage.instance.ref().child(fileName);
+
+  //     await storageReference.putFile(file);
+
+  //     print('Image uploaded to Firebase Storage');
+  //   } catch (e) {
+  //     print('Error uploading image to Firebase Storage: $e');
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
     Color getColor(Set<MaterialState> states) {
@@ -172,50 +203,63 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
       width: 400,
       child: SingleChildScrollView(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          MaterialButton(
-            onPressed: () {},
-            child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.blue, // Set the border color
-                    width: 1.0, // Set the border width
-                  ),
-                ),
-                child: widget.title != "edit"
-                    ? customCircleAvtar(
-                        imageURL:
-                            "https://firebasestorage.googleapis.com/v0/b/nsspuridelegate-dev.appspot.com/o/3d%20profile%20icon.png?alt=media&token=9e216c52-8517-4983-a695-9f0741d6dd02",
-                      )
-                    : profilePhotoUrl.isNotEmpty
-                        ? customCircleAvtar(
-                            imageURL: profilePhotoUrl,
-                          )
-                        : CircleAvatar(
-                            radius: 50,
-                            child: Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          )
-                //  CircleAvatar(
-                //   radius: 40.0,
-                //   backgroundImage: NetworkImage('$profilePhotoUrl'),
-                //   backgroundColor: Colors.transparent,
-                //   child: const Align(
-                //     alignment: Alignment.bottomRight,
-                //     child: CircleAvatar(
-                //       backgroundColor: CircleAvatarClor,
-                //       radius: 20.0,
-                //       child: Icon(
-                //         Icons.collections,
-                //         size: 18.0,
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                ),
+          // InkWell(
+          //   onTap: () {
+          //    // UploadCarousalImage(onImageSelected: onImageSelected);
+          //   },
+          //   child: Container(
+          //       decoration: BoxDecoration(
+          //         shape: BoxShape.circle,
+          //         border: Border.all(
+          //           color: Colors.blue, // Set the border color
+          //           width: 1.0, // Set the border width
+          //         ),
+          //       ),
+          //       child: widget.title != "edit"
+          //           ? customCircleAvtar(
+          //               imageURL:
+          //                   "https://firebasestorage.googleapis.com/v0/b/nsspuridelegate-dev.appspot.com/o/3d%20profile%20icon.png?alt=media&token=9e216c52-8517-4983-a695-9f0741d6dd02",
+          //             )
+          //           : profilePhotoUrl.isNotEmpty
+          //               ? customCircleAvtar(
+          //                   imageURL: profilePhotoUrl,
+          //                 )
+          //               : const CircleAvatar(
+          //                   radius: 50,
+          //                   child: Center(
+          //                     child: CircularProgressIndicator(),
+          //                   ),
+          //                 )
+          //       //  CircleAvatar(
+          //       //   radius: 40.0,
+          //       //   backgroundImage: NetworkImage('$profilePhotoUrl'),
+          //       //   backgroundColor: Colors.transparent,
+          //       //   child: const Align(
+          //       //     alignment: Alignment.bottomRight,
+          //       //     child: CircleAvatar(
+          //       //       backgroundColor: CircleAvatarClor,
+          //       //       radius: 20.0,
+          //       //       child: Icon(
+          //       //         Icons.collections,
+          //       //         size: 18.0,
+          //       //       ),
+          //       //     ),
+          //       //   ),
+          //       // ),
+          //       ),
+          // )
+          // ,
+          UploadCarousalImage(
+            selectedImage: selectedImage,
+            // data: widget.carousalData,
+            onImageSelected: (image) {
+              setState(() {
+                selectedImage = image?['selectedImage'];
+                imageName = image?['fileName'];
+              });
+            },
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           widget.title == "edit"
               ? DropdownButton<String>(
                   value: selectedStatus,
@@ -232,7 +276,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     ),
                   ),
                   elevation: 16,
-                  style: TextStyle(color: Colors.black), // Dropdown text color
+                  style: const TextStyle(
+                      color: Colors.black), // Dropdown text color
                   items: statusOptions
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
@@ -244,7 +289,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     );
                   }).toList(),
                 )
-              : SizedBox(
+              : const SizedBox(
                   height: 0,
                   width: 0,
                 ),
@@ -254,7 +299,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('isAdmin'),
+                      const Text('isAdmin'),
                       Checkbox(
                         checkColor: Colors.deepOrange,
                         fillColor: MaterialStateProperty.resolveWith(getColor),
@@ -264,7 +309,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     ],
                   ),
                 )
-              : SizedBox(
+              : const SizedBox(
                   height: 0,
                   width: 0,
                 ),
@@ -274,7 +319,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('isGruhasanaApproved'),
+                      const Text('isGruhasanaApproved'),
                       Checkbox(
                         checkColor: Colors.deepOrange,
                         fillColor: MaterialStateProperty.resolveWith(getColor),
@@ -288,7 +333,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     ],
                   ),
                 )
-              : SizedBox(
+              : const SizedBox(
                   height: 0,
                   width: 0,
                 ),
@@ -298,7 +343,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('isKYDVerified'),
+                      const Text('isKYDVerified'),
                       Checkbox(
                         checkColor: Colors.deepOrange,
                         fillColor: MaterialStateProperty.resolveWith(getColor),
@@ -312,7 +357,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     ],
                   ),
                 )
-              : SizedBox(
+              : const SizedBox(
                   height: 0,
                   width: 0,
                 ),
@@ -322,7 +367,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('isApproved'),
+                      const Text('isApproved'),
                       Checkbox(
                         checkColor: Colors.deepOrange,
                         fillColor: MaterialStateProperty.resolveWith(getColor),
@@ -336,7 +381,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     ],
                   ),
                 )
-              : SizedBox(
+              : const SizedBox(
                   height: 0,
                   width: 0,
                 ),

@@ -51,16 +51,25 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
               ),
             ),
             Expanded(
-              child: CircleAvatar(
-                radius: 20,
-                backgroundImage: widget.devoteeDetails.profilePhotoUrl !=
-                            null &&
-                        widget.devoteeDetails.profilePhotoUrl!.isNotEmpty
-                    ? NetworkImage(widget.devoteeDetails.profilePhotoUrl!)
-                        as ImageProvider
-                    : AssetImage('assets/images/profile.jpeg') as ImageProvider,
+                child: Container(
+              width: 50.0,
+              height: 50.0,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+                border: Border.all(
+                  color: Colors.blue,
+                  width: 2.0,
+                ),
               ),
-            ),
+              child: ClipOval(
+                child: widget.devoteeDetails.profilePhotoUrl != null &&
+                        widget.devoteeDetails.profilePhotoUrl!.isNotEmpty
+                    ? Image.network(widget.devoteeDetails.profilePhotoUrl ?? '')
+                    : const Image(
+                        image: AssetImage('assets/images/profile.jpeg')),
+              ),
+            )),
             Expanded(
               child: Text(
                 widget.devoteeDetails.name != null
