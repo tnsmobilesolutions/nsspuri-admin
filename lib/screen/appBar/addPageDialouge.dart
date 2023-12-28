@@ -831,7 +831,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                       status: selectedStatus,
                       createdOn: selectedDevotee?.createdOn ??
                           DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now()),
-                      isApproved: false,
+                      isApproved: isApproved,
                       devoteeId: widget.title == "edit"
                           ? widget.devoteeId
                           : uniqueDevoteeId,
