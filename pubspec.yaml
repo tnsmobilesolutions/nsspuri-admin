@@ -53,8 +53,9 @@ dependencies:
   flutter_typeahead: ^4.8.0
   dio: ^5.3.3
   photo_view: ^0.14.0
-  image_picker:
   dotted_border: ^2.0.0+2
+  image_picker: ^1.0.5
+  # image_picker: ^1.0.5
 
 dev_dependencies:
   flutter_test:
