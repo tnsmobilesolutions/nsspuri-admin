@@ -12,7 +12,7 @@ class UploadCarousalImage extends StatefulWidget {
     this.selectedImage,
   }) : super(key: key);
 
-  final void Function(Map<String, dynamic>?) onImageSelected;
+  final void Function(Map<String, dynamic>?, XFile?) onImageSelected;
   final String? fileName;
   final List<int>? selectedImage;
 
@@ -22,7 +22,7 @@ class UploadCarousalImage extends StatefulWidget {
 
 class _UploadCarousalImageState extends State<UploadCarousalImage> {
   Map<String, dynamic>? image;
-
+  XFile? pickImage;
   Future<void> _getImage(ImageSource source) async {
     final pickedFile = await ImagePicker().pickImage(source: source);
 
@@ -30,8 +30,9 @@ class _UploadCarousalImageState extends State<UploadCarousalImage> {
       final List<int> bytes = await pickedFile.readAsBytes();
       setState(() {
         image = {'selectedImage': bytes};
+        pickImage = pickedFile;
       });
-      widget.onImageSelected(image);
+      widget.onImageSelected(image, pickImage);
     }
   }
 
@@ -59,7 +60,9 @@ class _UploadCarousalImageState extends State<UploadCarousalImage> {
               ),
             ),
             child: ClipOval(
-              child: Center(child: Image.memory(image?['selectedImage'])),
+              child: Center(
+                child: Image.memory(image?['selectedImage']),
+              ),
             ),
           )
         : Container(
@@ -92,7 +95,7 @@ class _UploadCarousalImageState extends State<UploadCarousalImage> {
     return IconButton(
       onPressed: () {
         setState(() {
-          widget.onImageSelected(null);
+          widget.onImageSelected(null, null);
           image?['selectedImage'] = null;
         });
       },

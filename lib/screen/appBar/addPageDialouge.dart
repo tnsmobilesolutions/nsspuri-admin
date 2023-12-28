@@ -1,16 +1,10 @@
-// ignore_for_file: file_names
-import 'dart:convert';
+// ignore_for_file: file_names, must_be_immutable
 import 'dart:io';
-
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:html' as html;
-
 import 'package:intl/intl.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/API/post_devotee.dart';
@@ -21,7 +15,6 @@ import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/appBar/imageupload.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
 import 'package:sdp/utilities/color_palette.dart';
-import 'package:sdp/utilities/custom_circle_avtar.dart';
 import 'package:uuid/uuid.dart';
 
 class AddPageDilouge extends StatefulWidget {
@@ -52,11 +45,17 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   final formKey = GlobalKey<FormState>();
   String? bloodGroupController;
   String profilePhotoUrl = "";
-  List gender = ["Bhai", "Maa"];
+  List gender = ["Male", "Female"];
   int genderController = 0;
-  String profileURL =
-      "https://firebasestorage.googleapis.com/v0/b/nsspuridelegate-dev.appspot.com/o/3d%20profile%20icon.png?alt=media&token=9e216c52-8517-4983-a695-9f0741d6dd02";
   String selectedStatus = 'dataSubmitted'; // Initially selected status
+  List<int>? selectedimage;
+  Uint8List? imageasbytes;
+  File? imagefile;
+  String? imageName;
+  bool isAvailable = false;
+  List<int>? selectedImage;
+  String? imageUploadData;
+  XFile? fileImage;
   bool isAdmin = false;
   bool isKYDVerified = false;
   bool isApproved = false;
@@ -90,6 +89,17 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   get districtList => null;
 
   DevoteeModel? selectedDevotee;
+  String getImageName(XFile image) {
+    return image.path.split("/").last;
+  }
+
+  Future<String?> uploadImageToFirebaseStorage(XFile image, String name) async {
+    Reference storage =
+        FirebaseStorage.instance.ref('$name/${getImageName(image)}');
+    await storage.putFile(File(image.path));
+    return await storage.getDownloadURL();
+  }
+
   populateData() async {
     if (widget.title == "edit") {
       final devoteeData =
@@ -119,6 +129,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
           isApproved = selectedDevotee?.isApproved ?? false;
           isGruhasanaApproved = selectedDevotee?.isGruhasanaApproved ?? false;
           bloodGroupController = selectedDevotee?.bloodGroup ?? "Don't know";
+          genderController = selectedDevotee?.gender == "Male" ? 0 : 1;
         }
       });
     }
@@ -157,14 +168,6 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     super.initState();
     populateData();
   }
-
-  Uint8List? imageasbytes;
-  List<int>? selectedimage;
-  bool isAvailable = false;
-  List<int>? selectedImage;
-  String? imageUploadData;
-  File? imagefile;
-  String? imageName;
 
   // Future<void> uploadImageToFirebase(File file) async {
   //   try {
@@ -252,10 +255,11 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
           UploadCarousalImage(
             selectedImage: selectedImage,
             // data: widget.carousalData,
-            onImageSelected: (image) {
+            onImageSelected: (image, xfileImage) {
               setState(() {
                 selectedImage = image?['selectedImage'];
                 imageName = image?['fileName'];
+                fileImage = xfileImage;
               });
             },
           ),
@@ -475,7 +479,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                           value: 0,
                           groupValue: genderController,
                           title: const Text(
-                            "Male",
+                            "Bhai",
                           ),
                           onChanged: (newValue) =>
                               setState(() => genderController = newValue ?? 0),
@@ -493,11 +497,11 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                           groupValue: genderController,
 
                           title: const Text(
-                            "Female",
+                            "Maa",
                           ),
                           onChanged: (newValue) {
                             setState(() {
-                              genderController = newValue ?? 0;
+                              genderController = newValue ?? 1;
                             });
                           },
                           activeColor: RadioButtonColor,
@@ -829,7 +833,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                       bloodGroup: bloodGroupController,
                       name: nameController.text,
                       gender: gender[genderController],
-                      profilePhotoUrl: profileURL,
+                      profilePhotoUrl: profilePhotoUrl,
                       sangha: sanghaController.text,
                       dob: dateOfBirth.text,
                       mobileNumber: mobileController.text,

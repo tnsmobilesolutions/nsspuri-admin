@@ -1,14 +1,9 @@
 // ignore_for_file: file_names, must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:sdp/API/delete_devotee.dart';
 import 'package:sdp/model/devotee_model.dart';
-
-import 'package:sdp/screen/PaliaListScreen.dart/editPalia.dart';
-
 import 'package:sdp/screen/PaliaListScreen.dart/viewDevotee.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
-import 'package:sdp/screen/dashboard/dashboard.dart';
 
 class PaliaTableRow extends StatefulWidget {
   PaliaTableRow({

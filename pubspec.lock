@@ -441,6 +441,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.3"
+<<<<<<< HEAD
   image_picker:
     dependency: "direct main"
     description:
@@ -505,6 +506,16 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.1+1"
+=======
+  image_picker_web:
+    dependency: "direct main"
+    description:
+      name: image_picker_web
+      sha256: e1656f1ce48a614aefdf22ab73c0cc7e498fa7b78893ffdcc83171e7289092e0
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.1"
+>>>>>>> f9d412c98a6bb022a4636f2353a44798b1665651
   intl:
     dependency: "direct main"
     description:

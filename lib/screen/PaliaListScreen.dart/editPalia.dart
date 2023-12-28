@@ -356,17 +356,6 @@ class _EditPaliadilougePageState extends State<EditPaliadilougePage> {
                 },
               ),
 
-              // TextFormField(
-              //   focusNode: FocusNode(
-              //     descendantsAreFocusable: false,
-              //   ),
-              //   controller: sammilaniPlaceController,
-              //   decoration: const InputDecoration(
-              //     border: OutlineInputBorder(),
-              //     labelText: 'sammilani Place',
-              //   ),
-              // ),
-
               const SizedBox(height: 10),
               // Remark
               TextFormField(
