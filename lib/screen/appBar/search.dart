@@ -4,8 +4,8 @@ import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/paliaList.dart';
 
-class SearchSDP extends StatefulWidget {
-  SearchSDP(
+class SearchDevotee extends StatefulWidget {
+  SearchDevotee(
       {Key? key,
       this.dashboardindexNumber,
       this.searchDasboardIndexNumber,
@@ -19,10 +19,10 @@ class SearchSDP extends StatefulWidget {
   String? devoteeName;
 
   @override
-  State<SearchSDP> createState() => _SearchSDPState();
+  State<SearchDevotee> createState() => _SearchDevoteeState();
 }
 
-class _SearchSDPState extends State<SearchSDP> {
+class _SearchDevoteeState extends State<SearchDevotee> {
   List<String?> searchSangha = [];
   bool showAllNames = false;
   TextEditingController searchSanghaController = TextEditingController();
@@ -41,6 +41,48 @@ class _SearchSDPState extends State<SearchSDP> {
                 onChanged: (value) {
                   setState(() {});
                 },
+                onSaved: (newValue) {
+                  sdpSearchController.text.isNotEmpty
+                      ? () async {
+                          List<DevoteeModel> devoteeList = [];
+                          await GetDevoteeAPI()
+                              .searchDevotee(
+                                  sdpSearchController.text, "devoteeName")
+                              .then((value) {
+                            devoteeList.addAll(value["data"]);
+                          });
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) {
+                              return PaliaListPage(
+                                status: "allDevotee",
+                                pageFrom: "Search",
+                                searchValue: sdpSearchController.text,
+                              );
+                            },
+                          ));
+                        }
+                      : null;
+                },
+                onFieldSubmitted: sdpSearchController.text.isNotEmpty
+                    ? (value) async {
+                        List<DevoteeModel> devoteeList = [];
+                        await GetDevoteeAPI()
+                            .searchDevotee(
+                                sdpSearchController.text, "devoteeName")
+                            .then((value) {
+                          devoteeList.addAll(value["data"]);
+                        });
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return PaliaListPage(
+                              status: "allDevotee",
+                              pageFrom: "Search",
+                              searchValue: sdpSearchController.text,
+                            );
+                          },
+                        ));
+                      }
+                    : null,
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.search),
                   suffixIcon: Padding(
@@ -57,7 +99,7 @@ class _SearchSDPState extends State<SearchSDP> {
                                     .searchDevotee(
                                         sdpSearchController.text, "devoteeName")
                                     .then((value) {
-                                  devoteeList.addAll(value?["data"]);
+                                  devoteeList.addAll(value["data"]);
                                 });
                                 Navigator.push(context, MaterialPageRoute(
                                   builder: (context) {

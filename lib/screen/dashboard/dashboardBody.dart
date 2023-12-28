@@ -50,7 +50,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                           ));
                         },
                         child: Card(
-                          color: Colors.yellow,
+                          color: const Color.fromARGB(255, 255, 255, 255),
                           elevation: 10,
                           shadowColor: dashboarddata.title ==
                                   DateFormat('yyyy-MM-dd')

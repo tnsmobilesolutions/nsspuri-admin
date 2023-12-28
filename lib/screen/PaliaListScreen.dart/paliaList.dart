@@ -28,7 +28,7 @@ class _PaliaListPageState extends State<PaliaListPage> {
         toolbarHeight: 70,
         automaticallyImplyLeading: false,
         title: TitleAppBar(),
-        actions: const [ActionWidget()],
+        actions: const [AppbarActionButtonWidget()],
       ),
       body: SafeArea(
           child: PaliaListBodyPage(

@@ -5,10 +5,9 @@ import 'package:sdp/screen/appBar/create_delegate_buton.dart.dart';
 import 'package:sdp/screen/appBar/goto_home_button.dart';
 import 'package:sdp/screen/appBar/logoutButton.dart';
 import 'package:sdp/screen/appBar/search.dart';
-import 'package:sdp/screen/appBar/searchButton.dart';
 
-class ActionWidget extends StatelessWidget {
-  const ActionWidget({super.key});
+class AppbarActionButtonWidget extends StatelessWidget {
+  const AppbarActionButtonWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,13 +17,8 @@ class ActionWidget extends StatelessWidget {
       children: [
         const Padding(padding: EdgeInsets.all(8.0), child: GotoHomeButton()),
         Padding(
-            padding: EdgeInsets.all(10.0),
-            child: SearchSDP(status: "allDevotee")
-
-            // SearchButton(
-            //   status: 'allDevotee',
-            // ),
-            ),
+            padding: const EdgeInsets.all(10.0),
+            child: SearchDevotee(status: "allDevotee")),
 
         Padding(
             padding: const EdgeInsets.all(8.0), child: CreateDelegateButton()),
