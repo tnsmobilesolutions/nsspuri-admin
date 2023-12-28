@@ -14,12 +14,12 @@ class DashboardPage extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        backgroundColor: Color(0xff0064B4),
+        backgroundColor: const Color(0xff0064B4),
         toolbarHeight: 70,
         automaticallyImplyLeading: false,
         centerTitle: false,
         title: const TitleAppBar(),
-        actions: const [ActionWidget()],
+        actions: const [AppbarActionButtonWidget()],
       ),
       body: const SafeArea(
         child: DashboardBody(),

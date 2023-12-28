@@ -1,10 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:sdp/screen/appBar/search.dart';
 
 // ignore: must_be_immutable
 class SearchButton extends StatelessWidget {
-   SearchButton({super.key,required this.status});
+  SearchButton({super.key, required this.status});
   String status;
   @override
   Widget build(BuildContext context) {
@@ -34,7 +33,7 @@ class SearchButton extends StatelessWidget {
             ),
             content: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: SearchSDP(
+              child: SearchDevotee(
                 status: status,
                 // dashboardindexNumber: 0,
                 searchDasboardIndexNumber: 0,

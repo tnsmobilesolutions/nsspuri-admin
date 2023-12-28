@@ -50,7 +50,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                           ));
                         },
                         child: Card(
-                          color: Colors.yellow,
+                          color: const Color.fromARGB(255, 255, 255, 255),
                           elevation: 10,
                           shadowColor: dashboarddata.title ==
                                   DateFormat('yyyy-MM-dd')
@@ -76,13 +76,19 @@ class _DashboardBodyState extends State<DashboardBody> {
                                   Text(
                                     dashboarddata.title.toString(),
                                     style: const TextStyle(
-                                        fontSize: 20,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.bold),
                                   ),
                                 Text(
                                   dashboarddata.message.toString(),
                                   style: const TextStyle(
-                                      fontSize: 20,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  "(${dashboarddata.translate.toString()})",
+                                  style: const TextStyle(
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 Text(

@@ -1,11 +1,8 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:sdp/utilities/custom_circle_avtar.dart';
 
-class UploadCarousalImage extends StatefulWidget {
-  const UploadCarousalImage({
+class UploadProfileImage extends StatefulWidget {
+  const UploadProfileImage({
     Key? key,
     required this.onImageSelected,
     this.fileName,
@@ -17,15 +14,14 @@ class UploadCarousalImage extends StatefulWidget {
   final List<int>? selectedImage;
 
   @override
-  _UploadCarousalImageState createState() => _UploadCarousalImageState();
+  _UploadProfileImageState createState() => _UploadProfileImageState();
 }
 
-class _UploadCarousalImageState extends State<UploadCarousalImage> {
+class _UploadProfileImageState extends State<UploadProfileImage> {
   Map<String, dynamic>? image;
   XFile? pickImage;
   Future<void> _getImage(ImageSource source) async {
     final pickedFile = await ImagePicker().pickImage(source: source);
-
     if (pickedFile != null) {
       final List<int> bytes = await pickedFile.readAsBytes();
       setState(() {
@@ -109,12 +105,6 @@ class _UploadCarousalImageState extends State<UploadCarousalImage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Upload',
-          style: Theme.of(context).textTheme.bodyMedium?.merge(const TextStyle(
-                fontWeight: FontWeight.bold,
-              )),
-        ),
         const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

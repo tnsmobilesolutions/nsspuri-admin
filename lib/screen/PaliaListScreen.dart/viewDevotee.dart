@@ -56,129 +56,61 @@ class _ViewPaliaState extends State<ViewPalia>
                   Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Center(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // viewDetails('Sangha', widget.item.sangha.toString()),
-                          Column(
-                            children: [
-                              Container(
-                                height: 150,
-                                width: 120,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.deepOrange,
-                                    width: 1,
-                                  ),
-                                  shape: BoxShape
-                                      .rectangle, // This makes the container circular
-                                  image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: NetworkImage(widget
-                                        .devoteeDetails.profilePhotoUrl
-                                        .toString()),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // viewDetails('Sangha', widget.item.sangha.toString()),
+                            Column(
+                              children: [
+                                Container(
+                                  height: 150,
+                                  width: 120,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.deepOrange,
+                                      width: 1,
+                                    ),
+                                    shape: BoxShape
+                                        .rectangle, // This makes the container circular
+                                    image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: NetworkImage(widget
+                                          .devoteeDetails.profilePhotoUrl
+                                          .toString()),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
+                              ],
+                            ),
 
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Mobile Number',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                              Text(
-                                  widget.devoteeDetails.mobileNumber.toString())
-                            ],
-                          ),
-                          const Divider(
-                            thickness: 0.5,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Email ID',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                              Text('${widget.devoteeDetails.emailId}')
-                            ],
-                          ),
-                          const Divider(
-                            thickness: 0.5,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'Date Of Birth',
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                  Text('${widget.devoteeDetails.dob}')
-                                ],
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  const Text(
-                                    'Blood Group',
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                  Text('${widget.devoteeDetails.bloodGroup}')
-                                ],
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  const Text(
-                                    'Gender',
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                  Text('${widget.devoteeDetails.gender}')
-                                ],
-                              ),
-                            ],
-                          ),
-                          const Divider(
-                            thickness: 0.5,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'Sangha',
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                  Text('${widget.devoteeDetails.sangha}')
-                                ],
-                              ),
-
-                              // Column(
-                              //   crossAxisAlignment: CrossAxisAlignment.end,
-                              //   children: [
-                              //     const Text(
-                              //       'Jilla Sangha',
-                              //       style: TextStyle(color: Colors.grey),
-                              //     ),
-                              //     Text('${widget.devoteeDetails.}')
-                              //   ],
-                              // ),
-                            ],
-                          ),
-                          const Divider(
-                            thickness: 0.5,
-                          ),
-
-                          if (widget.devoteeDetails.createdOn != null)
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Mobile Number',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                                Text(widget.devoteeDetails.mobileNumber
+                                    .toString())
+                              ],
+                            ),
+                            const Divider(
+                              thickness: 0.5,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Email ID',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                                Text('${widget.devoteeDetails.emailId}')
+                              ],
+                            ),
+                            const Divider(
+                              thickness: 0.5,
+                            ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -186,27 +118,101 @@ class _ViewPaliaState extends State<ViewPalia>
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const Text(
-                                      'Created By',
+                                      'Date Of Birth',
                                       style: TextStyle(color: Colors.grey),
                                     ),
-                                    Text(widget.devoteeDetails.createdById
-                                        .toString())
+                                    Text('${widget.devoteeDetails.dob}')
                                   ],
                                 ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     const Text(
-                                      'Updated On',
+                                      'Blood Group',
                                       style: TextStyle(color: Colors.grey),
                                     ),
-                                    Text(widget.devoteeDetails.updatedOn
-                                        .toString())
+                                    Text('${widget.devoteeDetails.bloodGroup}')
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    const Text(
+                                      'Gender',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                    Text(widget.devoteeDetails.gender == "Male"
+                                        ? 'Bhai'
+                                        : "Maa")
                                   ],
                                 ),
                               ],
                             ),
-                        ],
+                            const Divider(
+                              thickness: 0.5,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Sangha',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                    Text('${widget.devoteeDetails.sangha}')
+                                  ],
+                                ),
+
+                                // Column(
+                                //   crossAxisAlignment: CrossAxisAlignment.end,
+                                //   children: [
+                                //     const Text(
+                                //       'Jilla Sangha',
+                                //       style: TextStyle(color: Colors.grey),
+                                //     ),
+                                //     Text('${widget.devoteeDetails.}')
+                                //   ],
+                                // ),
+                              ],
+                            ),
+                            const Divider(
+                              thickness: 0.5,
+                            ),
+
+                            if (widget.devoteeDetails.createdOn != null)
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'Created By',
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                                      Text(widget.devoteeDetails.createdById
+                                          .toString())
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      const Text(
+                                        'Updated On',
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                                      Text(widget.devoteeDetails.updatedOn
+                                          .toString())
+                                    ],
+                                  ),
+                                ],
+                              ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
