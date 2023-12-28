@@ -99,12 +99,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                     );
                   },
                 ),
-                Text(
-                  DateFormat('yyyy-MM-dd')
-                      .format(DateTime.now().subtract(Duration(days: 1))),
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold),
-                ),
+             
                 Row(
                   children: [],
                 )
