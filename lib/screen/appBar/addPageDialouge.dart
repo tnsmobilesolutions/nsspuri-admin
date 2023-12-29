@@ -146,7 +146,11 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
           stateController.text = selectedDevotee?.address?.state ?? "";
           countryController.text = selectedDevotee?.address?.country ?? "";
           postalCodeController.text =
-              selectedDevotee?.address?.postalCode.toString() ?? "";
+              (selectedDevotee?.address?.postalCode != null ||
+                      selectedDevotee?.address?.postalCode != 0)
+                  ? selectedDevotee?.address?.postalCode.toString() ?? ""
+                  : "";
+          selectedDevotee?.address?.postalCode.toString() ?? "";
           profilePhotoUrl = selectedDevotee?.profilePhotoUrl ?? "";
           isAdmin = selectedDevotee?.isAdmin ?? false;
           isKYDVerified = selectedDevotee?.isKYDVerified ?? false;
@@ -851,7 +855,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                               addressLine2: addressLine2Controller.text,
                               addressLine1: addressLine1Controller.text,
                               country: countryController.text,
-                              postalCode: postalCodeController.text != ""
+                              postalCode: (postalCodeController.text != "")
                                   ? int.tryParse(postalCodeController.text)
                                   : 0,
                               city: cityController.text,
