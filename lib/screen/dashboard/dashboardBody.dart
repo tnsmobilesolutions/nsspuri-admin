@@ -236,21 +236,17 @@ class DashBoardData extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          // Text(
-          //   dashBoardDevoteeData.title.toString(),
-          //   style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-          // ),
           Text(
             dashBoardDevoteeData.message.toString(),
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           Text(
             "(${dashBoardDevoteeData.translate.toString()})",
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           Text(
             dashBoardDevoteeData.count.toString(),
-            style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
           )
         ],
       ),
