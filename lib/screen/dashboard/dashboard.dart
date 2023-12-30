@@ -11,18 +11,20 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        backgroundColor: const Color(0xff0064B4),
-        toolbarHeight: 70,
-        automaticallyImplyLeading: false,
-        centerTitle: false,
-        title: const TitleAppBar(),
-        actions: const [AppbarActionButtonWidget()],
-      ),
-      body: const SafeArea(
-        child: DashboardBody(),
+    return SelectionArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          backgroundColor: const Color(0xff0064B4),
+          toolbarHeight: 70,
+          automaticallyImplyLeading: false,
+          centerTitle: false,
+          title: const TitleAppBar(),
+          actions: const [AppbarActionButtonWidget()],
+        ),
+        body: const SafeArea(
+          child: DashboardBody(),
+        ),
       ),
     );
   }

@@ -22,20 +22,22 @@ class PaliaListPage extends StatefulWidget {
 class _PaliaListPageState extends State<PaliaListPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        toolbarHeight: 70,
-        automaticallyImplyLeading: false,
-        title: TitleAppBar(),
-        actions: const [AppbarActionButtonWidget()],
+    return SelectionArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          toolbarHeight: 70,
+          automaticallyImplyLeading: false,
+          title: TitleAppBar(),
+          actions: const [AppbarActionButtonWidget()],
+        ),
+        body: SafeArea(
+            child: PaliaListBodyPage(
+          status: widget.status,
+          pageFrom: widget.pageFrom,
+          searchValue: widget.searchValue,
+        )),
       ),
-      body: SafeArea(
-          child: PaliaListBodyPage(
-        status: widget.status,
-        pageFrom: widget.pageFrom,
-        searchValue: widget.searchValue,
-      )),
     );
   }
 }
