@@ -193,7 +193,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                       ),
                       filled: true,
                       hintStyle: TextStyle(color: Colors.grey[800]),
-                      hintText: "Search Devotee",
+                      hintText: "Search",
                       fillColor: Colors.white,
                     ),
                   ),

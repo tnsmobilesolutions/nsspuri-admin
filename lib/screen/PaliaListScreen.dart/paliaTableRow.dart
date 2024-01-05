@@ -49,10 +49,13 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                 child: SizedBox(
               height: 50,
               width: 50,
-
               child: widget.devoteeDetails.profilePhotoUrl != null &&
                       widget.devoteeDetails.profilePhotoUrl!.isNotEmpty
-                  ? Image.network(widget.devoteeDetails.profilePhotoUrl ?? '',width: 50,height: 50,)
+                  ? Image.network(
+                      widget.devoteeDetails.profilePhotoUrl ?? '',
+                      width: 50,
+                      height: 50,
+                    )
                   : const Image(
                       image: AssetImage('assets/images/profile.jpeg')),
             )),
@@ -60,6 +63,14 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
               child: Text(
                 widget.devoteeDetails.name != null
                     ? '${widget.devoteeDetails.name}'
+                    : "-",
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Expanded(
+              child: Text(
+                widget.devoteeDetails.name != null
+                    ? '${widget.devoteeDetails.devoteeCode}'
                     : "-",
                 textAlign: TextAlign.center,
               ),
