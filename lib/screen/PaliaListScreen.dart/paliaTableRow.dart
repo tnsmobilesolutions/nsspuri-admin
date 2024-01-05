@@ -49,21 +49,49 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                 child: SizedBox(
               height: 50,
               width: 50,
-
               child: widget.devoteeDetails.profilePhotoUrl != null &&
                       widget.devoteeDetails.profilePhotoUrl!.isNotEmpty
-                  ? Image.network(widget.devoteeDetails.profilePhotoUrl ?? '',width: 50,height: 50,)
+                  ? Image.network(
+                      widget.devoteeDetails.profilePhotoUrl ?? '',
+                      width: 50,
+                      height: 50,
+                    )
                   : const Image(
                       image: AssetImage('assets/images/profile.jpeg')),
             )),
             Expanded(
-              child: Text(
-                widget.devoteeDetails.name != null
-                    ? '${widget.devoteeDetails.name}'
-                    : "-",
-                textAlign: TextAlign.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: widget.devoteeDetails.name != null
+                              ? '${widget.devoteeDetails.name}\n'
+                              : "-\n",
+                          style: const TextStyle(
+                            fontSize: 17, // Change the font size for the name
+                            fontWeight: FontWeight
+                                .bold, // Change the font weight if needed
+                            // Other style properties as needed
+                          ),
+                        ),
+                        TextSpan(
+                          text: widget.devoteeDetails.devoteeCode.toString(),
+                          style: const TextStyle(
+                            fontSize: 14, // Change the font size for the code
+                            // Other style properties as needed
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
+
             Expanded(
               child: Text(
                 widget.devoteeDetails.sangha != null
