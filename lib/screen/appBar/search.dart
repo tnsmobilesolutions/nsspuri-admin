@@ -36,6 +36,12 @@ class _SearchDevoteeState extends State<SearchDevotee> {
   TextEditingController searchSanghaController = TextEditingController();
   final TextEditingController sdpSearchController = TextEditingController();
   @override
+  void initState() {
+    super.initState();
+    _selectedSearchType = "name";
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
