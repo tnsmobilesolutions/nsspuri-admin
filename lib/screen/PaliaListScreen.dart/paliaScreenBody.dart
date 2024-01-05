@@ -13,7 +13,8 @@ class PaliaListBodyPage extends StatefulWidget {
       {Key? key,
       required this.status,
       required this.pageFrom,
-      this.searchValue,this.searchBy})
+      this.searchValue,
+      this.searchBy})
       : super(key: key);
   String status;
   String pageFrom;
@@ -135,6 +136,7 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
                               pw.Row(children: [
                                 printSearchheadingText('Sl no.'),
                                 printSearchheadingText('Devotee Name'),
+                                printSearchheadingText('Devotee Code'),
                                 printSearchheadingText('Sangha'),
                                 printSearchheadingText('DOB'),
                                 printSearchheadingText('Status'),
@@ -158,6 +160,12 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
                                           pw.Expanded(
                                             child: pw.Text(
                                               '${allPaliaList[index].name}',
+                                              textAlign: pw.TextAlign.center,
+                                            ),
+                                          ),
+                                          pw.Expanded(
+                                            child: pw.Text(
+                                              '${allPaliaList[index].devoteeCode}',
                                               textAlign: pw.TextAlign.center,
                                             ),
                                           ),
@@ -201,8 +209,9 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
             child: Row(
               children: [
                 headingText('Sl No.'),
-                headingText('Profile Imgae'),
+                headingText('Profile Image'),
                 headingText('Devotee Name'),
+                headingText('Devotee Code'),
                 headingText('Sangha'),
                 headingText('DOB'),
                 headingText('Status'),
@@ -224,7 +233,9 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
                     ? GetDevoteeAPI().searchDevotee(widget.status, "status")
                     : (widget.pageFrom == "Search")
                         ? GetDevoteeAPI().advanceSearchDevotee(
-                             widget.searchValue.toString(),widget.searchBy.toString(),)
+                            widget.searchValue.toString(),
+                            widget.searchBy.toString(),
+                          )
                         : null,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasError) {
