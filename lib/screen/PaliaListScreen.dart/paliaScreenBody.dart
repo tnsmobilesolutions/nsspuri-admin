@@ -211,7 +211,6 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
                 headingText('Sl No.'),
                 headingText('Profile Image'),
                 headingText('Devotee Name'),
-                headingText('Devotee Code'),
                 headingText('Sangha'),
                 headingText('DOB'),
                 headingText('Status'),

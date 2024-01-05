@@ -59,22 +59,37 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                   : const Image(
                       image: AssetImage('assets/images/profile.jpeg')),
             )),
-            Expanded(
-              child: Text(
-                widget.devoteeDetails.name != null
-                    ? '${widget.devoteeDetails.name}'
-                    : "-",
-                textAlign: TextAlign.center,
-              ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: widget.devoteeDetails.name != null
+                            ? '${widget.devoteeDetails.name}\n'
+                            : "-\n",
+                        style: const TextStyle(
+                          fontSize: 17, // Change the font size for the name
+                          fontWeight: FontWeight
+                              .bold, // Change the font weight if needed
+                          // Other style properties as needed
+                        ),
+                      ),
+                      TextSpan(
+                        text: widget.devoteeDetails.devoteeCode.toString(),
+                        style: const TextStyle(
+                          fontSize: 14, // Change the font size for the code
+                          // Other style properties as needed
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            Expanded(
-              child: Text(
-                widget.devoteeDetails.name != null
-                    ? '${widget.devoteeDetails.devoteeCode}'
-                    : "-",
-                textAlign: TextAlign.center,
-              ),
-            ),
+
             Expanded(
               child: Text(
                 widget.devoteeDetails.sangha != null
