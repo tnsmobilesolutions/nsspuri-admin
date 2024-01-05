@@ -10,11 +10,13 @@ class PaliaListPage extends StatefulWidget {
       {Key? key,
       required this.status,
       required this.pageFrom,
-      this.searchValue})
+      this.searchValue,this.searchBy})
       : super(key: key);
   String status;
   String pageFrom;
   String? searchValue;
+  String? searchBy;
+  
   @override
   State<PaliaListPage> createState() => _PaliaListPageState();
 }
@@ -36,6 +38,7 @@ class _PaliaListPageState extends State<PaliaListPage> {
           status: widget.status,
           pageFrom: widget.pageFrom,
           searchValue: widget.searchValue,
+          searchBy: widget.searchBy,
         )),
       ),
     );

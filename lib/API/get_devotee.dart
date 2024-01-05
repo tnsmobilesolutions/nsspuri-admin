@@ -1,5 +1,6 @@
 import 'package:sdp/API/dio_fuction.dart';
 import 'package:sdp/model/devotee_model.dart';
+import 'package:sdp/model/sangha_model.dart';
 
 class GetDevoteeAPI extends DioFuctionAPI {
   Future<Map<String, dynamic>?> loginDevotee(String uid) async {
@@ -88,6 +89,55 @@ class GetDevoteeAPI extends DioFuctionAPI {
       print(e);
       return {"statusCode": 500, "data": null};
     }
+  }
+
+  Future<Map<String, dynamic>> advanceSearchDevotee(
+      String query, String searchBy) async {
+    Future<String> customEncodeComponent(String query) async {
+      return query.replaceAll('+', '%2B').replaceAll('-', '%2D');
+    }
+
+    try {
+      List<DevoteeModel> devotees = [];
+// Encoding the query string
+      String encodedQuery = await customEncodeComponent(query);
+      print("encodedQuery----- $encodedQuery");
+      final response =
+          await getAPI("devotee/advance-search?$searchBy=$encodedQuery");
+      print("API URL = devotee/advance-search?$searchBy=$encodedQuery");
+      final devoteelist = response["data"]["searchDevotee"];
+      devoteelist.forEach((devotee) {
+        devotees.add(DevoteeModel.fromMap(devotee));
+      });
+      return {"statusCode": 200, "data": devotees};
+    } catch (e) {
+      print(e);
+      return {"statusCode": 500, "data": null};
+    }
+  }
+
+  Future<Map<String, dynamic>?> fetchAllSangha() async {
+    try {
+      final response = await getAPI("sangha");
+      print('888888$response');
+      return {"statusCode": 200, "data": response["data"]["allSangha"]};
+    } catch (e) {
+      print(e);
+      return {"statusCode": 500, "data": null};
+    }
+  }
+
+  Future<List<SanghaModel>?> getAllSangha() async {
+    List<SanghaModel>? sanghas = [];
+    // WRITE THE CODE HERE TO FETCH ALL SANGHA AND RETURN THE LIST
+    Map<String, dynamic>? sanghaMap = await fetchAllSangha();
+    SanghaModel sm;
+    for (var sangha in sanghaMap?['data']) {
+      sm = SanghaModel.fromMap(sangha);
+      sanghas.add(sm);
+    }
+
+    return sanghas;
   }
 
   Future<Map<String, dynamic>?> devoteeWithRelatives() async {

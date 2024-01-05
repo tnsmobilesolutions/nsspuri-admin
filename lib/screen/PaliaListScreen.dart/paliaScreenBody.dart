@@ -13,11 +13,12 @@ class PaliaListBodyPage extends StatefulWidget {
       {Key? key,
       required this.status,
       required this.pageFrom,
-      this.searchValue})
+      this.searchValue,this.searchBy})
       : super(key: key);
   String status;
   String pageFrom;
   String? searchValue;
+  String? searchBy;
 
   @override
   State<PaliaListBodyPage> createState() => _PaliaListBodyPageState();
@@ -222,8 +223,8 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
                         widget.pageFrom == "Dashboard")
                     ? GetDevoteeAPI().searchDevotee(widget.status, "status")
                     : (widget.pageFrom == "Search")
-                        ? GetDevoteeAPI().searchDevotee(
-                            widget.searchValue.toString(), "devoteeName")
+                        ? GetDevoteeAPI().advanceSearchDevotee(
+                             widget.searchValue.toString(),widget.searchBy.toString(),)
                         : null,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasError) {

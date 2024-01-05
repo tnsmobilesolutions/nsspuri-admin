@@ -628,8 +628,9 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                           const BorderSide(width: 0, style: BorderStyle.none)),
                 ),
               ),
-              suggestionsCallback: (value) {
-                return SanghaList.getSuggestions(value);
+              suggestionsCallback: (value) async {
+                final sanghas = await SanghaList().getSuggestions(value);
+                return sanghas;
               },
               itemBuilder: (context, String suggestion) {
                 return Row(
