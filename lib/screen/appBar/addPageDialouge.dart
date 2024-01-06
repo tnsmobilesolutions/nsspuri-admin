@@ -22,57 +22,18 @@ class AddPageDilouge extends StatefulWidget {
     required this.title,
     required this.devoteeId,
   });
-  String title;
+
   String devoteeId;
+  String title;
 
   @override
   State<AddPageDilouge> createState() => _AddPageDilougeState();
 }
 
 class _AddPageDilougeState extends State<AddPageDilouge> {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController mobileController = TextEditingController();
-  TextEditingController sanghaController = TextEditingController();
-  TextEditingController dateOfBirth = TextEditingController();
   TextEditingController addressLine1Controller = TextEditingController();
   TextEditingController addressLine2Controller = TextEditingController();
-  TextEditingController cityController = TextEditingController();
-  TextEditingController stateController = TextEditingController();
-  TextEditingController countryController = TextEditingController();
-  TextEditingController postalCodeController = TextEditingController();
-  final formKey = GlobalKey<FormState>();
   String? bloodGroupController;
-  String profilePhotoUrl = "";
-  List gender = ["Male", "Female"];
-  int genderController = 0;
-  String selectedStatus = 'dataSubmitted'; // Initially selected status
-  List<int>? selectedimage;
-  Uint8List? imageasbytes;
-  File? imagefile;
-  String? imageName;
-  bool isAvailable = false;
-  List<int>? selectedImage;
-  String? imageUploadData;
-  XFile? fileImage;
-  bool isAdmin = false;
-  bool isKYDVerified = false;
-  bool isApproved = false;
-  bool isGruhasanaApproved = false;
-
-  List<String> statusOptions = [
-    'dataSubmitted',
-    'paid',
-    'rejected',
-    'accepted',
-    'printed',
-    'withdrawn',
-    'lost',
-    'reissued',
-    "blacklisted"
-  ];
-  String? profileImage;
-
   List<String> bloodGrouplist = <String>[
     'A+',
     'A-',
@@ -85,23 +46,63 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     "Don't know",
   ];
 
-  get districtList => null;
+  TextEditingController cityController = TextEditingController();
+  TextEditingController countryController = TextEditingController();
+  TextEditingController dateOfBirth = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  final RegExp emailRegex = RegExp(
+    r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$',
+  );
 
-  DevoteeModel? selectedDevotee;
+  XFile? fileImage;
+  final formKey = GlobalKey<FormState>();
+  String formattedDate =
+      DateFormat('dd-MMM-yyyy  hh:mm a').format(DateTime.now());
+
+  List gender = ["Male", "Female"];
+  int genderController = 0;
   Map<String, dynamic>? image;
+  String? imageName;
+  String? imageUploadData;
+  Uint8List? imageasbytes;
+  File? imagefile;
+  bool isAdmin = false;
+  bool isApproved = false;
+  bool isAvailable = false;
+  bool isGruhasanaApproved = false;
+  bool isKYDVerified = false;
+  TextEditingController mobileController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
   XFile? pickImage;
+  TextEditingController postalCodeController = TextEditingController();
+  String? profileImage;
+  String profilePhotoUrl = "";
+  TextEditingController sanghaController = TextEditingController();
+  String? select;
+  DevoteeModel? selectedDevotee;
+  List<int>? selectedImage;
+  String selectedStatus = 'dataSubmitted'; // Initially selected status
+  List<int>? selectedimage;
+  TextEditingController stateController = TextEditingController();
+  List<String> statusOptions = [
+    'dataSubmitted',
+    'paid',
+    'rejected',
+    'accepted',
+    'printed',
+    'withdrawn',
+    'lost',
+    'reissued',
+    "blacklisted"
+  ];
 
-  Future<void> _getImage(ImageSource source) async {
-    final pickedFile = await ImagePicker().pickImage(source: source);
-    if (pickedFile != null) {
-      final List<int> bytes = await pickedFile.readAsBytes();
-      setState(() {
-        image = {'selectedImage': bytes};
-        pickImage = pickedFile;
-      });
-      // widget.onImageSelected(image, pickImage);
-    }
+  @override
+  void initState() {
+    super.initState();
+    populateData();
   }
+
+  get districtList => null;
 
   // String getImageName(XFile image) {
   //   return image.path.split("/").last;
@@ -163,10 +164,6 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     }
   }
 
-  String? select;
-  String formattedDate =
-      DateFormat('dd-MMM-yyyy  hh:mm a').format(DateTime.now());
-
   Row addRadioButton(int btnValue, String title) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -191,10 +188,16 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    populateData();
+  Future<void> _getImage(ImageSource source) async {
+    final pickedFile = await ImagePicker().pickImage(source: source);
+    if (pickedFile != null) {
+      final List<int> bytes = await pickedFile.readAsBytes();
+      setState(() {
+        image = {'selectedImage': bytes};
+        pickImage = pickedFile;
+      });
+      // widget.onImageSelected(image, pickImage);
+    }
   }
 
   @override
@@ -414,8 +417,11 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
               controller: emailController,
               onSaved: (newValue) => emailController,
               validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter Email';
+                if (value?.isEmpty == true || value == null) {
+                  return null;
+                }
+                if (!emailRegex.hasMatch(value)) {
+                  return "Invalid email !";
                 }
                 return null;
               },
