@@ -10,13 +10,16 @@ class PaliaListPage extends StatefulWidget {
       {Key? key,
       required this.status,
       required this.pageFrom,
-      this.searchValue,this.searchBy})
+      this.searchValue,
+      this.isResultEmpty,
+      this.searchBy})
       : super(key: key);
   String status;
   String pageFrom;
   String? searchValue;
   String? searchBy;
-  
+  bool? isResultEmpty;
+
   @override
   State<PaliaListPage> createState() => _PaliaListPageState();
 }
@@ -30,8 +33,14 @@ class _PaliaListPageState extends State<PaliaListPage> {
         appBar: AppBar(
           toolbarHeight: 70,
           automaticallyImplyLeading: false,
-          title: TitleAppBar(),
-          actions: const [AppbarActionButtonWidget()],
+          title: const TitleAppBar(),
+          actions: [
+            AppbarActionButtonWidget(
+              searchBy: widget.searchBy,
+              searchValue: widget.searchValue,
+              isResultEmpty: widget.isResultEmpty,
+            ),
+          ],
         ),
         body: SafeArea(
             child: PaliaListBodyPage(

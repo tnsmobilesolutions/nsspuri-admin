@@ -20,7 +20,7 @@ class DashboardPage extends StatelessWidget {
           automaticallyImplyLeading: false,
           centerTitle: false,
           title: const TitleAppBar(),
-          actions: const [AppbarActionButtonWidget()],
+          actions: [AppbarActionButtonWidget()],
         ),
         body: const SafeArea(
           child: DashboardBody(),

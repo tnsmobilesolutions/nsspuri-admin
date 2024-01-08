@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sdp/API/get_devotee.dart';
@@ -55,7 +57,7 @@ class _DashboardBodyState extends State<DashboardBody> {
           }
           return Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Container(
+            child: SizedBox(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
               child: Column(
@@ -93,13 +95,13 @@ class _DashboardBodyState extends State<DashboardBody> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        "$todayDate",
+                        todayDate,
                         style: const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
-                  Divider(
+                  const Divider(
                     thickness: 3,
                   ),
                   Expanded(
@@ -134,13 +136,13 @@ class _DashboardBodyState extends State<DashboardBody> {
                   Row(
                     children: [
                       Text(
-                        "$yesterdayDate",
+                        yesterdayDate,
                         style: const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
-                  Divider(
+                  const Divider(
                     thickness: 3,
                   ),
                   Expanded(
@@ -176,13 +178,13 @@ class _DashboardBodyState extends State<DashboardBody> {
                   Row(
                     children: [
                       Text(
-                        "$dayBeforeYesterdayDate",
+                        dayBeforeYesterdayDate,
                         style: const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
-                  Divider(
+                  const Divider(
                     thickness: 3,
                   ),
                   Expanded(

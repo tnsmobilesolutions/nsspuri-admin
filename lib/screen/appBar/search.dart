@@ -9,6 +9,9 @@ class SearchDevotee extends StatefulWidget {
       {Key? key,
       this.dashboardindexNumber,
       this.searchDasboardIndexNumber,
+      this.searchBy,
+      this.searchValue,
+      this.onFieldValueChanged,
       required this.status,
       this.devoteeName})
       : super(key: key);
@@ -17,6 +20,9 @@ class SearchDevotee extends StatefulWidget {
   int? dashboardindexNumber = 0;
   String status;
   String? devoteeName;
+  String? searchValue;
+  String? searchBy;
+  void Function(bool isResultEmpty)? onFieldValueChanged;
 
   @override
   State<SearchDevotee> createState() => _SearchDevoteeState();
@@ -28,6 +34,8 @@ class _SearchDevoteeState extends State<SearchDevotee> {
     "name",
     "sangha",
     "emailId",
+    "status",
+    "devotee code",
     "mobileNumber",
     "bloodGroup"
   ];
@@ -38,7 +46,8 @@ class _SearchDevoteeState extends State<SearchDevotee> {
   @override
   void initState() {
     super.initState();
-    _selectedSearchType = "name";
+    _selectedSearchType = widget.searchBy ?? "name";
+    sdpSearchController.text = widget.searchValue ?? "";
   }
 
   @override
@@ -59,7 +68,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                   ),
               // focusColor: Colors.white,
               hint: const Text(
-                'Search By',
+                'Search by',
                 style: TextStyle(color: Colors.black),
               ),
               borderRadius: BorderRadius.circular(12),
@@ -109,7 +118,11 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                 child: TextFormField(
                   controller: sdpSearchController,
                   onChanged: (value) {
-                    setState(() {});
+                    setState(() {
+                      // value.isNotEmpty
+                      //     ? widget.onFieldValueChanged!(value)
+                      //     : null;
+                    });
                   },
                   onSaved: (newValue) {
                     sdpSearchController.text.isNotEmpty
@@ -145,6 +158,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                               .then((value) {
                             devoteeList.addAll(value["data"]);
                           });
+                          widget.onFieldValueChanged!(devoteeList.isNotEmpty);
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) {
                               return PaliaListPage(
@@ -152,6 +166,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                                 pageFrom: "Search",
                                 searchValue: sdpSearchController.text,
                                 searchBy: _selectedSearchType,
+                                isResultEmpty: devoteeList.isNotEmpty,
                               );
                             },
                           ));
