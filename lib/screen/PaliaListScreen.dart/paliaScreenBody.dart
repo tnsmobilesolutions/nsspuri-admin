@@ -13,12 +13,14 @@ class PaliaListBodyPage extends StatefulWidget {
       {Key? key,
       required this.status,
       required this.pageFrom,
+      this.devoteeList,
       this.searchValue,
       this.searchBy})
       : super(key: key);
   String status;
   String pageFrom;
   String? searchValue;
+  List<DevoteeModel>? devoteeList;
   String? searchBy;
 
   @override

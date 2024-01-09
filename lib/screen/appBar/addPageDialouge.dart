@@ -50,6 +50,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   TextEditingController countryController = TextEditingController();
   TextEditingController dateOfBirth = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  TextEditingController pranamiController = TextEditingController();
   final RegExp emailRegex = RegExp(
     r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$',
   );
@@ -95,6 +96,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'reissued',
     "blacklisted"
   ];
+  bool? parichayaPatraValue = false;
+  GlobalKey<FormState> _pranamiKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -138,6 +141,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
           emailController.text = selectedDevotee?.emailId ?? "";
           mobileController.text = selectedDevotee?.mobileNumber ?? "";
           sanghaController.text = selectedDevotee?.sangha ?? "";
+          parichayaPatraValue = selectedDevotee?.hasParichayaPatra ?? false;
           dateOfBirth.text = selectedDevotee?.dob ?? "";
           addressLine1Controller.text =
               selectedDevotee?.address?.addressLine1 ?? "";
@@ -162,6 +166,27 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
         }
       });
     }
+  }
+
+  InputDecoration textFormFieldDecoration(BuildContext context) {
+    return InputDecoration(
+      filled: true,
+      fillColor: const Color.fromARGB(255, 238, 240, 250),
+      errorMaxLines: 2,
+      errorStyle: Theme.of(context).textTheme.bodySmall?.merge(const TextStyle(
+            color: Colors.deepOrange,
+          )),
+      focusedErrorBorder:
+          const OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+      focusedBorder:
+          const OutlineInputBorder(borderSide: BorderSide(color: Colors.blue)),
+      errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.deepOrange)),
+      enabledBorder:
+          const OutlineInputBorder(borderSide: BorderSide(color: Colors.blue)),
+      hintText: "₹ 100",
+      hintStyle: const TextStyle(fontSize: 13),
+    );
   }
 
   Row addRadioButton(int btnValue, String title) {
@@ -200,6 +225,20 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     }
   }
 
+  final decimalRegex = [
+    FilteringTextInputFormatter.allow(RegExp(r'^[0-9]*\.?[0-9]*$')),
+    TextInputFormatter.withFunction((oldValue, newValue) {
+      if (newValue.text.contains('..')) {
+        final newString = newValue.text.replaceAll('..', '.');
+        return TextEditingValue(
+          text: newString,
+          selection: TextSelection.collapsed(offset: newString.length),
+        );
+      }
+      return newValue;
+    }),
+  ];
+
   @override
   Widget build(BuildContext context) {
     Color getColor(Set<MaterialState> states) {
@@ -219,723 +258,855 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(2.0),
-          color: Colors.white,
+          //color: Colors.white,
         ),
         height: 435,
         width: 400,
         child: SingleChildScrollView(
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            CircleAvatar(
-              backgroundImage: image?["selectedImage"] != null
-                  ? Image.memory(image?['selectedImage']).image
-                  : (profilePhotoUrl.isNotEmpty)
-                      ? Image.network(profilePhotoUrl.toString()).image
-                      : const AssetImage(
-                          'assets/images/profile.jpeg'), // Set your default image asset path here
-              radius: 40,
-              child: Align(
-                alignment: Alignment.bottomRight,
-                child: IconButton(
-                    onPressed: () {
-                      _getImage(ImageSource.camera);
-                    },
-                    icon: const Icon(
-                      Icons.camera_alt,
-                      color: Colors.blue,
-                    )),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              CircleAvatar(
+                backgroundImage: image?["selectedImage"] != null
+                    ? Image.memory(image?['selectedImage']).image
+                    : (profilePhotoUrl.isNotEmpty)
+                        ? Image.network(profilePhotoUrl.toString()).image
+                        : const AssetImage(
+                            'assets/images/profile.jpeg'), // Set your default image asset path here
+                radius: 40,
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: IconButton(
+                      onPressed: () {
+                        _getImage(ImageSource.camera);
+                      },
+                      icon: const Icon(
+                        Icons.camera_alt,
+                        color: Colors.blue,
+                      )),
+                ),
               ),
-            ),
 
-            // UploadProfileImage(
-            //   selectedImage: selectedImage,
-            //   // data: widget.carousalData,
-            //   onImageSelected: (image, xfileImage) {
-            //     setState(() {
-            //       selectedImage = image?['selectedImage'];
-            //       imageName = image?['fileName'];
-            //       fileImage = xfileImage;
-            //     });
-            //   },
-            // ),
-            const SizedBox(height: 10),
-            widget.title == "edit"
-                ? DropdownButton<String>(
-                    value: selectedStatus,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedStatus = newValue!;
-                      });
-                    },
-                    underline: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey), // Border color
-                        borderRadius:
-                            BorderRadius.circular(30.0), // Border radius
+              // UploadProfileImage(
+              //   selectedImage: selectedImage,
+              //   // data: widget.carousalData,
+              //   onImageSelected: (image, xfileImage) {
+              //     setState(() {
+              //       selectedImage = image?['selectedImage'];
+              //       imageName = image?['fileName'];
+              //       fileImage = xfileImage;
+              //     });
+              //   },
+              // ),
+              const SizedBox(height: 10),
+              widget.title == "edit"
+                  ? DropdownButton<String>(
+                      value: selectedStatus,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedStatus = newValue!;
+                        });
+                        selectedStatus == "paid"
+                            ? showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return Center(
+                                    child: SingleChildScrollView(
+                                      child: AlertDialog.adaptive(
+                                        content: Column(
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Pranami',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium
+                                                      ?.merge(const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      )),
+                                                ),
+                                                const SizedBox(height: 12),
+                                                Form(
+                                                  key: _pranamiKey,
+                                                  child: SizedBox(
+                                                    width: 200,
+                                                    child: TextFormField(
+                                                      validator: (value) {
+                                                        if (value == null ||
+                                                            value.isEmpty) {
+                                                          return 'Enter pranami amount !';
+                                                        }
+                                                        return null;
+                                                      },
+                                                      style: const TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                      ),
+                                                      autofocus: false,
+                                                      controller:
+                                                          pranamiController,
+                                                      onSaved: (value) {
+                                                        pranamiController.text =
+                                                            value!;
+                                                      },
+                                                      textInputAction:
+                                                          TextInputAction.next,
+                                                      decoration:
+                                                          textFormFieldDecoration(
+                                                              context),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 30),
+                                            ReceivePaymentSubmitButton(
+                                              onPressed: () {},
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                })
+                            : null;
+                      },
+                      underline: Container(
+                        decoration: BoxDecoration(
+                          border:
+                              Border.all(color: Colors.grey), // Border color
+                          borderRadius:
+                              BorderRadius.circular(30.0), // Border radius
+                        ),
                       ),
-                    ),
-                    elevation: 16,
-                    style: const TextStyle(
-                        color: Colors.black), // Dropdown text color
-                    items: statusOptions
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(value),
-                        ),
-                      );
-                    }).toList(),
-                  )
-                : const SizedBox(
-                    height: 0,
-                    width: 0,
-                  ),
-            widget.title == "edit"
-                ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('isAdmin'),
-                        Checkbox(
-                          checkColor: Colors.deepOrange,
-                          fillColor:
-                              MaterialStateProperty.resolveWith(getColor),
-                          value: isAdmin,
-                          onChanged: (bool? value) {},
-                        ),
-                      ],
-                    ),
-                  )
-                : const SizedBox(
-                    height: 0,
-                    width: 0,
-                  ),
-            widget.title == "edit"
-                ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('isGruhasanaApproved'),
-                        Checkbox(
-                          checkColor: Colors.deepOrange,
-                          fillColor:
-                              MaterialStateProperty.resolveWith(getColor),
-                          value: isGruhasanaApproved,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              isGruhasanaApproved = value!;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  )
-                : const SizedBox(
-                    height: 0,
-                    width: 0,
-                  ),
-            widget.title == "edit"
-                ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('isKYDVerified'),
-                        Checkbox(
-                          checkColor: Colors.deepOrange,
-                          fillColor:
-                              MaterialStateProperty.resolveWith(getColor),
-                          value: isKYDVerified,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              isKYDVerified = value!;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  )
-                : const SizedBox(
-                    height: 0,
-                    width: 0,
-                  ),
-            widget.title == "edit"
-                ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('isApproved'),
-                        Checkbox(
-                          checkColor: Colors.deepOrange,
-                          fillColor:
-                              MaterialStateProperty.resolveWith(getColor),
-                          value: isApproved,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              isApproved = value!;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  )
-                : const SizedBox(
-                    height: 0,
-                    width: 0,
-                  ),
-            TextFormField(
-              controller: nameController,
-              onSaved: (newValue) => nameController,
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp("[a-z A-Z]"))
-              ],
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter name';
-                }
-                return null;
-              },
-              decoration: InputDecoration(
-                labelText: "Name",
-                filled: true,
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    borderSide:
-                        const BorderSide(width: 0, style: BorderStyle.none)),
-              ),
-            ),
-            const SizedBox(
-              height: 12,
-            ),
-            const SizedBox(height: 10),
-            TextFormField(
-              controller: emailController,
-              onSaved: (newValue) => emailController,
-              validator: (value) {
-                if (value?.isEmpty == true || value == null) {
-                  return null;
-                }
-                if (!emailRegex.hasMatch(value)) {
-                  return "Invalid email !";
-                }
-                return null;
-              },
-              decoration: InputDecoration(
-                labelText: "Email Id",
-                filled: true,
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    borderSide:
-                        const BorderSide(width: 0, style: BorderStyle.none)),
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextFormField(
-              keyboardType: TextInputType.phone,
-              controller: mobileController,
-              onSaved: (newValue) => mobileController,
-              validator: (value) {
-                RegExp regex = RegExp(r'^.{10}$');
-                if (value!.isEmpty) {
-                  return ("Please enter Phone Number");
-                }
-                if (!regex.hasMatch(value) && value.length != 10) {
-                  return ("Enter 10 Digit Mobile Number");
-                }
-                return null;
-              },
-              decoration: InputDecoration(
-                labelText: "Mobile Number",
-                filled: true,
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    borderSide:
-                        const BorderSide(width: 0, style: BorderStyle.none)),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                const Text(
-                  'Gender',
-                ),
-                Column(
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          flex: 1,
-                          child: RadioListTile(
-                            value: 0,
-                            groupValue: genderController,
-                            title: const Text(
-                              "Bhai",
-                            ),
-                            onChanged: (newValue) => setState(
-                                () => genderController = newValue ?? 0),
-                            activeColor: RadioButtonColor,
-                            // Set the unselected color to blue
-                            selectedTileColor:
-                                RadioButtonColor, // Set the selected color
-                            selected: false,
+                      elevation: 16,
+                      style: const TextStyle(
+                          color: Colors.black), // Dropdown text color
+                      items: statusOptions
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(value),
                           ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: RadioListTile(
-                            value: 1,
-                            groupValue: genderController,
-
-                            title: const Text(
-                              "Maa",
-                            ),
-                            onChanged: (newValue) {
-                              setState(() {
-                                genderController = newValue ?? 1;
-                              });
-                            },
-                            activeColor: RadioButtonColor,
-                            // Set the unselected color to blue
-                            selectedTileColor:
-                                RadioButtonColor, // Set the selected color
-                            selected: false,
+                        );
+                      }).toList(),
+                    )
+                  : const SizedBox(
+                      height: 0,
+                      width: 0,
+                    ),
+              widget.title == "edit"
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('isAdmin'),
+                          Checkbox(
+                            checkColor: Colors.deepOrange,
+                            fillColor:
+                                MaterialStateProperty.resolveWith(getColor),
+                            value: isAdmin,
+                            onChanged: (bool? value) {},
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            GestureDetector(
-              child: TextField(
-                controller: dateOfBirth, //editing controller of this TextField
-                decoration: InputDecoration(
-                  labelText: "Date Of Birth",
-                  filled: true,
-                  floatingLabelBehavior: FloatingLabelBehavior.never,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide:
-                          const BorderSide(width: 0, style: BorderStyle.none)),
-                ),
-                readOnly:
-                    true, //set it true, so that user will not able to edit text
-                onTap: () async {
-                  DateTime? pickedDate = await showDatePicker(
-                      initialEntryMode:
-                          DatePickerEntryMode.calendarOnly, // Hide edit button
-                      fieldHintText: 'dd-MM-yyyy',
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(
-                          1900), //DateTime.now() - not to allow to choose before today.
-                      lastDate: DateTime.now());
-
-                  if (pickedDate != null) {
-                    print(
-                        pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
-                    String formattedDate =
-                        DateFormat('dd-MM-yyyy').format(pickedDate);
-                    print(
-                        formattedDate); //formatted date output using intl package =>  2021-03-16
-                    //you can implement different kind of Date Format here according to your requirement
-
-                    setState(() {
-                      dateOfBirth.text =
-                          formattedDate; //set output date to TextField value.
-                    });
-                  } else {
-                    print("Date is not selected");
-                  }
-                },
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: DropdownButtonFormField(
-                    value: bloodGroupController,
-
-                    elevation: 16,
-                    decoration: InputDecoration(
-                      labelText: "Blood Group",
-                      filled: true,
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide: const BorderSide(
-                              width: 0, style: BorderStyle.none)),
-                    ),
-                    // style: const TextStyle(color: Colors.deepPurple),
-
-                    onChanged: (String? value) {
-                      // This is called when the user selects an item.
-                      setState(() {
-                        bloodGroupController = value!;
-                      });
-                    },
-                    items: bloodGrouplist
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TypeAheadFormField(
-              noItemsFoundBuilder: (context) => const SizedBox(
-                height: 70,
-                child: Center(
-                  child: Text('No Item Found'),
-                ),
-              ),
-              suggestionsBoxDecoration: const SuggestionsBoxDecoration(
-                  color: SuggestionBoxColor,
-                  elevation: 5,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(10),
-                    bottomRight: Radius.circular(10),
-                  )),
-              debounceDuration: const Duration(milliseconds: 400),
-              textFieldConfiguration: TextFieldConfiguration(
-                controller: sanghaController,
-                decoration: InputDecoration(
-                  labelText: "Sangha Name",
-                  filled: true,
-                  floatingLabelBehavior: FloatingLabelBehavior.never,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide:
-                          const BorderSide(width: 0, style: BorderStyle.none)),
-                ),
-              ),
-              suggestionsCallback: (value) async {
-                final sanghas = await SanghaList().getSuggestions(value);
-                return sanghas;
-              },
-              itemBuilder: (context, String suggestion) {
-                return Row(
-                  children: [
-                    const SizedBox(
-                      width: 10,
-                      height: 50,
-                    ),
-                    Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.all(6.0),
-                        child: Text(
-                          suggestion,
-                          maxLines: 6,
-                        ),
+                        ],
                       ),
                     )
-                  ],
-                );
-              },
-              onSuggestionSelected: (String suggestion) {
-                setState(() {
-                  sanghaController.text = suggestion;
-                });
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              controller: addressLine1Controller,
-              onSaved: (newValue) => addressLine1Controller,
-              // validator: (value) {
-              //   if (value == null || value.isEmpty) {
-              //     return 'Please enter address line 1';
-              //   }
-              //   return null;
-              // },
-              decoration: InputDecoration(
-                labelText: "Address line 1",
-                filled: true,
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    borderSide:
-                        const BorderSide(width: 0, style: BorderStyle.none)),
+                  : const SizedBox(
+                      height: 0,
+                      width: 0,
+                    ),
+              widget.title == "edit"
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('isGruhasanaApproved'),
+                          Checkbox(
+                            checkColor: Colors.deepOrange,
+                            fillColor:
+                                MaterialStateProperty.resolveWith(getColor),
+                            value: isGruhasanaApproved,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                isGruhasanaApproved = value!;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    )
+                  : const SizedBox(
+                      height: 0,
+                      width: 0,
+                    ),
+              widget.title == "edit"
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('isKYDVerified'),
+                          Checkbox(
+                            checkColor: Colors.deepOrange,
+                            fillColor:
+                                MaterialStateProperty.resolveWith(getColor),
+                            value: isKYDVerified,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                isKYDVerified = value!;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    )
+                  : const SizedBox(
+                      height: 0,
+                      width: 0,
+                    ),
+              widget.title == "edit"
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('isApproved'),
+                          Checkbox(
+                            checkColor: Colors.deepOrange,
+                            fillColor:
+                                MaterialStateProperty.resolveWith(getColor),
+                            value: isApproved,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                isApproved = value!;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    )
+                  : const SizedBox(
+                      height: 0,
+                      width: 0,
+                    ),
+              TextFormField(
+                controller: nameController,
+                onSaved: (newValue) => nameController,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp("[a-z A-Z]"))
+                ],
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter name';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  labelText: "Name",
+                  filled: true,
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide:
+                          const BorderSide(width: 0, style: BorderStyle.none)),
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              controller: addressLine2Controller,
-              onSaved: (newValue) => addressLine2Controller,
-              // validator: (value) {
-              //   if (value == null || value.isEmpty) {
-              //     return 'Please enter address line 2';
-              //   }
-              //   return null;
-              // },
-              decoration: InputDecoration(
-                labelText: "Address line 2",
-                filled: true,
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    borderSide:
-                        const BorderSide(width: 0, style: BorderStyle.none)),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              controller: cityController,
-              onSaved: (newValue) => cityController,
-              // validator: (value) {
-              //   if (value == null || value.isEmpty) {
-              //     return 'Please enter city name';
-              //   }
-              //   return null;
-              // },
-              decoration: InputDecoration(
-                labelText: "City Name",
-                filled: true,
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    borderSide:
-                        const BorderSide(width: 0, style: BorderStyle.none)),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              controller: stateController,
-              onSaved: (newValue) => stateController,
-              // validator: (value) {
-              //   if (value == null || value.isEmpty) {
-              //     return 'Please enter state name';
-              //   }
-              //   return null;
-              // },
-              decoration: InputDecoration(
-                labelText: "State Name",
-                filled: true,
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    borderSide:
-                        const BorderSide(width: 0, style: BorderStyle.none)),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              controller: countryController,
-              onSaved: (newValue) => addressLine1Controller,
-              // validator: (value) {
-              //   if (value == null || value.isEmpty) {
-              //     return 'Please enter country name';
-              //   }
-              //   return null;
-              // },
-              decoration: InputDecoration(
-                labelText: "Country Name",
-                filled: true,
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    borderSide:
-                        const BorderSide(width: 0, style: BorderStyle.none)),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              keyboardType: TextInputType.number,
-              controller: postalCodeController,
-              onSaved: (newValue) => postalCodeController,
-              // validator: (value) {
-              //   if (value == null || value.isEmpty) {
-              //     return 'Please enter postal code';
-              //   } else if (value.length > 7) {
-              //     return 'Please enter valid postal code';
-              //   }
-              //   return null;
-              // },
-              decoration: InputDecoration(
-                labelText: "PIN Code",
-                filled: true,
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    borderSide:
-                        const BorderSide(width: 0, style: BorderStyle.none)),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 50,
-              margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
-              decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(90)),
-              child: ElevatedButton(
-                onPressed: () async {
-                  if (formKey.currentState != null &&
-                      formKey.currentState!.validate()) {
-                    showDialog(
-                      context: context,
-                      barrierDismissible:
-                          false, // Prevent dismissing by tapping outside
-                      builder: (BuildContext context) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      },
-                    );
-                    await Future.delayed(
-                        const Duration(seconds: 1)); // Simulating a delay
-                    try {
-                      String? profileURL = image?["selectedImage"] != null
-                          ? await uploadImageToFirebaseStorage(
-                              image?["selectedImage"] as List<int>,
-                              nameController.text)
-                          : selectedDevotee?.profilePhotoUrl;
-                      print("profileURL -------------$profileURL");
-                      String uniqueDevoteeId = const Uuid().v1();
-                      DevoteeModel updateDevotee = DevoteeModel(
-                          devoteeCode:
-                              selectedDevotee?.devoteeCode?.toInt() ?? 0,
-                          isAdmin: selectedDevotee?.isAdmin ?? false,
-                          createdById: widget.title == "edit"
-                              ? selectedDevotee?.createdById
-                              : uniqueDevoteeId,
-                          status: selectedStatus,
-                          createdOn: selectedDevotee?.createdOn ??
-                              DateFormat('yyyy-MM-dd HH:mm')
-                                  .format(DateTime.now()),
-                          isApproved: isApproved,
-                          devoteeId: widget.title == "edit"
-                              ? widget.devoteeId
-                              : uniqueDevoteeId,
-                          bloodGroup: bloodGroupController,
-                          name: nameController.text,
-                          gender: gender[genderController],
-                          profilePhotoUrl: profileURL,
-                          sangha: sanghaController.text,
-                          dob: dateOfBirth.text,
-                          mobileNumber: mobileController.text,
-                          updatedOn: DateTime.now().toString(),
-                          emailId: emailController.text,
-                          isGruhasanaApproved: isGruhasanaApproved,
-                          isKYDVerified: isKYDVerified,
-                          uid: selectedDevotee?.uid ?? "",
-                          address: AddressModel(
-                              addressLine2: addressLine2Controller.text,
-                              addressLine1: addressLine1Controller.text,
-                              country: countryController.text,
-                              postalCode: (postalCodeController.text != "")
-                                  ? int.tryParse(postalCodeController.text)
-                                  : 0,
-                              city: cityController.text,
-                              state: stateController.text));
-                      Map<String, dynamic> response;
-                      if (widget.title == "edit") {
-                        response = await PutDevoteeAPI()
-                            .updateDevotee(updateDevotee, widget.devoteeId);
-                      } else {
-                        response = await PostDevoteeAPI()
-                            .addRelativeDevotee(updateDevotee);
-                      }
 
-                      if (response["statusCode"] == 200) {
-                        // Show a circular progress indicator while navigating
-                        // ignore: use_build_context_synchronously
-                        showDialog(
-                          context: context,
-                          barrierDismissible:
-                              false, // Prevent dismissing by tapping outside
-                          builder: (BuildContext context) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          },
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: emailController,
+                onSaved: (newValue) => emailController,
+                validator: (value) {
+                  if (value?.isEmpty == true || value == null) {
+                    return null;
+                  }
+                  if (!emailRegex.hasMatch(value)) {
+                    return "Invalid email !";
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  labelText: "Email Id",
+                  filled: true,
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide:
+                          const BorderSide(width: 0, style: BorderStyle.none)),
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                keyboardType: TextInputType.phone,
+                controller: mobileController,
+                onSaved: (newValue) => mobileController,
+                validator: (value) {
+                  RegExp regex = RegExp(r'^.{10}$');
+                  if (value!.isEmpty) {
+                    return ("Please enter Phone Number");
+                  }
+                  if (!regex.hasMatch(value) && value.length != 10) {
+                    return ("Enter 10 Digit Mobile Number");
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  labelText: "Mobile Number",
+                  filled: true,
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide:
+                          const BorderSide(width: 0, style: BorderStyle.none)),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  const Text(
+                    'Gender',
+                  ),
+                  Column(
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 1,
+                            child: RadioListTile(
+                              value: 0,
+                              groupValue: genderController,
+                              title: const Text(
+                                "Bhai",
+                              ),
+                              onChanged: (newValue) => setState(
+                                  () => genderController = newValue ?? 0),
+                              activeColor: RadioButtonColor,
+                              // Set the unselected color to blue
+                              selectedTileColor:
+                                  RadioButtonColor, // Set the selected color
+                              selected: false,
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: RadioListTile(
+                              value: 1,
+                              groupValue: genderController,
+
+                              title: const Text(
+                                "Maa",
+                              ),
+                              onChanged: (newValue) {
+                                setState(() {
+                                  genderController = newValue ?? 1;
+                                });
+                              },
+                              activeColor: RadioButtonColor,
+                              // Set the unselected color to blue
+                              selectedTileColor:
+                                  RadioButtonColor, // Set the selected color
+                              selected: false,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    //SizedBox
+                    const Text(
+                      'Has Parichaya Patra?',
+                    ), //Text
+                    //SizedBox
+                    /** Checkbox Widget **/
+                    Transform.scale(
+                      scale: 1.5,
+                      child: Checkbox(
+                        activeColor: Colors.deepOrange,
+                        value: parichayaPatraValue,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            parichayaPatraValue = value;
+                          });
+                        },
+                      ),
+                    ), //Checkbox
+                  ], //<Widget>[]
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              GestureDetector(
+                child: TextField(
+                  controller:
+                      dateOfBirth, //editing controller of this TextField
+                  decoration: InputDecoration(
+                    labelText: "Date Of Birth",
+                    filled: true,
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        borderSide: const BorderSide(
+                            width: 0, style: BorderStyle.none)),
+                  ),
+                  readOnly:
+                      true, //set it true, so that user will not able to edit text
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                        initialEntryMode: DatePickerEntryMode
+                            .calendarOnly, // Hide edit button
+                        fieldHintText: 'dd-MM-yyyy',
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(
+                            1900), //DateTime.now() - not to allow to choose before today.
+                        lastDate: DateTime.now());
+
+                    if (pickedDate != null) {
+                      print(
+                          pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
+                      String formattedDate =
+                          DateFormat('dd-MM-yyyy').format(pickedDate);
+                      print(
+                          formattedDate); //formatted date output using intl package =>  2021-03-16
+                      //you can implement different kind of Date Format here according to your requirement
+
+                      setState(() {
+                        dateOfBirth.text =
+                            formattedDate; //set output date to TextField value.
+                      });
+                    } else {
+                      print("Date is not selected");
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: DropdownButtonFormField(
+                      value: bloodGroupController,
+
+                      elevation: 16,
+                      decoration: InputDecoration(
+                        labelText: "Blood Group",
+                        filled: true,
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                            borderSide: const BorderSide(
+                                width: 0, style: BorderStyle.none)),
+                      ),
+                      // style: const TextStyle(color: Colors.deepPurple),
+
+                      onChanged: (String? value) {
+                        // This is called when the user selects an item.
+                        setState(() {
+                          bloodGroupController = value!;
+                        });
+                      },
+                      items: bloodGrouplist
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
                         );
-                        Navigator.of(context)
-                            .pop(); // Close the circular progress indicator
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DashboardPage(),
-                            ));
-                      } else {
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              TypeAheadFormField(
+                noItemsFoundBuilder: (context) => const SizedBox(
+                  height: 70,
+                  child: Center(
+                    child: Text('No Item Found'),
+                  ),
+                ),
+                suggestionsBoxDecoration: const SuggestionsBoxDecoration(
+                    color: SuggestionBoxColor,
+                    elevation: 5,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(10),
+                      bottomRight: Radius.circular(10),
+                    )),
+                debounceDuration: const Duration(milliseconds: 400),
+                textFieldConfiguration: TextFieldConfiguration(
+                  controller: sanghaController,
+                  decoration: InputDecoration(
+                    labelText: "Sangha Name",
+                    filled: true,
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        borderSide: const BorderSide(
+                            width: 0, style: BorderStyle.none)),
+                  ),
+                ),
+                suggestionsCallback: (value) async {
+                  final sanghas = await SanghaList().getSuggestions(value);
+                  return sanghas;
+                },
+                itemBuilder: (context, String suggestion) {
+                  return Row(
+                    children: [
+                      const SizedBox(
+                        width: 10,
+                        height: 50,
+                      ),
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: Text(
+                            suggestion,
+                            maxLines: 6,
+                          ),
+                        ),
+                      )
+                    ],
+                  );
+                },
+                onSuggestionSelected: (String suggestion) {
+                  setState(() {
+                    sanghaController.text = suggestion;
+                  });
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                controller: addressLine1Controller,
+                onSaved: (newValue) => addressLine1Controller,
+                // validator: (value) {
+                //   if (value == null || value.isEmpty) {
+                //     return 'Please enter address line 1';
+                //   }
+                //   return null;
+                // },
+                decoration: InputDecoration(
+                  labelText: "Address line 1",
+                  filled: true,
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide:
+                          const BorderSide(width: 0, style: BorderStyle.none)),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                controller: addressLine2Controller,
+                onSaved: (newValue) => addressLine2Controller,
+                // validator: (value) {
+                //   if (value == null || value.isEmpty) {
+                //     return 'Please enter address line 2';
+                //   }
+                //   return null;
+                // },
+                decoration: InputDecoration(
+                  labelText: "Address line 2",
+                  filled: true,
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide:
+                          const BorderSide(width: 0, style: BorderStyle.none)),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                controller: cityController,
+                onSaved: (newValue) => cityController,
+                // validator: (value) {
+                //   if (value == null || value.isEmpty) {
+                //     return 'Please enter city name';
+                //   }
+                //   return null;
+                // },
+                decoration: InputDecoration(
+                  labelText: "City Name",
+                  filled: true,
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide:
+                          const BorderSide(width: 0, style: BorderStyle.none)),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                controller: stateController,
+                onSaved: (newValue) => stateController,
+                // validator: (value) {
+                //   if (value == null || value.isEmpty) {
+                //     return 'Please enter state name';
+                //   }
+                //   return null;
+                // },
+                decoration: InputDecoration(
+                  labelText: "State Name",
+                  filled: true,
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide:
+                          const BorderSide(width: 0, style: BorderStyle.none)),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                controller: countryController,
+                onSaved: (newValue) => addressLine1Controller,
+                // validator: (value) {
+                //   if (value == null || value.isEmpty) {
+                //     return 'Please enter country name';
+                //   }
+                //   return null;
+                // },
+                decoration: InputDecoration(
+                  labelText: "Country Name",
+                  filled: true,
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide:
+                          const BorderSide(width: 0, style: BorderStyle.none)),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                keyboardType: TextInputType.number,
+                controller: postalCodeController,
+                onSaved: (newValue) => postalCodeController,
+                // validator: (value) {
+                //   if (value == null || value.isEmpty) {
+                //     return 'Please enter postal code';
+                //   } else if (value.length > 7) {
+                //     return 'Please enter valid postal code';
+                //   }
+                //   return null;
+                // },
+                decoration: InputDecoration(
+                  labelText: "PIN Code",
+                  filled: true,
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide:
+                          const BorderSide(width: 0, style: BorderStyle.none)),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: 50,
+                margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(90)),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if (formKey.currentState != null &&
+                        formKey.currentState!.validate()) {
+                      showDialog(
+                        context: context,
+                        barrierDismissible:
+                            false, // Prevent dismissing by tapping outside
+                        builder: (BuildContext context) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      );
+                      await Future.delayed(
+                          const Duration(seconds: 1)); // Simulating a delay
+                      try {
+                        String? profileURL = image?["selectedImage"] != null
+                            ? await uploadImageToFirebaseStorage(
+                                image?["selectedImage"] as List<int>,
+                                nameController.text)
+                            : selectedDevotee?.profilePhotoUrl;
+                        print("profileURL -------------$profileURL");
+                        String uniqueDevoteeId = const Uuid().v1();
+                        DevoteeModel updateDevotee = DevoteeModel(
+                            devoteeCode:
+                                selectedDevotee?.devoteeCode?.toInt() ?? 0,
+                            isAdmin: selectedDevotee?.isAdmin ?? false,
+                            createdById: widget.title == "edit"
+                                ? selectedDevotee?.createdById
+                                : uniqueDevoteeId,
+                            status: selectedStatus,
+                            createdOn: selectedDevotee?.createdOn ??
+                                DateFormat('yyyy-MM-dd HH:mm')
+                                    .format(DateTime.now()),
+                            isApproved: isApproved,
+                            devoteeId: widget.title == "edit"
+                                ? widget.devoteeId
+                                : uniqueDevoteeId,
+                            bloodGroup: bloodGroupController,
+                            name: nameController.text,
+                            gender: gender[genderController],
+                            profilePhotoUrl: profileURL,
+                            hasParichayaPatra: parichayaPatraValue,
+                            sangha: sanghaController.text,
+                            dob: dateOfBirth.text,
+                            mobileNumber: mobileController.text,
+                            updatedOn: DateTime.now().toString(),
+                            emailId: emailController.text,
+                            isGruhasanaApproved: isGruhasanaApproved,
+                            isKYDVerified: isKYDVerified,
+                            uid: selectedDevotee?.uid ?? "",
+                            address: AddressModel(
+                                addressLine2: addressLine2Controller.text,
+                                addressLine1: addressLine1Controller.text,
+                                country: countryController.text,
+                                postalCode: (postalCodeController.text != "")
+                                    ? int.tryParse(postalCodeController.text)
+                                    : 0,
+                                city: cityController.text,
+                                state: stateController.text));
+                        Map<String, dynamic> response;
+                        if (widget.title == "edit") {
+                          response = await PutDevoteeAPI()
+                              .updateDevotee(updateDevotee, widget.devoteeId);
+                        } else {
+                          response = await PostDevoteeAPI()
+                              .addRelativeDevotee(updateDevotee);
+                        }
+
+                        if (response["statusCode"] == 200) {
+                          // Show a circular progress indicator while navigating
+                          // ignore: use_build_context_synchronously
+                          showDialog(
+                            context: context,
+                            barrierDismissible:
+                                false, // Prevent dismissing by tapping outside
+                            builder: (BuildContext context) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            },
+                          );
+                          Navigator.of(context)
+                              .pop(); // Close the circular progress indicator
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DashboardPage(),
+                              ));
+                        } else {
+                          Navigator.of(context)
+                              .pop(); // Close the circular progress indicator
+                          // ignore: use_build_context_synchronously
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('devotee update issue')));
+                        }
+                      } catch (e) {
                         Navigator.of(context)
                             .pop(); // Close the circular progress indicator
                         // ignore: use_build_context_synchronously
                         ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('devotee update issue')));
+                            SnackBar(content: Text(e.toString())));
+                        print(e);
                       }
-                    } catch (e) {
-                      Navigator.of(context)
-                          .pop(); // Close the circular progress indicator
-                      // ignore: use_build_context_synchronously
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(SnackBar(content: Text(e.toString())));
-                      print(e);
+                    } else {
+                      return;
                     }
-                  } else {
-                    return;
-                  }
-                },
-                style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.resolveWith((states) {
-                      if (states.contains(MaterialState.pressed)) {
+                  },
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.resolveWith((states) {
+                        if (states.contains(MaterialState.pressed)) {
+                          return ButtonColor;
+                        }
                         return ButtonColor;
-                      }
-                      return ButtonColor;
-                    }),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(90)))),
-                child: Text(
-                  widget.title == "edit" ? "Update" : "Add",
-                ),
+                      }),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(90)))),
+                  child: Text(
+                    widget.title == "edit" ? "Update" : "Add",
+                  ),
 
-                //Row
+                  //Row
+                ),
               ),
-            ),
-          ]),
+            ]),
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class ReceivePaymentSubmitButton extends StatelessWidget {
+  ReceivePaymentSubmitButton({
+    super.key,
+    required this.onPressed,
+  });
+  void Function()? onPressed;
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.deepOrange,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        fixedSize: const Size(100, 40),
+        //side: const BorderSide(color: Colors.actionColor, width: 5),
+      ),
+      onPressed: onPressed,
+      child: Text(
+        "Submit",
+        style: Theme.of(context)
+            .textTheme
+            .bodyMedium
+            ?.merge(const TextStyle(color: Colors.white)),
       ),
     );
   }

@@ -139,6 +139,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                                 return PaliaListPage(
                                   status: "allDevotee",
                                   pageFrom: "Search",
+                                  devoteeList: devoteeList,
                                   searchValue: sdpSearchController.text,
                                 );
                               },
@@ -164,6 +165,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                               return PaliaListPage(
                                 status: "allDevotee",
                                 pageFrom: "Search",
+                                devoteeList: devoteeList,
                                 searchValue: sdpSearchController.text,
                                 searchBy: _selectedSearchType,
                                 isResultEmpty: devoteeList.isNotEmpty,
@@ -194,6 +196,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                                     return PaliaListPage(
                                       status: "allDevotee",
                                       pageFrom: "Search",
+                                      devoteeList: devoteeList,
                                       searchValue: sdpSearchController.text,
                                       searchBy: _selectedSearchType,
                                     );
