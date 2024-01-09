@@ -35,7 +35,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
     "sangha",
     "emailId",
     "status",
-    "devotee code",
+    "devoteeCode",
     "mobileNumber",
     "bloodGroup"
   ];
