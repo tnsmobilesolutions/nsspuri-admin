@@ -91,7 +91,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'dataSubmitted',
     'paid',
     'rejected',
-    'accepted',
+    'approved',
     'printed',
     'withdrawn',
     'lost',
