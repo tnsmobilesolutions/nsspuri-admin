@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously, must_be_immutable
+// ignore_for_file: use_build_context_synchronously, must_be_immutable, avoid_print
 import 'package:flutter/material.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/devotee_model.dart';
@@ -41,6 +41,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
   ];
   List<String?> searchSangha = [];
   bool showAllNames = false;
+  String? trackSearchType;
   TextEditingController searchSanghaController = TextEditingController();
   final TextEditingController sdpSearchController = TextEditingController();
   @override
@@ -73,9 +74,13 @@ class _SearchDevoteeState extends State<SearchDevotee> {
               ),
               borderRadius: BorderRadius.circular(12),
               value: _selectedSearchType,
+
               onChanged: (value) {
                 setState(() {
-                  _selectedSearchType = value;
+                  if (_selectedSearchType != value) {
+                    sdpSearchController.clear();
+                  }
+                  _selectedSearchType = trackSearchType = value;
                 });
               },
               items: searchBy.map(

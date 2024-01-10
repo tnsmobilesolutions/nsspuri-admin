@@ -45,20 +45,20 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                 textAlign: TextAlign.center,
               ),
             ),
-            Expanded(
-                child: SizedBox(
-              height: 50,
-              width: 50,
-              child: widget.devoteeDetails.profilePhotoUrl != null &&
-                      widget.devoteeDetails.profilePhotoUrl!.isNotEmpty
-                  ? Image.network(
-                      widget.devoteeDetails.profilePhotoUrl ?? '',
-                      width: 50,
-                      height: 50,
-                    )
-                  : const Image(
-                      image: AssetImage('assets/images/profile.jpeg')),
-            )),
+            // Expanded(
+            //     child: SizedBox(
+            //   height: 50,
+            //   width: 50,
+            //   child: widget.devoteeDetails.profilePhotoUrl != null &&
+            //           widget.devoteeDetails.profilePhotoUrl!.isNotEmpty
+            //       ? Image.network(
+            //           widget.devoteeDetails.profilePhotoUrl ?? '',
+            //           width: 50,
+            //           height: 50,
+            //         )
+            //       : const Image(
+            //           image: AssetImage('assets/images/profile.jpeg')),
+            // )),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -72,17 +72,14 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                               ? '${widget.devoteeDetails.name}\n'
                               : "-\n",
                           style: const TextStyle(
-                            fontSize: 17, // Change the font size for the name
-                            fontWeight: FontWeight
-                                .bold, // Change the font weight if needed
-                            // Other style properties as needed
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                         TextSpan(
                           text: widget.devoteeDetails.devoteeCode.toString(),
                           style: const TextStyle(
-                            fontSize: 14, // Change the font size for the code
-                            // Other style properties as needed
+                            fontSize: 14,
                           ),
                         ),
                       ],
