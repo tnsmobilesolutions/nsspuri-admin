@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:sdp/screen/PaliaListScreen.dart/paliaList.dart';
 import 'package:sdp/screen/appBar/create_delegate_buton.dart.dart';
 import 'package:sdp/screen/appBar/goto_home_button.dart';
 import 'package:sdp/screen/appBar/logoutButton.dart';
@@ -50,7 +51,16 @@ class _AppbarActionButtonWidgetState extends State<AppbarActionButtonWidget> {
               ),
               foregroundColor: Colors.white,
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) {
+                  return PaliaListPage(
+                    pageFrom: "Dashboard",
+                    status: "allDevotee",
+                  );
+                },
+              ));
+            },
             child: const Text(
               'Clear',
               style: TextStyle(color: Colors.white),
