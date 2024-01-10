@@ -109,9 +109,25 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
               ),
             ),
             Expanded(
-              child: Text(
-                '${widget.devoteeDetails.status}',
-                textAlign: TextAlign.center,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '${widget.devoteeDetails.status}',
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                  widget.devoteeDetails.paidAmount != null
+                      ? Text(
+                          '₹ ${widget.devoteeDetails.paidAmount}',
+                          textAlign: TextAlign.center,
+                        )
+                      : const SizedBox(),
+                ],
               ),
             ),
             if (widget.showMenu == true)
