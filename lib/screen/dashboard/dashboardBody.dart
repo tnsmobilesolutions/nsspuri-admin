@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/dashboard_card_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/paliaList.dart';
+import 'package:sdp/utilities/network_helper.dart';
 
 class DashboardBody extends StatefulWidget {
   const DashboardBody({super.key});
@@ -66,23 +67,37 @@ class _DashboardBodyState extends State<DashboardBody> {
                       child: ListView.builder(
                     scrollDirection: Axis
                         .horizontal, // Set the scroll direction to horizontal
-                    itemCount: 5,
+                    itemCount: emptyTitleData.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Padding(
                           padding: const EdgeInsets.only(
                               right: 8.0), // Adjust spacing between items
                           child: InkWell(
                             highlightColor: const Color.fromARGB(255, 0, 0, 0),
-                            onTap: () {
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) {
-                                  return PaliaListPage(
-                                    pageFrom: "Dashboard",
-                                    status: emptyTitleData[index].status ?? "",
-                                  );
-                                },
-                              ));
-                            },
+                            onTap: 
+                                 () {
+                                    Navigator.push(context, MaterialPageRoute(
+                                      builder: (context) {
+                                        if (Networkhelper()
+                                                .getCurrentDevotee
+                                                ?.role ==
+                                            "Approver") {
+                                          return PaliaListPage(
+                                            pageFrom: "Dashboard",
+                                            status: "allDevotee",
+                                          );
+                                        } else {
+                                          return PaliaListPage(
+                                            pageFrom: "Dashboard",
+                                            status:
+                                                emptyTitleData[index].status ??
+                                                    "",
+                                          );
+                                        }
+                                      },
+                                    ));
+                                  }
+                              ,
                             child: Card(
                                 color: Colors.yellowAccent,
                                 child: DashBoardData(

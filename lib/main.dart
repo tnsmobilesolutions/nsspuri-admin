@@ -3,9 +3,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:material_color_generator/material_color_generator.dart';
 import 'package:sdp/authstate.dart';
+import 'package:sdp/utilities/network_helper.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await fetchCurrentuser();
   await Firebase.initializeApp(
     options: FirebaseOptions(
       apiKey: "AIzaSyA1tSAISbgSLqVdLRvfLh-9bB58DgYg1lI",

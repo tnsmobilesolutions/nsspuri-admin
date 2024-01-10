@@ -19,9 +19,9 @@ class GetDevoteeAPI extends DioFuctionAPI {
   Future<Map<String, dynamic>?> currentDevotee() async {
     try {
       final response = await getAPI("devotee/currentUser");
-      print(response);
+      print("response of currentuser -- $response");
       DevoteeModel devotee =
-          DevoteeModel.fromMap(response["data"]["singleDevotee"]);
+          DevoteeModel.fromMap(response["data"]["singleDevotee"][0]);
       return {"statusCode": 200, "data": devotee};
     } catch (e) {
       print(e);

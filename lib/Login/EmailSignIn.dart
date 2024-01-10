@@ -46,7 +46,8 @@ class _EmailSignInState extends State<EmailSignIn> {
                   onEmailLoginPressed: (userEmail, userPassword) async {
                     try {
                       String? uid = await FirebaseAuthentication()
-                          .signinWithFirebase(userEmail, userPassword);
+                          .signinWithFirebase(userEmail.toString().trim(),
+                              userPassword.toString().trim());
 
                       if (uid != null) {
                         final response =
@@ -54,7 +55,9 @@ class _EmailSignInState extends State<EmailSignIn> {
                         DevoteeModel resDevoteeData = response?["data"];
 
                         if (response?["statusCode"] == 200 &&
-                            resDevoteeData.isAdmin == true) {
+                                resDevoteeData.role == "Admin" ||
+                            resDevoteeData.role == "SuperAdmin" ||
+                            resDevoteeData.role == "Approver") {
                           Navigator.push(
                               context,
                               MaterialPageRoute(

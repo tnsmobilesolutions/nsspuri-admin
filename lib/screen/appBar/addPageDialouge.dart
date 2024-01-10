@@ -14,6 +14,7 @@ import 'package:sdp/model/address_model.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
 import 'package:sdp/utilities/color_palette.dart';
+import 'package:sdp/utilities/network_helper.dart';
 import 'package:uuid/uuid.dart';
 
 class AddPageDilouge extends StatefulWidget {
@@ -82,7 +83,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   String? select;
   DevoteeModel? selectedDevotee;
   List<int>? selectedImage;
-  String selectedStatus = 'dataSubmitted'; // Initially selected status
+  String selectedStatus = 'dataSubmitted';
+  String selectedRole = 'User';
   List<int>? selectedimage;
   TextEditingController stateController = TextEditingController();
   List<String> statusOptions = [
@@ -95,6 +97,22 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'lost',
     'reissued',
     "blacklisted"
+  ];
+  List<String> approverstatusOptions = [
+    'dataSubmitted',
+    'accepted',
+    'withdrawn',
+    'lost',
+    'reissued',
+    "blacklisted"
+  ];
+  List<String> roleList = [
+    'User',
+    'Admin',
+    'SuperAdmin',
+    'Approver',
+    'PrasadScanner',
+    "SecurityCheck"
   ];
   bool? parichayaPatraValue = false;
   GlobalKey<FormState> _pranamiKey = GlobalKey<FormState>();
@@ -137,6 +155,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
         selectedDevotee = devoteeData?["data"];
         if (devoteeData?["statusCode"] == 200) {
           selectedStatus = selectedDevotee?.status ?? "dataSubmitted";
+          selectedRole = selectedDevotee?.role ?? "User";
           nameController.text = selectedDevotee?.name ?? "";
           emailController.text = selectedDevotee?.emailId ?? "";
           mobileController.text = selectedDevotee?.mobileNumber ?? "";
@@ -301,129 +320,116 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
               // ),
               const SizedBox(height: 10),
               widget.title == "edit"
-                  ? DropdownButton<String>(
-                      value: selectedStatus,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedStatus = newValue!;
-                        });
-                        selectedStatus == "paid"
-                            ? showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return Center(
-                                    child: SingleChildScrollView(
-                                      child: AlertDialog.adaptive(
-                                        content: Column(
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'Pranami',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyMedium
-                                                      ?.merge(const TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      )),
-                                                ),
-                                                const SizedBox(height: 12),
-                                                Form(
-                                                  key: _pranamiKey,
-                                                  child: SizedBox(
-                                                    width: 200,
-                                                    child: TextFormField(
-                                                      validator: (value) {
-                                                        if (value == null ||
-                                                            value.isEmpty) {
-                                                          return 'Enter pranami amount !';
-                                                        }
-                                                        return null;
-                                                      },
-                                                      style: const TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.normal,
-                                                      ),
-                                                      autofocus: false,
-                                                      controller:
-                                                          pranamiController,
-                                                      onSaved: (value) {
-                                                        pranamiController.text =
-                                                            value!;
-                                                      },
-                                                      textInputAction:
-                                                          TextInputAction.next,
-                                                      decoration:
-                                                          textFormFieldDecoration(
-                                                              context),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 30),
-                                            ReceivePaymentSubmitButton(
-                                              onPressed: () {},
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                })
-                            : null;
-                      },
-                      underline: Container(
-                        decoration: BoxDecoration(
-                          border:
-                              Border.all(color: Colors.grey), // Border color
-                          borderRadius:
-                              BorderRadius.circular(30.0), // Border radius
-                        ),
-                      ),
-                      elevation: 16,
-                      style: const TextStyle(
-                          color: Colors.black), // Dropdown text color
-                      items: statusOptions
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(value),
-                          ),
-                        );
-                      }).toList(),
-                    )
-                  : const SizedBox(
-                      height: 0,
-                      width: 0,
-                    ),
-              widget.title == "edit"
-                  ? Padding(
-                      padding: const EdgeInsets.all(8.0),
+                  ? SizedBox(
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          const Text('isAdmin'),
-                          Checkbox(
-                            checkColor: Colors.deepOrange,
-                            fillColor:
-                                MaterialStateProperty.resolveWith(getColor),
-                            value: isAdmin,
-                            onChanged: (bool? value) {},
+                          Text(
+                            "Status :",
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
+                          DropdownButton<String>(
+                            value: selectedStatus,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                selectedStatus = newValue!;
+                              });
+                            },
+                            underline: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Colors.grey), // Border color
+                                borderRadius: BorderRadius.circular(
+                                    30.0), // Border radius
+                              ),
+                            ),
+                            elevation: 16,
+                            style: const TextStyle(
+                                color: Colors.black), // Dropdown text color
+                            items: Networkhelper().getCurrentDevotee?.role ==
+                                    "Approver"
+                                ? approverstatusOptions
+                                    .map<DropdownMenuItem<String>>(
+                                        (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(value),
+                                      ),
+                                    );
+                                  }).toList()
+                                : statusOptions.map<DropdownMenuItem<String>>(
+                                    (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(value),
+                                      ),
+                                    );
+                                  }).toList(),
+                          ),
+                          //  SizedBox(height: 10),
+                          VerticalDivider(
+                            thickness: 1,
+                          ),
+                          (widget.title == "edit" &&
+                                  Networkhelper().getCurrentDevotee?.role ==
+                                      "SuperAdmin")
+                              ? Text(
+                                  "Role :",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                )
+                              : SizedBox(
+                                  height: 0,
+                                  width: 0,
+                                ),
+                          (widget.title == "edit" &&
+                                  Networkhelper().getCurrentDevotee?.role ==
+                                      "SuperAdmin")
+                              ? DropdownButton<String>(
+                                  value: selectedRole,
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      selectedRole = newValue!;
+                                    });
+                                  },
+                                  underline: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Colors.grey), // Border color
+                                      borderRadius: BorderRadius.circular(
+                                          30.0), // Border radius
+                                    ),
+                                  ),
+                                  elevation: 16,
+                                  style: const TextStyle(
+                                      color:
+                                          Colors.black), // Dropdown text color
+                                  items: roleList.map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(value),
+                                      ),
+                                    );
+                                  }).toList(),
+                                )
+                              : SizedBox(
+                                  height: 0,
+                                  width: 0,
+                                ),
                         ],
                       ),
                     )
-                  : const SizedBox(
+                  : SizedBox(
                       height: 0,
                       width: 0,
                     ),
+
               widget.title == "edit"
                   ? Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -474,31 +480,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                       height: 0,
                       width: 0,
                     ),
-              widget.title == "edit"
-                  ? Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('isApproved'),
-                          Checkbox(
-                            checkColor: Colors.deepOrange,
-                            fillColor:
-                                MaterialStateProperty.resolveWith(getColor),
-                            value: isApproved,
-                            onChanged: (bool? value) {
-                              setState(() {
-                                isApproved = value!;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    )
-                  : const SizedBox(
-                      height: 0,
-                      width: 0,
-                    ),
+
               TextFormField(
                 controller: nameController,
                 onSaved: (newValue) => nameController,
@@ -553,7 +535,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                 validator: (value) {
                   RegExp regex = RegExp(r'^.{10}$');
                   if (value!.isEmpty) {
-                    return ("Please enter Phone Number");
+                    return null;
                   }
                   if (!regex.hasMatch(value) && value.length != 10) {
                     return ("Enter 10 Digit Mobile Number");
@@ -974,11 +956,11 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                         DevoteeModel updateDevotee = DevoteeModel(
                             devoteeCode:
                                 selectedDevotee?.devoteeCode?.toInt() ?? 0,
-                            isAdmin: selectedDevotee?.isAdmin ?? false,
                             createdById: widget.title == "edit"
                                 ? selectedDevotee?.createdById
                                 : uniqueDevoteeId,
                             status: selectedStatus,
+                            role: selectedRole,
                             createdOn: selectedDevotee?.createdOn ??
                                 DateFormat('yyyy-MM-dd HH:mm')
                                     .format(DateTime.now()),
