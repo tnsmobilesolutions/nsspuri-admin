@@ -245,7 +245,7 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
             child: Row(
               children: [
                 headingText('Sl No.'),
-                // headingText('Profile Image'),
+                headingText('Profile Image'),
                 headingText('Devotee Name'),
                 headingText('Sangha'),
                 headingText('DOB'),

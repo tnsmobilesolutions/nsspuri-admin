@@ -45,20 +45,20 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                 textAlign: TextAlign.center,
               ),
             ),
-            // Expanded(
-            //     child: SizedBox(
-            //   height: 50,
-            //   width: 50,
-            //   child: widget.devoteeDetails.profilePhotoUrl != null &&
-            //           widget.devoteeDetails.profilePhotoUrl!.isNotEmpty
-            //       ? Image.network(
-            //           widget.devoteeDetails.profilePhotoUrl ?? '',
-            //           width: 50,
-            //           height: 50,
-            //         )
-            //       : const Image(
-            //           image: AssetImage('assets/images/profile.jpeg')),
-            // )),
+            Expanded(
+                child: SizedBox(
+              height: 50,
+              width: 50,
+              child: widget.devoteeDetails.profilePhotoUrl != null &&
+                      widget.devoteeDetails.profilePhotoUrl!.isNotEmpty
+                  ? Image.network(
+                      widget.devoteeDetails.profilePhotoUrl ?? '',
+                      width: 50,
+                      height: 50,
+                    )
+                  : const Image(
+                      image: AssetImage('assets/images/profile.jpeg')),
+            )),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
