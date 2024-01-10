@@ -100,7 +100,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   ];
   List<String> approverstatusOptions = [
     'dataSubmitted',
-    'accepted',
+    'Approved',
     'withdrawn',
     'lost',
     'reissued',
@@ -136,10 +136,6 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   }
 
   get districtList => null;
-
-  // String getImageName(XFile image) {
-  //   return image.path.split("/").last;
-  // }
 
   Future<String?> uploadImageToFirebaseStorage(
       List<int> imageData, String? name) async {
