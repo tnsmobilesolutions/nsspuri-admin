@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, use_build_context_synchronously
+// ignore_for_file: file_names, use_build_context_synchronously, avoid_print
 
 import 'package:authentication/EmailLogin/authentication_widget.dart';
 import 'package:flutter/material.dart';
@@ -17,109 +17,128 @@ class EmailSignIn extends StatefulWidget {
 
 class _EmailSignInState extends State<EmailSignIn> {
   final TextEditingController phoneController = TextEditingController();
+  bool showPassword = false;
+  InputDecoration authFieldDecor(String hintText, [Widget? suffixIcon]) {
+    return InputDecoration(
+      hintText: hintText,
+      errorStyle: const TextStyle(color: Colors.deepOrange),
+      hintStyle: const TextStyle(
+          color: Color.fromARGB(255, 173, 173, 245),
+          fontWeight: FontWeight.normal),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      suffixIcon: suffixIcon ?? const SizedBox(),
+      errorMaxLines: 3,
+      focusedErrorBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: Colors.deepOrange),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: Colors.black38),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: Colors.deepOrange),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: Colors.black12),
+        borderRadius: BorderRadius.circular(10),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: Color.fromARGB(255, 242, 247, 254),
+        backgroundColor: const Color.fromARGB(255, 242, 247, 254),
         body: Center(
           child: Padding(
               padding: const EdgeInsets.all(20),
-              child: Container(
-                child: AuthenticationWidget(
-                  shouldEmailAuthentication: true,
-                  imageWidth: 150,
-                  imageHeight: 150,
-                  cardWidth: 245,
-                  cardHeight: 280,
+              child: AuthenticationWidget(
+                shouldEmailAuthentication: true,
+                imageWidth: 150,
+                imageHeight: 150,
+                cardWidth: 400,
+                cardHeight: 400,
+                cardElevation: 20,
+                loginImage: const AssetImage('assets/images/login.png'),
+                title: const Text(
+                  'Sammilani Delegate Admin',
+                  style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87),
+                ),
+                onEmailLoginPressed: (userEmail, userPassword) async {
+                  try {
+                    String? uid = await FirebaseAuthentication()
+                        .signinWithFirebase(userEmail.toString().trim(),
+                            userPassword.toString().trim());
 
-                  cardElevation: 20,
-                  loginImage: const AssetImage('assets/images/login.png'),
-                  title: const Text(
-                    'Sammilani Delegate Admin',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  onEmailLoginPressed: (userEmail, userPassword) async {
-                    try {
-                      String? uid = await FirebaseAuthentication()
-                          .signinWithFirebase(userEmail.toString().trim(),
-                              userPassword.toString().trim());
+                    if (uid != null) {
+                      final response = await GetDevoteeAPI().loginDevotee(uid);
+                      DevoteeModel resDevoteeData = response?["data"];
 
-                      if (uid != null) {
-                        final response =
-                            await GetDevoteeAPI().loginDevotee(uid);
-                        DevoteeModel resDevoteeData = response?["data"];
-
-                        if (response?["statusCode"] == 200 &&
-                                resDevoteeData.role == "Admin" ||
-                            resDevoteeData.role == "SuperAdmin" ||
-                            resDevoteeData.role == "Approver") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => DashboardPage(),
-                              ));
-                        } else {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            elevation: 6,
-                            behavior: SnackBarBehavior.floating,
-                            content: Text(
-                              'You are not an Admin',
-                            ),
-                          ));
-                        }
+                      if (response?["statusCode"] == 200 &&
+                              resDevoteeData.role == "Admin" ||
+                          resDevoteeData.role == "SuperAdmin" ||
+                          resDevoteeData.role == "Approver") {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DashboardPage(),
+                            ));
                       } else {
                         ScaffoldMessenger.of(context)
                             .showSnackBar(const SnackBar(
                           elevation: 6,
                           behavior: SnackBarBehavior.floating,
                           content: Text(
-                            'Please Check your Email/Password',
+                            'You are not an Admin',
                           ),
                         ));
                       }
-                    } catch (e) {
-                      print(e.toString());
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        elevation: 6,
+                        behavior: SnackBarBehavior.floating,
+                        content: Text(
+                          'Please Check your Email/Password',
+                        ),
+                      ));
                     }
-                  },
-                  phoneAuthentication: false,
-                  isSignUpVisible: false,
-                  buttonColor: Colors.deepOrange,
-                  loginButonTextColor: Colors.white,
-
-                  // titleTextColor: Colors.white,
-
-                  isImageVisible: true,
-
-                  //  Color(0xFFeb1589),
-                  cardColor: const Color.fromARGB(255, 253, 253, 253),
-                  textfieldHintColor: Colors.white,
-
-                  emailFieldDecoration: InputDecoration(
-                    label: Text('Email'),
-                    labelStyle: TextStyle(color: Colors.grey[800]),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.deepOrange),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Colors.black.withOpacity(0.5)),
-                    ),
-                  ),
-                  passwordFieldDecoration: InputDecoration(
-                    label: Text('Password'),
-                    labelStyle: TextStyle(color: Colors.grey[800]),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.deepOrange),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Colors.black.withOpacity(0.5)),
+                  } catch (e) {
+                    print(e.toString());
+                  }
+                },
+                obscureText: showPassword,
+                phoneAuthentication: false,
+                isSignUpVisible: false,
+                buttonColor: Colors.deepOrange,
+                loginButonTextColor: Colors.white,
+                isImageVisible: true,
+                cardColor: const Color.fromARGB(255, 253, 253, 253),
+                textfieldHintColor: Colors.white,
+                emailFieldDecoration: authFieldDecor("Email"),
+                passwordFieldDecoration: authFieldDecor(
+                  "Password",
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        showPassword = !showPassword;
+                      });
+                    },
+                    icon: Icon(
+                      showPassword
+                          ? Icons.visibility_off_rounded
+                          : Icons.visibility,
+                      color: showPassword
+                          ? const Color.fromARGB(255, 249, 170, 147)
+                          : Colors.deepOrange,
                     ),
                   ),
                 ),

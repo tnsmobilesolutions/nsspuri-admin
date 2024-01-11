@@ -65,17 +65,16 @@ class _DashboardBodyState extends State<DashboardBody> {
                 children: [
                   Expanded(
                       child: ListView.builder(
-                    scrollDirection: Axis
-                        .horizontal, // Set the scroll direction to horizontal
+                    scrollDirection: Axis.horizontal,
                     itemCount: emptyTitleData.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Padding(
-                          padding: const EdgeInsets.only(
-                              right: 8.0), // Adjust spacing between items
+                          padding: const EdgeInsets.only(right: 8.0),
                           child: InkWell(
                             highlightColor: const Color.fromARGB(255, 0, 0, 0),
-                            onTap: 
-                                 () {
+                            onTap: index == 0 || index == 1 || index == 3
+                                ? null
+                                : () {
                                     Navigator.push(context, MaterialPageRoute(
                                       builder: (context) {
                                         if (Networkhelper()
@@ -96,10 +95,11 @@ class _DashboardBodyState extends State<DashboardBody> {
                                         }
                                       },
                                     ));
-                                  }
-                              ,
+                                  },
                             child: Card(
-                                color: Colors.yellowAccent,
+                                color: index == 0 || index == 1 || index == 3
+                                    ? const Color.fromARGB(255, 216, 216, 216)
+                                    : Colors.yellowAccent,
                                 child: DashBoardData(
                                     dashBoardDevoteeData:
                                         emptyTitleData[index])),

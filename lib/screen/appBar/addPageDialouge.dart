@@ -73,6 +73,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   bool isAvailable = false;
   bool isGruhasanaApproved = false;
   bool isKYDVerified = false;
+  bool isSpeciallyAbled = false;
   TextEditingController mobileController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   XFile? pickImage;
@@ -110,6 +111,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'User',
     'Admin',
     'SuperAdmin',
+    "Organizer",
     'Approver',
     'PrasadScanner',
     "SecurityCheck"
@@ -189,6 +191,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
           profilePhotoUrl = selectedDevotee?.profilePhotoUrl ?? "";
           isAdmin = selectedDevotee?.isAdmin ?? false;
           isKYDVerified = selectedDevotee?.isKYDVerified ?? false;
+          isSpeciallyAbled = selectedDevotee?.isSpeciallyAbled ?? false;
           isApproved = selectedDevotee?.isApproved ?? false;
           isGruhasanaApproved = selectedDevotee?.isGruhasanaApproved ?? false;
           bloodGroupController = selectedDevotee?.bloodGroup ?? "Don't know";
@@ -522,6 +525,28 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                               onChanged: (bool? value) {
                                 setState(() {
                                   isKYDVerified = value!;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      )
+                    : const SizedBox(),
+                widget.title == "edit"
+                    ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('isSpeciallyAbled'),
+                            Checkbox(
+                              checkColor: Colors.deepOrange,
+                              fillColor:
+                                  MaterialStateProperty.resolveWith(getColor),
+                              value: isSpeciallyAbled,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  isSpeciallyAbled = value!;
                                 });
                               },
                             ),
@@ -1009,6 +1034,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                               emailId: emailController.text,
                               isGruhasanaApproved: isGruhasanaApproved,
                               isKYDVerified: isKYDVerified,
+                              isSpeciallyAbled: isSpeciallyAbled,
                               uid: selectedDevotee?.uid ?? "",
                               address: AddressModel(
                                   addressLine2: addressLine2Controller.text,
