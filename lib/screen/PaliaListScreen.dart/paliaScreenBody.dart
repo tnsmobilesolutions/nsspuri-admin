@@ -38,7 +38,9 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
   @override
   void initState() {
     super.initState();
-    fetchAllDevotee();
+    widget.devoteeList != null
+        ? allPaliaList = widget.devoteeList!
+        : fetchAllDevotee();
   }
 
   void fetchAllDevotee() async {

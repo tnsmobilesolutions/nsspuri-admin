@@ -17,7 +17,7 @@ class EmailSignIn extends StatefulWidget {
 
 class _EmailSignInState extends State<EmailSignIn> {
   final TextEditingController phoneController = TextEditingController();
-  bool showPassword = false;
+  bool obscureText = true;
   InputDecoration authFieldDecor(String hintText, [Widget? suffixIcon]) {
     return InputDecoration(
       hintText: hintText,
@@ -35,7 +35,7 @@ class _EmailSignInState extends State<EmailSignIn> {
         borderRadius: BorderRadius.circular(10),
       ),
       focusedBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: Colors.black38),
+        borderSide: const BorderSide(color: Colors.black45),
         borderRadius: BorderRadius.circular(10),
       ),
       errorBorder: OutlineInputBorder(
@@ -43,7 +43,7 @@ class _EmailSignInState extends State<EmailSignIn> {
         borderRadius: BorderRadius.circular(10),
       ),
       enabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: Colors.black12),
+        borderSide: const BorderSide(color: Colors.black45),
         borderRadius: BorderRadius.circular(10),
       ),
     );
@@ -68,10 +68,19 @@ class _EmailSignInState extends State<EmailSignIn> {
                 loginImage: const AssetImage('assets/images/login.png'),
                 title: const Text(
                   'Sammilani Delegate Admin',
+                  textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87),
+                    // shadows: [
+                    //   Shadow(
+                    //     color: Colors.deepOrange,
+                    //     offset: Offset(.1, .1),
+                    //     blurRadius: 8.0,
+                    //   ),
+                    // ],
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54,
+                  ),
                 ),
                 onEmailLoginPressed: (userEmail, userPassword) async {
                   try {
@@ -115,7 +124,7 @@ class _EmailSignInState extends State<EmailSignIn> {
                     print(e.toString());
                   }
                 },
-                obscureText: showPassword,
+                obscureText: obscureText,
                 phoneAuthentication: false,
                 isSignUpVisible: false,
                 buttonColor: Colors.deepOrange,
@@ -129,14 +138,14 @@ class _EmailSignInState extends State<EmailSignIn> {
                   IconButton(
                     onPressed: () {
                       setState(() {
-                        showPassword = !showPassword;
+                        obscureText = !obscureText;
                       });
                     },
                     icon: Icon(
-                      showPassword
+                      obscureText
                           ? Icons.visibility_off_rounded
                           : Icons.visibility,
-                      color: showPassword
+                      color: obscureText
                           ? const Color.fromARGB(255, 249, 170, 147)
                           : Colors.deepOrange,
                     ),

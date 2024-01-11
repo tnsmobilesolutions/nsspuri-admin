@@ -12,6 +12,8 @@ class SearchDevotee extends StatefulWidget {
       this.searchBy,
       this.searchValue,
       this.onFieldValueChanged,
+      this.searchStatus,
+      this.devoteeList,
       required this.status,
       this.devoteeName})
       : super(key: key);
@@ -20,8 +22,10 @@ class SearchDevotee extends StatefulWidget {
   int? dashboardindexNumber = 0;
   String status;
   String? devoteeName;
+  String? searchStatus;
   String? searchValue;
   String? searchBy;
+  List<DevoteeModel>? devoteeList;
   void Function(bool isResultEmpty)? onFieldValueChanged;
 
   @override
@@ -40,7 +44,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
     "bloodGroup"
   ];
   List<String?> searchSangha = [];
-  bool showAllNames = false;
+  bool showClearButton = false;
   String? trackSearchType;
   TextEditingController searchSanghaController = TextEditingController();
   final TextEditingController sdpSearchController = TextEditingController();
@@ -54,6 +58,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 50,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(4.0),
@@ -116,55 +121,26 @@ class _SearchDevoteeState extends State<SearchDevotee> {
               ),
             ),
             SizedBox(
-              width: 300,
-              height: 45,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 2, bottom: 4),
-                child: TextFormField(
-                  controller: sdpSearchController,
-                  onChanged: (value) {
-                    setState(() {
-                      // value.isNotEmpty
-                      //     ? widget.onFieldValueChanged!(value)
-                      //     : null;
-                    });
-                  },
-                  onSaved: (newValue) {
-                    sdpSearchController.text.isNotEmpty
-                        ? () async {
-                            List<DevoteeModel> devoteeList = [];
-                            await GetDevoteeAPI()
-                                .searchDevotee(
-                                    sdpSearchController.text, "devoteeName")
-                                .then((value) {
-                              devoteeList.addAll(value["data"]);
-                            });
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) {
-                                return PaliaListPage(
-                                  status: "allDevotee",
-                                  pageFrom: "Search",
-                                  devoteeList: devoteeList,
-                                  searchValue: sdpSearchController.text,
-                                );
-                              },
-                            ));
-                          }
-                        : null;
-                  },
-                  onFieldSubmitted: (sdpSearchController.text.isNotEmpty &&
-                          _selectedSearchType?.toLowerCase() != null)
-                      ? (value) async {
+              width: 250,
+              child: TextFormField(
+                controller: sdpSearchController,
+                onChanged: (value) {
+                  setState(() {
+                    // value.isNotEmpty
+                    //     ? widget.onFieldValueChanged!(value)
+                    //     : null;
+                  });
+                },
+                onSaved: (newValue) {
+                  sdpSearchController.text.isNotEmpty
+                      ? () async {
                           List<DevoteeModel> devoteeList = [];
                           await GetDevoteeAPI()
-                              .advanceSearchDevotee(
-                            sdpSearchController.text,
-                            _selectedSearchType.toString(),
-                          )
+                              .searchDevotee(
+                                  sdpSearchController.text, "devoteeName")
                               .then((value) {
                             devoteeList.addAll(value["data"]);
                           });
-                          widget.onFieldValueChanged!(devoteeList.isNotEmpty);
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) {
                               return PaliaListPage(
@@ -172,53 +148,85 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                                 pageFrom: "Search",
                                 devoteeList: devoteeList,
                                 searchValue: sdpSearchController.text,
-                                searchBy: _selectedSearchType,
-                                isResultEmpty: devoteeList.isNotEmpty,
+                                showClearButton: devoteeList.isNotEmpty,
                               );
                             },
                           ));
                         }
-                      : null,
-                  decoration: InputDecoration(
-                    hintText: 'Search',
-                    suffixIcon: Padding(
-                      padding: const EdgeInsets.only(right: 4, top: 2),
-                      child: IconButton(
-                        onPressed: (sdpSearchController.text.isNotEmpty &&
-                                _selectedSearchType?.toLowerCase() != null)
-                            ? () async {
-                                List<DevoteeModel> devoteeList = [];
-                                await GetDevoteeAPI()
-                                    .advanceSearchDevotee(
-                                  sdpSearchController.text,
-                                  _selectedSearchType.toString(),
-                                )
-                                    .then((value) {
-                                  devoteeList.addAll(value["data"]);
-                                });
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) {
-                                    return PaliaListPage(
-                                      status: "allDevotee",
-                                      pageFrom: "Search",
-                                      devoteeList: devoteeList,
-                                      searchValue: sdpSearchController.text,
-                                      searchBy: _selectedSearchType,
-                                    );
-                                  },
-                                ));
-                              }
-                            : null,
-                        icon: const Icon(Icons.search),
-                        iconSize: 21,
-                        autofocus: true,
-                        color: Colors.deepOrange,
-                      ),
+                      : null;
+                },
+                onFieldSubmitted: (sdpSearchController.text.isNotEmpty &&
+                        _selectedSearchType?.toLowerCase() != null)
+                    ? (value) async {
+                        List<DevoteeModel> devoteeList = [];
+                        await GetDevoteeAPI()
+                            .advanceSearchDevotee(
+                          sdpSearchController.text,
+                          _selectedSearchType.toString(),
+                        )
+                            .then((value) {
+                          devoteeList.addAll(value["data"]);
+                        });
+                        setState(() {
+                          showClearButton = !showClearButton;
+                        });
+                        widget.onFieldValueChanged!(devoteeList.isNotEmpty);
+                        print("search devotee count: ${devoteeList.length}");
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return PaliaListPage(
+                              status: "allDevotee",
+                              pageFrom: "Search",
+                              devoteeList: devoteeList,
+                              searchValue: sdpSearchController.text,
+                              searchBy: _selectedSearchType,
+                              showClearButton:
+                                  showClearButton, // devoteeList.isNotEmpty,
+                            );
+                          },
+                        ));
+                      }
+                    : null,
+                decoration: InputDecoration(
+                  hintText: 'Search',
+                  suffixIcon: Padding(
+                    padding: const EdgeInsets.only(right: 4, top: 2),
+                    child: IconButton(
+                      onPressed: (sdpSearchController.text.isNotEmpty &&
+                              _selectedSearchType?.toLowerCase() != null)
+                          ? () async {
+                              List<DevoteeModel> devoteeList = [];
+                              await GetDevoteeAPI()
+                                  .advanceSearchDevotee(
+                                sdpSearchController.text,
+                                _selectedSearchType.toString(),
+                              )
+                                  .then((value) {
+                                devoteeList.addAll(value["data"]);
+                              });
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) {
+                                  return PaliaListPage(
+                                    status: "allDevotee",
+                                    pageFrom: "Search",
+                                    devoteeList: devoteeList,
+                                    searchValue: sdpSearchController.text,
+                                    searchBy: _selectedSearchType,
+                                    showClearButton: devoteeList.isNotEmpty,
+                                  );
+                                },
+                              ));
+                            }
+                          : null,
+                      icon: const Icon(Icons.search),
+                      iconSize: 21,
+                      autofocus: true,
+                      color: Colors.deepOrange,
                     ),
-                    border: InputBorder.none,
-                    hintStyle: const TextStyle(
-                      color: Color.fromARGB(255, 100, 99, 99),
-                    ),
+                  ),
+                  border: InputBorder.none,
+                  hintStyle: const TextStyle(
+                    color: Color.fromARGB(255, 100, 99, 99),
                   ),
                 ),
               ),

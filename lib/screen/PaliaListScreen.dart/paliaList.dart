@@ -1,7 +1,8 @@
-// ignore_for_file: file_names, must_be_immutable
+// ignore_for_file: file_names, must_be_immutable, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:sdp/model/devotee_model.dart';
+import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/appBar/actionWidget.dart';
 import 'package:sdp/screen/appBar/leadingImage.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/paliaScreenBody.dart';
@@ -10,18 +11,20 @@ class PaliaListPage extends StatefulWidget {
   PaliaListPage(
       {Key? key,
       required this.status,
+      this.advanceStatus,
       required this.pageFrom,
       this.devoteeList,
       this.searchValue,
-      this.isResultEmpty,
+      this.showClearButton,
       this.searchBy})
       : super(key: key);
   String status;
+  String? advanceStatus;
   String pageFrom;
   List<DevoteeModel>? devoteeList;
   String? searchValue;
   String? searchBy;
-  bool? isResultEmpty;
+  bool? showClearButton;
 
   @override
   State<PaliaListPage> createState() => _PaliaListPageState();
@@ -29,21 +32,59 @@ class PaliaListPage extends StatefulWidget {
 
 class _PaliaListPageState extends State<PaliaListPage> {
   @override
+  void initState() {
+    super.initState();
+
+    setState(() {
+      if (widget.advanceStatus != null) {
+        print("inside palia list page init state - success");
+      } else {
+        print("nside palia list page init state - failure");
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SelectionArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          toolbarHeight: 70,
+          toolbarHeight: Responsive.isDesktop(context)
+              ? 120
+              : Responsive.isLargeMobile(context)
+                  ? 150
+                  : 120,
           automaticallyImplyLeading: false,
           title: const TitleAppBar(),
           actions: [
             AppbarActionButtonWidget(
               searchBy: widget.searchBy,
               searchValue: widget.searchValue,
-              isResultEmpty: widget.isResultEmpty,
+              showClearButton: widget.showClearButton,
             ),
           ],
+          bottom: PreferredSize(
+            preferredSize: Responsive.isLargeMobile(context)
+                ? const Size.fromHeight(50)
+                : const Size.fromHeight(0),
+            child: Responsive.isLargeMobile(context)
+                ? Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AppbarActionButtonWidget(
+                          searchBy: widget.searchBy,
+                          searchValue: widget.searchValue,
+                          showClearButton: widget.showClearButton,
+                          advanceStatus: widget.advanceStatus,
+                        ),
+                      ],
+                    ),
+                  )
+                : const SizedBox(),
+          ),
         ),
         body: SafeArea(
             child: PaliaListBodyPage(
@@ -51,6 +92,7 @@ class _PaliaListPageState extends State<PaliaListPage> {
           pageFrom: widget.pageFrom,
           searchValue: widget.searchValue,
           searchBy: widget.searchBy,
+          devoteeList: widget.devoteeList,
         )),
       ),
     );
