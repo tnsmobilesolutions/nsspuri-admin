@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/viewDevotee.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
+import 'package:sdp/utilities/network_helper.dart';
 
 class PaliaTableRow extends StatefulWidget {
   PaliaTableRow({
@@ -72,17 +73,14 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                               ? '${widget.devoteeDetails.name}\n'
                               : "-\n",
                           style: const TextStyle(
-                            fontSize: 17, // Change the font size for the name
-                            fontWeight: FontWeight
-                                .bold, // Change the font weight if needed
-                            // Other style properties as needed
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                         TextSpan(
                           text: widget.devoteeDetails.devoteeCode.toString(),
                           style: const TextStyle(
-                            fontSize: 14, // Change the font size for the code
-                            // Other style properties as needed
+                            fontSize: 14,
                           ),
                         ),
                       ],
@@ -109,9 +107,25 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
               ),
             ),
             Expanded(
-              child: Text(
-                '${widget.devoteeDetails.status}',
-                textAlign: TextAlign.center,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '${widget.devoteeDetails.status}',
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                  widget.devoteeDetails.paidAmount != null
+                      ? Text(
+                          '₹ ${widget.devoteeDetails.paidAmount}',
+                          textAlign: TextAlign.center,
+                        )
+                      : const SizedBox(),
+                ],
               ),
             ),
             if (widget.showMenu == true)
@@ -150,37 +164,46 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
               Expanded(
                   child: IconButton(
                       color: Colors.deepOrange,
-                      onPressed: () {
-                        showDialog<void>(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                                title: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text('Edit Palia Details'),
-                                    IconButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        icon: const Icon(
-                                          Icons.close,
-                                          color: Colors.deepOrange,
-                                        ))
-                                  ],
-                                ),
-                                content: AddPageDilouge(
-                                  devoteeId: widget.devoteeDetails.devoteeId
-                                      .toString(),
-                                  title: "edit",
-                                ));
-                          },
-                        );
-                      },
-                      icon: const Icon(
+                      onPressed:
+                          Networkhelper().currentDevotee?.role == "Approver" &&
+                                  widget.devoteeDetails.status == "paid"
+                              ? null
+                              : () {
+                                  showDialog<void>(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                          title: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Text('Edit Palia Details'),
+                                              IconButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  icon: const Icon(
+                                                    Icons.close,
+                                                    color: Colors.deepOrange,
+                                                  ))
+                                            ],
+                                          ),
+                                          content: AddPageDilouge(
+                                            devoteeId: widget
+                                                .devoteeDetails.devoteeId
+                                                .toString(),
+                                            title: "edit",
+                                          ));
+                                    },
+                                  );
+                                },
+                      icon: Icon(
                         Icons.edit,
-                        color: Colors.deepOrange,
+                        color: Networkhelper().currentDevotee?.role ==
+                                    "Approver" &&
+                                widget.devoteeDetails.status == "paid"
+                            ? const Color.fromARGB(255, 206, 206, 206)
+                            : Colors.deepOrange,
                       ))),
             // if (widget.showMenu == true)
             //   Expanded(

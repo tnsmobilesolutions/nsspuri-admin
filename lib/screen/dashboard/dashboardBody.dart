@@ -1,8 +1,11 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/dashboard_card_model.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/paliaList.dart';
+import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
+import 'package:sdp/utilities/network_helper.dart';
 
 class DashboardBody extends StatefulWidget {
   const DashboardBody({super.key});
@@ -53,170 +56,156 @@ class _DashboardBodyState extends State<DashboardBody> {
               dayBeforeYesterdayDatesData.add(dashboarddata);
             }
           }
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                children: [
-                  Expanded(
-                      child: ListView.builder(
-                    scrollDirection: Axis
-                        .horizontal, // Set the scroll direction to horizontal
-                    itemCount: 5,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Padding(
-                          padding: const EdgeInsets.only(
-                              right: 8.0), // Adjust spacing between items
-                          child: InkWell(
-                            highlightColor: const Color.fromARGB(255, 0, 0, 0),
-                            onTap: () {
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) {
-                                  return PaliaListPage(
-                                    pageFrom: "Dashboard",
-                                    status: emptyTitleData[index].status ?? "",
-                                  );
-                                },
-                              ));
-                            },
-                            child: Card(
-                                color: Colors.yellowAccent,
-                                child: DashBoardData(
-                                    dashBoardDevoteeData:
-                                        emptyTitleData[index])),
-                          ));
-                    },
-                  )),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "$todayDate",
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  Divider(
-                    thickness: 3,
-                  ),
-                  Expanded(
-                      child: ListView.builder(
-                    scrollDirection: Axis
-                        .horizontal, // Set the scroll direction to horizontal
-                    itemCount: 3,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Padding(
-                          padding: const EdgeInsets.only(
-                              right: 8.0), // Adjust spacing between items
-                          child: InkWell(
-                            highlightColor: const Color.fromARGB(255, 0, 0, 0),
-                            onTap: () {
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) {
-                                  return PaliaListPage(
-                                    pageFrom: "Dashboard",
-                                    status: todayDateData[index].status ?? "",
-                                  );
-                                },
-                              ));
-                            },
-                            child: Card(
-                                color: Colors.yellowAccent,
-                                child: DashBoardData(
-                                    dashBoardDevoteeData:
-                                        todayDateData[index])),
-                          ));
-                    },
-                  )),
-                  Row(
-                    children: [
-                      Text(
-                        "$yesterdayDate",
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  Divider(
-                    thickness: 3,
-                  ),
-                  Expanded(
-                      child: ListView.builder(
-                    scrollDirection: Axis
-                        .horizontal, // Set the scroll direction to horizontal
-                    itemCount: 3,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Padding(
-                          padding: const EdgeInsets.only(
-                              right: 8.0), // Adjust spacing between items
-                          child: InkWell(
-                            highlightColor: const Color.fromARGB(255, 0, 0, 0),
-                            onTap: () {
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) {
-                                  return PaliaListPage(
-                                    pageFrom: "Dashboard",
-                                    status:
-                                        yesterdayDatesData[index].status ?? "",
-                                  );
-                                },
-                              ));
-                            },
-                            child: Card(
-                                color: Colors.yellowAccent,
-                                child: DashBoardData(
-                                    dashBoardDevoteeData:
-                                        yesterdayDatesData[index])),
-                          ));
-                    },
-                  )),
-                  Row(
-                    children: [
-                      Text(
-                        "$dayBeforeYesterdayDate",
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  Divider(
-                    thickness: 3,
-                  ),
-                  Expanded(
-                      child: ListView.builder(
-                    scrollDirection: Axis
-                        .horizontal, // Set the scroll direction to horizontal
-                    itemCount: 3,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Padding(
-                          padding: const EdgeInsets.only(
-                              right: 8.0), // Adjust spacing between items
-                          child: InkWell(
-                            highlightColor: const Color.fromARGB(255, 0, 0, 0),
-                            onTap: () {
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) {
-                                  return PaliaListPage(
-                                    pageFrom: "Dashboard",
-                                    status: dayBeforeYesterdayDatesData[index]
-                                            .status ??
-                                        "",
-                                  );
-                                },
-                              ));
-                            },
-                            child: Card(
-                                color: Colors.yellowAccent,
-                                child: DashBoardData(
-                                    dashBoardDevoteeData:
-                                        dayBeforeYesterdayDatesData[index])),
-                          ));
-                    },
-                  )),
-                ],
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  children: [
+                    Expanded(
+                        child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: emptyTitleData.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: InkWell(
+                              highlightColor:
+                                  const Color.fromARGB(255, 0, 0, 0),
+                              onTap: Networkhelper().getCurrentDevotee?.role ==
+                                          "Approver" &&
+                                      (index != 1)
+                                  ? null
+                                  : () {
+                                      Navigator.push(context, MaterialPageRoute(
+                                        builder: (context) {
+                                          return DevoteeListPage(
+                                            pageFrom: "Dashboard",
+                                            status:
+                                                emptyTitleData[index].status ??
+                                                    "",
+                                          );
+                                        },
+                                      ));
+                                    },
+                              child: Card(
+                                  color: Networkhelper()
+                                                  .getCurrentDevotee
+                                                  ?.role ==
+                                              "Approver" &&
+                                          (index != 1)
+                                      ? const Color.fromARGB(255, 216, 216, 216)
+                                      : Colors.yellowAccent,
+                                  child: DashBoardData(
+                                      dashBoardDevoteeData:
+                                          emptyTitleData[index])),
+                            ));
+                      },
+                    )),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          todayDate,
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    const Divider(
+                      thickness: 3,
+                    ),
+                    Expanded(
+                        child: ListView.builder(
+                      scrollDirection: Axis
+                          .horizontal, // Set the scroll direction to horizontal
+                      itemCount: 3,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                            padding: const EdgeInsets.only(
+                                right: 8.0), // Adjust spacing between items
+                            child: InkWell(
+                              highlightColor:
+                                  const Color.fromARGB(255, 0, 0, 0),
+                              onTap: null,
+                              child: Card(
+                                  color: Colors.yellowAccent,
+                                  child: DashBoardData(
+                                      dashBoardDevoteeData:
+                                          todayDateData[index])),
+                            ));
+                      },
+                    )),
+                    Row(
+                      children: [
+                        Text(
+                          yesterdayDate,
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    const Divider(
+                      thickness: 3,
+                    ),
+                    Expanded(
+                        child: ListView.builder(
+                      scrollDirection: Axis
+                          .horizontal, // Set the scroll direction to horizontal
+                      itemCount: 3,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                            padding: const EdgeInsets.only(
+                                right: 8.0), // Adjust spacing between items
+                            child: InkWell(
+                              highlightColor:
+                                  const Color.fromARGB(255, 0, 0, 0),
+                              onTap: null,
+                              child: Card(
+                                  color: Colors.yellowAccent,
+                                  child: DashBoardData(
+                                      dashBoardDevoteeData:
+                                          yesterdayDatesData[index])),
+                            ));
+                      },
+                    )),
+                    Row(
+                      children: [
+                        Text(
+                          dayBeforeYesterdayDate,
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    const Divider(
+                      thickness: 3,
+                    ),
+                    Expanded(
+                        child: ListView.builder(
+                      scrollDirection: Axis
+                          .horizontal, // Set the scroll direction to horizontal
+                      itemCount: 3,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                            padding: const EdgeInsets.only(
+                                right: 8.0), // Adjust spacing between items
+                            child: InkWell(
+                              highlightColor:
+                                  const Color.fromARGB(255, 0, 0, 0),
+                              onTap: null,
+                              child: Card(
+                                  color: Colors.yellowAccent,
+                                  child: DashBoardData(
+                                      dashBoardDevoteeData:
+                                          dayBeforeYesterdayDatesData[index])),
+                            ));
+                      },
+                    )),
+                  ],
+                ),
               ),
             ),
           );

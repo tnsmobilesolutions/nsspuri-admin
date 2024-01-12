@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, depend_on_referenced_packages, must_be_immutable, iterable_contains_unrelated_type
+// ignore_for_file: file_names, depend_on_referenced_packages, must_be_immutable, iterable_contains_unrelated_type, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';
@@ -8,31 +8,67 @@ import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/paliaTableRow.dart';
 
-class PaliaListBodyPage extends StatefulWidget {
-  PaliaListBodyPage(
+class DevoteeListBodyPage extends StatefulWidget {
+  DevoteeListBodyPage(
       {Key? key,
       required this.status,
       required this.pageFrom,
+      this.devoteeList,
       this.searchValue,
       this.searchBy})
       : super(key: key);
-  String status;
+
+  List<DevoteeModel>? devoteeList;
   String pageFrom;
-  String? searchValue;
   String? searchBy;
+  String? searchValue;
+  String status;
 
   @override
-  State<PaliaListBodyPage> createState() => _PaliaListBodyPageState();
+  State<DevoteeListBodyPage> createState() => _DevoteeListBodyPageState();
 }
 
-class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
-  List<DevoteeModel> allPaliaList = [];
-
-  bool checkedValue = false;
+class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
   bool? allCheck;
+  List<DevoteeModel> allPaliaList = [];
+  bool checkedValue = false;
   bool editpaliDate = false;
-
   bool showMenu = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.devoteeList != null
+        ? allPaliaList = widget.devoteeList!
+        : fetchAllDevotee();
+  }
+
+  void fetchAllDevotee() async {
+    Map<String, dynamic>? allDevotee;
+
+    if (widget.status == "allDevotee" && widget.pageFrom == "Dashboard") {
+      allDevotee = await GetDevoteeAPI().allDevotee();
+    } else if (widget.status != "allDevotee" &&
+        widget.pageFrom == "Dashboard") {
+      allDevotee = await GetDevoteeAPI().searchDevotee(widget.status, "status");
+    } else if (widget.pageFrom == "Search") {
+      allDevotee = await GetDevoteeAPI().advanceSearchDevotee(
+        widget.searchValue.toString(),
+        widget.searchBy.toString(),
+      );
+    }
+
+    if (allDevotee != null) {
+      setState(() {
+        for (int i = 0; i < allDevotee?["data"].length; i++) {
+          allPaliaList.add(allDevotee?["data"][i]);
+        }
+      });
+    } else {
+      print("Error fetching data");
+    }
+  }
+
   Expanded headingText(String text) {
     return Expanded(
       child: Text(
@@ -77,7 +113,9 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
                     showMenu = !showMenu;
                   });
                 },
-                child: const Text('Show Action Menu'),
+                child: showMenu
+                    ? const Text('Close Action Menu')
+                    : const Text('Show Action Menu'),
               ),
               const SizedBox(
                 width: 10,
@@ -223,42 +261,55 @@ class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
           const SizedBox(
             height: 12,
           ),
-          FutureBuilder(
-            future: (widget.status == "allDevotee" &&
-                    widget.pageFrom == "Dashboard")
-                ? GetDevoteeAPI().allDevotee()
-                : (widget.status != "allDevotee" &&
-                        widget.pageFrom == "Dashboard")
-                    ? GetDevoteeAPI().searchDevotee(widget.status, "status")
-                    : (widget.pageFrom == "Search")
-                        ? GetDevoteeAPI().advanceSearchDevotee(
-                            widget.searchValue.toString(),
-                            widget.searchBy.toString(),
-                          )
-                        : null,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.hasError) {
-                return const Text('SNAPSHOT ERROR');
-              }
-              if (snapshot.connectionState == ConnectionState.done) {
-                allPaliaList = snapshot.data["data"];
-                return Flexible(
-                  child: ListView.builder(
-                    itemCount: allPaliaList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      //Table firebase Data
-                      return PaliaTableRow(
-                        showMenu: showMenu,
-                        slNo: index + 1,
-                        devoteeDetails: allPaliaList[index],
-                      );
-                    },
-                  ),
+          Flexible(
+            child: ListView.builder(
+              itemCount: allPaliaList.length,
+              itemBuilder: (BuildContext context, int index) {
+                //Table firebase Data
+                return PaliaTableRow(
+                  showMenu: showMenu,
+                  slNo: index + 1,
+                  devoteeDetails: allPaliaList[index],
                 );
-              }
-              return const Center(child: CircularProgressIndicator());
-            },
-          ),
+              },
+            ),
+          )
+          // FutureBuilder(
+          //   future: (widget.status == "allDevotee" &&
+          //           widget.pageFrom == "Dashboard")
+          //       ? GetDevoteeAPI().allDevotee()
+          //       : (widget.status != "allDevotee" &&
+          //               widget.pageFrom == "Dashboard")
+          //           ? GetDevoteeAPI().searchDevotee(widget.status, "status")
+          //           : (widget.pageFrom == "Search")
+          //               ? GetDevoteeAPI().advanceSearchDevotee(
+          //                   widget.searchValue.toString(),
+          //                   widget.searchBy.toString(),
+          //                 )
+          //               : null,
+          //   builder: (BuildContext context, AsyncSnapshot snapshot) {
+          //     if (snapshot.hasError) {
+          //       return const Text('SNAPSHOT ERROR');
+          //     }
+          //     if (snapshot.connectionState == ConnectionState.done) {
+          //       allPaliaList = snapshot.data["data"];
+          //       return Flexible(
+          //         child: ListView.builder(
+          //           itemCount: allPaliaList.length,
+          //           itemBuilder: (BuildContext context, int index) {
+          //             //Table firebase Data
+          //             return PaliaTableRow(
+          //               showMenu: showMenu,
+          //               slNo: index + 1,
+          //               devoteeDetails: allPaliaList[index],
+          //             );
+          //           },
+          //         ),
+          //       );
+          //     }
+          //     return const Center(child: CircularProgressIndicator());
+          //   },
+          // ),
         ],
       ),
     );

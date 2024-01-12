@@ -207,6 +207,18 @@ class _ViewPaliaState extends State<ViewPalia>
                                     ),
                                     Column(
                                       crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          'Approved By',
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                        Text(widget.devoteeDetails.approvedBy
+                                            .toString())
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
                                           CrossAxisAlignment.end,
                                       children: [
                                         const Text(

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:sdp/API/dio_fuction.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/model/sangha_model.dart';
@@ -19,9 +21,9 @@ class GetDevoteeAPI extends DioFuctionAPI {
   Future<Map<String, dynamic>?> currentDevotee() async {
     try {
       final response = await getAPI("devotee/currentUser");
-      print(response);
+      print("response of currentuser -- $response");
       DevoteeModel devotee =
-          DevoteeModel.fromMap(response["data"]["singleDevotee"]);
+          DevoteeModel.fromMap(response["data"]["singleDevotee"][0]);
       return {"statusCode": 200, "data": devotee};
     } catch (e) {
       print(e);
@@ -92,7 +94,8 @@ class GetDevoteeAPI extends DioFuctionAPI {
   }
 
   Future<Map<String, dynamic>> advanceSearchDevotee(
-      String query, String searchBy) async {
+      String query, String searchBy,
+      {String? status}) async {
     Future<String> customEncodeComponent(String query) async {
       return query.replaceAll('+', '%2B').replaceAll('-', '%2D');
     }
@@ -102,9 +105,18 @@ class GetDevoteeAPI extends DioFuctionAPI {
 // Encoding the query string
       String encodedQuery = await customEncodeComponent(query);
       print("encodedQuery----- $encodedQuery");
-      final response =
-          await getAPI("devotee/advance-search?$searchBy=$encodedQuery");
-      print("API URL = devotee/advance-search?$searchBy=$encodedQuery");
+      final Map<String, dynamic> response;
+      if (status == null) {
+        response =
+            await getAPI("devotee/advance-search?$searchBy=$encodedQuery");
+        print("API URL = devotee/advance-search?$searchBy=$encodedQuery");
+      } else {
+        response = await getAPI(
+            "devotee/advance-search?$searchBy=$encodedQuery&advanceStatus=$status");
+        print(
+            "API URL = devotee/advance-search?$searchBy=$encodedQuery&advanceStatus=$status");
+      }
+
       final devoteelist = response["data"]["searchDevotee"];
       devoteelist.forEach((devotee) {
         devotees.add(DevoteeModel.fromMap(devotee));
