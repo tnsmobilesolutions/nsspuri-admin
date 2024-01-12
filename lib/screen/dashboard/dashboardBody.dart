@@ -64,6 +64,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                 width: MediaQuery.of(context).size.width,
                 child: Column(
                   children: [
+                    Text("${Networkhelper().getCurrentDevotee?.name}"),
                     Expanded(
                         child: ListView.builder(
                       scrollDirection: Axis.horizontal,
@@ -162,7 +163,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                             child: InkWell(
                               highlightColor:
                                   const Color.fromARGB(255, 0, 0, 0),
-                              onTap:null,
+                              onTap: null,
                               child: Card(
                                   color: Colors.yellowAccent,
                                   child: DashBoardData(
