@@ -74,6 +74,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   bool isGruhasanaApproved = false;
   bool isKYDVerified = false;
   bool isSpeciallyAbled = false;
+  bool isGuest = false;
+  bool isOrganizer = false;
   TextEditingController mobileController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   XFile? pickImage;
@@ -101,11 +103,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   ];
   List<String> approverstatusOptions = [
     'dataSubmitted',
-    'Approved',
-    'withdrawn',
-    'lost',
-    'reissued',
-    "blacklisted"
+    'approved',
+    "rejected"
   ];
   List<String> roleList = [
     'User',
@@ -192,6 +191,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
           isAdmin = selectedDevotee?.isAdmin ?? false;
           isKYDVerified = selectedDevotee?.isKYDVerified ?? false;
           isSpeciallyAbled = selectedDevotee?.isSpeciallyAbled ?? false;
+          isGuest = selectedDevotee?.isGuest ?? false;
+          isOrganizer = selectedDevotee?.isOrganizer ?? false;
           isApproved = selectedDevotee?.isApproved ?? false;
           isGruhasanaApproved = selectedDevotee?.isGruhasanaApproved ?? false;
           bloodGroupController = selectedDevotee?.bloodGroup ?? "Don't know";
@@ -494,7 +495,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text('isGruhasanaApproved'),
+                            const Text('Gruhasana Approved'),
                             Checkbox(
                               checkColor: Colors.deepOrange,
                               fillColor:
@@ -516,7 +517,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text('isKYDVerified'),
+                            const Text('KYD Verified'),
                             Checkbox(
                               checkColor: Colors.deepOrange,
                               fillColor:
@@ -538,15 +539,15 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text('isSpeciallyAbled'),
+                            const Text('Organizer'),
                             Checkbox(
                               checkColor: Colors.deepOrange,
                               fillColor:
                                   MaterialStateProperty.resolveWith(getColor),
-                              value: isSpeciallyAbled,
+                              value: isOrganizer,
                               onChanged: (bool? value) {
                                 setState(() {
-                                  isSpeciallyAbled = value!;
+                                  isOrganizer = value!;
                                 });
                               },
                             ),
@@ -554,6 +555,44 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                         ),
                       )
                     : const SizedBox(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Specially Abled'),
+                      Checkbox(
+                        checkColor: Colors.deepOrange,
+                        fillColor: MaterialStateProperty.resolveWith(getColor),
+                        value: isSpeciallyAbled,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            isSpeciallyAbled = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Guest'),
+                      Checkbox(
+                        checkColor: Colors.deepOrange,
+                        fillColor: MaterialStateProperty.resolveWith(getColor),
+                        value: isGuest,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            isGuest = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
 
                 TextFormField(
                   controller: nameController,
@@ -1035,6 +1074,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                               isGruhasanaApproved: isGruhasanaApproved,
                               isKYDVerified: isKYDVerified,
                               isSpeciallyAbled: isSpeciallyAbled,
+                              isGuest: isGuest,
+                              isOrganizer: isOrganizer,
                               uid: selectedDevotee?.uid ?? "",
                               address: AddressModel(
                                   addressLine2: addressLine2Controller.text,

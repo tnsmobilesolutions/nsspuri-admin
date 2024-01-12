@@ -64,6 +64,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                 width: MediaQuery.of(context).size.width,
                 child: Column(
                   children: [
+                    Text("${Networkhelper().getCurrentDevotee?.name}"),
                     Expanded(
                         child: ListView.builder(
                       scrollDirection: Axis.horizontal,
@@ -76,7 +77,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                                   const Color.fromARGB(255, 0, 0, 0),
                               onTap: Networkhelper().getCurrentDevotee?.role ==
                                           "Approver" &&
-                                      (index == 0 || index == 1 || index == 3)
+                                      (index != 1)
                                   ? null
                                   : () {
                                       Navigator.push(context, MaterialPageRoute(
@@ -95,9 +96,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                                                   .getCurrentDevotee
                                                   ?.role ==
                                               "Approver" &&
-                                          (index == 0 ||
-                                              index == 1 ||
-                                              index == 3)
+                                          (index != 1)
                                       ? const Color.fromARGB(255, 216, 216, 216)
                                       : Colors.yellowAccent,
                                   child: DashBoardData(
@@ -131,16 +130,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                             child: InkWell(
                               highlightColor:
                                   const Color.fromARGB(255, 0, 0, 0),
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) {
-                                    return DevoteeListPage(
-                                      pageFrom: "Dashboard",
-                                      status: todayDateData[index].status ?? "",
-                                    );
-                                  },
-                                ));
-                              },
+                              onTap: null,
                               child: Card(
                                   color: Colors.yellowAccent,
                                   child: DashBoardData(
@@ -173,18 +163,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                             child: InkWell(
                               highlightColor:
                                   const Color.fromARGB(255, 0, 0, 0),
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) {
-                                    return DevoteeListPage(
-                                      pageFrom: "Dashboard",
-                                      status:
-                                          yesterdayDatesData[index].status ??
-                                              "",
-                                    );
-                                  },
-                                ));
-                              },
+                              onTap: null,
                               child: Card(
                                   color: Colors.yellowAccent,
                                   child: DashBoardData(
@@ -217,18 +196,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                             child: InkWell(
                               highlightColor:
                                   const Color.fromARGB(255, 0, 0, 0),
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) {
-                                    return DevoteeListPage(
-                                      pageFrom: "Dashboard",
-                                      status: dayBeforeYesterdayDatesData[index]
-                                              .status ??
-                                          "",
-                                    );
-                                  },
-                                ));
-                              },
+                              onTap: null,
                               child: Card(
                                   color: Colors.yellowAccent,
                                   child: DashBoardData(
