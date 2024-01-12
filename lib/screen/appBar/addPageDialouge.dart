@@ -102,10 +102,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   List<String> approverstatusOptions = [
     'dataSubmitted',
     'Approved',
-    'withdrawn',
-    'lost',
-    'reissued',
-    "blacklisted"
+    "rejected"
   ];
   List<String> roleList = [
     'User',

@@ -76,7 +76,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                                   const Color.fromARGB(255, 0, 0, 0),
                               onTap: Networkhelper().getCurrentDevotee?.role ==
                                           "Approver" &&
-                                      (index != 2 )
+                                      (index != 1)
                                   ? null
                                   : () {
                                       Navigator.push(context, MaterialPageRoute(
@@ -95,7 +95,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                                                   .getCurrentDevotee
                                                   ?.role ==
                                               "Approver" &&
-                                          (index != 2)
+                                          (index != 1)
                                       ? const Color.fromARGB(255, 216, 216, 216)
                                       : Colors.yellowAccent,
                                   child: DashBoardData(
