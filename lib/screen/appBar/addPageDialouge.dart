@@ -101,7 +101,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   ];
   List<String> approverstatusOptions = [
     'dataSubmitted',
-    'Approved',
+    'approved',
     "rejected"
   ];
   List<String> roleList = [
