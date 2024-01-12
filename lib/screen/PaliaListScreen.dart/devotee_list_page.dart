@@ -50,43 +50,52 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          toolbarHeight: Responsive.isDesktop(context)
-              ? 150
-              : Responsive.isLargeMobile(context)
-                  ? 150
-                  : 120,
+          // toolbarHeight: Responsive.isDesktop(context)
+          //     ? 150
+          //     : Responsive.isLargeMobile(context)
+          //         ? 150
+          //         : 120,
+          toolbarHeight: 120,
           automaticallyImplyLeading: false,
           title: const TitleAppBar(),
-          actions: !Responsive.isLargeMobile(context)
-              ? [
-                  AppbarActionButtonWidget(
-                    searchBy: widget.searchBy,
-                    searchValue: widget.searchValue,
-                    showClearButton: widget.showClearButton,
-                  ),
-                ]
-              : [],
-          bottom: PreferredSize(
-            preferredSize: Responsive.isLargeMobile(context)
-                ? const Size.fromHeight(50)
-                : const Size.fromHeight(50),
-            child: Responsive.isLargeMobile(context)
-                ? Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        AppbarActionButtonWidget(
-                          searchBy: widget.searchBy,
-                          searchValue: widget.searchValue,
-                          showClearButton: widget.showClearButton,
-                          advanceStatus: widget.advanceStatus,
-                        ),
-                      ],
-                    ),
-                  )
-                : const SizedBox(),
-          ),
+          actions: [
+            AppbarActionButtonWidget(
+              searchBy: widget.searchBy,
+              searchValue: widget.searchValue,
+              showClearButton: widget.showClearButton,
+              advanceStatus: widget.advanceStatus ?? "dataSubmitted",
+            ),
+          ],
+          // actions: !Responsive.isLargeMobile(context)
+          //     ? [
+          //         AppbarActionButtonWidget(
+          //           searchBy: widget.searchBy,
+          //           searchValue: widget.searchValue,
+          //           showClearButton: widget.showClearButton,
+          //         ),
+          //       ]
+          //     : [],
+          // bottom: PreferredSize(
+          //   preferredSize: Responsive.isLargeMobile(context)
+          //       ? const Size.fromHeight(50)
+          //       : const Size.fromHeight(50),
+          //   child: Responsive.isLargeMobile(context)
+          //       ? Padding(
+          //           padding: const EdgeInsets.only(bottom: 20),
+          //           child: Row(
+          //             mainAxisAlignment: MainAxisAlignment.center,
+          //             children: [
+          //               AppbarActionButtonWidget(
+          //                 searchBy: widget.searchBy,
+          //                 searchValue: widget.searchValue,
+          //                 showClearButton: widget.showClearButton,
+          //                 advanceStatus: widget.advanceStatus,
+          //               ),
+          //             ],
+          //           ),
+          //         )
+          //       : const SizedBox(),
+          // ),
         ),
         body: SafeArea(
             child: DevoteeListBodyPage(

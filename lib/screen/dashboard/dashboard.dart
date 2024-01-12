@@ -17,11 +17,12 @@ class DashboardPage extends StatelessWidget {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: const Color(0xff0064B4),
-          toolbarHeight: Responsive.isDesktop(context)
-              ? 150
-              : Responsive.isLargeMobile(context)
-                  ? 150
-                  : 120,
+          toolbarHeight: 120,
+          // toolbarHeight: Responsive.isDesktop(context)
+          //     ? 150
+          //     : Responsive.isLargeMobile(context)
+          //         ? 150
+          //         : 120,
           automaticallyImplyLeading: false,
           centerTitle: false,
           title: const TitleAppBar(),
@@ -68,26 +69,27 @@ class DashboardPage extends StatelessWidget {
             //     ),
             //   ],
             // ),
-            Responsive.isLargeMobile(context)
-                ? const SizedBox()
-                : AppbarActionButtonWidget(),
+            // Responsive.isLargeMobile(context)
+            //     ? const SizedBox()
+            //     :
+            AppbarActionButtonWidget(),
           ],
-          bottom: PreferredSize(
-            preferredSize: Responsive.isLargeMobile(context)
-                ? const Size.fromHeight(50)
-                : const Size.fromHeight(50),
-            child: Responsive.isLargeMobile(context)
-                ? Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        AppbarActionButtonWidget(),
-                      ],
-                    ),
-                  )
-                : const SizedBox(),
-          ),
+          // bottom: PreferredSize(
+          //   preferredSize: Responsive.isLargeMobile(context)
+          //       ? const Size.fromHeight(50)
+          //       : const Size.fromHeight(50),
+          //   child: Responsive.isLargeMobile(context)
+          //       ? Padding(
+          //           padding: const EdgeInsets.only(bottom: 20),
+          //           child: Row(
+          //             mainAxisAlignment: MainAxisAlignment.center,
+          //             children: [
+          //               AppbarActionButtonWidget(),
+          //             ],
+          //           ),
+          //         )
+          //       : const SizedBox(),
+          // ),
         ),
         body: const SafeArea(
           child: DashboardBody(),

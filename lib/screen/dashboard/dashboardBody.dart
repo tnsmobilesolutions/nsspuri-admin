@@ -64,7 +64,6 @@ class _DashboardBodyState extends State<DashboardBody> {
                 width: MediaQuery.of(context).size.width,
                 child: Column(
                   children: [
-                    Text("${Networkhelper().getCurrentDevotee?.name}"),
                     Expanded(
                         child: ListView.builder(
                       scrollDirection: Axis.horizontal,

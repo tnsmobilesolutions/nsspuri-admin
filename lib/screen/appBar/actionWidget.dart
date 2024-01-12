@@ -186,79 +186,107 @@ class _AppbarActionButtonWidgetState extends State<AppbarActionButtonWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (Responsive.isDesktop(context)) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: SearchDevotee(
-                    status: "allDevotee",
-                    searchBy: widget.searchBy,
-                    searchStatus: selectedStatus,
-                    searchValue: widget.searchValue,
-                    onFieldValueChanged: (isEmpty) {},
-                  )),
-              widget.showClearButton == true
-                  ? advanceSearchDropdown(context)
-                  : const SizedBox(),
-            ],
-          ),
-          SearchClearButton(widget: widget),
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                const GotoHomeButton(),
-                CreateDelegateButton(),
-                const LogoutButton(),
-              ],
-            ),
-          ),
-        ],
-      );
-    } else {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const GotoHomeButton(),
+        Padding(
             padding: const EdgeInsets.all(10.0),
             child: SearchDevotee(
               status: "allDevotee",
               searchBy: widget.searchBy,
+              searchStatus: selectedStatus,
               searchValue: widget.searchValue,
               onFieldValueChanged: (isEmpty) {},
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const GotoHomeButton(),
-                const SizedBox(width: 10),
-                widget.showClearButton == true
-                    ? advanceSearchDropdown(context)
-                    : const SizedBox(),
-                const SizedBox(width: 10),
-                SearchClearButton(widget: widget),
-                CreateDelegateButton(),
-                const SizedBox(width: 10),
-                const LogoutButton(),
-              ],
-            ),
-          ),
-        ],
-      );
-    }
+            )),
+        widget.showClearButton == true
+            ? advanceSearchDropdown(context)
+            : const SizedBox(),
+        SearchClearButton(widget: widget),
+        CreateDelegateButton(),
+        const SizedBox(width: 10),
+        const LogoutButton(),
+        const SizedBox(width: 10),
+      ],
+    );
   }
 }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     if (Responsive.isDesktop(context)) {
+//       return Row(
+//         mainAxisAlignment: MainAxisAlignment.end,
+//         crossAxisAlignment: CrossAxisAlignment.center,
+//         children: [
+//           Column(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [
+//               Padding(
+//                   padding: const EdgeInsets.all(10.0),
+//                   child: SearchDevotee(
+//                     status: "allDevotee",
+//                     searchBy: widget.searchBy,
+//                     searchStatus: selectedStatus,
+//                     searchValue: widget.searchValue,
+//                     onFieldValueChanged: (isEmpty) {},
+//                   )),
+//               widget.showClearButton == true
+//                   ? advanceSearchDropdown(context)
+//                   : const SizedBox(),
+//             ],
+//           ),
+//           SearchClearButton(widget: widget),
+//           Padding(
+//             padding: const EdgeInsets.all(10),
+//             child: Column(
+//               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//               crossAxisAlignment: CrossAxisAlignment.end,
+//               children: [
+//                 const GotoHomeButton(),
+//                 CreateDelegateButton(),
+//                 const LogoutButton(),
+//               ],
+//             ),
+//           ),
+//         ],
+//       );
+//     } else {
+//       return Column(
+//         crossAxisAlignment: CrossAxisAlignment.center,
+//         children: [
+//           Padding(
+//             padding: const EdgeInsets.all(10.0),
+//             child: SearchDevotee(
+//               status: "allDevotee",
+//               searchBy: widget.searchBy,
+//               searchValue: widget.searchValue,
+//               onFieldValueChanged: (isEmpty) {},
+//             ),
+//           ),
+//           Padding(
+//             padding: const EdgeInsets.only(right: 10),
+//             child: Row(
+//               mainAxisAlignment: MainAxisAlignment.start,
+//               children: [
+//                 const GotoHomeButton(),
+//                 const SizedBox(width: 10),
+//                 widget.showClearButton == true
+//                     ? advanceSearchDropdown(context)
+//                     : const SizedBox(),
+//                 const SizedBox(width: 10),
+//                 SearchClearButton(widget: widget),
+//                 CreateDelegateButton(),
+//                 const SizedBox(width: 10),
+//                 const LogoutButton(),
+//               ],
+//             ),
+//           ),
+//         ],
+//       );
+//     }
+//   }
 
 class SearchClearButton extends StatelessWidget {
   const SearchClearButton({
