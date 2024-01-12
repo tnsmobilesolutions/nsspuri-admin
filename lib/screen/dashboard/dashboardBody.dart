@@ -129,16 +129,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                             child: InkWell(
                               highlightColor:
                                   const Color.fromARGB(255, 0, 0, 0),
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) {
-                                    return PaliaListPage(
-                                      pageFrom: "Dashboard",
-                                      status: todayDateData[index].status ?? "",
-                                    );
-                                  },
-                                ));
-                              },
+                              onTap: null,
                               child: Card(
                                   color: Colors.yellowAccent,
                                   child: DashBoardData(
@@ -171,18 +162,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                             child: InkWell(
                               highlightColor:
                                   const Color.fromARGB(255, 0, 0, 0),
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) {
-                                    return PaliaListPage(
-                                      pageFrom: "Dashboard",
-                                      status:
-                                          yesterdayDatesData[index].status ??
-                                              "",
-                                    );
-                                  },
-                                ));
-                              },
+                              onTap:null,
                               child: Card(
                                   color: Colors.yellowAccent,
                                   child: DashBoardData(
@@ -215,18 +195,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                             child: InkWell(
                               highlightColor:
                                   const Color.fromARGB(255, 0, 0, 0),
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) {
-                                    return PaliaListPage(
-                                      pageFrom: "Dashboard",
-                                      status: dayBeforeYesterdayDatesData[index]
-                                              .status ??
-                                          "",
-                                    );
-                                  },
-                                ));
-                              },
+                              onTap: null,
                               child: Card(
                                   color: Colors.yellowAccent,
                                   child: DashBoardData(
