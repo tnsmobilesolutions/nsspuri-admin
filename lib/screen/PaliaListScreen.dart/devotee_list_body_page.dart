@@ -8,8 +8,8 @@ import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/paliaTableRow.dart';
 
-class PaliaListBodyPage extends StatefulWidget {
-  PaliaListBodyPage(
+class DevoteeListBodyPage extends StatefulWidget {
+  DevoteeListBodyPage(
       {Key? key,
       required this.status,
       required this.pageFrom,
@@ -25,10 +25,10 @@ class PaliaListBodyPage extends StatefulWidget {
   String status;
 
   @override
-  State<PaliaListBodyPage> createState() => _PaliaListBodyPageState();
+  State<DevoteeListBodyPage> createState() => _DevoteeListBodyPageState();
 }
 
-class _PaliaListBodyPageState extends State<PaliaListBodyPage> {
+class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
   bool? allCheck;
   List<DevoteeModel> allPaliaList = [];
   bool checkedValue = false;

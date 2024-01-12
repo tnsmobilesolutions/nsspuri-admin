@@ -7,6 +7,7 @@ import 'package:sdp/firebase/firebase_auth_api.dart';
 import 'package:sdp/model/devotee_model.dart';
 
 import 'package:sdp/screen/dashboard/dashboard.dart';
+import 'package:sdp/utilities/network_helper.dart';
 
 class EmailSignIn extends StatefulWidget {
   const EmailSignIn({super.key});
@@ -91,6 +92,8 @@ class _EmailSignInState extends State<EmailSignIn> {
                     if (uid != null) {
                       final response = await GetDevoteeAPI().loginDevotee(uid);
                       DevoteeModel resDevoteeData = response?["data"];
+
+                      Networkhelper().setCurrentDevotee = resDevoteeData;
 
                       if (response?["statusCode"] == 200 &&
                               resDevoteeData.role == "Admin" ||

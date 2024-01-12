@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/devotee_model.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/paliaList.dart';
+import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
 
 class SearchDevotee extends StatefulWidget {
   SearchDevotee(
@@ -143,7 +143,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                           });
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) {
-                              return PaliaListPage(
+                              return DevoteeListPage(
                                 status: "allDevotee",
                                 pageFrom: "Search",
                                 devoteeList: devoteeList,
@@ -174,7 +174,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                         print("search devotee count: ${devoteeList.length}");
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) {
-                            return PaliaListPage(
+                            return DevoteeListPage(
                               status: "allDevotee",
                               pageFrom: "Search",
                               devoteeList: devoteeList,
@@ -206,7 +206,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                               });
                               Navigator.push(context, MaterialPageRoute(
                                 builder: (context) {
-                                  return PaliaListPage(
+                                  return DevoteeListPage(
                                     status: "allDevotee",
                                     pageFrom: "Search",
                                     devoteeList: devoteeList,

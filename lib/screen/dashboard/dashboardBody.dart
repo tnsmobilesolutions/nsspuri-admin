@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/dashboard_card_model.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/paliaList.dart';
+import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
 class DashboardBody extends StatefulWidget {
@@ -81,7 +81,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                                   : () {
                                       Navigator.push(context, MaterialPageRoute(
                                         builder: (context) {
-                                          return PaliaListPage(
+                                          return DevoteeListPage(
                                             pageFrom: "Dashboard",
                                             status:
                                                 emptyTitleData[index].status ??
@@ -134,7 +134,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                               onTap: () {
                                 Navigator.push(context, MaterialPageRoute(
                                   builder: (context) {
-                                    return PaliaListPage(
+                                    return DevoteeListPage(
                                       pageFrom: "Dashboard",
                                       status: todayDateData[index].status ?? "",
                                     );
@@ -176,7 +176,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                               onTap: () {
                                 Navigator.push(context, MaterialPageRoute(
                                   builder: (context) {
-                                    return PaliaListPage(
+                                    return DevoteeListPage(
                                       pageFrom: "Dashboard",
                                       status:
                                           yesterdayDatesData[index].status ??
@@ -220,7 +220,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                               onTap: () {
                                 Navigator.push(context, MaterialPageRoute(
                                   builder: (context) {
-                                    return PaliaListPage(
+                                    return DevoteeListPage(
                                       pageFrom: "Dashboard",
                                       status: dayBeforeYesterdayDatesData[index]
                                               .status ??

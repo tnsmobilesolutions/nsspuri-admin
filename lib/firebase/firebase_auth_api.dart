@@ -60,6 +60,9 @@ class FirebaseAuthentication {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
 // Remove data for the 'counter' key.
       await prefs.remove('jwtToken');
+      print("get jwt token: ${prefs.getString("jwtToken")}");
+      await prefs.setString("jwtToken", "");
+      print("2 get jwt token :${prefs.getString("jwtToken")}");
       await FirebaseAuth.instance.signOut();
     } catch (e) {
       print(e.toString());

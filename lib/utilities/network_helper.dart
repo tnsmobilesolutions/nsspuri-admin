@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/devotee_model.dart';
 

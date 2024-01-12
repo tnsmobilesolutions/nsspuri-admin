@@ -5,10 +5,10 @@ import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/appBar/actionWidget.dart';
 import 'package:sdp/screen/appBar/leadingImage.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/paliaScreenBody.dart';
+import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_body_page.dart';
 
-class PaliaListPage extends StatefulWidget {
-  PaliaListPage(
+class DevoteeListPage extends StatefulWidget {
+  DevoteeListPage(
       {Key? key,
       required this.status,
       this.advanceStatus,
@@ -27,10 +27,10 @@ class PaliaListPage extends StatefulWidget {
   bool? showClearButton;
 
   @override
-  State<PaliaListPage> createState() => _PaliaListPageState();
+  State<DevoteeListPage> createState() => _DevoteeListPageState();
 }
 
-class _PaliaListPageState extends State<PaliaListPage> {
+class _DevoteeListPageState extends State<DevoteeListPage> {
   @override
   void initState() {
     super.initState();
@@ -51,23 +51,25 @@ class _PaliaListPageState extends State<PaliaListPage> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           toolbarHeight: Responsive.isDesktop(context)
-              ? 120
+              ? 150
               : Responsive.isLargeMobile(context)
                   ? 150
                   : 120,
           automaticallyImplyLeading: false,
           title: const TitleAppBar(),
-          actions: [
-            AppbarActionButtonWidget(
-              searchBy: widget.searchBy,
-              searchValue: widget.searchValue,
-              showClearButton: widget.showClearButton,
-            ),
-          ],
+          actions: !Responsive.isLargeMobile(context)
+              ? [
+                  AppbarActionButtonWidget(
+                    searchBy: widget.searchBy,
+                    searchValue: widget.searchValue,
+                    showClearButton: widget.showClearButton,
+                  ),
+                ]
+              : [],
           bottom: PreferredSize(
             preferredSize: Responsive.isLargeMobile(context)
                 ? const Size.fromHeight(50)
-                : const Size.fromHeight(0),
+                : const Size.fromHeight(50),
             child: Responsive.isLargeMobile(context)
                 ? Padding(
                     padding: const EdgeInsets.only(bottom: 20),
@@ -87,7 +89,7 @@ class _PaliaListPageState extends State<PaliaListPage> {
           ),
         ),
         body: SafeArea(
-            child: PaliaListBodyPage(
+            child: DevoteeListBodyPage(
           status: widget.status,
           pageFrom: widget.pageFrom,
           searchValue: widget.searchValue,
