@@ -35,6 +35,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
   bool checkedValue = false;
   bool editpaliDate = false;
   bool showMenu = false;
+  bool _isAscending = true;
   String? userRole;
 
   @override
@@ -83,6 +84,17 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
             fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
       ),
     );
+  }
+
+  void _sortList(bool isAscending) {
+    setState(() {
+      _isAscending = isAscending;
+      allPaliaList.sort((a, b) {
+        final nameA = a.name ?? '';
+        final nameB = b.name ?? '';
+        return _isAscending ? nameA.compareTo(nameB) : nameB.compareTo(nameA);
+      });
+    });
   }
 
   @override
@@ -143,7 +155,39 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
               children: [
                 headingText('Sl No.'),
                 headingText('Profile Image'),
-                headingText('Devotee Name'),
+                Expanded(
+                  child: Row(
+                    children: [
+                      const Text(
+                        "Devotee Name",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
+                      ),
+                      const SizedBox(height: 10),
+                      IconButton(
+                        onPressed: () {
+                          _sortList(true);
+                        },
+                        icon: const Icon(
+                          Icons.arrow_circle_up_outlined,
+                          color: Colors.deepOrange,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          _sortList(false);
+                        },
+                        icon: const Icon(
+                          Icons.arrow_circle_down_outlined,
+                          color: Colors.deepOrange,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 headingText('Sangha'),
                 headingText('DOB'),
                 headingText('Status'),
@@ -153,9 +197,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
               ],
             ),
           ),
-          const SizedBox(
-            height: 12,
-          ),
+          const SizedBox(height: 12),
           Flexible(
             child: ListView.builder(
               itemCount: allPaliaList.length,
