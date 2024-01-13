@@ -12,6 +12,7 @@ import 'package:sdp/API/put_devotee.dart';
 import 'package:sdp/constant/sangha_list.dart';
 import 'package:sdp/model/address_model.dart';
 import 'package:sdp/model/devotee_model.dart';
+import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
 import 'package:sdp/utilities/color_palette.dart';
 import 'package:sdp/utilities/network_helper.dart';
@@ -22,9 +23,15 @@ class AddPageDilouge extends StatefulWidget {
     super.key,
     required this.title,
     required this.devoteeId,
+    this.searchBy,
+    this.searchValue,
+    this.showClearButton,
   });
 
   String devoteeId;
+  String? searchBy;
+  String? searchValue;
+  bool? showClearButton;
   String title;
 
   @override
@@ -34,6 +41,12 @@ class AddPageDilouge extends StatefulWidget {
 class _AddPageDilougeState extends State<AddPageDilouge> {
   TextEditingController addressLine1Controller = TextEditingController();
   TextEditingController addressLine2Controller = TextEditingController();
+  List<String> approverstatusOptions = [
+    'dataSubmitted',
+    'approved',
+    "rejected"
+  ];
+
   String? bloodGroupController;
   List<String> bloodGrouplist = <String>[
     'A+',
@@ -50,8 +63,21 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   TextEditingController cityController = TextEditingController();
   TextEditingController countryController = TextEditingController();
   TextEditingController dateOfBirth = TextEditingController();
+  final decimalRegex = [
+    FilteringTextInputFormatter.allow(RegExp(r'^[0-9]*\.?[0-9]*$')),
+    TextInputFormatter.withFunction((oldValue, newValue) {
+      if (newValue.text.contains('..')) {
+        final newString = newValue.text.replaceAll('..', '.');
+        return TextEditingValue(
+          text: newString,
+          selection: TextSelection.collapsed(offset: newString.length),
+        );
+      }
+      return newValue;
+    }),
+  ];
+
   TextEditingController emailController = TextEditingController();
-  TextEditingController pranamiController = TextEditingController();
   final RegExp emailRegex = RegExp(
     r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$',
   );
@@ -72,50 +98,12 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   bool isApproved = false;
   bool isAvailable = false;
   bool isGruhasanaApproved = false;
-  bool isKYDVerified = false;
-  bool isSpeciallyAbled = false;
   bool isGuest = false;
+  bool isKYDVerified = false;
   bool isOrganizer = false;
+  bool isSpeciallyAbled = false;
   TextEditingController mobileController = TextEditingController();
   TextEditingController nameController = TextEditingController();
-  XFile? pickImage;
-  TextEditingController postalCodeController = TextEditingController();
-  String? profileImage;
-  String profilePhotoUrl = "";
-  TextEditingController sanghaController = TextEditingController();
-  String? select;
-  DevoteeModel? selectedDevotee;
-  List<int>? selectedImage;
-  String selectedStatus = 'dataSubmitted';
-  String selectedRole = 'User';
-  List<int>? selectedimage;
-  TextEditingController stateController = TextEditingController();
-  List<String> statusOptions = [
-    'dataSubmitted',
-    'paid',
-    'rejected',
-    'approved',
-    'printed',
-    'withdrawn',
-    'lost',
-    'reissued',
-    "blacklisted"
-  ];
-  List<String> approverstatusOptions = [
-    'dataSubmitted',
-    'approved',
-    "rejected"
-  ];
-  List<String> roleList = [
-    'User',
-    'Admin',
-    'SuperAdmin',
-    "Organizer",
-    'Approver',
-    'PrasadScanner',
-    "SecurityCheck"
-  ];
-  bool? parichayaPatraValue = false, shouldShowPranamiField = false;
   final numericRegex = [
     FilteringTextInputFormatter.allow(RegExp(r'^[0-9]*$')),
     TextInputFormatter.withFunction((oldValue, newValue) {
@@ -128,6 +116,42 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
       }
       return newValue;
     }),
+  ];
+
+  bool? parichayaPatraValue = false, shouldShowPranamiField = false;
+  XFile? pickImage;
+  TextEditingController postalCodeController = TextEditingController();
+  TextEditingController pranamiController = TextEditingController();
+  String? profileImage;
+  String profilePhotoUrl = "";
+  List<String> roleList = [
+    'User',
+    'Admin',
+    'SuperAdmin',
+    "Organizer",
+    'Approver',
+    'PrasadScanner',
+    "SecurityCheck"
+  ];
+
+  TextEditingController sanghaController = TextEditingController();
+  String? select;
+  DevoteeModel? selectedDevotee;
+  List<int>? selectedImage;
+  String selectedRole = 'User';
+  String selectedStatus = 'dataSubmitted';
+  List<int>? selectedimage;
+  TextEditingController stateController = TextEditingController();
+  List<String> statusOptions = [
+    'dataSubmitted',
+    'paid',
+    'rejected',
+    'approved',
+    'printed',
+    'withdrawn',
+    'lost',
+    'reissued',
+    "blacklisted"
   ];
 
   @override
@@ -258,20 +282,6 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
       // widget.onImageSelected(image, pickImage);
     }
   }
-
-  final decimalRegex = [
-    FilteringTextInputFormatter.allow(RegExp(r'^[0-9]*\.?[0-9]*$')),
-    TextInputFormatter.withFunction((oldValue, newValue) {
-      if (newValue.text.contains('..')) {
-        final newString = newValue.text.replaceAll('..', '.');
-        return TextEditingValue(
-          text: newString,
-          selection: TextSelection.collapsed(offset: newString.length),
-        );
-      }
-      return newValue;
-    }),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -1108,6 +1118,15 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                 );
                               },
                             );
+                            List<DevoteeModel> devoteeList = [];
+                            await GetDevoteeAPI()
+                                .advanceSearchDevotee(
+                              widget.searchValue.toString(),
+                              widget.searchBy.toString(),
+                            )
+                                .then((value) {
+                              devoteeList.addAll(value["data"]);
+                            });
                             if (context.mounted) {
                               Navigator.of(context)
                                   .pop(); // Close the circular progress indicator
@@ -1116,6 +1135,19 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                   MaterialPageRoute(
                                     builder: (context) => DashboardPage(),
                                   ));
+
+                              // Navigator.push(context, MaterialPageRoute(
+                              //   builder: (context) {
+                              //     return DevoteeListPage(
+                              //       status: "allDevotee",
+                              //       pageFrom: "Search",
+                              //       devoteeList: devoteeList,
+                              //       searchValue: widget.searchValue,
+                              //       searchBy: widget.searchBy,
+                              //       showClearButton: widget.showClearButton,
+                              //     );
+                              //   },
+                              // ));
                             }
                           } else {
                             if (context.mounted) {
@@ -1174,7 +1206,9 @@ class ReceivePaymentSubmitButton extends StatelessWidget {
     super.key,
     required this.onPressed,
   });
+
   void Function()? onPressed;
+
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(

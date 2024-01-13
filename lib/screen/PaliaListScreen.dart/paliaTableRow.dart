@@ -12,12 +12,25 @@ class PaliaTableRow extends StatefulWidget {
     required this.devoteeDetails,
     required this.slNo,
     required this.showMenu,
+    this.devoteeList,
+    required this.pageFrom,
+    this.searchBy,
+    this.showClearButton,
+    this.searchValue,
+    required this.status,
     this.allCheck,
   }) : super(key: key);
   DevoteeModel devoteeDetails;
   final int slNo;
   bool showMenu;
   bool? allCheck;
+  bool? showClearButton;
+
+  List<DevoteeModel>? devoteeList;
+  String pageFrom;
+  String? searchBy;
+  String? searchValue;
+  String status;
 
   @override
   State<PaliaTableRow> createState() => _PaliaTableRowState();
@@ -32,6 +45,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
     if (widget.allCheck == false) {
       widget.allCheck = null;
     }
+    if (widget.devoteeList != null) {}
   }
 
   @override
@@ -164,39 +178,42 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
               Expanded(
                   child: IconButton(
                       color: Colors.deepOrange,
-                      onPressed:
-                          Networkhelper().currentDevotee?.role == "Approver" &&
-                                  widget.devoteeDetails.status == "paid"
-                              ? null
-                              : () {
-                                  showDialog<void>(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                          title: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              const Text('Edit Palia Details'),
-                                              IconButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  icon: const Icon(
-                                                    Icons.close,
-                                                    color: Colors.deepOrange,
-                                                  ))
-                                            ],
-                                          ),
-                                          content: AddPageDilouge(
-                                            devoteeId: widget
-                                                .devoteeDetails.devoteeId
-                                                .toString(),
-                                            title: "edit",
-                                          ));
-                                    },
-                                  );
+                      onPressed: Networkhelper().currentDevotee?.role ==
+                                  "Approver" &&
+                              widget.devoteeDetails.status == "paid"
+                          ? null
+                          : () {
+                              showDialog<void>(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                      title: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text('Edit Palia Details'),
+                                          IconButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              icon: const Icon(
+                                                Icons.close,
+                                                color: Colors.deepOrange,
+                                              ))
+                                        ],
+                                      ),
+                                      content: AddPageDilouge(
+                                        devoteeId: widget
+                                            .devoteeDetails.devoteeId
+                                            .toString(),
+                                        title: "edit",
+                                        showClearButton: widget.showClearButton,
+                                        searchBy: widget.searchBy,
+                                        searchValue: widget.searchValue,
+                                      ));
                                 },
+                              );
+                            },
                       icon: Icon(
                         Icons.edit,
                         color: Networkhelper().currentDevotee?.role ==

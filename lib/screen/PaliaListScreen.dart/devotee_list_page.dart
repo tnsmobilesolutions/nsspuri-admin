@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:sdp/model/devotee_model.dart';
-import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/appBar/actionWidget.dart';
 import 'package:sdp/screen/appBar/leadingImage.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_body_page.dart';
@@ -58,6 +57,19 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
           toolbarHeight: 120,
           automaticallyImplyLeading: false,
           title: const TitleAppBar(),
+          // leading: IconButton(
+          //   onPressed: () {
+          //     Navigator.push(context, MaterialPageRoute(
+          //       builder: (context) {
+          //         return DashboardPage();
+          //       },
+          //     ));
+          //   },
+          //   icon: const Icon(
+          //     Icons.arrow_back_outlined,
+          //     color: Colors.white,
+          //   ),
+          // ),
           actions: [
             AppbarActionButtonWidget(
               searchBy: widget.searchBy,
@@ -103,6 +115,7 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
           pageFrom: widget.pageFrom,
           searchValue: widget.searchValue,
           searchBy: widget.searchBy,
+          showClearButton: widget.showClearButton,
           devoteeList: widget.devoteeList,
         )),
       ),
