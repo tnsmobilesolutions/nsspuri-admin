@@ -1,5 +1,8 @@
 // ignore_for_file: file_names, depend_on_referenced_packages, must_be_immutable, iterable_contains_unrelated_type, avoid_print
 
+import 'dart:io';
+
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -14,6 +17,7 @@ class DevoteeListBodyPage extends StatefulWidget {
       required this.status,
       required this.pageFrom,
       this.devoteeList,
+      this.showClearButton,
       this.searchValue,
       this.searchBy})
       : super(key: key);
@@ -23,6 +27,7 @@ class DevoteeListBodyPage extends StatefulWidget {
   String? searchBy;
   String? searchValue;
   String status;
+  bool? showClearButton;
 
   @override
   State<DevoteeListBodyPage> createState() => _DevoteeListBodyPageState();
@@ -94,6 +99,62 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
     );
   }
 
+  void exportToExcel(List<DevoteeModel> devotees) async {
+    final excel = Excel.createExcel();
+
+    final sheet = excel[excel.getDefaultSheet().toString()];
+
+    sheet.appendRow([
+      const TextCellValue("Devotee Name"),
+      const TextCellValue("Code"),
+      const TextCellValue("Sangha"),
+      const TextCellValue("DOB"),
+      const TextCellValue("Status"),
+    ]);
+
+    for (int i = 1; i <= devotees.length; i++) {
+      sheet
+          .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: i))
+          .value = TextCellValue(devotees[i - 1].name.toString());
+      sheet
+          .cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: i))
+          .value = TextCellValue("${devotees[i - 1].devoteeCode}");
+      sheet
+          .cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: i))
+          .value = TextCellValue(devotees[i - 1].sangha.toString());
+      sheet
+          .cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: i))
+          .value = TextCellValue(devotees[i - 1].dob.toString());
+      sheet
+          .cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: i))
+          .value = TextCellValue(devotees[i - 1].status.toString());
+    }
+
+    for (int col = 0; col < 6; col++) {
+      switch (col) {
+        case 0:
+          sheet.setColumnWidth(col, 30);
+          break;
+        case 1:
+          sheet.setColumnWidth(col, 10);
+          break;
+        case 2:
+          sheet.setColumnWidth(col, 30);
+          break;
+        case 3:
+          sheet.setColumnWidth(col, 15);
+          break;
+        case 4:
+          sheet.setColumnWidth(col, 15);
+          break;
+        default:
+        //sheet.setColumnWidth(col, 10);
+      }
+    }
+
+    excel.save(fileName: "devotees.xlsx");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -120,126 +181,148 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
               const SizedBox(
                 width: 10,
               ),
-              Padding(
-                padding: const EdgeInsets.only(right: 15),
-                child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                        side: const BorderSide(
-                          width: 1.5,
-                          color: Colors.deepOrange,
-                        ),
-                        foregroundColor: Colors.black),
-                    onPressed: () async {
-                      final baloobhaina2font =
-                          await PdfGoogleFonts.balooBhaina2Regular();
-                      final doc = pw.Document();
-                      doc.addPage(
-                        pw.Page(
-                          pageFormat: PdfPageFormat.a4,
-                          build: (pw.Context context) {
-                            return pw.Column(children: [
-                              pw.Row(
-                                  mainAxisAlignment:
-                                      pw.MainAxisAlignment.center,
-                                  children: [
-                                    pw.Text(
-                                      'ଜୟଗୁରୁ',
-                                      style: pw.TextStyle(
-                                        decoration: pw.TextDecoration.underline,
-                                        font: baloobhaina2font,
-                                        fontSize: 20,
-                                        fontWeight: pw.FontWeight.normal,
-                                      ),
-                                    ),
-                                  ]),
-                              pw.Column(
-                                children: [
-                                  pw.Row(
-                                    mainAxisAlignment:
-                                        pw.MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      pw.Text(
-                                          'Total Record - ${allPaliaList.length}'),
-                                      pw.Text(
-                                          'Total Pranami - ${allPaliaList.length} × 1101 = ${(allPaliaList.isNotEmpty ? (allPaliaList.length) : 0) * (1101)}'),
-                                    ],
-                                  )
-                                ],
-                              ),
-                              pw.Divider(),
-                              pw.Row(
-                                  mainAxisAlignment: pw.MainAxisAlignment.start,
-                                  children: []),
-                              pw.SizedBox(height: 20),
-                              pw.Row(children: [
-                                printSearchheadingText('Sl no.'),
-                                printSearchheadingText('Devotee Name'),
-                                printSearchheadingText('Devotee Code'),
-                                printSearchheadingText('Sangha'),
-                                printSearchheadingText('DOB'),
-                                printSearchheadingText('Status'),
-                              ]),
-                              pw.Divider(thickness: 0.5),
-                              pw.ListView.builder(
-                                itemCount: allPaliaList.isNotEmpty
-                                    ? allPaliaList.length
-                                    : 0,
-                                itemBuilder: (pw.Context context, int index) {
-                                  return pw.Column(
-                                    children: [
-                                      pw.Row(
-                                        children: [
-                                          pw.Expanded(
-                                            child: pw.Text(
-                                              (index + 1).toString(),
-                                              textAlign: pw.TextAlign.center,
-                                            ),
-                                          ),
-                                          pw.Expanded(
-                                            child: pw.Text(
-                                              '${allPaliaList[index].name}',
-                                              textAlign: pw.TextAlign.center,
-                                            ),
-                                          ),
-                                          pw.Expanded(
-                                            child: pw.Text(
-                                              '${allPaliaList[index].devoteeCode}',
-                                              textAlign: pw.TextAlign.center,
-                                            ),
-                                          ),
-                                          pw.Expanded(
-                                            child: pw.Text(
-                                              '${allPaliaList[index].sangha}',
-                                              textAlign: pw.TextAlign.center,
-                                            ),
-                                          ),
-                                          pw.Expanded(
-                                            child: pw.Text(
-                                              '${allPaliaList[index].dob}',
-                                              textAlign: pw.TextAlign.center,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      pw.Divider(
-                                        thickness: 0.5,
-                                      )
-                                    ],
-                                  );
-                                },
-                              ),
-                            ]);
-                          },
-                        ),
-                      ); //
-                      PdfPreview(
-                        build: (format) => doc.save(),
-                      );
-                      await Printing.layoutPdf(
-                          onLayout: (PdfPageFormat format) async => doc.save());
-                    },
-                    child: const Text('Print')),
-              )
+              // Padding(
+              //   padding: const EdgeInsets.only(right: 15),
+              //   child: OutlinedButton(
+              //       style: OutlinedButton.styleFrom(
+              //           side: const BorderSide(
+              //             width: 1.5,
+              //             color: Colors.deepOrange,
+              //           ),
+              //           foregroundColor: Colors.black),
+              //       onPressed: () async {
+              //         final baloobhaina2font =
+              //             await PdfGoogleFonts.balooBhaina2Regular();
+              //         final doc = pw.Document();
+              //         doc.addPage(
+              //           pw.Page(
+              //             pageFormat: PdfPageFormat.a4,
+              //             build: (pw.Context context) {
+              //               return pw.Column(children: [
+              //                 pw.Row(
+              //                     mainAxisAlignment:
+              //                         pw.MainAxisAlignment.center,
+              //                     children: [
+              //                       pw.Text(
+              //                         'ଜୟଗୁରୁ',
+              //                         style: pw.TextStyle(
+              //                           decoration: pw.TextDecoration.underline,
+              //                           font: baloobhaina2font,
+              //                           fontSize: 20,
+              //                           fontWeight: pw.FontWeight.normal,
+              //                         ),
+              //                       ),
+              //                     ]),
+              //                 pw.Column(
+              //                   children: [
+              //                     pw.Row(
+              //                       mainAxisAlignment:
+              //                           pw.MainAxisAlignment.spaceBetween,
+              //                       children: [
+              //                         pw.Text(
+              //                             'Total Record - ${allPaliaList.length}'),
+              //                         pw.Text(
+              //                             'Total Pranami - ${allPaliaList.length} × 1101 = ${(allPaliaList.isNotEmpty ? (allPaliaList.length) : 0) * (1101)}'),
+              //                       ],
+              //                     )
+              //                   ],
+              //                 ),
+              //                 pw.Divider(),
+              //                 pw.Row(
+              //                     mainAxisAlignment: pw.MainAxisAlignment.start,
+              //                     children: []),
+              //                 pw.SizedBox(height: 20),
+              //                 pw.Row(children: [
+              //                   printSearchheadingText('Sl no.'),
+              //                   printSearchheadingText('Devotee Name'),
+              //                   printSearchheadingText('Devotee Code'),
+              //                   printSearchheadingText('Sangha'),
+              //                   printSearchheadingText('DOB'),
+              //                   printSearchheadingText('Status'),
+              //                 ]),
+              //                 pw.Divider(thickness: 0.5),
+              //                 pw.ListView.builder(
+              //                   itemCount: allPaliaList.isNotEmpty
+              //                       ? allPaliaList.length
+              //                       : 0,
+              //                   itemBuilder: (pw.Context context, int index) {
+              //                     return pw.Column(
+              //                       children: [
+              //                         pw.Row(
+              //                           children: [
+              //                             pw.Expanded(
+              //                               child: pw.Text(
+              //                                 (index + 1).toString(),
+              //                                 textAlign: pw.TextAlign.center,
+              //                               ),
+              //                             ),
+              //                             pw.Expanded(
+              //                               child: pw.Text(
+              //                                 '${allPaliaList[index].name}',
+              //                                 textAlign: pw.TextAlign.center,
+              //                               ),
+              //                             ),
+              //                             pw.Expanded(
+              //                               child: pw.Text(
+              //                                 '${allPaliaList[index].devoteeCode}',
+              //                                 textAlign: pw.TextAlign.center,
+              //                               ),
+              //                             ),
+              //                             pw.Expanded(
+              //                               child: pw.Text(
+              //                                 '${allPaliaList[index].sangha}',
+              //                                 textAlign: pw.TextAlign.center,
+              //                               ),
+              //                             ),
+              //                             pw.Expanded(
+              //                               child: pw.Text(
+              //                                 '${allPaliaList[index].dob}',
+              //                                 textAlign: pw.TextAlign.center,
+              //                               ),
+              //                             ),
+              //                           ],
+              //                         ),
+              //                         pw.Divider(
+              //                           thickness: 0.5,
+              //                         )
+              //                       ],
+              //                     );
+              //                   },
+              //                 ),
+              //               ]);
+              //             },
+              //           ),
+              //         ); //
+              //         PdfPreview(
+              //           build: (format) => doc.save(),
+              //         );
+              //         await Printing.layoutPdf(
+              //             onLayout: (PdfPageFormat format) async => doc.save());
+              //       },
+              //       child: const Text('Print')),
+              // ),
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                    side:
+                        const BorderSide(width: 1.5, color: Colors.deepOrange),
+                    foregroundColor: Colors.black),
+                onPressed: () {
+                  widget.devoteeList != null
+                      ? exportToExcel(widget.devoteeList!)
+                      : print("null devotees !!!!!!!!!!!!!!!!!");
+                },
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text('Export'),
+                    SizedBox(width: 10),
+                    Icon(
+                      Icons.upload_rounded,
+                      color: Colors.blue,
+                    )
+                  ],
+                ),
+              ),
             ],
           ),
           Padding(
@@ -270,6 +353,12 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
                   showMenu: showMenu,
                   slNo: index + 1,
                   devoteeDetails: allPaliaList[index],
+                  devoteeList: widget.devoteeList,
+                  pageFrom: widget.pageFrom,
+                  showClearButton: widget.showClearButton,
+                  status: widget.status,
+                  searchBy: widget.searchBy,
+                  searchValue: widget.searchValue,
                 );
               },
             ),
