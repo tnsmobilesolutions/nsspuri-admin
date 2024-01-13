@@ -30,6 +30,7 @@ class DevoteeModel {
   String? status;
   double? paidAmount;
   String? createdById;
+  String? remarks;
   AddressModel? address;
   DevoteeModel({
     this.devoteeId,
@@ -59,6 +60,7 @@ class DevoteeModel {
     this.status,
     this.paidAmount,
     this.createdById,
+    this.remarks,
     this.address,
   });
 
@@ -90,6 +92,7 @@ class DevoteeModel {
     String? status,
     double? paidAmount,
     String? createdById,
+    String? remarks,
     AddressModel? address,
   }) {
     return DevoteeModel(
@@ -121,6 +124,7 @@ class DevoteeModel {
       status: status ?? this.status,
       paidAmount: paidAmount ?? this.paidAmount,
       createdById: createdById ?? this.createdById,
+      remarks: remarks ?? this.remarks,
       address: address ?? this.address,
     );
   }
@@ -154,6 +158,7 @@ class DevoteeModel {
       'status': status,
       'paidAmount': paidAmount,
       'createdById': createdById,
+      'remarks': remarks,
       'address': address?.toMap(),
     };
   }
@@ -187,6 +192,7 @@ class DevoteeModel {
       status: map['status'],
       paidAmount: map['paidAmount']?.toDouble(),
       createdById: map['createdById'],
+      remarks: map['remarks'],
       address:
           map['address'] != null ? AddressModel.fromMap(map['address']) : null,
     );
@@ -199,7 +205,7 @@ class DevoteeModel {
 
   @override
   String toString() {
-    return 'DevoteeModel(devoteeId: $devoteeId, devoteeCode: $devoteeCode, isAllowedToScanPrasad: $isAllowedToScanPrasad, name: $name, emailId: $emailId, mobileNumber: $mobileNumber, bloodGroup: $bloodGroup, profilePhotoUrl: $profilePhotoUrl, gender: $gender, sangha: $sangha, role: $role, uid: $uid, hasParichayaPatra: $hasParichayaPatra, isGuest: $isGuest, isOrganizer: $isOrganizer, isSpeciallyAbled: $isSpeciallyAbled, dob: $dob, isKYDVerified: $isKYDVerified, isApproved: $isApproved, isAdmin: $isAdmin, isGruhasanaApproved: $isGruhasanaApproved, createdOn: $createdOn, approvedBy: $approvedBy, updatedOn: $updatedOn, status: $status, paidAmount: $paidAmount, createdById: $createdById, address: $address)';
+    return 'DevoteeModel(devoteeId: $devoteeId, devoteeCode: $devoteeCode, isAllowedToScanPrasad: $isAllowedToScanPrasad, name: $name, emailId: $emailId, mobileNumber: $mobileNumber, bloodGroup: $bloodGroup, profilePhotoUrl: $profilePhotoUrl, gender: $gender, sangha: $sangha, role: $role, uid: $uid, hasParichayaPatra: $hasParichayaPatra, isGuest: $isGuest, isOrganizer: $isOrganizer, isSpeciallyAbled: $isSpeciallyAbled, dob: $dob, isKYDVerified: $isKYDVerified, isApproved: $isApproved, isAdmin: $isAdmin, isGruhasanaApproved: $isGruhasanaApproved, createdOn: $createdOn, approvedBy: $approvedBy, updatedOn: $updatedOn, status: $status, paidAmount: $paidAmount, createdById: $createdById, remarks: $remarks, address: $address)';
   }
 
   @override
@@ -234,6 +240,7 @@ class DevoteeModel {
         other.status == status &&
         other.paidAmount == paidAmount &&
         other.createdById == createdById &&
+        other.remarks == remarks &&
         other.address == address;
   }
 
@@ -266,6 +273,7 @@ class DevoteeModel {
         status.hashCode ^
         paidAmount.hashCode ^
         createdById.hashCode ^
+        remarks.hashCode ^
         address.hashCode;
   }
 }

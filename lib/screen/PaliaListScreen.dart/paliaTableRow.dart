@@ -135,7 +135,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                   ),
                   widget.devoteeDetails.paidAmount != null
                       ? Text(
-                          '₹ ${widget.devoteeDetails.paidAmount}',
+                          '₹${widget.devoteeDetails.paidAmount}',
                           textAlign: TextAlign.center,
                         )
                       : const SizedBox(),

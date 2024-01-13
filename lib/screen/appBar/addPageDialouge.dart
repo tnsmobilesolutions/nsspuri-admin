@@ -122,6 +122,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   XFile? pickImage;
   TextEditingController postalCodeController = TextEditingController();
   TextEditingController pranamiController = TextEditingController();
+  TextEditingController remarksController = TextEditingController();
   String? profileImage;
   String profilePhotoUrl = "";
   List<String> roleList = [
@@ -198,6 +199,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
           pranamiController.text = (selectedDevotee?.paidAmount != null
               ? selectedDevotee?.paidAmount.toString()
               : "")!;
+          remarksController.text = selectedDevotee?.remarks ?? "";
           addressLine1Controller.text =
               selectedDevotee?.address?.addressLine1 ?? "";
           addressLine2Controller.text =
@@ -489,12 +491,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                         },
                         decoration: InputDecoration(
                           labelText: "Pranami",
+                          labelStyle:
+                              TextStyle(color: Colors.grey[600], fontSize: 15),
                           filled: true,
                           floatingLabelBehavior: FloatingLabelBehavior.auto,
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30.0),
+                              borderRadius: BorderRadius.circular(10.0),
                               borderSide: const BorderSide(
-                                  width: 0, style: BorderStyle.none)),
+                                  width: 0, style: BorderStyle.solid)),
                         ),
                       )
                     : const SizedBox(),
@@ -603,7 +607,55 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     ],
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Has Parichaya Patra?',
+                      ),
+                      Checkbox(
+                        checkColor: Colors.deepOrange,
+                        fillColor: MaterialStateProperty.resolveWith(getColor),
+                        value: parichayaPatraValue,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            parichayaPatraValue = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
 
+                // Padding(
+                //   padding: const EdgeInsets.only(left: 20, right: 20),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     children: [
+                //       //SizedBox
+                //       const Text(
+                //         'Has Parichaya Patra?',
+                //       ), //Text
+                //       //SizedBox
+                //       /** Checkbox Widget **/
+                //       Transform.scale(
+                //         scale: 1.5,
+                //         child: Checkbox(
+                //           activeColor: Colors.deepOrange,
+                //           value: parichayaPatraValue,
+                //           onChanged: (bool? value) {
+                //             setState(() {
+                //               parichayaPatraValue = value;
+                //             });
+                //           },
+                //         ),
+                //       ), //Checkbox
+                //     ], //<Widget>[]
+                //   ),
+                // ),
+                const SizedBox(height: 20),
                 TextFormField(
                   controller: nameController,
                   onSaved: (newValue) => nameController,
@@ -618,12 +670,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   },
                   decoration: InputDecoration(
                     labelText: "Name",
+                    labelStyle:
+                        TextStyle(color: Colors.grey[600], fontSize: 15),
                     filled: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         borderSide: const BorderSide(
-                            width: 0, style: BorderStyle.none)),
+                            width: 0, style: BorderStyle.solid)),
                   ),
                 ),
 
@@ -642,12 +696,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   },
                   decoration: InputDecoration(
                     labelText: "Email Id",
+                    labelStyle:
+                        TextStyle(color: Colors.grey[600], fontSize: 15),
                     filled: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         borderSide: const BorderSide(
-                            width: 0, style: BorderStyle.none)),
+                            width: 0, style: BorderStyle.solid)),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -667,12 +723,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   },
                   decoration: InputDecoration(
                     labelText: "Mobile Number",
+                    labelStyle:
+                        TextStyle(color: Colors.grey[600], fontSize: 15),
                     filled: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         borderSide: const BorderSide(
-                            width: 0, style: BorderStyle.none)),
+                            width: 0, style: BorderStyle.solid)),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -731,33 +789,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      //SizedBox
-                      const Text(
-                        'Has Parichaya Patra?',
-                      ), //Text
-                      //SizedBox
-                      /** Checkbox Widget **/
-                      Transform.scale(
-                        scale: 1.5,
-                        child: Checkbox(
-                          activeColor: Colors.deepOrange,
-                          value: parichayaPatraValue,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              parichayaPatraValue = value;
-                            });
-                          },
-                        ),
-                      ), //Checkbox
-                    ], //<Widget>[]
-                  ),
-                ),
+
                 const SizedBox(height: 20),
                 GestureDetector(
                   child: TextField(
@@ -765,12 +797,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                         dateOfBirth, //editing controller of this TextField
                     decoration: InputDecoration(
                       labelText: "Date Of Birth",
+                      labelStyle:
+                          TextStyle(color: Colors.grey[600], fontSize: 15),
                       filled: true,
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
+                          borderRadius: BorderRadius.circular(10.0),
                           borderSide: const BorderSide(
-                              width: 0, style: BorderStyle.none)),
+                              width: 0, style: BorderStyle.solid)),
                     ),
                     readOnly:
                         true, //set it true, so that user will not able to edit text
@@ -815,12 +849,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                         elevation: 16,
                         decoration: InputDecoration(
                           labelText: "Blood Group",
+                          labelStyle:
+                              TextStyle(color: Colors.grey[600], fontSize: 15),
                           filled: true,
-                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                          floatingLabelBehavior: FloatingLabelBehavior.auto,
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30.0),
+                              borderRadius: BorderRadius.circular(10.0),
                               borderSide: const BorderSide(
-                                  width: 0, style: BorderStyle.none)),
+                                  width: 0, style: BorderStyle.solid)),
                         ),
                         // style: const TextStyle(color: Colors.deepPurple),
 
@@ -861,12 +897,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     controller: sanghaController,
                     decoration: InputDecoration(
                       labelText: "Sangha Name",
+                      labelStyle:
+                          TextStyle(color: Colors.grey[600], fontSize: 15),
                       filled: true,
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
+                          borderRadius: BorderRadius.circular(10.0),
                           borderSide: const BorderSide(
-                              width: 0, style: BorderStyle.none)),
+                              width: 0, style: BorderStyle.solid)),
                     ),
                   ),
                   suggestionsCallback: (value) async {
@@ -910,12 +948,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   // },
                   decoration: InputDecoration(
                     labelText: "Address line 1",
+                    labelStyle:
+                        TextStyle(color: Colors.grey[600], fontSize: 15),
                     filled: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         borderSide: const BorderSide(
-                            width: 0, style: BorderStyle.none)),
+                            width: 0, style: BorderStyle.solid)),
                   ),
                 ),
                 const SizedBox(
@@ -932,12 +972,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   // },
                   decoration: InputDecoration(
                     labelText: "Address line 2",
+                    labelStyle:
+                        TextStyle(color: Colors.grey[600], fontSize: 15),
                     filled: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         borderSide: const BorderSide(
-                            width: 0, style: BorderStyle.none)),
+                            width: 0, style: BorderStyle.solid)),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -952,12 +994,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   // },
                   decoration: InputDecoration(
                     labelText: "City Name",
+                    labelStyle:
+                        TextStyle(color: Colors.grey[600], fontSize: 15),
                     filled: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         borderSide: const BorderSide(
-                            width: 0, style: BorderStyle.none)),
+                            width: 0, style: BorderStyle.solid)),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -972,12 +1016,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   // },
                   decoration: InputDecoration(
                     labelText: "State Name",
+                    labelStyle:
+                        TextStyle(color: Colors.grey[600], fontSize: 15),
                     filled: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         borderSide: const BorderSide(
-                            width: 0, style: BorderStyle.none)),
+                            width: 0, style: BorderStyle.solid)),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -992,12 +1038,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   // },
                   decoration: InputDecoration(
                     labelText: "Country Name",
+                    labelStyle:
+                        TextStyle(color: Colors.grey[600], fontSize: 15),
                     filled: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         borderSide: const BorderSide(
-                            width: 0, style: BorderStyle.none)),
+                            width: 0, style: BorderStyle.solid)),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -1015,15 +1063,44 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   // },
                   decoration: InputDecoration(
                     labelText: "PIN Code",
+                    labelStyle:
+                        TextStyle(color: Colors.grey[600], fontSize: 15),
                     filled: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         borderSide: const BorderSide(
-                            width: 0, style: BorderStyle.none)),
+                            width: 0, style: BorderStyle.solid)),
                   ),
                 ),
                 const SizedBox(height: 20),
+                widget.title == "edit"
+                    ? SizedBox(
+                        height: 50,
+                        child: TextFormField(
+                          readOnly: true,
+                          keyboardType: TextInputType.number,
+                          controller: remarksController,
+                          decoration: InputDecoration(
+                            labelText: "Remarks",
+                            labelStyle: TextStyle(
+                                color: Colors.grey[600], fontSize: 15),
+                            filled: true,
+                            floatingLabelBehavior:
+                                remarksController.text.isNotEmpty
+                                    ? FloatingLabelBehavior.auto
+                                    : FloatingLabelBehavior.never,
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: const BorderSide(
+                                    width: 0, style: BorderStyle.solid)),
+                          ),
+                        ),
+                      )
+                    : const SizedBox(),
+                widget.title == "edit"
+                    ? const SizedBox(height: 20)
+                    : const SizedBox(),
                 Container(
                   width: MediaQuery.of(context).size.width,
                   height: 50,
@@ -1187,6 +1264,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                     borderRadius: BorderRadius.circular(90)))),
                     child: Text(
                       widget.title == "edit" ? "Update" : "Add",
+                      style: const TextStyle(color: Colors.white, fontSize: 15),
                     ),
 
                     //Row

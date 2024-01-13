@@ -35,7 +35,6 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
   bool checkedValue = false;
   bool editpaliDate = false;
   bool showMenu = false;
-  bool _isAscending = true;
   String? userRole;
 
   @override
@@ -88,11 +87,10 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
 
   void _sortList(bool isAscending) {
     setState(() {
-      _isAscending = isAscending;
       allPaliaList.sort((a, b) {
-        final nameA = a.name ?? '';
-        final nameB = b.name ?? '';
-        return _isAscending ? nameA.compareTo(nameB) : nameB.compareTo(nameA);
+        final nameA = (a.name ?? '').toLowerCase();
+        final nameB = (b.name ?? '').toLowerCase();
+        return isAscending ? nameA.compareTo(nameB) : nameB.compareTo(nameA);
       });
     });
   }
