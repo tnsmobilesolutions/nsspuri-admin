@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/devotee_model.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/constant.dart';
+import 'package:sdp/screen/PaliaListScreen.dart/export_to_excel.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/paliaTableRow.dart';
+import 'package:sdp/utilities/network_helper.dart';
 
 class DevoteeListBodyPage extends StatefulWidget {
   DevoteeListBodyPage(
@@ -34,6 +35,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
   bool checkedValue = false;
   bool editpaliDate = false;
   bool showMenu = false;
+  String? userRole;
 
   @override
   void initState() {
@@ -41,6 +43,9 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
     widget.devoteeList != null
         ? allPaliaList = widget.devoteeList!
         : fetchAllDevotee();
+    setState(() {
+      userRole = Networkhelper().currentDevotee?.role;
+    });
   }
 
   void fetchAllDevotee() async {
@@ -80,20 +85,6 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
     );
   }
 
-  pw.Expanded printSearchheadingText(String text) {
-    return pw.Expanded(
-      child: pw.Text(
-        text,
-        textAlign: pw.TextAlign.center,
-        style: pw.TextStyle(
-          fontSize: 20,
-          // font: baloobhainaheading,
-          fontWeight: pw.FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -120,26 +111,30 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
               const SizedBox(
                 width: 10,
               ),
-              OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                    side:
-                        const BorderSide(width: 1.5, color: Colors.deepOrange),
-                    foregroundColor: Colors.black),
-                onPressed: () {
-                  Constants().exportToExcel(allPaliaList);
-                },
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text('Export'),
-                    SizedBox(width: 10),
-                    Icon(
-                      Icons.upload_rounded,
-                      color: Colors.blue,
+              userRole == "SuperAdmin" ||
+                      userRole == "Admin" ||
+                      userRole == "Approver"
+                  ? OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                          side: const BorderSide(
+                              width: 1.5, color: Colors.deepOrange),
+                          foregroundColor: Colors.black),
+                      onPressed: () {
+                        ExportToExcel().exportToExcel(allPaliaList);
+                      },
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text('Export'),
+                          SizedBox(width: 10),
+                          Icon(
+                            Icons.upload_rounded,
+                            color: Colors.blue,
+                          )
+                        ],
+                      ),
                     )
-                  ],
-                ),
-              ),
+                  : const SizedBox(),
             ],
           ),
           Padding(

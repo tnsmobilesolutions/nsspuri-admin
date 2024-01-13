@@ -1,7 +1,7 @@
 import 'package:excel/excel.dart';
 import 'package:sdp/model/devotee_model.dart';
 
-class Constants {
+class ExportToExcel {
   void exportToExcel(List<DevoteeModel> devotees) async {
     final excel = Excel.createExcel();
     final sheet = excel[excel.getDefaultSheet().toString()];
