@@ -2,12 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:sdp/model/devotee_model.dart';
-import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/appBar/actionWidget.dart';
 import 'package:sdp/screen/appBar/leadingImage.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_body_page.dart';
-import 'package:sdp/screen/dashboard/dashboard.dart';
-import 'package:sdp/screen/dashboard/dashboardBody.dart';
 
 class DevoteeListPage extends StatefulWidget {
   DevoteeListPage(
