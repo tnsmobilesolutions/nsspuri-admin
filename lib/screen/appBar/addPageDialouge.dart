@@ -1074,30 +1074,27 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                widget.title == "edit"
-                    ? SizedBox(
-                        height: 50,
-                        child: TextFormField(
-                          readOnly: true,
-                          keyboardType: TextInputType.number,
-                          controller: remarksController,
-                          decoration: InputDecoration(
-                            labelText: "Remarks",
-                            labelStyle: TextStyle(
-                                color: Colors.grey[600], fontSize: 15),
-                            filled: true,
-                            floatingLabelBehavior:
-                                remarksController.text.isNotEmpty
-                                    ? FloatingLabelBehavior.auto
-                                    : FloatingLabelBehavior.never,
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide: const BorderSide(
-                                    width: 0, style: BorderStyle.solid)),
-                          ),
-                        ),
-                      )
-                    : const SizedBox(),
+                SizedBox(
+                  height: 50,
+                  child: TextFormField(
+                    // readOnly: true,
+                    //keyboardType: TextInputType.number,
+                    controller: remarksController,
+                    decoration: InputDecoration(
+                      labelText: "Remarks",
+                      labelStyle:
+                          TextStyle(color: Colors.grey[600], fontSize: 15),
+                      filled: true,
+                      floatingLabelBehavior: remarksController.text.isNotEmpty
+                          ? FloatingLabelBehavior.auto
+                          : FloatingLabelBehavior.never,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: const BorderSide(
+                              width: 0, style: BorderStyle.solid)),
+                    ),
+                  ),
+                ),
                 widget.title == "edit"
                     ? const SizedBox(height: 20)
                     : const SizedBox(),
