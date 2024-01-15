@@ -121,7 +121,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   bool? parichayaPatraValue = false, shouldShowPranamiField = false;
   XFile? pickImage;
   TextEditingController postalCodeController = TextEditingController();
-  TextEditingController pranamiController = TextEditingController(text: "400");
+  TextEditingController pranamiController = TextEditingController();
   TextEditingController remarksController = TextEditingController();
   String? profileImage;
   String profilePhotoUrl = "";
@@ -158,7 +158,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   @override
   void initState() {
     super.initState();
-    populateData();
+
+    if (widget.title == "edit") populateData();
   }
 
   get districtList => null;
@@ -259,50 +260,48 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   }
 
   populateData() async {
-    if (widget.title == "edit") {
-      final devoteeData =
-          await GetDevoteeAPI().devoteeDetailsById(widget.devoteeId);
-      setState(() {
-        selectedDevotee = devoteeData?["data"];
-        if (devoteeData?["statusCode"] == 200) {
-          selectedStatus = selectedDevotee?.status ?? "dataSubmitted";
-          selectedRole = selectedDevotee?.role ?? "User";
-          nameController.text = selectedDevotee?.name ?? "";
-          emailController.text = selectedDevotee?.emailId ?? "";
-          mobileController.text = selectedDevotee?.mobileNumber ?? "";
-          sanghaController.text = selectedDevotee?.sangha ?? "";
-          parichayaPatraValue = selectedDevotee?.hasParichayaPatra ?? false;
-          dobController.text = selectedDevotee?.dob ?? "";
-          pranamiController.text = (selectedDevotee?.paidAmount != null
-              ? selectedDevotee?.paidAmount.toString()
-              : "")!;
-          remarksController.text = selectedDevotee?.remarks ?? "";
-          addressLine1Controller.text =
-              selectedDevotee?.address?.addressLine1 ?? "";
-          addressLine2Controller.text =
-              selectedDevotee?.address?.addressLine2 ?? "";
-          cityController.text = selectedDevotee?.address?.city ?? "";
-          stateController.text = selectedDevotee?.address?.state ?? "";
-          countryController.text = selectedDevotee?.address?.country ?? "";
-          postalCodeController.text =
-              (selectedDevotee?.address?.postalCode != null ||
-                      selectedDevotee?.address?.postalCode != 0)
-                  ? selectedDevotee?.address?.postalCode.toString() ?? ""
-                  : "";
-          selectedDevotee?.address?.postalCode.toString() ?? "";
-          profilePhotoUrl = selectedDevotee?.profilePhotoUrl ?? "";
-          isAdmin = selectedDevotee?.isAdmin ?? false;
-          isKYDVerified = selectedDevotee?.isKYDVerified ?? false;
-          isSpeciallyAbled = selectedDevotee?.isSpeciallyAbled ?? false;
-          isGuest = selectedDevotee?.isGuest ?? false;
-          isOrganizer = selectedDevotee?.isOrganizer ?? false;
-          isApproved = selectedDevotee?.isApproved ?? false;
-          isGruhasanaApproved = selectedDevotee?.isGruhasanaApproved ?? false;
-          bloodGroupController = selectedDevotee?.bloodGroup ?? "Don't know";
-          genderController = selectedDevotee?.gender == "Male" ? 0 : 1;
-        }
-      });
-    }
+    final devoteeData =
+        await GetDevoteeAPI().devoteeDetailsById(widget.devoteeId);
+    setState(() {
+      selectedDevotee = devoteeData?["data"];
+      if (devoteeData?["statusCode"] == 200) {
+        selectedStatus = selectedDevotee?.status ?? "dataSubmitted";
+        selectedRole = selectedDevotee?.role ?? "User";
+        nameController.text = selectedDevotee?.name ?? "";
+        emailController.text = selectedDevotee?.emailId ?? "";
+        mobileController.text = selectedDevotee?.mobileNumber ?? "";
+        sanghaController.text = selectedDevotee?.sangha ?? "";
+        parichayaPatraValue = selectedDevotee?.hasParichayaPatra ?? false;
+        dobController.text = selectedDevotee?.dob ?? "";
+        pranamiController.text = (selectedDevotee?.paidAmount != null
+            ? selectedDevotee?.paidAmount.toString()
+            : "400")!;
+        remarksController.text = selectedDevotee?.remarks ?? "";
+        addressLine1Controller.text =
+            selectedDevotee?.address?.addressLine1 ?? "";
+        addressLine2Controller.text =
+            selectedDevotee?.address?.addressLine2 ?? "";
+        cityController.text = selectedDevotee?.address?.city ?? "";
+        stateController.text = selectedDevotee?.address?.state ?? "";
+        countryController.text = selectedDevotee?.address?.country ?? "";
+        postalCodeController.text =
+            (selectedDevotee?.address?.postalCode != null ||
+                    selectedDevotee?.address?.postalCode != 0)
+                ? selectedDevotee?.address?.postalCode.toString() ?? ""
+                : "";
+        selectedDevotee?.address?.postalCode.toString() ?? "";
+        profilePhotoUrl = selectedDevotee?.profilePhotoUrl ?? "";
+        isAdmin = selectedDevotee?.isAdmin ?? false;
+        isKYDVerified = selectedDevotee?.isKYDVerified ?? false;
+        isSpeciallyAbled = selectedDevotee?.isSpeciallyAbled ?? false;
+        isGuest = selectedDevotee?.isGuest ?? false;
+        isOrganizer = selectedDevotee?.isOrganizer ?? false;
+        isApproved = selectedDevotee?.isApproved ?? false;
+        isGruhasanaApproved = selectedDevotee?.isGruhasanaApproved ?? false;
+        bloodGroupController = selectedDevotee?.bloodGroup ?? "Don't know";
+        genderController = selectedDevotee?.gender == "Male" ? 0 : 1;
+      }
+    });
   }
 
   InputDecoration textFormFieldDecoration(BuildContext context) {
@@ -553,7 +552,11 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                             selectedDevotee?.paidAmount != null)
                     ? TextFormField(
                         keyboardType: TextInputType.phone,
-                        controller: pranamiController..text = "400",
+                        // controller: widget.title == "edit"
+                        //     ? pranamiController
+                        //     : pranamiController
+                        //   ..text = "700",
+                        controller: pranamiController,
                         onSaved: (newValue) => pranamiController,
                         validator: (value) {
                           RegExp regex = RegExp(r'^[0-9]*$');
