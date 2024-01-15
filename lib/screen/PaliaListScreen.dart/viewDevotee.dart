@@ -16,6 +16,7 @@ class _ViewPaliaState extends State<ViewPalia>
   TabController? _tabController;
   final nameController = TextEditingController();
   Map<String, dynamic>? devoteeData;
+  bool isChecked = false;
 
   @override
   void initState() {
@@ -134,8 +135,10 @@ class _ViewPaliaState extends State<ViewPalia>
                                         'Blood Group',
                                         style: TextStyle(color: Colors.grey),
                                       ),
-                                      Text(
-                                          '${widget.devoteeDetails.bloodGroup}')
+                                      widget.devoteeDetails.bloodGroup != null
+                                          ? Text(
+                                              '${widget.devoteeDetails.bloodGroup}')
+                                          : const Text("")
                                     ],
                                   ),
                                   Column(
@@ -156,6 +159,7 @@ class _ViewPaliaState extends State<ViewPalia>
                               const Divider(
                                 thickness: 0.5,
                               ),
+
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -169,6 +173,24 @@ class _ViewPaliaState extends State<ViewPalia>
                                         style: TextStyle(color: Colors.grey),
                                       ),
                                       Text('${widget.devoteeDetails.sangha}')
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      // Checkbox(
+                                      //   value: widget
+                                      //       .devoteeDetails.hasParichayaPatra,
+                                      //   onChanged:
+                                      //       null, // Set to null to disable user interaction
+                                      // ),
+                                      if (widget.devoteeDetails
+                                              .hasParichayaPatra !=
+                                          null)
+                                        const Text('Has Parichayapatra'),
+                                      widget.devoteeDetails.hasParichayaPatra ==
+                                              true
+                                          ? Text("Yes")
+                                          : Text("No")
                                     ],
                                   ),
 
@@ -187,7 +209,27 @@ class _ViewPaliaState extends State<ViewPalia>
                               const Divider(
                                 thickness: 0.5,
                               ),
-
+                              Row(
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'Remark',
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                                      widget.devoteeDetails.remarks != null
+                                          ? Text(
+                                              '${widget.devoteeDetails.remarks}')
+                                          : Text("N/A")
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const Divider(
+                                thickness: 0.5,
+                              ),
                               if (widget.devoteeDetails.createdOn != null)
                                 Row(
                                   mainAxisAlignment:

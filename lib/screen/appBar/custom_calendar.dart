@@ -178,8 +178,9 @@ class _CustomCalenderState extends State<CustomCalender> {
               fixedSize: const Size(100, 40),
             ),
             onPressed: () {
+              print("$selectedDate-$selectedMonth-$selectedYear");
               Navigator.of(context)
-                  .pop('$selectedDate - $selectedMonth - $selectedYear');
+                  .pop('$selectedDate-$selectedMonth-$selectedYear');
             },
             child: Text(
               "Submit",

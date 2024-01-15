@@ -6,7 +6,10 @@ import 'package:sdp/authstate.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
 Future<void> main() async {
+  // await initializeDateFormatting('en', '');
+
   WidgetsFlutterBinding.ensureInitialized();
+
   await fetchCurrentuser();
   await Firebase.initializeApp(
     options: FirebaseOptions(
@@ -19,6 +22,7 @@ Future<void> main() async {
       measurementId: "G-V1HVLL1401",
     ),
   );
+
   runApp(MyApp());
 }
 
