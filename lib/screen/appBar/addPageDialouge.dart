@@ -553,7 +553,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                             selectedDevotee?.paidAmount != null)
                     ? TextFormField(
                         keyboardType: TextInputType.phone,
-                        controller: pranamiController,
+                        controller: pranamiController..text = "400",
                         onSaved: (newValue) => pranamiController,
                         validator: (value) {
                           RegExp regex = RegExp(r'^[0-9]*$');
