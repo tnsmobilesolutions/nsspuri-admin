@@ -121,7 +121,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   bool? parichayaPatraValue = false, shouldShowPranamiField = false;
   XFile? pickImage;
   TextEditingController postalCodeController = TextEditingController();
-  TextEditingController pranamiController = TextEditingController();
+  TextEditingController pranamiController = TextEditingController(text: "400");
   TextEditingController remarksController = TextEditingController();
   String? profileImage;
   String profilePhotoUrl = "";
