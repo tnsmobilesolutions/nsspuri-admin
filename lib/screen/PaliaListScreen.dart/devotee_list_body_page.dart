@@ -35,6 +35,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
   bool checkedValue = false;
   bool editpaliDate = false;
   bool showMenu = false;
+  bool isAscending = false;
   String? userRole;
 
   @override
@@ -155,6 +156,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
                 headingText('Profile Image'),
                 Expanded(
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
                         "Devotee Name",
@@ -167,19 +169,15 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
                       const SizedBox(height: 10),
                       IconButton(
                         onPressed: () {
-                          _sortList(true);
+                          setState(() {
+                            isAscending = !isAscending;
+                          });
+                          _sortList(isAscending);
                         },
-                        icon: const Icon(
-                          Icons.arrow_circle_up_outlined,
-                          color: Colors.deepOrange,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          _sortList(false);
-                        },
-                        icon: const Icon(
-                          Icons.arrow_circle_down_outlined,
+                        icon: Icon(
+                          isAscending
+                              ? Icons.arrow_downward_rounded
+                              : Icons.arrow_upward_rounded,
                           color: Colors.deepOrange,
                         ),
                       ),
