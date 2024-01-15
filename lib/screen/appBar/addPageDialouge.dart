@@ -12,7 +12,7 @@ import 'package:sdp/API/put_devotee.dart';
 import 'package:sdp/constant/sangha_list.dart';
 import 'package:sdp/model/address_model.dart';
 import 'package:sdp/model/devotee_model.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
+import 'package:sdp/screen/appBar/custom_calendar.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
 import 'package:sdp/utilities/color_palette.dart';
 import 'package:sdp/utilities/network_helper.dart';
@@ -62,7 +62,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
 
   TextEditingController cityController = TextEditingController();
   TextEditingController countryController = TextEditingController();
-  TextEditingController dateOfBirth = TextEditingController();
+  TextEditingController dobController = TextEditingController();
   final decimalRegex = [
     FilteringTextInputFormatter.allow(RegExp(r'^[0-9]*\.?[0-9]*$')),
     TextInputFormatter.withFunction((oldValue, newValue) {
@@ -181,6 +181,83 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     }
   }
 
+  void _showCustomCalendarDialog(BuildContext context) async {
+    String day = "", month = "", year = "";
+
+    // if (widget.devotee != null && widget.devotee?.dob != null) {
+    //   List<String> dateParts = widget.devotee!.dob!.split('-');
+
+    //   // Check if dateParts has at least three elements
+    //   if (dateParts.length >= 3) {
+    //     setState(() {
+    //       day = int.tryParse(dateParts[2])?.toString() ?? '';
+    //       month = int.tryParse(dateParts[1])?.toString() ?? '';
+    //       year = int.tryParse(dateParts[0])?.toString() ?? '';
+    //     });
+    //   } else {
+    //     // Handle the case where dateParts doesn't have enough elements
+    //     print('Invalid date format: ${widget.devotee?.dob}');
+    //   }
+    // }
+
+    final selectedDate = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return Center(
+          child: SingleChildScrollView(
+            child: AlertDialog(
+              icon: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Select Date",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.close,
+                      color: Colors.deepOrange,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+              content: CustomCalender(
+                day: day,
+                month: month,
+                year: year,
+                forEdit: true,
+              ),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            ),
+          ),
+        );
+      },
+    );
+
+    if (selectedDate != null) {
+      dobController.text = selectedDate;
+    }
+  }
+
+  String _formatDOB(String dob) {
+    if (dob.isEmpty) {
+      return '';
+    }
+
+    try {
+      DateTime dateTime = DateFormat('dd/MMM/yyyy', 'en').parse(dob);
+      String formattedDate = DateFormat('y-MM-dd').format(dateTime);
+      return formattedDate;
+    } catch (e) {
+      print("Error parsing date: $e");
+      return '';
+    }
+  }
+
   populateData() async {
     if (widget.title == "edit") {
       final devoteeData =
@@ -195,7 +272,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
           mobileController.text = selectedDevotee?.mobileNumber ?? "";
           sanghaController.text = selectedDevotee?.sangha ?? "";
           parichayaPatraValue = selectedDevotee?.hasParichayaPatra ?? false;
-          dateOfBirth.text = selectedDevotee?.dob ?? "";
+          dobController.text = selectedDevotee?.dob ?? "";
           pranamiController.text = (selectedDevotee?.paidAmount != null
               ? selectedDevotee?.paidAmount.toString()
               : "")!;
@@ -794,7 +871,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                 GestureDetector(
                   child: TextField(
                     controller:
-                        dateOfBirth, //editing controller of this TextField
+                        dobController, //editing controller of this TextField
                     decoration: InputDecoration(
                       labelText: "Date Of Birth",
                       labelStyle:
@@ -808,34 +885,35 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     ),
                     readOnly:
                         true, //set it true, so that user will not able to edit text
-                    onTap: () async {
-                      DateTime? pickedDate = await showDatePicker(
-                          initialEntryMode: DatePickerEntryMode
-                              .calendarOnly, // Hide edit button
-                          fieldHintText: 'dd-MM-yyyy',
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(
-                              1900), //DateTime.now() - not to allow to choose before today.
-                          lastDate: DateTime.now());
+                    onTap: () => _showCustomCalendarDialog(context),
+                    //  async {
+                    //   DateTime? pickedDate = await showDatePicker(
+                    //       initialEntryMode: DatePickerEntryMode
+                    //           .calendarOnly, // Hide edit button
+                    //       fieldHintText: 'dd-MM-yyyy',
+                    //       context: context,
+                    //       initialDate: DateTime.now(),
+                    //       firstDate: DateTime(
+                    //           1900), //DateTime.now() - not to allow to choose before today.
+                    //       lastDate: DateTime.now());
 
-                      if (pickedDate != null) {
-                        print(
-                            pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
-                        String formattedDate =
-                            DateFormat('dd-MM-yyyy').format(pickedDate);
-                        print(
-                            formattedDate); //formatted date output using intl package =>  2021-03-16
-                        //you can implement different kind of Date Format here according to your requirement
+                    //   if (pickedDate != null) {
+                    //     print(
+                    //         pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
+                    //     String formattedDate =
+                    //         DateFormat('dd-MM-yyyy').format(pickedDate);
+                    //     print(
+                    //         formattedDate); //formatted date output using intl package =>  2021-03-16
+                    //     //you can implement different kind of Date Format here according to your requirement
 
-                        setState(() {
-                          dateOfBirth.text =
-                              formattedDate; //set output date to TextField value.
-                        });
-                      } else {
-                        print("Date is not selected");
-                      }
-                    },
+                    //     setState(() {
+                    //       dobController.text =
+                    //           formattedDate; //set output date to TextField value.
+                    //     });
+                    //   } else {
+                    //     print("Date is not selected");
+                    //   }
+                    // },
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -1151,7 +1229,10 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                               profilePhotoUrl: profileURL,
                               hasParichayaPatra: parichayaPatraValue,
                               sangha: sanghaController.text,
-                              dob: dateOfBirth.text,
+                              // dob: dobController.text.isNotEmpty
+                              //     ? dobController.text
+                              //     : "",
+                              dob: _formatDOB(dobController.text),
                               mobileNumber: mobileController.text,
                               updatedOn: DateTime.now().toString(),
                               emailId: emailController.text,
@@ -1177,6 +1258,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                           } else {
                             response = await PostDevoteeAPI()
                                 .addRelativeDevotee(updateDevotee);
+                            print("devotee add response: $response");
                           }
 
                           if (response["statusCode"] == 200) {
