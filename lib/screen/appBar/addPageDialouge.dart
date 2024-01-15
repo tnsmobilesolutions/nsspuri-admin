@@ -249,7 +249,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     }
 
     try {
-      DateTime dateTime = DateFormat('d-MMMM-yyyy', 'en').parse(dob);
+      DateTime dateTime = DateFormat('d-MMM-yyyy', 'en_US').parse(dob);
       String formattedDate = DateFormat('y-MM-dd').format(dateTime);
       return formattedDate;
     } catch (e) {
