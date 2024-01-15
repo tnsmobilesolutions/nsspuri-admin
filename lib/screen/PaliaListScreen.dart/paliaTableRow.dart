@@ -191,7 +191,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          const Text('Edit Palia Details'),
+                                          const Text('Edit Devotee Details'),
                                           IconButton(
                                               onPressed: () {
                                                 Navigator.pop(context);

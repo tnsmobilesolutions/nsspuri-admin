@@ -129,7 +129,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'User',
     'Admin',
     'SuperAdmin',
-    "Organizer",
+    "Coordinator",
     'Approver',
     'PrasadScanner',
     "SecurityCheck"
@@ -184,22 +184,6 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
 
   void _showCustomCalendarDialog(BuildContext context) async {
     String day = "", month = "", year = "";
-
-    // if (widget.devotee != null && widget.devotee?.dob != null) {
-    //   List<String> dateParts = widget.devotee!.dob!.split('-');
-
-    //   // Check if dateParts has at least three elements
-    //   if (dateParts.length >= 3) {
-    //     setState(() {
-    //       day = int.tryParse(dateParts[2])?.toString() ?? '';
-    //       month = int.tryParse(dateParts[1])?.toString() ?? '';
-    //       year = int.tryParse(dateParts[0])?.toString() ?? '';
-    //     });
-    //   } else {
-    //     // Handle the case where dateParts doesn't have enough elements
-    //     print('Invalid date format: ${widget.devotee?.dob}');
-    //   }
-    // }
 
     final selectedDate = await showDialog<String>(
       context: context,
@@ -275,7 +259,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
         dobController.text = selectedDevotee?.dob ?? "";
         pranamiController.text = (selectedDevotee?.paidAmount != null
             ? selectedDevotee?.paidAmount.toString()
-            : "400")!;
+            : "")!;
         remarksController.text = selectedDevotee?.remarks ?? "";
         addressLine1Controller.text =
             selectedDevotee?.address?.addressLine1 ?? "";
@@ -439,6 +423,9 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                   setState(() {
                                     selectedStatus = newValue!;
                                     shouldShowPranamiField = newValue == "paid";
+                                    if (shouldShowPranamiField ?? false) {
+                                      pranamiController.text = "400";
+                                    }
                                   });
                                 },
                                 underline: Container(
@@ -583,50 +570,50 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                       )
                     : const SizedBox(),
                 const SizedBox(height: 20),
-                widget.title == "edit"
-                    ? Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('Gruhasana Approved'),
-                            Checkbox(
-                              checkColor: Colors.deepOrange,
-                              fillColor:
-                                  MaterialStateProperty.resolveWith(getColor),
-                              value: isGruhasanaApproved,
-                              onChanged: (bool? value) {
-                                setState(() {
-                                  isGruhasanaApproved = value!;
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                      )
-                    : const SizedBox(),
-                widget.title == "edit"
-                    ? Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('KYD Verified'),
-                            Checkbox(
-                              checkColor: Colors.deepOrange,
-                              fillColor:
-                                  MaterialStateProperty.resolveWith(getColor),
-                              value: isKYDVerified,
-                              onChanged: (bool? value) {
-                                setState(() {
-                                  isKYDVerified = value!;
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                      )
-                    : const SizedBox(),
+                // widget.title == "edit"
+                //     ? Padding(
+                //         padding: const EdgeInsets.all(8.0),
+                //         child: Row(
+                //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //           children: [
+                //             const Text('Gruhasana Approved'),
+                //             Checkbox(
+                //               checkColor: Colors.deepOrange,
+                //               fillColor:
+                //                   MaterialStateProperty.resolveWith(getColor),
+                //               value: isGruhasanaApproved,
+                //               onChanged: (bool? value) {
+                //                 setState(() {
+                //                   isGruhasanaApproved = value!;
+                //                 });
+                //               },
+                //             ),
+                //           ],
+                //         ),
+                //       )
+                //     : const SizedBox(),
+                // widget.title == "edit"
+                //     ? Padding(
+                //         padding: const EdgeInsets.all(8.0),
+                //         child: Row(
+                //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //           children: [
+                //             const Text('KYD Verified'),
+                //             Checkbox(
+                //               checkColor: Colors.deepOrange,
+                //               fillColor:
+                //                   MaterialStateProperty.resolveWith(getColor),
+                //               value: isKYDVerified,
+                //               onChanged: (bool? value) {
+                //                 setState(() {
+                //                   isKYDVerified = value!;
+                //                 });
+                //               },
+                //             ),
+                //           ],
+                //         ),
+                //       )
+                //     : const SizedBox(),
                 widget.title == "edit"
                     ? Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -873,8 +860,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                 const SizedBox(height: 20),
                 GestureDetector(
                   child: TextField(
-                    controller:
-                        dobController, //editing controller of this TextField
+                    controller: dobController,
                     decoration: InputDecoration(
                       labelText: "Date Of Birth",
                       labelStyle:
@@ -890,34 +876,6 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     readOnly:
                         true, //set it true, so that user will not able to edit text
                     onTap: () => _showCustomCalendarDialog(context),
-                    //  async {
-                    //   DateTime? pickedDate = await showDatePicker(
-                    //       initialEntryMode: DatePickerEntryMode
-                    //           .calendarOnly, // Hide edit button
-                    //       fieldHintText: 'dd-MM-yyyy',
-                    //       context: context,
-                    //       initialDate: DateTime.now(),
-                    //       firstDate: DateTime(
-                    //           1900), //DateTime.now() - not to allow to choose before today.
-                    //       lastDate: DateTime.now());
-
-                    //   if (pickedDate != null) {
-                    //     print(
-                    //         pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
-                    //     String formattedDate =
-                    //         DateFormat('dd-MM-yyyy').format(pickedDate);
-                    //     print(
-                    //         formattedDate); //formatted date output using intl package =>  2021-03-16
-                    //     //you can implement different kind of Date Format here according to your requirement
-
-                    //     setState(() {
-                    //       dobController.text =
-                    //           formattedDate; //set output date to TextField value.
-                    //     });
-                    //   } else {
-                    //     print("Date is not selected");
-                    //   }
-                    // },
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -1162,6 +1120,11 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     // readOnly: true,
                     //keyboardType: TextInputType.number,
                     controller: remarksController,
+                    onSaved: ((newValue) {
+                      setState(() {
+                        remarksController.text = newValue ?? "";
+                      });
+                    }),
                     decoration: InputDecoration(
                       labelText: "Remarks",
                       labelStyle:
@@ -1208,7 +1171,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                   image?["selectedImage"] as List<int>,
                                   nameController.text)
                               : selectedDevotee?.profilePhotoUrl;
-                          print("profileURL -------------$profileURL");
+
                           String uniqueDevoteeId = const Uuid().v1();
                           DevoteeModel updateDevotee = DevoteeModel(
                               devoteeCode:
@@ -1227,6 +1190,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                   : uniqueDevoteeId,
                               bloodGroup: bloodGroupController,
                               name: nameController.text,
+                              remarks: remarksController.text,
                               paidAmount:
                                   double.tryParse(pranamiController.text),
                               gender: gender[genderController],
@@ -1240,8 +1204,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                               mobileNumber: mobileController.text,
                               updatedOn: DateTime.now().toString(),
                               emailId: emailController.text,
-                              isGruhasanaApproved: isGruhasanaApproved,
-                              isKYDVerified: isKYDVerified,
+                              // isGruhasanaApproved: isGruhasanaApproved,
+                              // isKYDVerified: isKYDVerified,
                               isSpeciallyAbled: isSpeciallyAbled,
                               isGuest: isGuest,
                               isOrganizer: isOrganizer,
