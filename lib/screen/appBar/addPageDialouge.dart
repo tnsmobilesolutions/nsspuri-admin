@@ -245,11 +245,11 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
 
   String _formatDOB(String dob) {
     if (dob.isEmpty) {
-      return '';
+      return ''; // Return an empty string if dob is empty
     }
 
     try {
-      DateTime dateTime = DateFormat('dd/MMM/yyyy', 'en').parse(dob);
+      DateTime dateTime = DateFormat('d-MMMM-yyyy', 'en').parse(dob);
       String formattedDate = DateFormat('y-MM-dd').format(dateTime);
       return formattedDate;
     } catch (e) {
@@ -883,6 +883,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                           borderSide: const BorderSide(
                               width: 0, style: BorderStyle.solid)),
                     ),
+
                     readOnly:
                         true, //set it true, so that user will not able to edit text
                     onTap: () => _showCustomCalendarDialog(context),
@@ -1275,14 +1276,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                               },
                             );
                             List<DevoteeModel> devoteeList = [];
-                            await GetDevoteeAPI()
-                                .advanceSearchDevotee(
-                              widget.searchValue.toString(),
-                              widget.searchBy.toString(),
-                            )
-                                .then((value) {
-                              devoteeList.addAll(value["data"]);
-                            });
+                            // await GetDevoteeAPI()
+                            //     .advanceSearchDevotee(
+                            //   widget.searchValue.toString(),
+                            //   widget.searchBy.toString(),
+                            // )
+                            //     .then((value) {
+                            //   devoteeList.addAll(value["data"]);
+                            // });
                             if (context.mounted) {
                               Navigator.of(context)
                                   .pop(); // Close the circular progress indicator
