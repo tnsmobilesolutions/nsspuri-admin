@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sdp/model/devotee_model.dart';
 
 class ViewPalia extends StatefulWidget {
@@ -22,6 +23,33 @@ class _ViewPaliaState extends State<ViewPalia>
   void initState() {
     super.initState();
     _tabController = TabController(length: 1, vsync: this);
+  }
+
+  String formatDate(String inputDate) {
+    // DateTime dateTime = DateTime.parse(inputDate);
+    DateTime dateTime = DateFormat('yyyy-MM-dd', 'en_US').parse(inputDate);
+    List<String> monthNames = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
+
+    int day = dateTime.day;
+    String month = monthNames[dateTime.month - 1];
+    int year = dateTime.year;
+
+    String formattedDate = '$day-$month-$year';
+
+    return formattedDate;
   }
 
   @override
@@ -125,7 +153,8 @@ class _ViewPaliaState extends State<ViewPalia>
                                         'Date Of Birth',
                                         style: TextStyle(color: Colors.grey),
                                       ),
-                                      Text('${widget.devoteeDetails.dob}')
+                                      Text(formatDate(
+                                          widget.devoteeDetails.dob ?? ""))
                                     ],
                                   ),
                                   Column(

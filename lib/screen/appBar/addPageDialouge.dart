@@ -134,7 +134,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'PrasadScanner',
     "SecurityCheck"
   ];
-
+  String day = "", month = "", year = "";
   TextEditingController sanghaController = TextEditingController();
   String? select;
   DevoteeModel? selectedDevotee;
@@ -183,8 +183,6 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   }
 
   void _showCustomCalendarDialog(BuildContext context) async {
-    String day = "", month = "", year = "";
-
     final selectedDate = await showDialog<String>(
       context: context,
       builder: (BuildContext context) {
@@ -213,7 +211,6 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                 day: day,
                 month: month,
                 year: year,
-                forEdit: true,
               ),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -224,15 +221,22 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     );
 
     if (selectedDate != null) {
+      print("selected date: $selectedDate");
       dobController.text = selectedDate;
+      List<String> selectedDateParts = selectedDate.split('-');
+      print("selected date parts: $selectedDateParts");
+      setState(() {
+        day = selectedDateParts[0];
+        month = selectedDateParts[1];
+        year = selectedDateParts[2];
+      });
     }
   }
 
   String _formatDOB(String dob) {
     if (dob.isEmpty) {
-      return ''; // Return an empty string if dob is empty
+      return '';
     }
-
     try {
       DateTime dateTime = DateFormat('d-MMM-yyyy', 'en_US').parse(dob);
       String formattedDate = DateFormat('y-MM-dd').format(dateTime);
@@ -249,6 +253,19 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     setState(() {
       selectedDevotee = devoteeData?["data"];
       if (devoteeData?["statusCode"] == 200) {
+        if (selectedDevotee?.dob != null) {
+          List<String> dateParts = selectedDevotee!.dob!.split('-');
+
+          if (dateParts.length >= 3) {
+            setState(() {
+              day = int.tryParse(dateParts[2])?.toString() ?? '';
+              month = int.tryParse(dateParts[1])?.toString() ?? '';
+              year = int.tryParse(dateParts[0])?.toString() ?? '';
+            });
+          } else {
+            print('Invalid date format: ${selectedDevotee?.dob}');
+          }
+        }
         selectedStatus = selectedDevotee?.status ?? "dataSubmitted";
         selectedRole = selectedDevotee?.role ?? "User";
         nameController.text = selectedDevotee?.name ?? "";
@@ -256,7 +273,9 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
         mobileController.text = selectedDevotee?.mobileNumber ?? "";
         sanghaController.text = selectedDevotee?.sangha ?? "";
         parichayaPatraValue = selectedDevotee?.hasParichayaPatra ?? false;
-        dobController.text = selectedDevotee?.dob ?? "";
+        dobController.text = selectedDevotee?.dob != ""
+            ? formatDate(selectedDevotee?.dob ?? "")
+            : "";
         pranamiController.text = (selectedDevotee?.paidAmount != null
             ? selectedDevotee?.paidAmount.toString()
             : "")!;
@@ -286,6 +305,33 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
         genderController = selectedDevotee?.gender == "Male" ? 0 : 1;
       }
     });
+  }
+
+  String formatDate(String inputDate) {
+    // DateTime dateTime = DateTime.parse(inputDate);
+    DateTime dateTime = DateFormat('yyyy-MM-dd', 'en_US').parse(inputDate);
+    List<String> monthNames = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
+
+    int day = dateTime.day;
+    String month = monthNames[dateTime.month - 1];
+    int year = dateTime.year;
+
+    String formattedDate = '$day-$month-$year';
+
+    return formattedDate;
   }
 
   InputDecoration textFormFieldDecoration(BuildContext context) {
@@ -1223,6 +1269,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                           if (widget.title == "edit") {
                             response = await PutDevoteeAPI()
                                 .updateDevotee(updateDevotee, widget.devoteeId);
+                            print("devotee update response: $response");
                           } else {
                             response = await PostDevoteeAPI()
                                 .addRelativeDevotee(updateDevotee);
