@@ -43,7 +43,7 @@ dependencies:
   firebase_auth: ^4.1.0
   intl: ^0.17.0
   material_color_generator: ^1.1.0
-  printing: ^5.11.0
+  printing: ^5.3.0
   url_launcher: ^6.1.14
   shared_preferences: ^2.2.2
   dob_input_field: ^2.0.0
@@ -57,6 +57,13 @@ dependencies:
   image_picker: ^1.0.5
   # image_picker: ^1.0.5
   excel: ^4.0.2
+  smooth_page_indicator: ^1.1.0
+  flutter_flip_card: ^0.0.4
+  flutter_svg: ^2.0.9
+  page_indicator: ^0.4.1
+  syncfusion_flutter_barcodes: ^24.1.45
+  pdf: ^3.6.0
+  esc_pos_utils: ^1.1.0
 
 dev_dependencies:
   flutter_test:

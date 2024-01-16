@@ -115,6 +115,21 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
                     showMenu = !showMenu;
                   });
                 },
+                child: showMenu ? const Text('Print') : const Text('Select'),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                    side:
+                        const BorderSide(width: 1.5, color: Colors.deepOrange),
+                    foregroundColor: Colors.black),
+                onPressed: () {
+                  setState(() {
+                    showMenu = !showMenu;
+                  });
+                },
                 child: showMenu
                     ? const Text('Close Action Menu')
                     : const Text('Show Action Menu'),

@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:sdp/model/devotee_model.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/viewDevotee.dart';
+import 'package:sdp/screen/viewDevotee/viewDevotee.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
