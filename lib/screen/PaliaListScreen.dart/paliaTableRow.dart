@@ -1,6 +1,7 @@
-// ignore_for_file: file_names, must_be_immutable
+// ignore_for_file: file_names, must_be_immutable, avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/viewDevotee.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
@@ -20,16 +21,16 @@ class PaliaTableRow extends StatefulWidget {
     required this.status,
     this.allCheck,
   }) : super(key: key);
-  DevoteeModel devoteeDetails;
-  final int slNo;
-  bool showMenu;
-  bool? allCheck;
-  bool? showClearButton;
 
+  bool? allCheck;
+  DevoteeModel devoteeDetails;
   List<DevoteeModel>? devoteeList;
   String pageFrom;
   String? searchBy;
   String? searchValue;
+  bool? showClearButton;
+  bool showMenu;
+  final int slNo;
   String status;
 
   @override
@@ -39,6 +40,22 @@ class PaliaTableRow extends StatefulWidget {
 class _PaliaTableRowState extends State<PaliaTableRow> {
   // List<String> selectedPalia = [];
   bool isCheck = false;
+
+  List<String> monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +64,39 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
     }
     if (widget.devoteeList != null) {}
   }
+
+  String formatDate(String inputDate) {
+    // DateTime dateTime = DateTime.parse(inputDate);
+    DateTime dateTime = DateFormat('yyyy-MM-dd', 'en_US').parse(inputDate);
+
+    int day = dateTime.day;
+    String month = monthNames[dateTime.month - 1];
+    int year = dateTime.year;
+
+    String formattedDate = '$day-$month-$year';
+
+    return formattedDate;
+  }
+
+  // String formatDate(String inputDate) {
+  //   List<String> formats = ['dd-MM-yyyy', 'dd MMM yyyy', 'yyyy-MM-dd'];
+  //   DateTime dateTime;
+  //   for (String format in formats) {
+  //     try {
+  //       dateTime = DateFormat(format, 'en_US').parseStrict(inputDate);
+  //       int day = dateTime.day;
+  //       String month = monthNames[dateTime.month - 1];
+  //       int year = dateTime.year;
+
+  //       String formattedDate = '$day-$month-$year';
+
+  //       return formattedDate;
+  //     } catch (e) {
+  //       print("");
+  //     }
+  //   }
+  //   return "";
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -116,10 +166,18 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
               child: Text(
                 widget.devoteeDetails.dob != null
                     ? '${widget.devoteeDetails.dob}'
-                    : "-",
+                    : "",
                 textAlign: TextAlign.center,
               ),
             ),
+            // Expanded(
+            //   child: Text(
+            //     widget.devoteeDetails.dob != null
+            //         ? formatDate(widget.devoteeDetails.dob ?? "")
+            //         : "",
+            //     textAlign: TextAlign.center,
+            //   ),
+            // ),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,

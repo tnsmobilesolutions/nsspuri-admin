@@ -8,10 +8,8 @@ class CustomCalender extends StatefulWidget {
     this.day,
     this.month,
     this.year,
-    required this.forEdit,
   });
   String? day, month, year;
-  bool forEdit;
 
   @override
   _CustomCalenderState createState() => _CustomCalenderState();
@@ -44,22 +42,21 @@ class _CustomCalenderState extends State<CustomCalender> {
   @override
   void initState() {
     super.initState();
-
-    if (widget.forEdit) {
-      if ((widget.day?.isNotEmpty == true) &&
-          (widget.month?.isNotEmpty == true) &&
-          (widget.year?.isNotEmpty == true)) {
-        print("day: ${widget.day == null}");
-        print("month: ${widget.month}");
-        print("year: ${widget.year}");
-        selectedDate = widget.day.toString();
-        selectedMonth = getMonthName(widget.month.toString(), months);
-        selectedYear = widget.year.toString();
-      } else {
-        selectedDate = '1';
-        selectedMonth = 'Jan';
-        selectedYear = DateTime.now().year.toString();
-      }
+    if ((widget.day?.isNotEmpty == true) &&
+        (widget.month?.isNotEmpty == true) &&
+        (widget.year?.isNotEmpty == true)) {
+      print("day: ${widget.day}");
+      print("month: ${widget.month}");
+      print("year: ${widget.year}");
+      selectedDate = widget.day.toString();
+      selectedMonth = widget.month.toString().length > 2
+          ? widget.month.toString()
+          : getMonthName(widget.month.toString(), months);
+      selectedYear = widget.year.toString();
+    } else {
+      selectedDate = '1';
+      selectedMonth = 'Jan';
+      selectedYear = DateTime.now().year.toString();
     }
   }
   // @override
@@ -178,7 +175,6 @@ class _CustomCalenderState extends State<CustomCalender> {
               fixedSize: const Size(100, 40),
             ),
             onPressed: () {
-              print("$selectedDate-$selectedMonth-$selectedYear");
               Navigator.of(context)
                   .pop('$selectedDate-$selectedMonth-$selectedYear');
             },
@@ -187,7 +183,7 @@ class _CustomCalenderState extends State<CustomCalender> {
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium
-                  ?.merge(const TextStyle(fontSize: 15, color: Colors.white)),
+                  ?.merge(const TextStyle(fontSize: 17, color: Colors.white)),
             ),
           ),
         ],

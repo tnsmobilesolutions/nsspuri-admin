@@ -1,6 +1,6 @@
 // ignore_for_file: file_names, depend_on_referenced_packages, must_be_immutable, iterable_contains_unrelated_type, avoid_print
 import 'package:flutter/material.dart';
-import 'package:pdf/widgets.dart' as pw;
+import 'package:ionicons/ionicons.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/export_to_excel.dart';
@@ -176,8 +176,8 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
                         },
                         icon: Icon(
                           isAscending
-                              ? Icons.arrow_downward_rounded
-                              : Icons.arrow_upward_rounded,
+                              ? Ionicons.arrow_down
+                              : Icons.arrow_upward,
                           color: Colors.deepOrange,
                         ),
                       ),
