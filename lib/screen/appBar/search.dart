@@ -315,7 +315,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                                 status: "allDevotee",
                                 pageFrom: "Search",
                                 devoteeList: devoteeList,
-                                searchValue: sdpSearchController.text,
+                                searchValue: sangha,
                                 searchBy: _selectedSearchType,
                                 showClearButton:
                                     showClearButton, // devoteeList.isNotEmpty,
