@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, must_be_immutable, avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/viewDevotee/viewDevotee.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
@@ -57,6 +58,20 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
     'Nov',
     'Dec'
   ];
+  String formatDate(String inputDate) {
+    if (inputDate.isNotEmpty) {
+      DateTime dateTime = DateFormat('yyyy-MM-dd', 'en_US').parse(inputDate);
+
+      int day = dateTime.day;
+      String month = monthNames[dateTime.month - 1];
+      int year = dateTime.year;
+
+      String formattedDate = '$day-$month-$year';
+
+      return formattedDate;
+    }
+    return "";
+  }
 
   @override
   void initState() {
@@ -149,22 +164,25 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                 textAlign: TextAlign.center,
               ),
             ),
-            Expanded(
-              child: Text(
-                widget.devoteeDetails.dob != null
-                    ? '${widget.devoteeDetails.dob}'
-                    : "",
-                textAlign: TextAlign.center,
-              ),
-            ),
             // Expanded(
             //   child: Text(
-            //     widget.devoteeDetails.dob != null
-            //         ? formatDate(widget.devoteeDetails.dob ?? "")
+            //     widget.devoteeDetails.dob != null ||
+            //             widget.devoteeDetails.dob?.isNotEmpty == true
+            //         ? '${widget.devoteeDetails.dob}'
             //         : "",
             //     textAlign: TextAlign.center,
             //   ),
             // ),
+            Expanded(
+              child: Text(
+                // widget.devoteeDetails.dob?.isNotEmpty == true ||
+                //         widget.devoteeDetails.dob != null
+                //     ?
+                formatDate(widget.devoteeDetails.dob ?? ""),
+                // : "",
+                textAlign: TextAlign.center,
+              ),
+            ),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -201,7 +219,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(widget.devoteeDetails.name.toString()),
+                                    Text(widget.devoteeDetails.name ?? "N/A"),
                                     IconButton(
                                         color: Colors.deepOrange,
                                         onPressed: () {
@@ -210,7 +228,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                                         icon: const Icon(Icons.close))
                                   ],
                                 ),
-                                Text(widget.devoteeDetails.sangha.toString()),
+                                Text(widget.devoteeDetails.sangha ?? "N/A"),
                               ],
                             ),
                             content: ViewPalia(

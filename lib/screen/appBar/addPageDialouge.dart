@@ -154,6 +154,20 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'reissued',
     "blacklisted"
   ];
+  List<String> monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
 
   @override
   void initState() {
@@ -253,8 +267,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     setState(() {
       selectedDevotee = devoteeData?["data"];
       if (devoteeData?["statusCode"] == 200) {
-        if (selectedDevotee?.dob != null) {
-          List<String> dateParts = selectedDevotee!.dob!.split('-');
+        if (selectedDevotee?.dob != null || selectedDevotee?.dob != "") {
+          List<String> dateParts = selectedDevotee?.dob?.split('-') ?? [];
 
           if (dateParts.length >= 3) {
             setState(() {
@@ -273,9 +287,10 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
         mobileController.text = selectedDevotee?.mobileNumber ?? "";
         sanghaController.text = selectedDevotee?.sangha ?? "";
         parichayaPatraValue = selectedDevotee?.hasParichayaPatra ?? false;
-        dobController.text = selectedDevotee?.dob != ""
-            ? formatDate(selectedDevotee?.dob ?? "")
-            : "";
+        dobController.text =
+            selectedDevotee?.dob != null || selectedDevotee?.dob != ""
+                ? formatDate(selectedDevotee?.dob ?? "")
+                : "";
         pranamiController.text = (selectedDevotee?.paidAmount != null
             ? selectedDevotee?.paidAmount.toString()
             : "")!;
@@ -308,30 +323,18 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   }
 
   String formatDate(String inputDate) {
-    // DateTime dateTime = DateTime.parse(inputDate);
-    DateTime dateTime = DateFormat('yyyy-MM-dd', 'en_US').parse(inputDate);
-    List<String> monthNames = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec'
-    ];
+    if (inputDate != "") {
+      DateTime dateTime = DateFormat('yyyy-MM-dd', 'en_US').parse(inputDate);
 
-    int day = dateTime.day;
-    String month = monthNames[dateTime.month - 1];
-    int year = dateTime.year;
+      int day = dateTime.day;
+      String month = monthNames[dateTime.month - 1];
+      int year = dateTime.year;
 
-    String formattedDate = '$day-$month-$year';
+      String formattedDate = '$day-$month-$year';
 
-    return formattedDate;
+      return formattedDate;
+    }
+    return "";
   }
 
   InputDecoration textFormFieldDecoration(BuildContext context) {
