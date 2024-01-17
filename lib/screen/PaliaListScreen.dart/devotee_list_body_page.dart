@@ -224,6 +224,16 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
                   status: widget.status,
                   searchBy: widget.searchBy,
                   searchValue: widget.searchValue,
+                      isCheckedBoolValue: (isCheckedValuee) {
+                    checkedValue = isCheckedValuee;
+                    if (isCheckedValuee == true) {
+                     
+                      // if (!selectedPalia
+                      //     .contains(widget.searchModel[index].docId)) {
+                      //   selectedPalia
+                      //       .add(widget.searchModel[index].docId.toString());
+                      }
+                  },
                 );
               },
             ),
