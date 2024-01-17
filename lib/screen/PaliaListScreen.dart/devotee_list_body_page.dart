@@ -160,7 +160,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         ),
       ),
       columnSpacing: 10,
-      //dataRowMaxHeight: 80,
+      dataRowMaxHeight: 80,
       columns: [
         dataColumn(context, 'Sl. No.'),
         dataColumn(context, 'Profile Image'),
@@ -211,19 +211,20 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
           return DataRow(
             cells: [
               DataCell(Text("${index + 1}")),
-              const DataCell(SizedBox(
+              DataCell(SizedBox(
                 height: 50,
                 width: 50,
-                child:
-                    // allPaliaList[index].profilePhotoUrl != null &&
-                    //         allPaliaList[index].profilePhotoUrl!.isNotEmpty == true
-                    //     ? Image.network(
-                    //         allPaliaList[index].profilePhotoUrl ?? '',
-                    //         cacheWidth: 50,
-                    //         cacheHeight: 50,
-                    //       )
-                    //     :
-                    Image(image: AssetImage('assets/images/profile.jpeg')),
+                child: allPaliaList[index].profilePhotoUrl != null &&
+                        allPaliaList[index].profilePhotoUrl!.isNotEmpty == true
+                    ? Image.network(
+                        allPaliaList[index].profilePhotoUrl ?? '',
+                        height: 80,
+                        width: 80,
+                        // cacheWidth: 100,
+                        // cacheHeight: 70,
+                      )
+                    : const Image(
+                        image: AssetImage('assets/images/profile.jpeg')),
               )),
               //DataCell(Text(allPaliaList[index].name ?? '_')),
               DataCell(

@@ -183,7 +183,7 @@ class _CustomCalenderState extends State<CustomCalender> {
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium
-                  ?.merge(const TextStyle(fontSize: 17, color: Colors.white)),
+                  ?.merge(const TextStyle(fontSize: 14, color: Colors.white)),
             ),
           ),
         ],
