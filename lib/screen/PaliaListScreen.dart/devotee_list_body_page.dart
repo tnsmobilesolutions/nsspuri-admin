@@ -37,6 +37,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
   bool showMenu = false;
   bool isAscending = false;
   String? userRole;
+  bool? isChecked = false;
 
   @override
   void initState() {
@@ -224,15 +225,14 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
                   status: widget.status,
                   searchBy: widget.searchBy,
                   searchValue: widget.searchValue,
-                      isCheckedBoolValue: (isCheckedValuee) {
+                  isCheckedBoolValue: (isCheckedValuee) {
                     checkedValue = isCheckedValuee;
                     if (isCheckedValuee == true) {
-                     
                       // if (!selectedPalia
                       //     .contains(widget.searchModel[index].docId)) {
                       //   selectedPalia
                       //       .add(widget.searchModel[index].docId.toString());
-                      }
+                    }
                   },
                 );
               },

@@ -6,7 +6,6 @@ import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/viewDevotee/devotee_info.dart';
 import 'package:sdp/screen/viewDevotee/preview_delegate.dart';
 
-
 // ignore: must_be_immutable
 class ViewPalia extends StatefulWidget {
   ViewPalia({Key? key, required this.devoteeDetails, this.index})
@@ -34,13 +33,13 @@ class _ViewPaliaState extends State<ViewPalia>
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 600,
+      height: 500,
       width: 500,
       child: SelectionArea(
         child: Scaffold(
           body: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(4),
+              padding: const EdgeInsets.all(2),
               child: Column(children: [
                 Container(
                   height: 40,

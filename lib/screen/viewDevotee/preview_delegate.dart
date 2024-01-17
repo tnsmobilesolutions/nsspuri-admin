@@ -72,58 +72,12 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
       child: Center(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.only(left: 50, right: 50),
+            padding: const EdgeInsets.only(
+              left: 50,
+              right: 50,
+            ),
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 15),
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(
-                        width: 1.0,
-                        color: Color(0XFF3f51b5),
-                      ),
-                      foregroundColor: const Color(0XFF3f51b5),
-                    ),
-                    onPressed: () async {
-                      final doc = pw.Document();
-                      doc.addPage(
-                        pw.Page(
-                          pageFormat: PdfPageFormat.a4,
-                          build: (pw.Context context) {
-                            return pw.Center(
-                              child: pw.Container(
-                                height: PdfPageFormat.a4.height / 1.44,
-                                decoration: pw.BoxDecoration(
-                                  color: PdfColors.white,
-                                  boxShadow: const [
-                                    pw.BoxShadow(
-                                      color: PdfColors.blue,
-                                    ),
-                                  ],
-                                  border: pw.Border.all(
-                                    width: 3,
-                                    color: PdfColors.grey,
-                                  ),
-                                  borderRadius: pw.BorderRadius.all(
-                                      pw.Radius.circular(20)),
-                                ),
-                                // You can add more widgets inside the Container if needed
-                                child: pw.Text('Hello, PDF!'),
-                              ),
-                            );
-                          },
-                        ),
-                      ); //
-                      PdfPreview(
-                        build: (format) => doc.save(),
-                      );
-                      await Printing.layoutPdf(
-                          onLayout: (PdfPageFormat format) async => doc.save());
-                    },
-                    child: const Text('Print'),
-                  ),
-                ),
                 FlipCard(
                   rotateSide: RotateSide.right,
                   onTapFlipping: false,
@@ -132,10 +86,9 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                   backWidget: CardFlip(color: getColorByDevotee(devotees)),
                   frontWidget: Center(
                     child: Padding(
-                      padding:
-                          const EdgeInsets.only(top: 20, left: 12, right: 12),
+                      padding: const EdgeInsets.only(left: 30, right: 30),
                       child: Container(
-                        height: MediaQuery.of(context).size.height / 1.44,
+                        height: 432,
                         decoration: BoxDecoration(
                             color: Colors.white,
                             boxShadow: const [
@@ -154,10 +107,10 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                           child: Column(
                             children: [
                               Container(
-                                height: MediaQuery.of(context).size.height / 13,
+                                height: 45,
                                 decoration: BoxDecoration(
                                     color: getColorByDevotee(devotees),
-                                    borderRadius: BorderRadius.only(
+                                    borderRadius: const BorderRadius.only(
                                       topLeft: Radius.circular(18),
                                       topRight: Radius.circular(18),
                                     )),
@@ -179,8 +132,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                 ),
                               ),
                               SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height / 1.64,
+                                height: 375,
                                 child: Column(
                                   children: [
                                     Expanded(
@@ -191,7 +143,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                             Expanded(
                                               flex: 1,
                                               child: ListView.separated(
-                                                itemCount: 21,
+                                                itemCount: 19,
                                                 itemBuilder:
                                                     (BuildContext context,
                                                         int index) {
@@ -199,7 +151,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                     'assets/images/3.svg',
                                                     color: getColorByDevotee(
                                                         devotees),
-                                                    height: 20,
+                                                    height: 18,
                                                   );
                                                 },
                                                 separatorBuilder:
@@ -209,7 +161,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                   // You can adjust the size and appearance of the separator here.
                                                   return const SizedBox(
                                                       height:
-                                                          3); // Adjust the height as needed.
+                                                          3.3); // Adjust the height as needed.
                                                 },
                                               ),
                                             ),
@@ -264,7 +216,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                     const Text(
                                                       'NILACHALA SARASWATA SANGHA, PURI',
                                                       style: TextStyle(
-                                                          fontSize: 12,
+                                                          fontSize: 10,
                                                           fontWeight:
                                                               FontWeight.bold,
                                                           color: Colors
@@ -279,7 +231,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                       style: TextStyle(
                                                           fontWeight:
                                                               FontWeight.bold,
-                                                          fontSize: 14,
+                                                          fontSize: 10,
                                                           color: Colors
                                                               .black // Text color
                                                           ),
@@ -289,7 +241,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                       style: TextStyle(
                                                           fontWeight:
                                                               FontWeight.bold,
-                                                          fontSize: 14,
+                                                          fontSize: 10,
                                                           color: Colors
                                                               .black // Text color
                                                           ),
@@ -310,9 +262,9 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                                               .bloodGroup ==
                                                                           null
                                                                   ? Container(
-                                                                      width: 75,
+                                                                      width: 60,
                                                                       height:
-                                                                          60,
+                                                                          55,
                                                                       decoration:
                                                                           const BoxDecoration(
                                                                         shape: BoxShape
@@ -325,9 +277,9 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                                         children: [
                                                                           Container(
                                                                             width:
-                                                                                75,
-                                                                            height:
                                                                                 60,
+                                                                            height:
+                                                                                55,
                                                                             decoration:
                                                                                 const BoxDecoration(
                                                                               shape: BoxShape.rectangle,
@@ -344,8 +296,8 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                                                 0,
                                                                             child:
                                                                                 SizedBox(
-                                                                              width: 75,
-                                                                              height: 60,
+                                                                              width: 60,
+                                                                              height: 55,
                                                                               child: Center(
                                                                                 child: Text(
                                                                                   "${widget.devoteeDetails.bloodGroup}",
@@ -372,30 +324,22 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                               children: [
                                                                 Positioned(
                                                                   child:
-                                                                      Container(
-                                                                    width: 145,
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      border:
-                                                                          Border
-                                                                              .all(
-                                                                        color: getColorByDevotee(
+                                                                      CircleAvatar(
+                                                                    radius:
+                                                                        55, // Adjust the radius as needed
+                                                                    backgroundColor:
+                                                                        getColorByDevotee(
                                                                             devotees),
-                                                                        width:
-                                                                            3,
-                                                                      ),
-                                                                      shape: BoxShape
-                                                                          .circle,
-                                                                      image:
-                                                                          DecorationImage(
-                                                                        fit: BoxFit
-                                                                            .cover,
-                                                                        image: NetworkImage(widget
+                                                                    backgroundImage: widget.devoteeDetails.profilePhotoUrl !=
+                                                                                null &&
+                                                                            widget
+                                                                                .devoteeDetails.profilePhotoUrl!.isNotEmpty
+                                                                        ? NetworkImage(widget
                                                                             .devoteeDetails
                                                                             .profilePhotoUrl
-                                                                            .toString()),
-                                                                      ),
-                                                                    ),
+                                                                            .toString())
+                                                                        : const AssetImage('assets/images/profile.jpeg')
+                                                                            as ImageProvider<Object>,
                                                                   ),
                                                                 ),
                                                                 if (widget.devoteeDetails
@@ -428,7 +372,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                                                 Text(
                                                                               'PAID',
                                                                               style: TextStyle(
-                                                                                fontSize: 40.0,
+                                                                                fontSize: 30.0,
                                                                                 fontWeight: FontWeight.bold,
                                                                                 color: Color.fromARGB(255, 44, 7, 209),
                                                                               ),
@@ -459,7 +403,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                                 const TextStyle(
                                                               color: Colors
                                                                   .deepOrange,
-                                                              fontSize: 20,
+                                                              fontSize: 18,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold,
@@ -498,7 +442,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                                             color:
                                                                                 Colors.black,
                                                                             fontSize:
-                                                                                14,
+                                                                                12,
                                                                             fontWeight:
                                                                                 FontWeight.bold,
                                                                           ),
@@ -507,7 +451,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                                           ""),
                                                                 ),
                                                                 Expanded(
-                                                                  flex: 2,
+                                                                  flex: 1,
                                                                   child: widget
                                                                               .devoteeDetails
                                                                               .devoteeCode !=
@@ -522,7 +466,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                                             color:
                                                                                 Colors.deepOrange,
                                                                             fontSize:
-                                                                                15,
+                                                                                12,
                                                                             fontWeight:
                                                                                 FontWeight.bold,
                                                                           ),
@@ -555,21 +499,10 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                                 const Expanded(
                                                                   flex: 1,
                                                                   child: Text(
-                                                                    "",
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            10,
-                                                                        fontWeight:
-                                                                            FontWeight.bold),
-                                                                  ),
-                                                                ),
-                                                                const Expanded(
-                                                                  flex: 1,
-                                                                  child: Text(
                                                                     'Secretary',
                                                                     style: TextStyle(
                                                                         fontSize:
-                                                                            14,
+                                                                            12,
                                                                         fontWeight:
                                                                             FontWeight.bold),
                                                                   ),
@@ -613,7 +546,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                 )),
                                             Expanded(
                                               child: ListView.separated(
-                                                itemCount: 21,
+                                                itemCount: 19,
                                                 itemBuilder:
                                                     (BuildContext context,
                                                         int index) {
@@ -621,7 +554,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                     'assets/images/3.svg',
                                                     color: getColorByDevotee(
                                                         devotees),
-                                                    height: 20,
+                                                    height: 18,
                                                   );
                                                 },
                                                 separatorBuilder:
@@ -631,7 +564,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                   // You can adjust the size and appearance of the separator here.
                                                   return const SizedBox(
                                                       height:
-                                                          3); // Adjust the height as needed.
+                                                          3.3); // Adjust the height as needed.
                                                 },
                                               ),
                                             ),
@@ -649,19 +582,19 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                             gridDelegate:
                                                 const SliverGridDelegateWithFixedCrossAxisCount(
                                               crossAxisCount:
-                                                  13, // Number of columns
+                                                  12, // Number of columns
                                               crossAxisSpacing:
                                                   4.0, // Adjust the spacing between columns
                                               mainAxisSpacing:
                                                   8.0, // Adjust the spacing between rows
                                             ),
                                             itemCount:
-                                                13, // Change this number based on your actual requirement
+                                                12, // Change this number based on your actual requirement
                                             itemBuilder: (BuildContext context,
                                                 int index) {
                                               return SvgPicture.asset(
                                                 'assets/images/3.svg',
-                                                height: 20,
+                                                height: 15,
                                                 color:
                                                     getColorByDevotee(devotees),
                                               );
