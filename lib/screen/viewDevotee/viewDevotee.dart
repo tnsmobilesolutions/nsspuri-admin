@@ -33,7 +33,7 @@ class _ViewPaliaState extends State<ViewPalia>
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 600,
+      height: 500,
       width: 500,
       child: SelectionArea(
         child: Scaffold(
