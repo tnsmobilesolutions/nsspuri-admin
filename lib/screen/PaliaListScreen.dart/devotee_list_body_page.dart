@@ -115,6 +115,21 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
                     showMenu = !showMenu;
                   });
                 },
+                child: showMenu ? const Text('Print') : const Text('Select'),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                    side:
+                        const BorderSide(width: 1.5, color: Colors.deepOrange),
+                    foregroundColor: Colors.black),
+                onPressed: () {
+                  setState(() {
+                    showMenu = !showMenu;
+                  });
+                },
                 child: showMenu
                     ? const Text('Close Action Menu')
                     : const Text('Show Action Menu'),
@@ -209,6 +224,16 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage> {
                   status: widget.status,
                   searchBy: widget.searchBy,
                   searchValue: widget.searchValue,
+                      isCheckedBoolValue: (isCheckedValuee) {
+                    checkedValue = isCheckedValuee;
+                    if (isCheckedValuee == true) {
+                     
+                      // if (!selectedPalia
+                      //     .contains(widget.searchModel[index].docId)) {
+                      //   selectedPalia
+                      //       .add(widget.searchModel[index].docId.toString());
+                      }
+                  },
                 );
               },
             ),

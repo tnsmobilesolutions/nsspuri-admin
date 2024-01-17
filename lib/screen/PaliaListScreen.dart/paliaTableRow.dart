@@ -1,9 +1,8 @@
 // ignore_for_file: file_names, must_be_immutable, avoid_print
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:sdp/model/devotee_model.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/viewDevotee.dart';
+import 'package:sdp/screen/viewDevotee/viewDevotee.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
@@ -11,6 +10,7 @@ class PaliaTableRow extends StatefulWidget {
   PaliaTableRow({
     Key? key,
     required this.devoteeDetails,
+    required this.isCheckedBoolValue,
     required this.slNo,
     required this.showMenu,
     this.devoteeList,
@@ -21,16 +21,18 @@ class PaliaTableRow extends StatefulWidget {
     required this.status,
     this.allCheck,
   }) : super(key: key);
-
-  bool? allCheck;
   DevoteeModel devoteeDetails;
+  final int slNo;
+  bool showMenu;
+  bool? allCheck;
+  bool? showClearButton;
+  Function isCheckedBoolValue;
+
   List<DevoteeModel>? devoteeList;
   String pageFrom;
   String? searchBy;
   String? searchValue;
-  bool? showClearButton;
-  bool showMenu;
-  final int slNo;
+
   String status;
 
   @override
@@ -65,38 +67,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
     if (widget.devoteeList != null) {}
   }
 
-  String formatDate(String inputDate) {
-    // DateTime dateTime = DateTime.parse(inputDate);
-    DateTime dateTime = DateFormat('yyyy-MM-dd', 'en_US').parse(inputDate);
-
-    int day = dateTime.day;
-    String month = monthNames[dateTime.month - 1];
-    int year = dateTime.year;
-
-    String formattedDate = '$day-$month-$year';
-
-    return formattedDate;
-  }
-
-  // String formatDate(String inputDate) {
-  //   List<String> formats = ['dd-MM-yyyy', 'dd MMM yyyy', 'yyyy-MM-dd'];
-  //   DateTime dateTime;
-  //   for (String format in formats) {
-  //     try {
-  //       dateTime = DateFormat(format, 'en_US').parseStrict(inputDate);
-  //       int day = dateTime.day;
-  //       String month = monthNames[dateTime.month - 1];
-  //       int year = dateTime.year;
-
-  //       String formattedDate = '$day-$month-$year';
-
-  //       return formattedDate;
-  //     } catch (e) {
-  //       print("");
-  //     }
-  //   }
-  //   return "";
-  // }
+  late Function isCheckedBoolValue;
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +75,22 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
       children: [
         Row(
           children: [
+            if (widget.showMenu == true)
+              Expanded(
+                child: Checkbox(
+                  value: widget.allCheck ?? isCheck,
+                  onChanged: (value) {
+                    setState(() {
+                      isCheck = value!;
+
+                      widget.isCheckedBoolValue(value);
+                      // widget.isallCheckedBoolValue(value);
+                    });
+
+                    // print('*************$selectedPalia**************');
+                  },
+                ),
+              ),
             Expanded(
               child: Text(
                 (widget.slNo).toString(),
