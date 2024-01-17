@@ -1,5 +1,6 @@
 // ignore_for_file: file_names, depend_on_referenced_packages, must_be_immutable, iterable_contains_unrelated_type, avoid_print
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/constant/custom_loading_indicator.dart';
@@ -42,6 +43,20 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
   bool showMenu = false;
   //bool isLoading = true;
   String? userRole;
+  List<String> monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
 
   late AnimateIconController _controller;
 
@@ -121,6 +136,19 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         ));
   }
 
+  String formatDate(String inputDate) {
+    // DateTime dateTime = DateTime.parse(inputDate);
+    DateTime dateTime = DateFormat('yyyy-MM-dd', 'en_US').parse(inputDate);
+
+    int day = dateTime.day;
+    String month = monthNames[dateTime.month - 1];
+    int year = dateTime.year;
+
+    String formattedDate = '$day-$month-$year';
+
+    return formattedDate;
+  }
+
   Widget devoteeTable(BuildContext context) {
     return DataTable(
       decoration: const BoxDecoration(
@@ -197,7 +225,15 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
               )),
               DataCell(Text(allPaliaList[index].name ?? '_')),
               DataCell(Text(allPaliaList[index].sangha ?? '_')),
-              DataCell(Text(allPaliaList[index].dob ?? '_')),
+              //DataCell(Text(allPaliaList[index].dob ?? '_')),
+              DataCell(
+                Text(
+                  allPaliaList[index].dob != null
+                      ? formatDate(allPaliaList[index].dob ?? "")
+                      : "",
+                  textAlign: TextAlign.center,
+                ),
+              ),
               DataCell(
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,

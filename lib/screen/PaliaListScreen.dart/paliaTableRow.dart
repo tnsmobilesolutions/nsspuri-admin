@@ -162,22 +162,22 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                 textAlign: TextAlign.center,
               ),
             ),
-            Expanded(
-              child: Text(
-                widget.devoteeDetails.dob != null
-                    ? '${widget.devoteeDetails.dob}'
-                    : "",
-                textAlign: TextAlign.center,
-              ),
-            ),
             // Expanded(
             //   child: Text(
             //     widget.devoteeDetails.dob != null
-            //         ? formatDate(widget.devoteeDetails.dob ?? "")
+            //         ? '${widget.devoteeDetails.dob}'
             //         : "",
             //     textAlign: TextAlign.center,
             //   ),
             // ),
+            Expanded(
+              child: Text(
+                widget.devoteeDetails.dob != null
+                    ? formatDate(widget.devoteeDetails.dob ?? "")
+                    : "",
+                textAlign: TextAlign.center,
+              ),
+            ),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
