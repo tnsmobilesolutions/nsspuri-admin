@@ -298,7 +298,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                           List<DevoteeModel> devoteeList = [];
                           await GetDevoteeAPI()
                               .advanceSearchDevotee(
-                            sdpSearchController.text,
+                            sangha,
                             _selectedSearchType.toString(),
                           )
                               .then((value) {
@@ -315,7 +315,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                                 status: "allDevotee",
                                 pageFrom: "Search",
                                 devoteeList: devoteeList,
-                                searchValue: sdpSearchController.text,
+                                searchValue: sangha,
                                 searchBy: _selectedSearchType,
                                 showClearButton:
                                     showClearButton, // devoteeList.isNotEmpty,
