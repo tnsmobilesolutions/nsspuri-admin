@@ -90,22 +90,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
       children: [
         Row(
           children: [
-            if (widget.showMenu == true)
-              Expanded(
-                child: Checkbox(
-                  value: widget.allCheck ?? isCheck,
-                  onChanged: (value) {
-                    setState(() {
-                      isCheck = value!;
-
-                      widget.isCheckedBoolValue(value);
-                      // widget.isallCheckedBoolValue(value);
-                    });
-
-                    // print('*************$selectedPalia**************');
-                  },
-                ),
-              ),
+          
             Expanded(
               child: Text(
                 (widget.slNo).toString(),
