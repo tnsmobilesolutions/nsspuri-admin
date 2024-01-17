@@ -18,7 +18,20 @@ class _ViewPaliaState extends State<ViewPalia>
   final nameController = TextEditingController();
   Map<String, dynamic>? devoteeData;
   bool isChecked = false;
-
+  List<String> monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
   @override
   void initState() {
     super.initState();
@@ -26,30 +39,18 @@ class _ViewPaliaState extends State<ViewPalia>
   }
 
   String formatDate(String inputDate) {
-    // DateTime dateTime = DateTime.parse(inputDate);
-    DateTime dateTime = DateFormat('yyyy-MM-dd', 'en_US').parse(inputDate);
-    List<String> monthNames = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec'
-    ];
+    if (inputDate.isNotEmpty) {
+      DateTime dateTime = DateFormat('yyyy-MM-dd', 'en_US').parse(inputDate);
 
-    int day = dateTime.day;
-    String month = monthNames[dateTime.month - 1];
-    int year = dateTime.year;
+      int day = dateTime.day;
+      String month = monthNames[dateTime.month - 1];
+      int year = dateTime.year;
 
-    String formattedDate = '$day-$month-$year';
+      String formattedDate = '$day-$month-$year';
 
-    return formattedDate;
+      return formattedDate;
+    }
+    return "N/A";
   }
 
   @override
@@ -121,8 +122,8 @@ class _ViewPaliaState extends State<ViewPalia>
                                     'Mobile Number',
                                     style: TextStyle(color: Colors.grey),
                                   ),
-                                  Text(widget.devoteeDetails.mobileNumber
-                                      .toString())
+                                  Text(widget.devoteeDetails.mobileNumber ??
+                                      "N/A")
                                 ],
                               ),
                               const Divider(
@@ -153,8 +154,11 @@ class _ViewPaliaState extends State<ViewPalia>
                                         'Date Of Birth',
                                         style: TextStyle(color: Colors.grey),
                                       ),
-                                      Text(formatDate(
-                                          widget.devoteeDetails.dob ?? ""))
+                                      widget.devoteeDetails.dob != null ||
+                                              widget.devoteeDetails.dob != ""
+                                          ? Text(formatDate(
+                                              widget.devoteeDetails.dob ?? ""))
+                                          : const Text("N/A")
                                     ],
                                   ),
                                   Column(
@@ -218,8 +222,8 @@ class _ViewPaliaState extends State<ViewPalia>
                                         const Text('Has Parichayapatra'),
                                       widget.devoteeDetails.hasParichayaPatra ==
                                               true
-                                          ? Text("Yes")
-                                          : Text("No")
+                                          ? const Text("Yes")
+                                          : const Text("No")
                                     ],
                                   ),
 
@@ -251,7 +255,7 @@ class _ViewPaliaState extends State<ViewPalia>
                                       widget.devoteeDetails.remarks != null
                                           ? Text(
                                               '${widget.devoteeDetails.remarks}')
-                                          : Text("N/A")
+                                          : const Text("N/A")
                                     ],
                                   ),
                                 ],
