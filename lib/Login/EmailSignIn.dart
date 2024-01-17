@@ -96,9 +96,9 @@ class _EmailSignInState extends State<EmailSignIn> {
                       Networkhelper().setCurrentDevotee = resDevoteeData;
 
                       if (response?["statusCode"] == 200 &&
-                              resDevoteeData.role == "Admin" ||
-                          resDevoteeData.role == "SuperAdmin" ||
-                          resDevoteeData.role == "Approver") {
+                          (resDevoteeData.role == "Admin" ||
+                              resDevoteeData.role == "SuperAdmin" ||
+                              resDevoteeData.role == "Approver")) {
                         Navigator.push(
                             context,
                             MaterialPageRoute(

@@ -35,13 +35,16 @@ class CreateDelegateButton extends StatelessWidget {
                 title: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Create delegate'),
+                    const Text('Create Delegate'),
                     IconButton(
                         color: Colors.deepOrange,
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        icon: const Icon(Icons.close,color: Colors.deepOrange,))
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.deepOrange,
+                        ))
                   ],
                 ),
                 content: AddPageDilouge(
@@ -52,7 +55,7 @@ class CreateDelegateButton extends StatelessWidget {
         );
       }),
       child: const Text(
-        'Create delegate',
+        'Create Delegate',
         style: TextStyle(color: Colors.white),
       ),
     );

@@ -1,8 +1,11 @@
 // ignore_for_file: use_build_context_synchronously, must_be_immutable, avoid_print
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:sdp/API/get_devotee.dart';
+import 'package:sdp/constant/sangha_list.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
+import 'package:sdp/utilities/color_palette.dart';
 
 class SearchDevotee extends StatefulWidget {
   SearchDevotee(
@@ -122,79 +125,43 @@ class _SearchDevoteeState extends State<SearchDevotee> {
             ),
             SizedBox(
               width: 250,
-              child: TextFormField(
-                controller: sdpSearchController,
-                onChanged: (value) {
-                  setState(() {
-                    // value.isNotEmpty
-                    //     ? widget.onFieldValueChanged!(value)
-                    //     : null;
-                  });
-                },
-                onSaved: (newValue) {
-                  sdpSearchController.text.isNotEmpty
-                      ? () async {
-                          List<DevoteeModel> devoteeList = [];
-                          await GetDevoteeAPI()
-                              .searchDevotee(
-                                  sdpSearchController.text, "devoteeName")
-                              .then((value) {
-                            devoteeList.addAll(value["data"]);
-                          });
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) {
-                              return DevoteeListPage(
-                                status: "allDevotee",
-                                pageFrom: "Search",
-                                devoteeList: devoteeList,
-                                searchValue: sdpSearchController.text,
-                                showClearButton: devoteeList.isNotEmpty,
-                              );
-                            },
-                          ));
-                        }
-                      : null;
-                },
-                onFieldSubmitted: (sdpSearchController.text.isNotEmpty &&
-                        _selectedSearchType?.toLowerCase() != null)
-                    ? (value) async {
-                        List<DevoteeModel> devoteeList = [];
-                        await GetDevoteeAPI()
-                            .advanceSearchDevotee(
-                          sdpSearchController.text,
-                          _selectedSearchType.toString(),
-                        )
-                            .then((value) {
-                          devoteeList.addAll(value["data"]);
-                        });
+              child: _selectedSearchType != "sangha"
+                  ? TextFormField(
+                      controller: sdpSearchController,
+                      onChanged: (value) {
                         setState(() {
-                          showClearButton = !showClearButton;
+                          // value.isNotEmpty
+                          //     ? widget.onFieldValueChanged!(value)
+                          //     : null;
                         });
-                        widget.onFieldValueChanged!(devoteeList.isNotEmpty);
-                        print("search devotee count: ${devoteeList.length}");
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) {
-                            return DevoteeListPage(
-                              status: "allDevotee",
-                              pageFrom: "Search",
-                              devoteeList: devoteeList,
-                              searchValue: sdpSearchController.text,
-                              searchBy: _selectedSearchType,
-                              showClearButton:
-                                  showClearButton, // devoteeList.isNotEmpty,
-                            );
-                          },
-                        ));
-                      }
-                    : null,
-                decoration: InputDecoration(
-                  hintText: 'Search',
-                  suffixIcon: Padding(
-                    padding: const EdgeInsets.only(right: 4, top: 2),
-                    child: IconButton(
-                      onPressed: (sdpSearchController.text.isNotEmpty &&
+                      },
+                      onSaved: (newValue) {
+                        sdpSearchController.text.isNotEmpty
+                            ? () async {
+                                List<DevoteeModel> devoteeList = [];
+                                await GetDevoteeAPI()
+                                    .searchDevotee(
+                                        sdpSearchController.text, "devoteeName")
+                                    .then((value) {
+                                  devoteeList.addAll(value["data"]);
+                                });
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) {
+                                    return DevoteeListPage(
+                                      status: "allDevotee",
+                                      pageFrom: "Search",
+                                      devoteeList: devoteeList,
+                                      searchValue: sdpSearchController.text,
+                                      showClearButton: devoteeList.isNotEmpty,
+                                    );
+                                  },
+                                ));
+                              }
+                            : null;
+                      },
+                      onFieldSubmitted: (sdpSearchController.text.isNotEmpty &&
                               _selectedSearchType?.toLowerCase() != null)
-                          ? () async {
+                          ? (value) async {
                               List<DevoteeModel> devoteeList = [];
                               await GetDevoteeAPI()
                                   .advanceSearchDevotee(
@@ -204,6 +171,13 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                                   .then((value) {
                                 devoteeList.addAll(value["data"]);
                               });
+                              setState(() {
+                                showClearButton = !showClearButton;
+                              });
+                              widget
+                                  .onFieldValueChanged!(devoteeList.isNotEmpty);
+                              print(
+                                  "search devotee count: ${devoteeList.length}");
                               Navigator.push(context, MaterialPageRoute(
                                 builder: (context) {
                                   return DevoteeListPage(
@@ -212,24 +186,148 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                                     devoteeList: devoteeList,
                                     searchValue: sdpSearchController.text,
                                     searchBy: _selectedSearchType,
-                                    showClearButton: devoteeList.isNotEmpty,
+                                    showClearButton:
+                                        showClearButton, // devoteeList.isNotEmpty,
                                   );
                                 },
                               ));
                             }
                           : null,
-                      icon: const Icon(Icons.search),
-                      iconSize: 21,
-                      autofocus: true,
-                      color: Colors.deepOrange,
+                      decoration: InputDecoration(
+                        hintText: 'Search',
+                        suffixIcon: Padding(
+                          padding: const EdgeInsets.only(right: 4, top: 2),
+                          child: IconButton(
+                            onPressed: (sdpSearchController.text.isNotEmpty &&
+                                    _selectedSearchType?.toLowerCase() != null)
+                                ? () async {
+                                    List<DevoteeModel> devoteeList = [];
+                                    await GetDevoteeAPI()
+                                        .advanceSearchDevotee(
+                                      sdpSearchController.text,
+                                      _selectedSearchType.toString(),
+                                    )
+                                        .then((value) {
+                                      devoteeList.addAll(value["data"]);
+                                    });
+                                    Navigator.push(context, MaterialPageRoute(
+                                      builder: (context) {
+                                        return DevoteeListPage(
+                                          status: "allDevotee",
+                                          pageFrom: "Search",
+                                          devoteeList: devoteeList,
+                                          searchValue: sdpSearchController.text,
+                                          searchBy: _selectedSearchType,
+                                          showClearButton:
+                                              devoteeList.isNotEmpty,
+                                        );
+                                      },
+                                    ));
+                                  }
+                                : null,
+                            icon: const Icon(Icons.search),
+                            iconSize: 21,
+                            autofocus: true,
+                            color: Colors.deepOrange,
+                          ),
+                        ),
+                        border: InputBorder.none,
+                        hintStyle: const TextStyle(
+                          color: Color.fromARGB(255, 100, 99, 99),
+                        ),
+                      ),
+                    )
+                  : TypeAheadFormField(
+                      noItemsFoundBuilder: (context) => const SizedBox(
+                        height: 70,
+                        child: Center(
+                          child: Text('No Item Found'),
+                        ),
+                      ),
+                      suggestionsBoxDecoration: const SuggestionsBoxDecoration(
+                          color: SuggestionBoxColor,
+                          elevation: 5,
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10),
+                          )),
+                      debounceDuration: const Duration(milliseconds: 400),
+                      onSaved: (sangha) {
+                        sdpSearchController.text = sangha.toString();
+                      },
+                      textFieldConfiguration: TextFieldConfiguration(
+                        controller: sdpSearchController,
+                        decoration: InputDecoration(
+                          labelText: "Sangha Name",
+                          focusColor: Colors.white,
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              borderSide: const BorderSide(
+                                  width: 0, style: BorderStyle.none)),
+                        ),
+                      ),
+                      suggestionsCallback: (value) async {
+                        List<String> sanghas = [];
+                        if (value.isNotEmpty) {
+                          sanghas = await SanghaList().getSuggestions(value);
+                        }
+                        return sanghas;
+                      },
+                      itemBuilder: (context, String suggestion) {
+                        return Row(
+                          children: [
+                            const SizedBox(
+                              width: 10,
+                              height: 50,
+                            ),
+                            Flexible(
+                              child: Padding(
+                                padding: const EdgeInsets.all(6.0),
+                                child: Text(
+                                  suggestion,
+                                  maxLines: 6,
+                                ),
+                              ),
+                            )
+                          ],
+                        );
+                      },
+                      onSuggestionSelected: (String sangha) async {
+                        if (sangha.isNotEmpty) {
+                          List<DevoteeModel> devoteeList = [];
+                          await GetDevoteeAPI()
+                              .advanceSearchDevotee(
+                            sdpSearchController.text,
+                            _selectedSearchType.toString(),
+                          )
+                              .then((value) {
+                            devoteeList.addAll(value["data"]);
+                          });
+                          setState(() {
+                            showClearButton = !showClearButton;
+                          });
+                          widget.onFieldValueChanged!(devoteeList.isNotEmpty);
+                          print("search devotee count: ${devoteeList.length}");
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) {
+                              return DevoteeListPage(
+                                status: "allDevotee",
+                                pageFrom: "Search",
+                                devoteeList: devoteeList,
+                                searchValue: sdpSearchController.text,
+                                searchBy: _selectedSearchType,
+                                showClearButton:
+                                    showClearButton, // devoteeList.isNotEmpty,
+                              );
+                            },
+                          ));
+                          setState(() {
+                            sdpSearchController.text = sangha;
+                          });
+                        }
+                      },
                     ),
-                  ),
-                  border: InputBorder.none,
-                  hintStyle: const TextStyle(
-                    color: Color.fromARGB(255, 100, 99, 99),
-                  ),
-                ),
-              ),
             ),
           ],
         ),

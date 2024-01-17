@@ -12,7 +12,7 @@ import 'package:sdp/API/put_devotee.dart';
 import 'package:sdp/constant/sangha_list.dart';
 import 'package:sdp/model/address_model.dart';
 import 'package:sdp/model/devotee_model.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
+import 'package:sdp/screen/appBar/custom_calendar.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
 import 'package:sdp/utilities/color_palette.dart';
 import 'package:sdp/utilities/network_helper.dart';
@@ -62,7 +62,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
 
   TextEditingController cityController = TextEditingController();
   TextEditingController countryController = TextEditingController();
-  TextEditingController dateOfBirth = TextEditingController();
+  TextEditingController dobController = TextEditingController();
   final decimalRegex = [
     FilteringTextInputFormatter.allow(RegExp(r'^[0-9]*\.?[0-9]*$')),
     TextInputFormatter.withFunction((oldValue, newValue) {
@@ -122,18 +122,19 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   XFile? pickImage;
   TextEditingController postalCodeController = TextEditingController();
   TextEditingController pranamiController = TextEditingController();
+  TextEditingController remarksController = TextEditingController();
   String? profileImage;
   String profilePhotoUrl = "";
   List<String> roleList = [
     'User',
     'Admin',
     'SuperAdmin',
-    "Organizer",
+    "Coordinator",
     'Approver',
     'PrasadScanner',
     "SecurityCheck"
   ];
-
+  String day = "", month = "", year = "";
   TextEditingController sanghaController = TextEditingController();
   String? select;
   DevoteeModel? selectedDevotee;
@@ -153,11 +154,26 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'reissued',
     "blacklisted"
   ];
+  List<String> monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
 
   @override
   void initState() {
     super.initState();
-    populateData();
+
+    if (widget.title == "edit") populateData();
   }
 
   get districtList => null;
@@ -180,50 +196,145 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     }
   }
 
-  populateData() async {
-    if (widget.title == "edit") {
-      final devoteeData =
-          await GetDevoteeAPI().devoteeDetailsById(widget.devoteeId);
+  void _showCustomCalendarDialog(BuildContext context) async {
+    final selectedDate = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return Center(
+          child: SingleChildScrollView(
+            child: AlertDialog(
+              icon: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Select Date",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.close,
+                      color: Colors.deepOrange,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+              content: CustomCalender(
+                day: day,
+                month: month,
+                year: year,
+              ),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            ),
+          ),
+        );
+      },
+    );
+
+    if (selectedDate != null) {
+      print("selected date: $selectedDate");
+      dobController.text = selectedDate;
+      List<String> selectedDateParts = selectedDate.split('-');
+      print("selected date parts: $selectedDateParts");
       setState(() {
-        selectedDevotee = devoteeData?["data"];
-        if (devoteeData?["statusCode"] == 200) {
-          selectedStatus = selectedDevotee?.status ?? "dataSubmitted";
-          selectedRole = selectedDevotee?.role ?? "User";
-          nameController.text = selectedDevotee?.name ?? "";
-          emailController.text = selectedDevotee?.emailId ?? "";
-          mobileController.text = selectedDevotee?.mobileNumber ?? "";
-          sanghaController.text = selectedDevotee?.sangha ?? "";
-          parichayaPatraValue = selectedDevotee?.hasParichayaPatra ?? false;
-          dateOfBirth.text = selectedDevotee?.dob ?? "";
-          pranamiController.text = (selectedDevotee?.paidAmount != null
-              ? selectedDevotee?.paidAmount.toString()
-              : "")!;
-          addressLine1Controller.text =
-              selectedDevotee?.address?.addressLine1 ?? "";
-          addressLine2Controller.text =
-              selectedDevotee?.address?.addressLine2 ?? "";
-          cityController.text = selectedDevotee?.address?.city ?? "";
-          stateController.text = selectedDevotee?.address?.state ?? "";
-          countryController.text = selectedDevotee?.address?.country ?? "";
-          postalCodeController.text =
-              (selectedDevotee?.address?.postalCode != null ||
-                      selectedDevotee?.address?.postalCode != 0)
-                  ? selectedDevotee?.address?.postalCode.toString() ?? ""
-                  : "";
-          selectedDevotee?.address?.postalCode.toString() ?? "";
-          profilePhotoUrl = selectedDevotee?.profilePhotoUrl ?? "";
-          isAdmin = selectedDevotee?.isAdmin ?? false;
-          isKYDVerified = selectedDevotee?.isKYDVerified ?? false;
-          isSpeciallyAbled = selectedDevotee?.isSpeciallyAbled ?? false;
-          isGuest = selectedDevotee?.isGuest ?? false;
-          isOrganizer = selectedDevotee?.isOrganizer ?? false;
-          isApproved = selectedDevotee?.isApproved ?? false;
-          isGruhasanaApproved = selectedDevotee?.isGruhasanaApproved ?? false;
-          bloodGroupController = selectedDevotee?.bloodGroup ?? "Don't know";
-          genderController = selectedDevotee?.gender == "Male" ? 0 : 1;
-        }
+        day = selectedDateParts[0];
+        month = selectedDateParts[1];
+        year = selectedDateParts[2];
       });
     }
+  }
+
+  String _formatDOB(String dob) {
+    if (dob.isEmpty) {
+      return '';
+    }
+    try {
+      DateTime dateTime = DateFormat('d-MMM-yyyy', 'en_US').parse(dob);
+      String formattedDate = DateFormat('y-MM-dd').format(dateTime);
+      return formattedDate;
+    } catch (e) {
+      print("Error parsing date: $e");
+      return '';
+    }
+  }
+
+  populateData() async {
+    final devoteeData =
+        await GetDevoteeAPI().devoteeDetailsById(widget.devoteeId);
+    setState(() {
+      selectedDevotee = devoteeData?["data"];
+      if (devoteeData?["statusCode"] == 200) {
+        if (selectedDevotee?.dob != null || selectedDevotee?.dob != "") {
+          List<String> dateParts = selectedDevotee?.dob?.split('-') ?? [];
+
+          if (dateParts.length >= 3) {
+            setState(() {
+              day = int.tryParse(dateParts[2])?.toString() ?? '';
+              month = int.tryParse(dateParts[1])?.toString() ?? '';
+              year = int.tryParse(dateParts[0])?.toString() ?? '';
+            });
+          } else {
+            print('Invalid date format: ${selectedDevotee?.dob}');
+          }
+        }
+        selectedStatus = selectedDevotee?.status ?? "dataSubmitted";
+        selectedRole = selectedDevotee?.role ?? "User";
+        nameController.text = selectedDevotee?.name ?? "";
+        emailController.text = selectedDevotee?.emailId ?? "";
+        mobileController.text = selectedDevotee?.mobileNumber ?? "";
+        sanghaController.text = selectedDevotee?.sangha ?? "";
+        parichayaPatraValue = selectedDevotee?.hasParichayaPatra ?? false;
+        dobController.text =
+            selectedDevotee?.dob != null || selectedDevotee?.dob != ""
+                ? formatDate(selectedDevotee?.dob ?? "")
+                : "";
+        pranamiController.text = (selectedDevotee?.paidAmount != null
+            ? selectedDevotee?.paidAmount.toString()
+            : "")!;
+        remarksController.text = selectedDevotee?.remarks ?? "";
+        addressLine1Controller.text =
+            selectedDevotee?.address?.addressLine1 ?? "";
+        addressLine2Controller.text =
+            selectedDevotee?.address?.addressLine2 ?? "";
+        cityController.text = selectedDevotee?.address?.city ?? "";
+        stateController.text = selectedDevotee?.address?.state ?? "";
+        countryController.text = selectedDevotee?.address?.country ?? "";
+        postalCodeController.text =
+            (selectedDevotee?.address?.postalCode != null ||
+                    selectedDevotee?.address?.postalCode != 0)
+                ? selectedDevotee?.address?.postalCode.toString() ?? ""
+                : "";
+        selectedDevotee?.address?.postalCode.toString() ?? "";
+        profilePhotoUrl = selectedDevotee?.profilePhotoUrl ?? "";
+        isAdmin = selectedDevotee?.isAdmin ?? false;
+        isKYDVerified = selectedDevotee?.isKYDVerified ?? false;
+        isSpeciallyAbled = selectedDevotee?.isSpeciallyAbled ?? false;
+        isGuest = selectedDevotee?.isGuest ?? false;
+        isOrganizer = selectedDevotee?.isOrganizer ?? false;
+        isApproved = selectedDevotee?.isApproved ?? false;
+        isGruhasanaApproved = selectedDevotee?.isGruhasanaApproved ?? false;
+        bloodGroupController = selectedDevotee?.bloodGroup ?? "Don't know";
+        genderController = selectedDevotee?.gender == "Male" ? 0 : 1;
+      }
+    });
+  }
+
+  String formatDate(String inputDate) {
+    if (inputDate != "") {
+      DateTime dateTime = DateFormat('yyyy-MM-dd', 'en_US').parse(inputDate);
+
+      int day = dateTime.day;
+      String month = monthNames[dateTime.month - 1];
+      int year = dateTime.year;
+
+      String formattedDate = '$day-$month-$year';
+
+      return formattedDate;
+    }
+    return "";
   }
 
   InputDecoration textFormFieldDecoration(BuildContext context) {
@@ -361,6 +472,9 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                   setState(() {
                                     selectedStatus = newValue!;
                                     shouldShowPranamiField = newValue == "paid";
+                                    if (shouldShowPranamiField ?? false) {
+                                      pranamiController.text = "400";
+                                    }
                                   });
                                 },
                                 underline: Container(
@@ -474,6 +588,10 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                             selectedDevotee?.paidAmount != null)
                     ? TextFormField(
                         keyboardType: TextInputType.phone,
+                        // controller: widget.title == "edit"
+                        //     ? pranamiController
+                        //     : pranamiController
+                        //   ..text = "700",
                         controller: pranamiController,
                         onSaved: (newValue) => pranamiController,
                         validator: (value) {
@@ -489,60 +607,62 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                         },
                         decoration: InputDecoration(
                           labelText: "Pranami",
+                          labelStyle:
+                              TextStyle(color: Colors.grey[600], fontSize: 15),
                           filled: true,
                           floatingLabelBehavior: FloatingLabelBehavior.auto,
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30.0),
+                              borderRadius: BorderRadius.circular(10.0),
                               borderSide: const BorderSide(
-                                  width: 0, style: BorderStyle.none)),
+                                  width: 0, style: BorderStyle.solid)),
                         ),
                       )
                     : const SizedBox(),
                 const SizedBox(height: 20),
-                widget.title == "edit"
-                    ? Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('Gruhasana Approved'),
-                            Checkbox(
-                              checkColor: Colors.deepOrange,
-                              fillColor:
-                                  MaterialStateProperty.resolveWith(getColor),
-                              value: isGruhasanaApproved,
-                              onChanged: (bool? value) {
-                                setState(() {
-                                  isGruhasanaApproved = value!;
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                      )
-                    : const SizedBox(),
-                widget.title == "edit"
-                    ? Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('KYD Verified'),
-                            Checkbox(
-                              checkColor: Colors.deepOrange,
-                              fillColor:
-                                  MaterialStateProperty.resolveWith(getColor),
-                              value: isKYDVerified,
-                              onChanged: (bool? value) {
-                                setState(() {
-                                  isKYDVerified = value!;
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                      )
-                    : const SizedBox(),
+                // widget.title == "edit"
+                //     ? Padding(
+                //         padding: const EdgeInsets.all(8.0),
+                //         child: Row(
+                //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //           children: [
+                //             const Text('Gruhasana Approved'),
+                //             Checkbox(
+                //               checkColor: Colors.deepOrange,
+                //               fillColor:
+                //                   MaterialStateProperty.resolveWith(getColor),
+                //               value: isGruhasanaApproved,
+                //               onChanged: (bool? value) {
+                //                 setState(() {
+                //                   isGruhasanaApproved = value!;
+                //                 });
+                //               },
+                //             ),
+                //           ],
+                //         ),
+                //       )
+                //     : const SizedBox(),
+                // widget.title == "edit"
+                //     ? Padding(
+                //         padding: const EdgeInsets.all(8.0),
+                //         child: Row(
+                //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //           children: [
+                //             const Text('KYD Verified'),
+                //             Checkbox(
+                //               checkColor: Colors.deepOrange,
+                //               fillColor:
+                //                   MaterialStateProperty.resolveWith(getColor),
+                //               value: isKYDVerified,
+                //               onChanged: (bool? value) {
+                //                 setState(() {
+                //                   isKYDVerified = value!;
+                //                 });
+                //               },
+                //             ),
+                //           ],
+                //         ),
+                //       )
+                //     : const SizedBox(),
                 widget.title == "edit"
                     ? Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -603,7 +723,55 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     ],
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Has Parichaya Patra?',
+                      ),
+                      Checkbox(
+                        checkColor: Colors.deepOrange,
+                        fillColor: MaterialStateProperty.resolveWith(getColor),
+                        value: parichayaPatraValue,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            parichayaPatraValue = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
 
+                // Padding(
+                //   padding: const EdgeInsets.only(left: 20, right: 20),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     children: [
+                //       //SizedBox
+                //       const Text(
+                //         'Has Parichaya Patra?',
+                //       ), //Text
+                //       //SizedBox
+                //       /** Checkbox Widget **/
+                //       Transform.scale(
+                //         scale: 1.5,
+                //         child: Checkbox(
+                //           activeColor: Colors.deepOrange,
+                //           value: parichayaPatraValue,
+                //           onChanged: (bool? value) {
+                //             setState(() {
+                //               parichayaPatraValue = value;
+                //             });
+                //           },
+                //         ),
+                //       ), //Checkbox
+                //     ], //<Widget>[]
+                //   ),
+                // ),
+                const SizedBox(height: 20),
                 TextFormField(
                   controller: nameController,
                   onSaved: (newValue) => nameController,
@@ -618,12 +786,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   },
                   decoration: InputDecoration(
                     labelText: "Name",
+                    labelStyle:
+                        TextStyle(color: Colors.grey[600], fontSize: 15),
                     filled: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         borderSide: const BorderSide(
-                            width: 0, style: BorderStyle.none)),
+                            width: 0, style: BorderStyle.solid)),
                   ),
                 ),
 
@@ -642,12 +812,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   },
                   decoration: InputDecoration(
                     labelText: "Email Id",
+                    labelStyle:
+                        TextStyle(color: Colors.grey[600], fontSize: 15),
                     filled: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         borderSide: const BorderSide(
-                            width: 0, style: BorderStyle.none)),
+                            width: 0, style: BorderStyle.solid)),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -667,12 +839,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   },
                   decoration: InputDecoration(
                     labelText: "Mobile Number",
+                    labelStyle:
+                        TextStyle(color: Colors.grey[600], fontSize: 15),
                     filled: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         borderSide: const BorderSide(
-                            width: 0, style: BorderStyle.none)),
+                            width: 0, style: BorderStyle.solid)),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -731,77 +905,26 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      //SizedBox
-                      const Text(
-                        'Has Parichaya Patra?',
-                      ), //Text
-                      //SizedBox
-                      /** Checkbox Widget **/
-                      Transform.scale(
-                        scale: 1.5,
-                        child: Checkbox(
-                          activeColor: Colors.deepOrange,
-                          value: parichayaPatraValue,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              parichayaPatraValue = value;
-                            });
-                          },
-                        ),
-                      ), //Checkbox
-                    ], //<Widget>[]
-                  ),
-                ),
+
                 const SizedBox(height: 20),
                 GestureDetector(
                   child: TextField(
-                    controller:
-                        dateOfBirth, //editing controller of this TextField
+                    controller: dobController,
                     decoration: InputDecoration(
                       labelText: "Date Of Birth",
+                      labelStyle:
+                          TextStyle(color: Colors.grey[600], fontSize: 15),
                       filled: true,
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
+                          borderRadius: BorderRadius.circular(10.0),
                           borderSide: const BorderSide(
-                              width: 0, style: BorderStyle.none)),
+                              width: 0, style: BorderStyle.solid)),
                     ),
+
                     readOnly:
                         true, //set it true, so that user will not able to edit text
-                    onTap: () async {
-                      DateTime? pickedDate = await showDatePicker(
-                          initialEntryMode: DatePickerEntryMode
-                              .calendarOnly, // Hide edit button
-                          fieldHintText: 'dd-MM-yyyy',
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(
-                              1900), //DateTime.now() - not to allow to choose before today.
-                          lastDate: DateTime.now());
-
-                      if (pickedDate != null) {
-                        print(
-                            pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
-                        String formattedDate =
-                            DateFormat('dd-MM-yyyy').format(pickedDate);
-                        print(
-                            formattedDate); //formatted date output using intl package =>  2021-03-16
-                        //you can implement different kind of Date Format here according to your requirement
-
-                        setState(() {
-                          dateOfBirth.text =
-                              formattedDate; //set output date to TextField value.
-                        });
-                      } else {
-                        print("Date is not selected");
-                      }
-                    },
+                    onTap: () => _showCustomCalendarDialog(context),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -815,12 +938,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                         elevation: 16,
                         decoration: InputDecoration(
                           labelText: "Blood Group",
+                          labelStyle:
+                              TextStyle(color: Colors.grey[600], fontSize: 15),
                           filled: true,
-                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                          floatingLabelBehavior: FloatingLabelBehavior.auto,
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30.0),
+                              borderRadius: BorderRadius.circular(10.0),
                               borderSide: const BorderSide(
-                                  width: 0, style: BorderStyle.none)),
+                                  width: 0, style: BorderStyle.solid)),
                         ),
                         // style: const TextStyle(color: Colors.deepPurple),
 
@@ -861,12 +986,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     controller: sanghaController,
                     decoration: InputDecoration(
                       labelText: "Sangha Name",
+                      labelStyle:
+                          TextStyle(color: Colors.grey[600], fontSize: 15),
                       filled: true,
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
+                          borderRadius: BorderRadius.circular(10.0),
                           borderSide: const BorderSide(
-                              width: 0, style: BorderStyle.none)),
+                              width: 0, style: BorderStyle.solid)),
                     ),
                   ),
                   suggestionsCallback: (value) async {
@@ -910,12 +1037,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   // },
                   decoration: InputDecoration(
                     labelText: "Address line 1",
+                    labelStyle:
+                        TextStyle(color: Colors.grey[600], fontSize: 15),
                     filled: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         borderSide: const BorderSide(
-                            width: 0, style: BorderStyle.none)),
+                            width: 0, style: BorderStyle.solid)),
                   ),
                 ),
                 const SizedBox(
@@ -932,12 +1061,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   // },
                   decoration: InputDecoration(
                     labelText: "Address line 2",
+                    labelStyle:
+                        TextStyle(color: Colors.grey[600], fontSize: 15),
                     filled: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         borderSide: const BorderSide(
-                            width: 0, style: BorderStyle.none)),
+                            width: 0, style: BorderStyle.solid)),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -952,12 +1083,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   // },
                   decoration: InputDecoration(
                     labelText: "City Name",
+                    labelStyle:
+                        TextStyle(color: Colors.grey[600], fontSize: 15),
                     filled: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         borderSide: const BorderSide(
-                            width: 0, style: BorderStyle.none)),
+                            width: 0, style: BorderStyle.solid)),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -972,12 +1105,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   // },
                   decoration: InputDecoration(
                     labelText: "State Name",
+                    labelStyle:
+                        TextStyle(color: Colors.grey[600], fontSize: 15),
                     filled: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         borderSide: const BorderSide(
-                            width: 0, style: BorderStyle.none)),
+                            width: 0, style: BorderStyle.solid)),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -992,12 +1127,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   // },
                   decoration: InputDecoration(
                     labelText: "Country Name",
+                    labelStyle:
+                        TextStyle(color: Colors.grey[600], fontSize: 15),
                     filled: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         borderSide: const BorderSide(
-                            width: 0, style: BorderStyle.none)),
+                            width: 0, style: BorderStyle.solid)),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -1015,15 +1152,46 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   // },
                   decoration: InputDecoration(
                     labelText: "PIN Code",
+                    labelStyle:
+                        TextStyle(color: Colors.grey[600], fontSize: 15),
                     filled: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         borderSide: const BorderSide(
-                            width: 0, style: BorderStyle.none)),
+                            width: 0, style: BorderStyle.solid)),
                   ),
                 ),
                 const SizedBox(height: 20),
+                SizedBox(
+                  height: 50,
+                  child: TextFormField(
+                    // readOnly: true,
+                    //keyboardType: TextInputType.number,
+                    controller: remarksController,
+                    onSaved: ((newValue) {
+                      setState(() {
+                        remarksController.text = newValue ?? "";
+                      });
+                    }),
+                    decoration: InputDecoration(
+                      labelText: "Remarks",
+                      labelStyle:
+                          TextStyle(color: Colors.grey[600], fontSize: 15),
+                      filled: true,
+                      floatingLabelBehavior: remarksController.text.isNotEmpty
+                          ? FloatingLabelBehavior.auto
+                          : FloatingLabelBehavior.never,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: const BorderSide(
+                              width: 0, style: BorderStyle.solid)),
+                    ),
+                  ),
+                ),
+                widget.title == "edit"
+                    ? const SizedBox(height: 20)
+                    : const SizedBox(),
                 Container(
                   width: MediaQuery.of(context).size.width,
                   height: 50,
@@ -1052,7 +1220,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                   image?["selectedImage"] as List<int>,
                                   nameController.text)
                               : selectedDevotee?.profilePhotoUrl;
-                          print("profileURL -------------$profileURL");
+
                           String uniqueDevoteeId = const Uuid().v1();
                           DevoteeModel updateDevotee = DevoteeModel(
                               devoteeCode:
@@ -1071,18 +1239,22 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                   : uniqueDevoteeId,
                               bloodGroup: bloodGroupController,
                               name: nameController.text,
+                              remarks: remarksController.text,
                               paidAmount:
                                   double.tryParse(pranamiController.text),
                               gender: gender[genderController],
                               profilePhotoUrl: profileURL,
                               hasParichayaPatra: parichayaPatraValue,
                               sangha: sanghaController.text,
-                              dob: dateOfBirth.text,
+                              // dob: dobController.text.isNotEmpty
+                              //     ? dobController.text
+                              //     : "",
+                              dob: _formatDOB(dobController.text),
                               mobileNumber: mobileController.text,
                               updatedOn: DateTime.now().toString(),
                               emailId: emailController.text,
-                              isGruhasanaApproved: isGruhasanaApproved,
-                              isKYDVerified: isKYDVerified,
+                              // isGruhasanaApproved: isGruhasanaApproved,
+                              // isKYDVerified: isKYDVerified,
                               isSpeciallyAbled: isSpeciallyAbled,
                               isGuest: isGuest,
                               isOrganizer: isOrganizer,
@@ -1100,9 +1272,11 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                           if (widget.title == "edit") {
                             response = await PutDevoteeAPI()
                                 .updateDevotee(updateDevotee, widget.devoteeId);
+                            print("devotee update response: $response");
                           } else {
                             response = await PostDevoteeAPI()
                                 .addRelativeDevotee(updateDevotee);
+                            print("devotee add response: $response");
                           }
 
                           if (response["statusCode"] == 200) {
@@ -1119,14 +1293,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                               },
                             );
                             List<DevoteeModel> devoteeList = [];
-                            await GetDevoteeAPI()
-                                .advanceSearchDevotee(
-                              widget.searchValue.toString(),
-                              widget.searchBy.toString(),
-                            )
-                                .then((value) {
-                              devoteeList.addAll(value["data"]);
-                            });
+                            // await GetDevoteeAPI()
+                            //     .advanceSearchDevotee(
+                            //   widget.searchValue.toString(),
+                            //   widget.searchBy.toString(),
+                            // )
+                            //     .then((value) {
+                            //   devoteeList.addAll(value["data"]);
+                            // });
                             if (context.mounted) {
                               Navigator.of(context)
                                   .pop(); // Close the circular progress indicator
@@ -1187,6 +1361,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                     borderRadius: BorderRadius.circular(90)))),
                     child: Text(
                       widget.title == "edit" ? "Update" : "Add",
+                      style: const TextStyle(color: Colors.white, fontSize: 15),
                     ),
 
                     //Row

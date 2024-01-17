@@ -1,8 +1,9 @@
-// ignore_for_file: file_names, must_be_immutable
+// ignore_for_file: file_names, must_be_immutable, avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sdp/model/devotee_model.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/viewDevotee.dart';
+import 'package:sdp/screen/viewDevotee/viewDevotee.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
@@ -10,6 +11,7 @@ class PaliaTableRow extends StatefulWidget {
   PaliaTableRow({
     Key? key,
     required this.devoteeDetails,
+    required this.isCheckedBoolValue,
     required this.slNo,
     required this.showMenu,
     this.devoteeList,
@@ -25,11 +27,13 @@ class PaliaTableRow extends StatefulWidget {
   bool showMenu;
   bool? allCheck;
   bool? showClearButton;
+  Function isCheckedBoolValue;
 
   List<DevoteeModel>? devoteeList;
   String pageFrom;
   String? searchBy;
   String? searchValue;
+
   String status;
 
   @override
@@ -39,6 +43,36 @@ class PaliaTableRow extends StatefulWidget {
 class _PaliaTableRowState extends State<PaliaTableRow> {
   // List<String> selectedPalia = [];
   bool isCheck = false;
+
+  List<String> monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
+  String formatDate(String inputDate) {
+    if (inputDate.isNotEmpty) {
+      DateTime dateTime = DateFormat('yyyy-MM-dd', 'en_US').parse(inputDate);
+
+      int day = dateTime.day;
+      String month = monthNames[dateTime.month - 1];
+      int year = dateTime.year;
+
+      String formattedDate = '$day-$month-$year';
+
+      return formattedDate;
+    }
+    return "";
+  }
+
   @override
   void initState() {
     super.initState();
@@ -48,12 +82,15 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
     if (widget.devoteeList != null) {}
   }
 
+  late Function isCheckedBoolValue;
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Row(
           children: [
+          
             Expanded(
               child: Text(
                 (widget.slNo).toString(),
@@ -112,11 +149,22 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                 textAlign: TextAlign.center,
               ),
             ),
+            // Expanded(
+            //   child: Text(
+            //     widget.devoteeDetails.dob != null ||
+            //             widget.devoteeDetails.dob?.isNotEmpty == true
+            //         ? '${widget.devoteeDetails.dob}'
+            //         : "",
+            //     textAlign: TextAlign.center,
+            //   ),
+            // ),
             Expanded(
               child: Text(
-                widget.devoteeDetails.dob != null
-                    ? '${widget.devoteeDetails.dob}'
-                    : "-",
+                // widget.devoteeDetails.dob?.isNotEmpty == true ||
+                //         widget.devoteeDetails.dob != null
+                //     ?
+                formatDate(widget.devoteeDetails.dob ?? ""),
+                // : "",
                 textAlign: TextAlign.center,
               ),
             ),
@@ -135,7 +183,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                   ),
                   widget.devoteeDetails.paidAmount != null
                       ? Text(
-                          '₹ ${widget.devoteeDetails.paidAmount}',
+                          '₹${widget.devoteeDetails.paidAmount}',
                           textAlign: TextAlign.center,
                         )
                       : const SizedBox(),
@@ -156,7 +204,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(widget.devoteeDetails.name.toString()),
+                                    Text(widget.devoteeDetails.name ?? "N/A"),
                                     IconButton(
                                         color: Colors.deepOrange,
                                         onPressed: () {
@@ -165,7 +213,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                                         icon: const Icon(Icons.close))
                                   ],
                                 ),
-                                Text(widget.devoteeDetails.sangha.toString()),
+                                Text(widget.devoteeDetails.sangha ?? "N/A"),
                               ],
                             ),
                             content: ViewPalia(
@@ -191,7 +239,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          const Text('Edit Palia Details'),
+                                          const Text('Edit Devotee Details'),
                                           IconButton(
                                               onPressed: () {
                                                 Navigator.pop(context);

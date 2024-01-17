@@ -5,10 +5,12 @@ import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
+import 'package:sdp/screen/PaliaListScreen.dart/export_to_excel.dart';
 import 'package:sdp/screen/appBar/create_delegate_buton.dart.dart';
 import 'package:sdp/screen/appBar/goto_home_button.dart';
 import 'package:sdp/screen/appBar/logoutButton.dart';
 import 'package:sdp/screen/appBar/search.dart';
+import 'package:sdp/utilities/network_helper.dart';
 
 class AppbarActionButtonWidget extends StatefulWidget {
   AppbarActionButtonWidget({
@@ -53,6 +55,7 @@ class _AppbarActionButtonWidgetState extends State<AppbarActionButtonWidget> {
     'reissued',
     "blacklisted"
   ];
+  String? userRole;
 
   // List<String> statusOptionsUI = [
   //   'Data Submitted',
@@ -96,6 +99,7 @@ class _AppbarActionButtonWidgetState extends State<AppbarActionButtonWidget> {
     // ];
     setState(() {
       selectedStatus = widget.advanceStatus ?? "dataSubmitted";
+      userRole = Networkhelper().currentDevotee?.role;
     });
   }
 
@@ -205,6 +209,30 @@ class _AppbarActionButtonWidgetState extends State<AppbarActionButtonWidget> {
             : const SizedBox(),
         SearchClearButton(widget: widget),
         CreateDelegateButton(),
+        // userRole == "SuperAdmin" ||
+        //         userRole == "Admin" ||
+        //         userRole == "Approver"
+        //     ? OutlinedButton(
+        //         style: OutlinedButton.styleFrom(
+        //             side:
+        //                 const BorderSide(width: 1.5, color: Colors.deepOrange),
+        //             foregroundColor: Colors.black),
+        //         onPressed: () {
+        //           ExportToExcel().exportToExcel(allPaliaList);
+        //         },
+        //         child: const Row(
+        //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //           children: [
+        //             Text('Export'),
+        //             SizedBox(width: 10),
+        //             Icon(
+        //               Icons.upload_rounded,
+        //               color: Colors.blue,
+        //             )
+        //           ],
+        //         ),
+        //       )
+        //     : const SizedBox(),
         const SizedBox(width: 10),
         const LogoutButton(),
         const SizedBox(width: 10),
