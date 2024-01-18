@@ -68,9 +68,9 @@ class _ResponsiveAppbarActionButtonWidgetState
 
   Padding advanceSearchDropdown(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.only(left: 10, bottom: 10),
       child: DropdownMenu<String>(
-        width: 200,
+        width: 180,
         label: selectedStatus != null
             ? Text(selectedStatus!)
             : const Text("Status"), //selectedStatus ??
@@ -163,11 +163,11 @@ class _ResponsiveAppbarActionButtonWidgetState
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
             child: SearchDevotee(
               status: "allDevotee",
               searchBy: widget.searchBy,
@@ -180,13 +180,15 @@ class _ResponsiveAppbarActionButtonWidgetState
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   advanceSearchDropdown(context),
-                  Column(
-                    children: [
-                      SearchClearButton(widget: widget),
-                      const SizedBox(height: 5),
-                      const GotoHomeButton(),
-                    ],
-                  ),
+                  SearchClearButton(widget: widget),
+                  const GotoHomeButton(),
+                  // Column(
+                  //   children: [
+                  //     SearchClearButton(widget: widget),
+                  //     const SizedBox(height: 5),
+                  //     const GotoHomeButton(),
+                  //   ],
+                  // ),
                 ],
               )
             : const SizedBox(),

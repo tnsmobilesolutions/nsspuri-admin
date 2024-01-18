@@ -101,9 +101,17 @@ class _AppbarActionButtonWidgetState extends State<AppbarActionButtonWidget> {
       child: DropdownMenu<String>(
         width: 200,
         label: selectedStatus != null
-            ? Text(selectedStatus!)
-            : const Text("Status"), //selectedStatus ??
-        textStyle: const TextStyle(color: Colors.white),
+            ? Text(
+                selectedStatus!,
+                style: const TextStyle(
+                  fontSize: 12,
+                ),
+              )
+            : const Text("Status"),
+        textStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 12,
+        ),
         inputDecorationTheme: InputDecorationTheme(
           labelStyle: const TextStyle(color: Colors.white),
           enabledBorder: OutlineInputBorder(
@@ -183,95 +191,14 @@ class _AppbarActionButtonWidgetState extends State<AppbarActionButtonWidget> {
           return DropdownMenuEntry<String>(
             value: value,
             label: value,
+            // style: ButtonStyle(
+            //   textStyle: MaterialStateProperty.resolveWith((states) => TextStyle(fontSize: 15))
+            // )
           );
         }).toList(),
       ),
     );
   }
-  // Padding advanceSearchDropdown(BuildContext context) {
-  //   return Padding(
-  //     padding: const EdgeInsets.all(10),
-  //     child: OutlinedButton(
-  //       onPressed: () {},
-  //       style: OutlinedButton.styleFrom(
-  //         shape: RoundedRectangleBorder(
-  //           borderRadius: BorderRadius.circular(20),
-  //         ),
-  //         side: const BorderSide(color: Colors.white),
-  //       ),
-  //       child: DropdownButton<String>(
-  //         iconEnabledColor: Colors.deepOrange,
-  //         value: selectedStatus,
-  //         hint: const Text("Status"),
-  //         disabledHint: const Text("not status"),
-  //         dropdownColor: Colors.blue,
-  //         borderRadius: BorderRadius.circular(20),
-  //         onChanged: (String? newValue) async {
-  //           setState(() {
-  //             selectedStatus = newValue!;
-  //           });
-  //           devoteeList.clear();
-  //           await GetDevoteeAPI()
-  //               .advanceSearchDevotee(
-  //                   widget.searchValue.toString(), widget.searchBy.toString(),
-  //                   status: selectedStatus)
-  //               .then((value) {
-  //             devoteeList.addAll(value["data"]);
-  //           });
-  //           if (context.mounted) {
-  //             Navigator.push(context, MaterialPageRoute(
-  //               builder: (context) {
-  //                 return DevoteeListPage(
-  //                   status: "allDevotee",
-  //                   advanceStatus: selectedStatus,
-  //                   pageFrom: "Search",
-  //                   devoteeList: devoteeList,
-  //                   searchValue: widget.searchValue.toString(),
-  //                   searchBy: widget.searchBy,
-  //                   showClearButton: widget.showClearButton,
-  //                 );
-  //               },
-  //             ));
-  //           }
-  //         },
-  //         underline: const SizedBox(),
-  //         style: const TextStyle(color: Colors.white),
-  //         // items: [
-  //         //   for (final item in data)
-  //         //     item['bold'] == true
-  //         //         ? DropdownMenuItem(
-  //         //             enabled: false,
-  //         //             child: Text(item['value'],
-  //         //                 style: const TextStyle(fontWeight: FontWeight.bold)))
-  //         //         : DropdownMenuItem(
-  //         //             value: item['value'],
-  //         //             child: Padding(
-  //         //               padding: const EdgeInsets.only(left: 8),
-  //         //               child: Text(item['value']),
-  //         //             ))
-  //         // ],
-  //         items: statusOptions.map<DropdownMenuItem<String>>((String value) {
-  //           return DropdownMenuItem<String>(
-  //             value: value,
-  //             child: Text(value),
-  //           );
-  //         }).toList(),
-  //         // items: Map.fromIterables(statusOptionsUI, statusOptions)
-  //         //     .entries
-  //         //     .map<DropdownMenuItem<String>>(
-  //         //       (MapEntry<String, String> entry) => DropdownMenuItem<String>(
-  //         //         value: entry.value,
-  //         //         child: Padding(
-  //         //           padding: const EdgeInsets.all(8.0),
-  //         //           child: Text(entry.key),
-  //         //         ),
-  //         //       ),
-  //         //     )
-  //         //     .toList(),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -294,30 +221,6 @@ class _AppbarActionButtonWidgetState extends State<AppbarActionButtonWidget> {
             : const SizedBox(),
         SearchClearButton(widget: widget),
         CreateDelegateButton(),
-        // userRole == "SuperAdmin" ||
-        //         userRole == "Admin" ||
-        //         userRole == "Approver"
-        //     ? OutlinedButton(
-        //         style: OutlinedButton.styleFrom(
-        //             side:
-        //                 const BorderSide(width: 1.5, color: Colors.deepOrange),
-        //             foregroundColor: Colors.black),
-        //         onPressed: () {
-        //           ExportToExcel().exportToExcel(allPaliaList);
-        //         },
-        //         child: const Row(
-        //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        //           children: [
-        //             Text('Export'),
-        //             SizedBox(width: 10),
-        //             Icon(
-        //               Icons.upload_rounded,
-        //               color: Colors.blue,
-        //             )
-        //           ],
-        //         ),
-        //       )
-        //     : const SizedBox(),
         const SizedBox(width: 10),
         const LogoutButton(),
         const SizedBox(width: 10),
