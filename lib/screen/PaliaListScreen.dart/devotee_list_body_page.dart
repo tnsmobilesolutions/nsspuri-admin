@@ -7,6 +7,7 @@ import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/export_to_excel.dart';
+import 'package:sdp/screen/PaliaListScreen.dart/printpdf.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/viewDevotee.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
 import 'package:sdp/screen/viewDevotee/viewDevotee.dart';
@@ -43,7 +44,9 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
   bool isAscending = false;
   bool showMenu = false;
   bool isLoading = true;
+  bool isSelected = false;
   String? userRole;
+  bool isChecked = false;
   List<String> monthNames = [
     'Jan',
     'Feb',
@@ -164,6 +167,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
       columnSpacing: 10,
       dataRowMaxHeight: 80,
       columns: [
+        dataColumn(context, 'Checkbox'),
         dataColumn(context, 'Sl. No.'),
         dataColumn(context, 'Profile Image'),
         DataColumn(
@@ -207,12 +211,27 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         dataColumn(context, 'Status'),
         dataColumn(context, 'View'),
         dataColumn(context, 'Edit'),
+        // Add more DataColumn widgets as needed
       ],
       rows: List.generate(
         allPaliaList.length,
         (index) {
           return DataRow(
             cells: [
+              // Inside the DataRow, add a DataCell for the checkbox
+              DataCell(
+                Visibility(
+                  visible: isChecked,
+                  child: Checkbox(
+                    value: isChecked,
+                    onChanged: (value) {
+                      setState(() {
+                        isChecked = value ?? false;
+                      });
+                    },
+                  ),
+                ),
+              ),
               DataCell(Text("${index + 1}")),
               DataCell(SizedBox(
                 height: 50,
@@ -289,7 +308,8 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                             Text(allPaliaList[index].sangha.toString()),
                           ],
                         ),
-                        content: ViewPalia(devoteeDetails: allPaliaList[index]),
+                        content:
+                            ViewDevotee(devoteeDetails: allPaliaList[index]),
                       ),
                     );
                   },
@@ -344,6 +364,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                   ),
                 ),
               ),
+              // Add more DataCell widgets as needed
             ],
           );
         },
@@ -375,25 +396,59 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                 ? SizedBox(
                     // height: 40,
                     width: 120,
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                          side: const BorderSide(
-                              width: 1.5, color: Colors.deepOrange),
-                          foregroundColor: Colors.black),
-                      onPressed: () {
-                        ExportToExcel().exportToExcel(allPaliaList);
-                      },
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text('Export'),
-                          // SizedBox(width: 10),
-                          Icon(
-                            Icons.upload_rounded,
-                            color: Colors.blue,
-                          )
-                        ],
-                      ),
+                    child: Row(
+                      children: [
+                        OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                              width: 1.5,
+                              color: Colors.deepOrange,
+                            ),
+                            foregroundColor: Colors.black,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              isChecked = !isChecked;
+                              if (isChecked) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PrintPdfScreen(),
+                                  ),
+                                );
+                              }
+                            });
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text(isChecked ? 'Print' : 'Select'),
+                              // SizedBox(width: 10),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                              side: const BorderSide(
+                                  width: 1.5, color: Colors.deepOrange),
+                              foregroundColor: Colors.black),
+                          onPressed: () {
+                            ExportToExcel().exportToExcel(allPaliaList);
+                          },
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text('Export'),
+                              // SizedBox(width: 10),
+                              Icon(
+                                Icons.upload_rounded,
+                                color: Colors.blue,
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   )
                 : const SizedBox(),
