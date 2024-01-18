@@ -42,7 +42,7 @@ class DevoteeListBodyPage extends StatefulWidget {
 class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
     with TickerProviderStateMixin {
   bool? allCheck;
-  List<DevoteeModel> allPaliaList = [];
+  List<DevoteeModel> allDevotees = [], selectedDevotees = [];
   bool checkedValue = false;
   bool editpaliDate = false;
   bool isAscending = false;
@@ -67,6 +67,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
   ];
 
   late AnimateIconController _controller;
+  List<bool> selectedList = [];
 
   @override
   void initState() {
@@ -74,10 +75,12 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
     _controller = AnimateIconController();
 
     widget.devoteeList != null
-        ? allPaliaList = widget.devoteeList!
+        ? allDevotees = widget.devoteeList!
         : fetchAllDevotee();
     setState(() {
       userRole = NetworkHelper().currentDevotee?.role;
+      selectedList =
+          List<bool>.generate(allDevotees.length, (int index) => false);
     });
   }
 
@@ -120,7 +123,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
     if (allDevotee != null) {
       setState(() {
         for (int i = 0; i < allDevotee?["data"].length; i++) {
-          allPaliaList.add(allDevotee?["data"][i]);
+          allDevotees.add(allDevotee?["data"][i]);
         }
       });
     } else {
@@ -162,6 +165,8 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
 
   Widget devoteeTable(BuildContext context) {
     return DataTable(
+      showBottomBorder: true,
+      showCheckboxColumn: true,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
@@ -171,7 +176,6 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
       columnSpacing: 10,
       dataRowMaxHeight: 80,
       columns: [
-        dataColumn(context, 'Checkbox'),
         dataColumn(context, 'Sl. No.'),
         dataColumn(context, 'Profile Image'),
         DataColumn(
@@ -215,39 +219,47 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         dataColumn(context, 'Status'),
         dataColumn(context, 'View'),
         dataColumn(context, 'Edit'),
-        // Add more DataColumn widgets as needed
       ],
       rows: List.generate(
-        allPaliaList.length,
+        allDevotees.length,
         (index) {
           return DataRow(
+            selected: selectedList[index],
+            onSelectChanged: (bool? value) {
+              setState(() {
+                selectedList[index] = value!;
+                if (value) {
+                  if (selectedDevotees.length < 6) {
+                    selectedDevotees.add(allDevotees[index]);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      elevation: 6,
+                      behavior: SnackBarBehavior.floating,
+                      content: Text(
+                        'You can only select up to 6 devotees !',
+                      ),
+                    ));
+                    selectedList[index] = false;
+                  }
+                } else {
+                  selectedDevotees.remove(allDevotees[index]);
+                }
+              });
+            },
             cells: [
-              DataCell(
-                Visibility(
-                  visible: isChecked,
-                  child: Checkbox(
-                    value: isChecked,
-                    onChanged: (value) {
-                      setState(() {
-                        isChecked = value ?? false;
-                      });
-                    },
-                  ),
-                ),
-              ),
               DataCell(Text("${index + 1}")),
-              DataCell(SizedBox(
+              const DataCell(SizedBox(
                 height: 50,
                 width: 50,
                 child:
-                    //  allPaliaList[index].profilePhotoUrl != null &&
-                    //         allPaliaList[index].profilePhotoUrl!.isNotEmpty == true
+                    //  allDevotees[index].profilePhotoUrl != null &&
+                    //         allDevotees[index].profilePhotoUrl!.isNotEmpty == true
                     //     ? Image.network(
-                    //         allPaliaList[index].profilePhotoUrl ?? '',
+                    //         allDevotees[index].profilePhotoUrl ?? '',
                     //         height: 80,
                     //         width: 80,
                     //       )
-                    //     : const
+                    //     :
                     Image(image: AssetImage('assets/images/profile.jpeg')),
               )),
               DataCell(
@@ -256,28 +268,28 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      allPaliaList[index].name != null
-                          ? '${allPaliaList[index].name}'
+                      allDevotees[index].name != null
+                          ? '${allDevotees[index].name}'
                           : "",
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      allPaliaList[index].devoteeCode.toString(),
+                      allDevotees[index].devoteeCode.toString(),
                     ),
                   ],
                 ),
               ),
-              DataCell(Text(allPaliaList[index].sangha ?? '_')),
+              DataCell(Text(allDevotees[index].sangha ?? '_')),
               DataCell(
-                allPaliaList[index].age != null
+                allDevotees[index].age != null
                     ? Text(
-                        allPaliaList[index].age.toString(),
+                        allDevotees[index].age.toString(),
                         textAlign: TextAlign.center,
                       )
                     : Text(
-                        formatDate(allPaliaList[index].dob ?? ""),
+                        formatDate(allDevotees[index].dob ?? ""),
                         textAlign: TextAlign.center,
                       ),
               ),
@@ -286,9 +298,9 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('${allPaliaList[index].status}'),
-                    allPaliaList[index].paidAmount != null
-                        ? Text('₹${allPaliaList[index].paidAmount}')
+                    Text('${allDevotees[index].status}'),
+                    allDevotees[index].paidAmount != null
+                        ? Text('₹${allDevotees[index].paidAmount}')
                         : const SizedBox(),
                   ],
                 ),
@@ -305,7 +317,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(allPaliaList[index].name.toString()),
+                                Text(allDevotees[index].name.toString()),
                                 IconButton(
                                     color: Colors.deepOrange,
                                     onPressed: () {
@@ -314,11 +326,11 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                                     icon: const Icon(Icons.close))
                               ],
                             ),
-                            Text(allPaliaList[index].sangha.toString()),
+                            Text(allDevotees[index].sangha.toString()),
                           ],
                         ),
                         content:
-                            ViewDevotee(devoteeDetails: allPaliaList[index]),
+                            ViewDevotee(devoteeDetails: allDevotees[index]),
                       ),
                     );
                   },
@@ -328,46 +340,45 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
               DataCell(
                 IconButton(
                   color: Colors.deepOrange,
-                  onPressed:
-                      NetworkHelper().currentDevotee?.role == "Approver" &&
-                              allPaliaList[index].status == "paid"
-                          ? null
-                          : () {
-                              showDialog<void>(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                      title: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text('Edit Devotee Details'),
-                                          IconButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              icon: const Icon(
-                                                Icons.close,
-                                                color: Colors.deepOrange,
-                                              ))
-                                        ],
-                                      ),
-                                      content: AddPageDilouge(
-                                        devoteeId: allPaliaList[index]
-                                            .devoteeId
-                                            .toString(),
-                                        title: "edit",
-                                        showClearButton: widget.showClearButton,
-                                        searchBy: widget.searchBy,
-                                        searchValue: widget.searchValue,
-                                      ));
-                                },
-                              );
+                  onPressed: NetworkHelper().currentDevotee?.role ==
+                              "Approver" &&
+                          allDevotees[index].status == "paid"
+                      ? null
+                      : () {
+                          showDialog<void>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                  title: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text('Edit Devotee Details'),
+                                      IconButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          icon: const Icon(
+                                            Icons.close,
+                                            color: Colors.deepOrange,
+                                          ))
+                                    ],
+                                  ),
+                                  content: AddPageDilouge(
+                                    devoteeId:
+                                        allDevotees[index].devoteeId.toString(),
+                                    title: "edit",
+                                    showClearButton: widget.showClearButton,
+                                    searchBy: widget.searchBy,
+                                    searchValue: widget.searchValue,
+                                  ));
                             },
+                          );
+                        },
                   icon: Icon(
                     Icons.edit,
                     color: NetworkHelper().currentDevotee?.role == "Approver" &&
-                            allPaliaList[index].status == "paid"
+                            allDevotees[index].status == "paid"
                         ? const Color.fromARGB(255, 206, 206, 206)
                         : Colors.deepOrange,
                   ),
@@ -383,7 +394,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
 
   void _sortList(bool isAscending) {
     setState(() {
-      allPaliaList.sort((a, b) {
+      allDevotees.sort((a, b) {
         final nameA = (a.name ?? '').toLowerCase();
         final nameB = (b.name ?? '').toLowerCase();
         return isAscending ? nameA.compareTo(nameB) : nameB.compareTo(nameA);
@@ -402,85 +413,38 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
             userRole == "SuperAdmin" ||
                     userRole == "Admin" ||
                     userRole == "Approver"
-                ? SizedBox(
-                    // height: 40,
-                    width: 240,
-                    child: Row(
-                      children: [
-                        OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                              side: const BorderSide(
-                                  width: 1.5, color: Colors.deepOrange),
-                              foregroundColor: Colors.black),
-                          onPressed: () async {
-                            setState(() {
-                              isChecked = !isChecked;
-                            });
-
-                            if (isChecked) {
-                              final doc = pw.Document();
-                              doc.addPage(
-                                pw.Page(
-                                  pageFormat: PdfPageFormat.a4,
-                                  build: (pw.Context context) {
-                                    return pw.Column(children: [
-                                      pw.Row(
-                                        mainAxisAlignment:
-                                            pw.MainAxisAlignment.center,
-                                        children: [
-                                          // Add your Row widgets here
-                                        ],
-                                      ),
-                                      pw.Column(
-                                        children: [
-                                          // Add your Column widgets here
-                                        ],
-                                      ),
-                                      pw.Divider(),
-                                      pw.SizedBox(height: 20),
-                                      pw.Divider(thickness: 0.5),
-                                      // Add any additional content as needed
-                                    ]);
-                                  },
-                                ),
-                              );
-
-                              await Printing.layoutPdf(
-                                onLayout: (PdfPageFormat format) async =>
-                                    doc.save(),
-                              );
-                            }
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Text(isChecked ? 'Print' : 'Select'),
-                            ],
-                          ),
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                                width: 1.5, color: Colors.deepOrange),
+                            foregroundColor: Colors.black),
+                        onPressed: () {},
+                        child: const Text('Print'),
+                      ),
+                      const SizedBox(width: 12),
+                      OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                                width: 1.5, color: Colors.deepOrange),
+                            foregroundColor: Colors.black),
+                        onPressed: () {
+                          ExportToExcel().exportToExcel(allDevotees);
+                        },
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text('Export'),
+                            Icon(
+                              Icons.upload_rounded,
+                              color: Colors.deepOrange,
+                            )
+                          ],
                         ),
-                        const SizedBox(width: 12),
-                        OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                              side: const BorderSide(
-                                  width: 1.5, color: Colors.deepOrange),
-                              foregroundColor: Colors.black),
-                          onPressed: () {
-                            ExportToExcel().exportToExcel(allPaliaList);
-                          },
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Text('Export'),
-                              // SizedBox(width: 10),
-                              Icon(
-                                Icons.upload_rounded,
-                                color: Colors.deepOrange,
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   )
                 : const SizedBox(),
             Row(
