@@ -3,8 +3,8 @@
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/devotee_model.dart';
 
-class Networkhelper {
-  static final Networkhelper _networkHelper = Networkhelper._internal();
+class NetworkHelper {
+  static final NetworkHelper _networkHelper = NetworkHelper._internal();
   DevoteeModel? currentDevotee;
   DevoteeModel? get getCurrentDevotee {
     return currentDevotee;
@@ -14,16 +14,16 @@ class Networkhelper {
     currentDevotee = currentdevotee;
   }
 
-  factory Networkhelper() {
+  factory NetworkHelper() {
     return _networkHelper;
   }
-  Networkhelper._internal();
+  NetworkHelper._internal();
 }
 
 fetchCurrentuser() async {
   try {
     final currentDevoteedata = await GetDevoteeAPI().currentDevotee();
-    Networkhelper().setCurrentDevotee = currentDevoteedata?["data"];
+    NetworkHelper().setCurrentDevotee = currentDevoteedata?["data"];
   } catch (e) {
     print('fetching currentDevotee error : $e');
   }

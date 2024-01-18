@@ -10,7 +10,7 @@ Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  await fetchCurrentuser();
+  // await fetchCurrentuser();
   await Firebase.initializeApp(
     options: FirebaseOptions(
       apiKey: "AIzaSyA1tSAISbgSLqVdLRvfLh-9bB58DgYg1lI",
