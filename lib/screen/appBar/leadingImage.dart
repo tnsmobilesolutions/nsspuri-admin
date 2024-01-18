@@ -16,8 +16,8 @@ class TitleAppBar extends StatelessWidget {
           const Image(
               image: AssetImage('assets/images/login.png'),
               fit: BoxFit.cover,
-              height: 80.00,
-              width: 90.00),
+              height: 60.00,
+              width: 60.00),
           const SizedBox(width: 20),
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -32,12 +32,12 @@ class TitleAppBar extends StatelessWidget {
                   overflow: TextOverflow.clip,
                 ),
               ),
-              const SizedBox(height: 20),
+              //const SizedBox(height: 10),
               SizedBox(
                 width:
                     Responsive.isLargeMobile(context) ? 300 : screenWidth / 7,
                 child: Text(
-                  "${Networkhelper().getCurrentDevotee?.name}",
+                  "${NetworkHelper().getCurrentDevotee?.name}",
                   style: const TextStyle(color: Colors.white, fontSize: 18),
                   softWrap: true,
                   overflow: TextOverflow.clip,
@@ -47,7 +47,7 @@ class TitleAppBar extends StatelessWidget {
                 width:
                     Responsive.isLargeMobile(context) ? 300 : screenWidth / 7,
                 child: Text(
-                  "${Networkhelper().getCurrentDevotee?.role}",
+                  "${NetworkHelper().getCurrentDevotee?.role}",
                   style: const TextStyle(color: Colors.white, fontSize: 15),
                   softWrap: true,
                   overflow: TextOverflow.clip,

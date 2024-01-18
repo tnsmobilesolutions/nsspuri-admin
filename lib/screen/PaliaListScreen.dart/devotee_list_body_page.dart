@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/devotee_model.dart';
+import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/export_to_excel.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/viewDevotee.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
@@ -69,7 +70,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         ? allPaliaList = widget.devoteeList!
         : fetchAllDevotee();
     setState(() {
-      userRole = Networkhelper().currentDevotee?.role;
+      userRole = NetworkHelper().currentDevotee?.role;
     });
   }
 
@@ -211,20 +212,19 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
           return DataRow(
             cells: [
               DataCell(Text("${index + 1}")),
-              DataCell(SizedBox(
+              const DataCell(SizedBox(
                 height: 50,
                 width: 50,
-                child: allPaliaList[index].profilePhotoUrl != null &&
-                        allPaliaList[index].profilePhotoUrl!.isNotEmpty == true
-                    ? Image.network(
-                        allPaliaList[index].profilePhotoUrl ?? '',
-                        height: 80,
-                        width: 80,
-                        // cacheWidth: 100,
-                        // cacheHeight: 70,
-                      )
-                    : const Image(
-                        image: AssetImage('assets/images/profile.jpeg')),
+                child:
+                    //  allPaliaList[index].profilePhotoUrl != null &&
+                    //         allPaliaList[index].profilePhotoUrl!.isNotEmpty == true
+                    //     ? Image.network(
+                    //         allPaliaList[index].profilePhotoUrl ?? '',
+                    //         height: 80,
+                    //         width: 80,
+                    //       )
+                    // :
+                    Image(image: AssetImage('assets/images/profile.jpeg')),
               )),
               //DataCell(Text(allPaliaList[index].name ?? '_')),
               DataCell(
@@ -300,7 +300,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                 IconButton(
                   color: Colors.deepOrange,
                   onPressed:
-                      Networkhelper().currentDevotee?.role == "Approver" &&
+                      NetworkHelper().currentDevotee?.role == "Approver" &&
                               allPaliaList[index].status == "paid"
                           ? null
                           : () {
@@ -337,7 +337,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                             },
                   icon: Icon(
                     Icons.edit,
-                    color: Networkhelper().currentDevotee?.role == "Approver" &&
+                    color: NetworkHelper().currentDevotee?.role == "Approver" &&
                             allPaliaList[index].status == "paid"
                         ? const Color.fromARGB(255, 206, 206, 206)
                         : Colors.deepOrange,
@@ -373,7 +373,8 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                     userRole == "Admin" ||
                     userRole == "Approver"
                 ? SizedBox(
-                    width: 150,
+                    // height: 40,
+                    width: 120,
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
                           side: const BorderSide(
@@ -386,7 +387,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Text('Export'),
-                          SizedBox(width: 10),
+                          // SizedBox(width: 10),
                           Icon(
                             Icons.upload_rounded,
                             color: Colors.blue,
@@ -398,7 +399,19 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                 : const SizedBox(),
             Row(
               children: [
-                Expanded(child: devoteeTable(context)),
+                Expanded(
+                  child: Responsive(
+                    desktop: devoteeTable(context),
+                    tablet: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: devoteeTable(context),
+                    ),
+                    mobile: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: devoteeTable(context),
+                    ),
+                  ),
+                ),
               ],
             ),
           ],

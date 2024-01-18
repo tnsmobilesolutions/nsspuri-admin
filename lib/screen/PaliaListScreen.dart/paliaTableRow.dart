@@ -90,7 +90,6 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
       children: [
         Row(
           children: [
-          
             Expanded(
               child: Text(
                 (widget.slNo).toString(),
@@ -226,7 +225,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
               Expanded(
                   child: IconButton(
                       color: Colors.deepOrange,
-                      onPressed: Networkhelper().currentDevotee?.role ==
+                      onPressed: NetworkHelper().currentDevotee?.role ==
                                   "Approver" &&
                               widget.devoteeDetails.status == "paid"
                           ? null
@@ -264,7 +263,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                             },
                       icon: Icon(
                         Icons.edit,
-                        color: Networkhelper().currentDevotee?.role ==
+                        color: NetworkHelper().currentDevotee?.role ==
                                     "Approver" &&
                                 widget.devoteeDetails.status == "paid"
                             ? const Color.fromARGB(255, 206, 206, 206)

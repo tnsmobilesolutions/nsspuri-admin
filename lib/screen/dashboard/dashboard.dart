@@ -16,8 +16,8 @@ class DashboardPage extends StatelessWidget {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          backgroundColor: const Color(0xff0064B4),
-          toolbarHeight: 120,
+          //backgroundColor: const Color(0xff0064B4),
+          toolbarHeight: 80,
           // toolbarHeight: Responsive.isDesktop(context)
           //     ? 150
           //     : Responsive.isLargeMobile(context)
@@ -72,7 +72,9 @@ class DashboardPage extends StatelessWidget {
             // Responsive.isLargeMobile(context)
             //     ? const SizedBox()
             //     :
-            AppbarActionButtonWidget(),
+            AppbarActionButtonWidget(
+              advanceStatus: null,
+            ),
           ],
           // bottom: PreferredSize(
           //   preferredSize: Responsive.isLargeMobile(context)

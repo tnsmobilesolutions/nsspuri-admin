@@ -3,9 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/devotee_model.dart';
-import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/export_to_excel.dart';
 import 'package:sdp/screen/appBar/create_delegate_buton.dart.dart';
 import 'package:sdp/screen/appBar/goto_home_button.dart';
 import 'package:sdp/screen/appBar/logoutButton.dart';
@@ -89,104 +87,191 @@ class _AppbarActionButtonWidgetState extends State<AppbarActionButtonWidget> {
   @override
   void initState() {
     super.initState();
-    // data = [
-    //   for (final item in statusList)
-    //     for (final value in item.values)
-    //       if (value is List)
-    //         for (final listValue in value) {'value': listValue, 'bold': false}
-    //       else
-    //         {'value': value, 'bold': true}
-    // ];
     setState(() {
-      selectedStatus = widget.advanceStatus ?? "dataSubmitted";
-      userRole = Networkhelper().currentDevotee?.role;
+      if (widget.advanceStatus != null) {
+        selectedStatus = widget.advanceStatus ?? "dataSubmitted";
+      }
+      userRole = NetworkHelper().currentDevotee?.role;
     });
   }
 
   Padding advanceSearchDropdown(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10),
-      child: OutlinedButton(
-        onPressed: () {},
-        style: OutlinedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+      child: DropdownMenu<String>(
+        width: 200,
+        label: selectedStatus != null
+            ? Text(selectedStatus!)
+            : const Text("Status"), //selectedStatus ??
+        textStyle: const TextStyle(color: Colors.white),
+        inputDecorationTheme: InputDecorationTheme(
+          labelStyle: const TextStyle(color: Colors.white),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Colors.white),
           ),
-          side: const BorderSide(color: Colors.white),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Colors.white),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Colors.white),
+          ),
         ),
-        child: DropdownButton<String>(
-          iconEnabledColor: Colors.deepOrange,
-          value: selectedStatus,
-          hint: const Text("Status"),
-          disabledHint: const Text("not status"),
-          dropdownColor: Colors.blue,
-          borderRadius: BorderRadius.circular(20),
-          onChanged: (String? newValue) async {
-            setState(() {
-              selectedStatus = newValue!;
-            });
-            devoteeList.clear();
-            await GetDevoteeAPI()
-                .advanceSearchDevotee(
-                    widget.searchValue.toString(), widget.searchBy.toString(),
-                    status: selectedStatus)
-                .then((value) {
-              devoteeList.addAll(value["data"]);
-            });
-            if (context.mounted) {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) {
-                  return DevoteeListPage(
-                    status: "allDevotee",
-                    advanceStatus: selectedStatus,
-                    pageFrom: "Search",
-                    devoteeList: devoteeList,
-                    searchValue: widget.searchValue.toString(),
-                    searchBy: widget.searchBy,
-                    showClearButton: widget.showClearButton,
+        trailingIcon: const Icon(
+          Icons.arrow_drop_down_rounded,
+          color: Colors.white,
+          size: 30,
+        ),
+        selectedTrailingIcon: const Icon(
+          Icons.arrow_drop_up_rounded,
+          color: Colors.white,
+          size: 30,
+        ),
+        menuStyle: MenuStyle(
+            backgroundColor:
+                MaterialStateProperty.resolveWith((state) => Colors.white),
+            shape: MaterialStateProperty.resolveWith<OutlinedBorder?>(
+              (Set<MaterialState> states) {
+                if (states.contains(MaterialState.pressed)) {
+                  // Return a different shape when the button is pressed
+                  return RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: const BorderSide(color: Colors.deepOrange),
                   );
-                },
-              ));
-            }
-          },
-          underline: const SizedBox(),
-          style: const TextStyle(color: Colors.white),
-          // items: [
-          //   for (final item in data)
-          //     item['bold'] == true
-          //         ? DropdownMenuItem(
-          //             enabled: false,
-          //             child: Text(item['value'],
-          //                 style: const TextStyle(fontWeight: FontWeight.bold)))
-          //         : DropdownMenuItem(
-          //             value: item['value'],
-          //             child: Padding(
-          //               padding: const EdgeInsets.only(left: 8),
-          //               child: Text(item['value']),
-          //             ))
-          // ],
-          items: statusOptions.map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-          // items: Map.fromIterables(statusOptionsUI, statusOptions)
-          //     .entries
-          //     .map<DropdownMenuItem<String>>(
-          //       (MapEntry<String, String> entry) => DropdownMenuItem<String>(
-          //         value: entry.value,
-          //         child: Padding(
-          //           padding: const EdgeInsets.all(8.0),
-          //           child: Text(entry.key),
-          //         ),
-          //       ),
-          //     )
-          //     .toList(),
-        ),
+                }
+                // Return the default shape for other states
+                return RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  side: const BorderSide(color: Colors.white),
+                );
+              },
+            )),
+        enableFilter: true,
+        enableSearch: true,
+        onSelected: (String? newValue) async {
+          setState(() {
+            selectedStatus = newValue!;
+          });
+          devoteeList.clear();
+          await GetDevoteeAPI()
+              .advanceSearchDevotee(
+                  widget.searchValue.toString(), widget.searchBy.toString(),
+                  status: selectedStatus)
+              .then((value) {
+            devoteeList.addAll(value["data"]);
+          });
+          if (context.mounted) {
+            Navigator.push(context, MaterialPageRoute(
+              builder: (context) {
+                return DevoteeListPage(
+                  status: "allDevotee",
+                  advanceStatus: selectedStatus,
+                  pageFrom: "Search",
+                  devoteeList: devoteeList,
+                  searchValue: widget.searchValue.toString(),
+                  searchBy: widget.searchBy,
+                  showClearButton: widget.showClearButton,
+                );
+              },
+            ));
+          }
+        },
+        dropdownMenuEntries:
+            statusOptions.map<DropdownMenuEntry<String>>((String value) {
+          return DropdownMenuEntry<String>(
+            value: value,
+            label: value,
+          );
+        }).toList(),
       ),
     );
   }
+  // Padding advanceSearchDropdown(BuildContext context) {
+  //   return Padding(
+  //     padding: const EdgeInsets.all(10),
+  //     child: OutlinedButton(
+  //       onPressed: () {},
+  //       style: OutlinedButton.styleFrom(
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(20),
+  //         ),
+  //         side: const BorderSide(color: Colors.white),
+  //       ),
+  //       child: DropdownButton<String>(
+  //         iconEnabledColor: Colors.deepOrange,
+  //         value: selectedStatus,
+  //         hint: const Text("Status"),
+  //         disabledHint: const Text("not status"),
+  //         dropdownColor: Colors.blue,
+  //         borderRadius: BorderRadius.circular(20),
+  //         onChanged: (String? newValue) async {
+  //           setState(() {
+  //             selectedStatus = newValue!;
+  //           });
+  //           devoteeList.clear();
+  //           await GetDevoteeAPI()
+  //               .advanceSearchDevotee(
+  //                   widget.searchValue.toString(), widget.searchBy.toString(),
+  //                   status: selectedStatus)
+  //               .then((value) {
+  //             devoteeList.addAll(value["data"]);
+  //           });
+  //           if (context.mounted) {
+  //             Navigator.push(context, MaterialPageRoute(
+  //               builder: (context) {
+  //                 return DevoteeListPage(
+  //                   status: "allDevotee",
+  //                   advanceStatus: selectedStatus,
+  //                   pageFrom: "Search",
+  //                   devoteeList: devoteeList,
+  //                   searchValue: widget.searchValue.toString(),
+  //                   searchBy: widget.searchBy,
+  //                   showClearButton: widget.showClearButton,
+  //                 );
+  //               },
+  //             ));
+  //           }
+  //         },
+  //         underline: const SizedBox(),
+  //         style: const TextStyle(color: Colors.white),
+  //         // items: [
+  //         //   for (final item in data)
+  //         //     item['bold'] == true
+  //         //         ? DropdownMenuItem(
+  //         //             enabled: false,
+  //         //             child: Text(item['value'],
+  //         //                 style: const TextStyle(fontWeight: FontWeight.bold)))
+  //         //         : DropdownMenuItem(
+  //         //             value: item['value'],
+  //         //             child: Padding(
+  //         //               padding: const EdgeInsets.only(left: 8),
+  //         //               child: Text(item['value']),
+  //         //             ))
+  //         // ],
+  //         items: statusOptions.map<DropdownMenuItem<String>>((String value) {
+  //           return DropdownMenuItem<String>(
+  //             value: value,
+  //             child: Text(value),
+  //           );
+  //         }).toList(),
+  //         // items: Map.fromIterables(statusOptionsUI, statusOptions)
+  //         //     .entries
+  //         //     .map<DropdownMenuItem<String>>(
+  //         //       (MapEntry<String, String> entry) => DropdownMenuItem<String>(
+  //         //         value: entry.value,
+  //         //         child: Padding(
+  //         //           padding: const EdgeInsets.all(8.0),
+  //         //           child: Text(entry.key),
+  //         //         ),
+  //         //       ),
+  //         //     )
+  //         //     .toList(),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {

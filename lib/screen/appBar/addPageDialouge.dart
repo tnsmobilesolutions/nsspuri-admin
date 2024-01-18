@@ -488,7 +488,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                 elevation: 16,
                                 style: const TextStyle(
                                     color: Colors.black), // Dropdown text color
-                                items: Networkhelper()
+                                items: NetworkHelper()
                                             .getCurrentDevotee
                                             ?.role ==
                                         "Approver"
@@ -522,7 +522,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                             // ),
                             //const SizedBox(width: 20),
                             (widget.title == "edit" &&
-                                    Networkhelper().getCurrentDevotee?.role ==
+                                    NetworkHelper().getCurrentDevotee?.role ==
                                         "SuperAdmin")
                                 ? const Text(
                                     "Role :",
@@ -534,7 +534,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                     width: 0,
                                   ),
                             (widget.title == "edit" &&
-                                    Networkhelper().getCurrentDevotee?.role ==
+                                    NetworkHelper().getCurrentDevotee?.role ==
                                         "SuperAdmin")
                                 ? Expanded(
                                     child: DropdownButton<String>(
