@@ -1,8 +1,12 @@
 // ignore_for_file: file_names, depend_on_referenced_packages, must_be_immutable, iterable_contains_unrelated_type, avoid_print
+import 'dart:typed_data';
+
 import 'package:animate_icons/animate_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:pdf/pdf.dart';
+import 'package:printing/printing.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
@@ -11,6 +15,7 @@ import 'package:sdp/screen/PaliaListScreen.dart/printpdf.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
 import 'package:sdp/screen/viewDevotee/viewDevotee.dart';
 import 'package:sdp/utilities/network_helper.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 class DevoteeListBodyPage extends StatefulWidget {
   DevoteeListBodyPage(
@@ -232,19 +237,18 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
               //   ),
               // ),
               DataCell(Text("${index + 1}")),
-              const DataCell(SizedBox(
+              DataCell(SizedBox(
                 height: 50,
                 width: 50,
-                child:
-                    //  allPaliaList[index].profilePhotoUrl != null &&
-                    //         allPaliaList[index].profilePhotoUrl!.isNotEmpty == true
-                    //     ? Image.network(
-                    //         allPaliaList[index].profilePhotoUrl ?? '',
-                    //         height: 80,
-                    //         width: 80,
-                    //       )
-                    //     :
-                    Image(image: AssetImage('assets/images/profile.jpeg')),
+                child: allPaliaList[index].profilePhotoUrl != null &&
+                        allPaliaList[index].profilePhotoUrl!.isNotEmpty == true
+                    ? Image.network(
+                        allPaliaList[index].profilePhotoUrl ?? '',
+                        height: 80,
+                        width: 80,
+                      )
+                    : const Image(
+                        image: AssetImage('assets/images/profile.jpeg')),
               )),
               DataCell(
                 Column(
@@ -403,37 +407,67 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                     width: 120,
                     child: Row(
                       children: [
-                        OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(
-                              width: 1.5,
-                              color: Colors.deepOrange,
-                            ),
-                            foregroundColor: Colors.black,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              isChecked = !isChecked;
-                              if (isChecked) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const PrintPdfScreen(),
-                                  ),
-                                );
-                              }
-                            });
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Text(isChecked ? 'Print' : 'Select'),
-                              // SizedBox(width: 10),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 12),
+                        // OutlinedButton(
+                        //   style: OutlinedButton.styleFrom(
+                        //       side: const BorderSide(
+                        //           width: 1.5, color: Colors.deepOrange),
+                        //       foregroundColor: Colors.black),
+                        //   onPressed: () async {
+                        //     setState(() {
+                        //       isChecked = !isChecked;
+                        //       if (isChecked) {
+                        //         Navigator.push(
+                        //           context,
+                        //           MaterialPageRoute(
+                        //             builder: (context) =>
+                        //                 const PrintPdfScreen(),
+                        //           ),
+                        //         );
+                        //       }
+                        //     });
+
+                        //     if (isChecked) {
+                        //       final doc = pw.Document();
+                        //       doc.addPage(
+                        //         pw.Page(
+                        //           pageFormat: PdfPageFormat.a4,
+                        //           build: (pw.Context context) {
+                        //             return pw.Column(children: [
+                        //               pw.Row(
+                        //                 mainAxisAlignment:
+                        //                     pw.MainAxisAlignment.center,
+                        //                 children: [
+                        //                   // Add your Row widgets here
+                        //                 ],
+                        //               ),
+                        //               pw.Column(
+                        //                 children: [
+                        //                   // Add your Column widgets here
+                        //                 ],
+                        //               ),
+                        //               pw.Divider(),
+                        //               pw.SizedBox(height: 20),
+                        //               pw.Divider(thickness: 0.5),
+                        //               // Add any additional content as needed
+                        //             ]);
+                        //           },
+                        //         ),
+                        //       );
+
+                        //       await Printing.layoutPdf(
+                        //         onLayout: (PdfPageFormat format) async =>
+                        //             doc.save(),
+                        //       );
+                        //     }
+                        //   },
+                        //   child: Row(
+                        //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //     children: [
+                        //       Text(isChecked ? 'Print' : 'Select'),
+                        //     ],
+                        //   ),
+                        // ),
+                        // const SizedBox(width: 12),
                         OutlinedButton(
                           style: OutlinedButton.styleFrom(
                               side: const BorderSide(
@@ -449,7 +483,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                               // SizedBox(width: 10),
                               Icon(
                                 Icons.upload_rounded,
-                                color: Colors.blue,
+                                color: Colors.deepOrange,
                               )
                             ],
                           ),
