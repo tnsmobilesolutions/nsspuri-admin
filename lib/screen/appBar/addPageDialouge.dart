@@ -88,7 +88,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
       DateFormat('dd-MMM-yyyy  hh:mm a').format(DateTime.now());
 
   List gender = ["Male", "Female"];
-  int genderController = 0;
+  int genderIndex = 0;
+  int ageIndex = 0;
   Map<String, dynamic>? image;
   String? imageName;
   String? imageUploadData;
@@ -121,6 +122,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   bool? parichayaPatraValue = false, shouldShowPranamiField = false;
   XFile? pickImage;
   TextEditingController postalCodeController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
   TextEditingController pranamiController = TextEditingController();
   TextEditingController remarksController = TextEditingController();
   String? profileImage;
@@ -168,6 +170,16 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'Nov',
     'Dec'
   ];
+
+  FocusNode dobFocusNode = FocusNode();
+  FocusNode ageFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    dobFocusNode.dispose();
+    ageFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -249,7 +261,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
 
   String _formatDOB(String dob) {
     if (dob.isEmpty) {
-      return '';
+      return "";
     }
     try {
       DateTime dateTime = DateFormat('d-MMM-yyyy', 'en_US').parse(dob);
@@ -317,7 +329,9 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
         isApproved = selectedDevotee?.isApproved ?? false;
         isGruhasanaApproved = selectedDevotee?.isGruhasanaApproved ?? false;
         bloodGroupController = selectedDevotee?.bloodGroup ?? "Don't know";
-        genderController = selectedDevotee?.gender == "Male" ? 0 : 1;
+        genderIndex = selectedDevotee?.gender == "Male" ? 0 : 1;
+        ageController.text = selectedDevotee?.age?.toString() ?? "";
+        ageIndex = selectedDevotee?.age != null ? 1 : 0;
       }
     });
   }
@@ -865,12 +879,12 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                               flex: 1,
                               child: RadioListTile(
                                 value: 0,
-                                groupValue: genderController,
+                                groupValue: genderIndex,
                                 title: const Text(
                                   "Bhai",
                                 ),
-                                onChanged: (newValue) => setState(
-                                    () => genderController = newValue ?? 0),
+                                onChanged: (newValue) =>
+                                    setState(() => genderIndex = newValue ?? 0),
                                 activeColor: RadioButtonColor,
                                 // Set the unselected color to blue
                                 selectedTileColor:
@@ -882,14 +896,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                               flex: 1,
                               child: RadioListTile(
                                 value: 1,
-                                groupValue: genderController,
+                                groupValue: genderIndex,
 
                                 title: const Text(
                                   "Maa",
                                 ),
                                 onChanged: (newValue) {
                                   setState(() {
-                                    genderController = newValue ?? 1;
+                                    genderIndex = newValue ?? 1;
                                   });
                                 },
                                 activeColor: RadioButtonColor,
@@ -905,28 +919,130 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 20),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    const Text(
+                      'Age Info',
+                    ),
+                    Column(
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Expanded(
+                              flex: 1,
+                              child: RadioListTile(
+                                value: 0,
+                                groupValue: ageIndex,
+                                title: const Text(
+                                  "DOB",
+                                ),
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    ageIndex = newValue ?? 0;
+                                    if (ageIndex == 0) {
+                                      ageController.clear();
+                                    }
+                                  });
+                                },
+                                // onChanged: (newValue) {
+                                //   if (dobController.text.isEmpty) {
+                                //     setState(() {
+                                //       ageIndex = newValue ?? 0;
+                                //       FocusScope.of(context)
+                                //           .requestFocus(dobFocusNode);
+                                //     });
+                                //   }
+                                // },
+                                activeColor: RadioButtonColor,
+                                //selectedTileColor: RadioButtonColor,
+                                selected: false,
+                                //selected: ageIndex == 0,
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: RadioListTile(
+                                value: 1,
+                                groupValue: ageIndex,
+                                title: const Text(
+                                  "Age",
+                                ),
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    ageIndex = newValue ?? 1;
+                                    if (ageIndex == 1) {
+                                      dobController.clear();
+                                    }
+                                  });
+                                },
+                                // onChanged: (newValue) {
+                                //   if (ageController.text.isEmpty) {
+                                //     setState(() {
+                                //       ageIndex = newValue ?? 1;
+                                //       FocusScope.of(context)
+                                //           .requestFocus(ageFocusNode);
+                                //     });
+                                //   }
+                                // },
+                                activeColor: RadioButtonColor,
+                                //selectedTileColor: RadioButtonColor,
+                                selected: false,
+                                //selected: ageIndex == 1,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
 
                 const SizedBox(height: 20),
-                GestureDetector(
-                  child: TextField(
-                    controller: dobController,
-                    decoration: InputDecoration(
-                      labelText: "Date Of Birth",
-                      labelStyle:
-                          TextStyle(color: Colors.grey[600], fontSize: 15),
-                      filled: true,
-                      floatingLabelBehavior: FloatingLabelBehavior.auto,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          borderSide: const BorderSide(
-                              width: 0, style: BorderStyle.solid)),
-                    ),
+                ageIndex == 0
+                    ? GestureDetector(
+                        child: TextField(
+                          controller: dobController,
+                          //focusNode: dobFocusNode,
+                          decoration: InputDecoration(
+                            labelText: "Date Of Birth",
+                            labelStyle: TextStyle(
+                                color: Colors.grey[600], fontSize: 15),
+                            filled: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.auto,
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: const BorderSide(
+                                    width: 0, style: BorderStyle.solid)),
+                          ),
 
-                    readOnly:
-                        true, //set it true, so that user will not able to edit text
-                    onTap: () => _showCustomCalendarDialog(context),
-                  ),
-                ),
+                          readOnly:
+                              true, //set it true, so that user will not able to edit text
+                          onTap: () => _showCustomCalendarDialog(context),
+                        ),
+                      )
+                    : TextFormField(
+                        controller: ageController,
+                        //focusNode: ageFocusNode,
+                        onSaved: (newValue) => ageController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        decoration: InputDecoration(
+                          labelText: "Age",
+                          labelStyle:
+                              TextStyle(color: Colors.grey[600], fontSize: 15),
+                          filled: true,
+                          floatingLabelBehavior: FloatingLabelBehavior.auto,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: const BorderSide(
+                                  width: 0, style: BorderStyle.solid)),
+                        ),
+                      ),
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1242,14 +1358,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                               remarks: remarksController.text,
                               paidAmount:
                                   double.tryParse(pranamiController.text),
-                              gender: gender[genderController],
+                              gender: gender[genderIndex],
                               profilePhotoUrl: profileURL,
                               hasParichayaPatra: parichayaPatraValue,
                               sangha: sanghaController.text,
-                              // dob: dobController.text.isNotEmpty
-                              //     ? dobController.text
-                              //     : "",
                               dob: _formatDOB(dobController.text),
+                              age: ageController.text.isNotEmpty
+                                  ? int.tryParse(ageController.text)
+                                  : null,
                               mobileNumber: mobileController.text,
                               updatedOn: DateTime.now().toString(),
                               emailId: emailController.text,

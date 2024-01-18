@@ -111,16 +111,27 @@ class _DevoteeInfoTabState extends State<DevoteeInfoTab> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Date Of Birth',
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      Text(formatDate(widget.devoteeDetails.dob ?? ""))
-                    ],
-                  ),
+                  widget.devoteeDetails.age != null
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Age',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                            Text(widget.devoteeDetails.age.toString())
+                          ],
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Date Of Birth',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                            Text(formatDate(widget.devoteeDetails.dob ?? ""))
+                          ],
+                        ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [

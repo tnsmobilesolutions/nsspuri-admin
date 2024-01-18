@@ -8,7 +8,6 @@ import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/export_to_excel.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/printpdf.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/viewDevotee.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
 import 'package:sdp/screen/viewDevotee/viewDevotee.dart';
 import 'package:sdp/utilities/network_helper.dart';
@@ -167,7 +166,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
       columnSpacing: 10,
       dataRowMaxHeight: 80,
       columns: [
-        dataColumn(context, 'Checkbox'),
+        //dataColumn(context, 'Checkbox'),
         dataColumn(context, 'Sl. No.'),
         dataColumn(context, 'Profile Image'),
         DataColumn(
@@ -207,7 +206,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
           ),
         ),
         dataColumn(context, 'Sangha'),
-        dataColumn(context, 'DOB'),
+        dataColumn(context, 'DOB/Age'),
         dataColumn(context, 'Status'),
         dataColumn(context, 'View'),
         dataColumn(context, 'Edit'),
@@ -219,32 +218,33 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
           return DataRow(
             cells: [
               // Inside the DataRow, add a DataCell for the checkbox
-              DataCell(
-                Visibility(
-                  visible: isChecked,
-                  child: Checkbox(
-                    value: isChecked,
-                    onChanged: (value) {
-                      setState(() {
-                        isChecked = value ?? false;
-                      });
-                    },
-                  ),
-                ),
-              ),
+              // DataCell(
+              //   Visibility(
+              //     visible: isChecked,
+              //     child: Checkbox(
+              //       value: isChecked,
+              //       onChanged: (value) {
+              //         setState(() {
+              //           isChecked = value ?? false;
+              //         });
+              //       },
+              //     ),
+              //   ),
+              // ),
               DataCell(Text("${index + 1}")),
-              DataCell(SizedBox(
+              const DataCell(SizedBox(
                 height: 50,
                 width: 50,
-                child: allPaliaList[index].profilePhotoUrl != null &&
-                        allPaliaList[index].profilePhotoUrl!.isNotEmpty == true
-                    ? Image.network(
-                        allPaliaList[index].profilePhotoUrl ?? '',
-                        height: 80,
-                        width: 80,
-                      )
-                    : const Image(
-                        image: AssetImage('assets/images/profile.jpeg')),
+                child:
+                    //  allPaliaList[index].profilePhotoUrl != null &&
+                    //         allPaliaList[index].profilePhotoUrl!.isNotEmpty == true
+                    //     ? Image.network(
+                    //         allPaliaList[index].profilePhotoUrl ?? '',
+                    //         height: 80,
+                    //         width: 80,
+                    //       )
+                    //     :
+                    Image(image: AssetImage('assets/images/profile.jpeg')),
               )),
               DataCell(
                 Column(
@@ -267,10 +267,15 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
               ),
               DataCell(Text(allPaliaList[index].sangha ?? '_')),
               DataCell(
-                Text(
-                  formatDate(allPaliaList[index].dob ?? ""),
-                  textAlign: TextAlign.center,
-                ),
+                allPaliaList[index].age != null
+                    ? Text(
+                        allPaliaList[index].age.toString(),
+                        textAlign: TextAlign.center,
+                      )
+                    : Text(
+                        formatDate(allPaliaList[index].dob ?? ""),
+                        textAlign: TextAlign.center,
+                      ),
               ),
               DataCell(
                 Column(
@@ -413,7 +418,8 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => PrintPdfScreen(),
+                                    builder: (context) =>
+                                        const PrintPdfScreen(),
                                   ),
                                 );
                               }

@@ -41,7 +41,7 @@ class _ViewDevoteeState extends State<ViewDevotee>
             child: Padding(
               padding: const EdgeInsets.all(2),
               child: Column(children: [
-                Container(
+                SizedBox(
                   height: 40,
                   child: TabBar(
                     controller: _tabController,

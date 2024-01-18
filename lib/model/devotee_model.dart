@@ -20,6 +20,7 @@ class DevoteeModel {
   bool? isOrganizer;
   bool? isSpeciallyAbled;
   String? dob;
+  int? age;
   bool? isKYDVerified;
   bool? isApproved;
   bool? isAdmin;
@@ -50,6 +51,7 @@ class DevoteeModel {
     this.isOrganizer,
     this.isSpeciallyAbled,
     this.dob,
+    this.age,
     this.isKYDVerified,
     this.isApproved,
     this.isAdmin,
@@ -82,6 +84,7 @@ class DevoteeModel {
     bool? isOrganizer,
     bool? isSpeciallyAbled,
     String? dob,
+    int? age,
     bool? isKYDVerified,
     bool? isApproved,
     bool? isAdmin,
@@ -114,6 +117,7 @@ class DevoteeModel {
       isOrganizer: isOrganizer ?? this.isOrganizer,
       isSpeciallyAbled: isSpeciallyAbled ?? this.isSpeciallyAbled,
       dob: dob ?? this.dob,
+      age: age ?? this.age,
       isKYDVerified: isKYDVerified ?? this.isKYDVerified,
       isApproved: isApproved ?? this.isApproved,
       isAdmin: isAdmin ?? this.isAdmin,
@@ -148,6 +152,7 @@ class DevoteeModel {
       'isOrganizer': isOrganizer,
       'isSpeciallyAbled': isSpeciallyAbled,
       'dob': dob,
+      'age': age,
       'isKYDVerified': isKYDVerified,
       'isApproved': isApproved,
       'isAdmin': isAdmin,
@@ -182,6 +187,7 @@ class DevoteeModel {
       isOrganizer: map['isOrganizer'],
       isSpeciallyAbled: map['isSpeciallyAbled'],
       dob: map['dob'],
+      age: map['age']?.toInt(),
       isKYDVerified: map['isKYDVerified'],
       isApproved: map['isApproved'],
       isAdmin: map['isAdmin'],
@@ -205,7 +211,7 @@ class DevoteeModel {
 
   @override
   String toString() {
-    return 'DevoteeModel(devoteeId: $devoteeId, devoteeCode: $devoteeCode, isAllowedToScanPrasad: $isAllowedToScanPrasad, name: $name, emailId: $emailId, mobileNumber: $mobileNumber, bloodGroup: $bloodGroup, profilePhotoUrl: $profilePhotoUrl, gender: $gender, sangha: $sangha, role: $role, uid: $uid, hasParichayaPatra: $hasParichayaPatra, isGuest: $isGuest, isOrganizer: $isOrganizer, isSpeciallyAbled: $isSpeciallyAbled, dob: $dob, isKYDVerified: $isKYDVerified, isApproved: $isApproved, isAdmin: $isAdmin, isGruhasanaApproved: $isGruhasanaApproved, createdOn: $createdOn, approvedBy: $approvedBy, updatedOn: $updatedOn, status: $status, paidAmount: $paidAmount, createdById: $createdById, remarks: $remarks, address: $address)';
+    return 'DevoteeModel(devoteeId: $devoteeId, devoteeCode: $devoteeCode, isAllowedToScanPrasad: $isAllowedToScanPrasad, name: $name, emailId: $emailId, mobileNumber: $mobileNumber, bloodGroup: $bloodGroup, profilePhotoUrl: $profilePhotoUrl, gender: $gender, sangha: $sangha, role: $role, uid: $uid, hasParichayaPatra: $hasParichayaPatra, isGuest: $isGuest, isOrganizer: $isOrganizer, isSpeciallyAbled: $isSpeciallyAbled, dob: $dob, age: $age, isKYDVerified: $isKYDVerified, isApproved: $isApproved, isAdmin: $isAdmin, isGruhasanaApproved: $isGruhasanaApproved, createdOn: $createdOn, approvedBy: $approvedBy, updatedOn: $updatedOn, status: $status, paidAmount: $paidAmount, createdById: $createdById, remarks: $remarks, address: $address)';
   }
 
   @override
@@ -230,6 +236,7 @@ class DevoteeModel {
         other.isOrganizer == isOrganizer &&
         other.isSpeciallyAbled == isSpeciallyAbled &&
         other.dob == dob &&
+        other.age == age &&
         other.isKYDVerified == isKYDVerified &&
         other.isApproved == isApproved &&
         other.isAdmin == isAdmin &&
@@ -263,6 +270,7 @@ class DevoteeModel {
         isOrganizer.hashCode ^
         isSpeciallyAbled.hashCode ^
         dob.hashCode ^
+        age.hashCode ^
         isKYDVerified.hashCode ^
         isApproved.hashCode ^
         isAdmin.hashCode ^
