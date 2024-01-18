@@ -25,6 +25,11 @@ class _AuthStateState extends State<AuthState> {
   @override
   Widget build(BuildContext context) {
     final uid = FirebaseAuth.instance.currentUser?.uid;
-    return uid != null ? DashboardPage() : const EmailSignIn();
+    return (uid != null &&
+            (Networkhelper().getCurrentDevotee?.role == "Admin" ||
+                Networkhelper().getCurrentDevotee?.role == "SuperAdmin" ||
+                Networkhelper().getCurrentDevotee?.role == "Approver"))
+        ? DashboardPage()
+        : const EmailSignIn();
   }
 }
