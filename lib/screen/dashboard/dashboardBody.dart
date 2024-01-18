@@ -74,7 +74,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                             child: InkWell(
                               highlightColor:
                                   const Color.fromARGB(255, 0, 0, 0),
-                              onTap: Networkhelper().getCurrentDevotee?.role ==
+                              onTap: NetworkHelper().getCurrentDevotee?.role ==
                                           "Approver" &&
                                       (index != 1)
                                   ? null
@@ -91,7 +91,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                                       ));
                                     },
                               child: Card(
-                                  color: Networkhelper()
+                                  color: NetworkHelper()
                                                   .getCurrentDevotee
                                                   ?.role ==
                                               "Approver" &&

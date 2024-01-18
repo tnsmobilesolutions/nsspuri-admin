@@ -54,7 +54,7 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
           //     : Responsive.isLargeMobile(context)
           //         ? 150
           //         : 120,
-          toolbarHeight: 120,
+          toolbarHeight: 80,
           automaticallyImplyLeading: false,
           title: const TitleAppBar(),
           // leading: IconButton(
@@ -75,7 +75,7 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
               searchBy: widget.searchBy,
               searchValue: widget.searchValue,
               showClearButton: widget.showClearButton,
-              advanceStatus: widget.advanceStatus ?? "dataSubmitted",
+              advanceStatus: widget.advanceStatus,
             ),
           ],
           // actions: !Responsive.isLargeMobile(context)

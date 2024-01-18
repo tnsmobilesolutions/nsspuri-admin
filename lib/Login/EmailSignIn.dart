@@ -93,7 +93,7 @@ class _EmailSignInState extends State<EmailSignIn> {
                       final response = await GetDevoteeAPI().loginDevotee(uid);
                       DevoteeModel resDevoteeData = response?["data"];
 
-                      Networkhelper().setCurrentDevotee = resDevoteeData;
+                      NetworkHelper().setCurrentDevotee = resDevoteeData;
 
                       if (response?["statusCode"] == 200 &&
                           (resDevoteeData.role == "Admin" ||
