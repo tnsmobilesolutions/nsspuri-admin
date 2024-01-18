@@ -171,7 +171,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
       columnSpacing: 10,
       dataRowMaxHeight: 80,
       columns: [
-        //dataColumn(context, 'Checkbox'),
+        dataColumn(context, 'Checkbox'),
         dataColumn(context, 'Sl. No.'),
         dataColumn(context, 'Profile Image'),
         DataColumn(
@@ -222,33 +222,33 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         (index) {
           return DataRow(
             cells: [
-              // Inside the DataRow, add a DataCell for the checkbox
-              // DataCell(
-              //   Visibility(
-              //     visible: isChecked,
-              //     child: Checkbox(
-              //       value: isChecked,
-              //       onChanged: (value) {
-              //         setState(() {
-              //           isChecked = value ?? false;
-              //         });
-              //       },
-              //     ),
-              //   ),
-              // ),
+              DataCell(
+                Visibility(
+                  visible: isChecked,
+                  child: Checkbox(
+                    value: isChecked,
+                    onChanged: (value) {
+                      setState(() {
+                        isChecked = value ?? false;
+                      });
+                    },
+                  ),
+                ),
+              ),
               DataCell(Text("${index + 1}")),
               DataCell(SizedBox(
                 height: 50,
                 width: 50,
-                child: allPaliaList[index].profilePhotoUrl != null &&
-                        allPaliaList[index].profilePhotoUrl!.isNotEmpty == true
-                    ? Image.network(
-                        allPaliaList[index].profilePhotoUrl ?? '',
-                        height: 80,
-                        width: 80,
-                      )
-                    : const Image(
-                        image: AssetImage('assets/images/profile.jpeg')),
+                child:
+                    //  allPaliaList[index].profilePhotoUrl != null &&
+                    //         allPaliaList[index].profilePhotoUrl!.isNotEmpty == true
+                    //     ? Image.network(
+                    //         allPaliaList[index].profilePhotoUrl ?? '',
+                    //         height: 80,
+                    //         width: 80,
+                    //       )
+                    //     : const
+                    Image(image: AssetImage('assets/images/profile.jpeg')),
               )),
               DataCell(
                 Column(
@@ -404,70 +404,61 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                     userRole == "Approver"
                 ? SizedBox(
                     // height: 40,
-                    width: 120,
+                    width: 240,
                     child: Row(
                       children: [
-                        // OutlinedButton(
-                        //   style: OutlinedButton.styleFrom(
-                        //       side: const BorderSide(
-                        //           width: 1.5, color: Colors.deepOrange),
-                        //       foregroundColor: Colors.black),
-                        //   onPressed: () async {
-                        //     setState(() {
-                        //       isChecked = !isChecked;
-                        //       if (isChecked) {
-                        //         Navigator.push(
-                        //           context,
-                        //           MaterialPageRoute(
-                        //             builder: (context) =>
-                        //                 const PrintPdfScreen(),
-                        //           ),
-                        //         );
-                        //       }
-                        //     });
+                        OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                              side: const BorderSide(
+                                  width: 1.5, color: Colors.deepOrange),
+                              foregroundColor: Colors.black),
+                          onPressed: () async {
+                            setState(() {
+                              isChecked = !isChecked;
+                            });
 
-                        //     if (isChecked) {
-                        //       final doc = pw.Document();
-                        //       doc.addPage(
-                        //         pw.Page(
-                        //           pageFormat: PdfPageFormat.a4,
-                        //           build: (pw.Context context) {
-                        //             return pw.Column(children: [
-                        //               pw.Row(
-                        //                 mainAxisAlignment:
-                        //                     pw.MainAxisAlignment.center,
-                        //                 children: [
-                        //                   // Add your Row widgets here
-                        //                 ],
-                        //               ),
-                        //               pw.Column(
-                        //                 children: [
-                        //                   // Add your Column widgets here
-                        //                 ],
-                        //               ),
-                        //               pw.Divider(),
-                        //               pw.SizedBox(height: 20),
-                        //               pw.Divider(thickness: 0.5),
-                        //               // Add any additional content as needed
-                        //             ]);
-                        //           },
-                        //         ),
-                        //       );
+                            if (isChecked) {
+                              final doc = pw.Document();
+                              doc.addPage(
+                                pw.Page(
+                                  pageFormat: PdfPageFormat.a4,
+                                  build: (pw.Context context) {
+                                    return pw.Column(children: [
+                                      pw.Row(
+                                        mainAxisAlignment:
+                                            pw.MainAxisAlignment.center,
+                                        children: [
+                                          // Add your Row widgets here
+                                        ],
+                                      ),
+                                      pw.Column(
+                                        children: [
+                                          // Add your Column widgets here
+                                        ],
+                                      ),
+                                      pw.Divider(),
+                                      pw.SizedBox(height: 20),
+                                      pw.Divider(thickness: 0.5),
+                                      // Add any additional content as needed
+                                    ]);
+                                  },
+                                ),
+                              );
 
-                        //       await Printing.layoutPdf(
-                        //         onLayout: (PdfPageFormat format) async =>
-                        //             doc.save(),
-                        //       );
-                        //     }
-                        //   },
-                        //   child: Row(
-                        //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        //     children: [
-                        //       Text(isChecked ? 'Print' : 'Select'),
-                        //     ],
-                        //   ),
-                        // ),
-                        // const SizedBox(width: 12),
+                              await Printing.layoutPdf(
+                                onLayout: (PdfPageFormat format) async =>
+                                    doc.save(),
+                              );
+                            }
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text(isChecked ? 'Print' : 'Select'),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 12),
                         OutlinedButton(
                           style: OutlinedButton.styleFrom(
                               side: const BorderSide(

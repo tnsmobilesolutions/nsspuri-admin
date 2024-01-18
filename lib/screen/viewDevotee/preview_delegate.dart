@@ -80,7 +80,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
               children: [
                 FlipCard(
                   rotateSide: RotateSide.right,
-                  onTapFlipping: false,
+                  onTapFlipping: true,
                   axis: FlipAxis.vertical,
                   controller: con,
                   backWidget: CardFlip(color: getColorByDevotee(devotees)),
