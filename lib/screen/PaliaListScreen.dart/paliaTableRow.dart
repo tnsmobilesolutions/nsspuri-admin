@@ -91,6 +91,21 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
         Row(
           children: [
             Expanded(
+              child: Checkbox(
+                value: widget.allCheck ?? isCheck,
+                onChanged: (value) {
+                  setState(() {
+                    isCheck = value!;
+
+                    widget.isCheckedBoolValue(value);
+                    // widget.isallCheckedBoolValue(value);
+                  });
+
+                  // print('*************$selectedPalia**************');
+                },
+              ),
+            ),
+            Expanded(
               child: Text(
                 (widget.slNo).toString(),
                 textAlign: TextAlign.center,
@@ -215,7 +230,7 @@ class _PaliaTableRowState extends State<PaliaTableRow> {
                                 Text(widget.devoteeDetails.sangha ?? "N/A"),
                               ],
                             ),
-                            content: ViewPalia(
+                            content: ViewDevotee(
                                 devoteeDetails: widget.devoteeDetails),
                           ),
                         );

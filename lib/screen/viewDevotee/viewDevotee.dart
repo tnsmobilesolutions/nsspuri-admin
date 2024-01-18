@@ -7,17 +7,17 @@ import 'package:sdp/screen/viewDevotee/devotee_info.dart';
 import 'package:sdp/screen/viewDevotee/preview_delegate.dart';
 
 // ignore: must_be_immutable
-class ViewPalia extends StatefulWidget {
-  ViewPalia({Key? key, required this.devoteeDetails, this.index})
+class ViewDevotee extends StatefulWidget {
+  ViewDevotee({Key? key, required this.devoteeDetails, this.index})
       : super(key: key);
   final DevoteeModel devoteeDetails;
   int? index;
 
   @override
-  State<ViewPalia> createState() => _ViewPaliaState();
+  State<ViewDevotee> createState() => _ViewDevoteeState();
 }
 
-class _ViewPaliaState extends State<ViewPalia>
+class _ViewDevoteeState extends State<ViewDevotee>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
   final con = FlipCardController();
