@@ -144,9 +144,10 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
             softWrap: true,
             style: Theme.of(context).textTheme.titleMedium?.merge(
                   const TextStyle(
-                      color: Colors.blue,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
+                    color: Colors.blue,
+                    fontSize: 18,
+                    //fontWeight: FontWeight.bold,
+                  ),
                 ),
           ),
         ));
@@ -173,9 +174,10 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                 softWrap: true,
                 style: Theme.of(context).textTheme.titleMedium?.merge(
                       const TextStyle(
-                          color: Colors.blue,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold),
+                        color: Colors.blue,
+                        fontSize: 18,
+                        //fontWeight: FontWeight.bold,
+                      ),
                     ),
               ),
               AnimateIcons(
@@ -212,21 +214,19 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
           return DataRow(
             cells: [
               DataCell(Text("${index + 1}")),
-              const DataCell(SizedBox(
+              DataCell(SizedBox(
                 height: 50,
                 width: 50,
-                child:
-                    //  allPaliaList[index].profilePhotoUrl != null &&
-                    //         allPaliaList[index].profilePhotoUrl!.isNotEmpty == true
-                    //     ? Image.network(
-                    //         allPaliaList[index].profilePhotoUrl ?? '',
-                    //         height: 80,
-                    //         width: 80,
-                    //       )
-                    // :
-                    Image(image: AssetImage('assets/images/profile.jpeg')),
+                child: allPaliaList[index].profilePhotoUrl != null &&
+                        allPaliaList[index].profilePhotoUrl!.isNotEmpty == true
+                    ? Image.network(
+                        allPaliaList[index].profilePhotoUrl ?? '',
+                        height: 80,
+                        width: 80,
+                      )
+                    : const Image(
+                        image: AssetImage('assets/images/profile.jpeg')),
               )),
-              //DataCell(Text(allPaliaList[index].name ?? '_')),
               DataCell(
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,

@@ -60,3 +60,47 @@ class TitleAppBar extends StatelessWidget {
     );
   }
 }
+
+class TitleAppBarMobile extends StatelessWidget {
+  const TitleAppBarMobile({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      child: Row(
+        children: [
+          const Image(
+              image: AssetImage('assets/images/login.png'),
+              fit: BoxFit.cover,
+              height: 60.00,
+              width: 60.00),
+          const SizedBox(width: 20),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Sammilani Delegate',
+                style: TextStyle(color: Colors.white, fontSize: 17),
+                softWrap: true,
+                overflow: TextOverflow.clip,
+              ),
+              Text(
+                "${NetworkHelper().getCurrentDevotee?.name}",
+                style: const TextStyle(color: Colors.white, fontSize: 14),
+                softWrap: true,
+                overflow: TextOverflow.clip,
+              ),
+              Text(
+                "${NetworkHelper().getCurrentDevotee?.role}",
+                style: const TextStyle(color: Colors.white, fontSize: 12),
+                softWrap: true,
+                overflow: TextOverflow.clip,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}

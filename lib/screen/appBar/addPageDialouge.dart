@@ -419,7 +419,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
         width: 400,
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
