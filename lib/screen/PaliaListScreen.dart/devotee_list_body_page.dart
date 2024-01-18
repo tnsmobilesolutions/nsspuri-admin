@@ -156,7 +156,6 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                   const TextStyle(
                     color: Colors.blue,
                     fontSize: 18,
-                    //fontWeight: FontWeight.bold,
                   ),
                 ),
           ),
@@ -188,7 +187,6 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                       const TextStyle(
                         color: Colors.blue,
                         fontSize: 18,
-                        //fontWeight: FontWeight.bold,
                       ),
                     ),
               ),
@@ -384,7 +382,6 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                   ),
                 ),
               ),
-              // Add more DataCell widgets as needed
             ],
           );
         },
