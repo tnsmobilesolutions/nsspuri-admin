@@ -111,7 +111,7 @@ class _DevoteeInfoTabState extends State<DevoteeInfoTab> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  widget.devoteeDetails.age != null
+                  widget.devoteeDetails.ageGroup != ""
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -119,7 +119,7 @@ class _DevoteeInfoTabState extends State<DevoteeInfoTab> {
                               'Age',
                               style: TextStyle(color: Colors.grey),
                             ),
-                            Text(widget.devoteeDetails.age.toString())
+                            Text(widget.devoteeDetails.ageGroup.toString())
                           ],
                         )
                       : Column(

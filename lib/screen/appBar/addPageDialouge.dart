@@ -12,6 +12,7 @@ import 'package:sdp/API/put_devotee.dart';
 import 'package:sdp/constant/sangha_list.dart';
 import 'package:sdp/model/address_model.dart';
 import 'package:sdp/model/devotee_model.dart';
+import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
 import 'package:sdp/screen/appBar/custom_calendar.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
 import 'package:sdp/utilities/color_palette.dart';
@@ -89,7 +90,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
 
   List gender = ["Male", "Female"];
   int genderIndex = 0;
-  int ageIndex = 0;
+  int ageGroupIndex = 0;
   Map<String, dynamic>? image;
   String? imageName;
   String? imageUploadData;
@@ -170,6 +171,9 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'Nov',
     'Dec'
   ];
+
+  List<String> ageGroup = ["0-12", "13-70", "70 Above"];
+  String selectedAgeGroup = "13-70";
 
   FocusNode dobFocusNode = FocusNode();
   FocusNode ageFocusNode = FocusNode();
@@ -330,8 +334,11 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
         isGruhasanaApproved = selectedDevotee?.isGruhasanaApproved ?? false;
         bloodGroupController = selectedDevotee?.bloodGroup ?? "Don't know";
         genderIndex = selectedDevotee?.gender == "Male" ? 0 : 1;
-        ageController.text = selectedDevotee?.age?.toString() ?? "";
-        ageIndex = selectedDevotee?.age != null ? 1 : 0;
+        ageController.text = selectedDevotee?.ageGroup?.toString() ?? "";
+        ageGroupIndex = selectedDevotee?.ageGroup == "" ? 0 : 1;
+        selectedAgeGroup = selectedDevotee?.ageGroup != ""
+            ? (selectedDevotee?.ageGroup.toString() ?? "")
+            : "13-70";
       }
     });
   }
@@ -935,62 +942,40 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                               flex: 1,
                               child: RadioListTile(
                                 value: 0,
-                                groupValue: ageIndex,
+                                groupValue: ageGroupIndex,
                                 title: const Text(
                                   "DOB",
                                 ),
                                 onChanged: (newValue) {
                                   setState(() {
-                                    ageIndex = newValue ?? 0;
-                                    if (ageIndex == 0) {
+                                    ageGroupIndex = newValue ?? 0;
+                                    if (ageGroupIndex == 0) {
                                       ageController.clear();
                                     }
                                   });
                                 },
-                                // onChanged: (newValue) {
-                                //   if (dobController.text.isEmpty) {
-                                //     setState(() {
-                                //       ageIndex = newValue ?? 0;
-                                //       FocusScope.of(context)
-                                //           .requestFocus(dobFocusNode);
-                                //     });
-                                //   }
-                                // },
                                 activeColor: RadioButtonColor,
-                                //selectedTileColor: RadioButtonColor,
                                 selected: false,
-                                //selected: ageIndex == 0,
                               ),
                             ),
                             Expanded(
                               flex: 1,
                               child: RadioListTile(
                                 value: 1,
-                                groupValue: ageIndex,
+                                groupValue: ageGroupIndex,
                                 title: const Text(
                                   "Age",
                                 ),
                                 onChanged: (newValue) {
                                   setState(() {
-                                    ageIndex = newValue ?? 1;
-                                    if (ageIndex == 1) {
+                                    ageGroupIndex = newValue ?? 1;
+                                    if (ageGroupIndex == 1) {
                                       dobController.clear();
                                     }
                                   });
                                 },
-                                // onChanged: (newValue) {
-                                //   if (ageController.text.isEmpty) {
-                                //     setState(() {
-                                //       ageIndex = newValue ?? 1;
-                                //       FocusScope.of(context)
-                                //           .requestFocus(ageFocusNode);
-                                //     });
-                                //   }
-                                // },
                                 activeColor: RadioButtonColor,
-                                //selectedTileColor: RadioButtonColor,
                                 selected: false,
-                                //selected: ageIndex == 1,
                               ),
                             ),
                           ],
@@ -1001,7 +986,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                 ),
 
                 const SizedBox(height: 20),
-                ageIndex == 0
+                ageGroupIndex == 0
                     ? GestureDetector(
                         child: TextField(
                           controller: dobController,
@@ -1023,16 +1008,15 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                           onTap: () => _showCustomCalendarDialog(context),
                         ),
                       )
-                    : TextFormField(
-                        controller: ageController,
-                        //focusNode: ageFocusNode,
-                        onSaved: (newValue) => ageController,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
+                    : DropdownButtonFormField<String>(
+                        value: selectedAgeGroup,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedAgeGroup = newValue!;
+                          });
+                        },
                         decoration: InputDecoration(
-                          labelText: "Age",
+                          labelText: "Select age group",
                           labelStyle:
                               TextStyle(color: Colors.grey[600], fontSize: 15),
                           filled: true,
@@ -1042,7 +1026,34 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                               borderSide: const BorderSide(
                                   width: 0, style: BorderStyle.solid)),
                         ),
+                        items: ageGroup
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
                       ),
+                // TextFormField(
+                //     controller: ageController,
+                //     //focusNode: ageFocusNode,
+                //     onSaved: (newValue) => ageController,
+                //     keyboardType: TextInputType.number,
+                //     inputFormatters: [
+                //       FilteringTextInputFormatter.digitsOnly,
+                //     ],
+                //     decoration: InputDecoration(
+                //       labelText: "Age",
+                //       labelStyle:
+                //           TextStyle(color: Colors.grey[600], fontSize: 15),
+                //       filled: true,
+                //       floatingLabelBehavior: FloatingLabelBehavior.auto,
+                //       border: OutlineInputBorder(
+                //           borderRadius: BorderRadius.circular(10.0),
+                //           borderSide: const BorderSide(
+                //               width: 0, style: BorderStyle.solid)),
+                //     ),
+                //   ),
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1363,9 +1374,9 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                               hasParichayaPatra: parichayaPatraValue,
                               sangha: sanghaController.text,
                               dob: _formatDOB(dobController.text),
-                              age: ageController.text.isNotEmpty
-                                  ? int.tryParse(ageController.text)
-                                  : null,
+                              ageGroup: dobController.text.isEmpty
+                                  ? selectedAgeGroup
+                                  : "",
                               mobileNumber: mobileController.text,
                               updatedOn: DateTime.now().toString(),
                               emailId: emailController.text,
@@ -1409,35 +1420,40 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                               },
                             );
                             List<DevoteeModel> devoteeList = [];
-                            // await GetDevoteeAPI()
-                            //     .advanceSearchDevotee(
-                            //   widget.searchValue.toString(),
-                            //   widget.searchBy.toString(),
-                            // )
-                            //     .then((value) {
-                            //   devoteeList.addAll(value["data"]);
-                            // });
+                            if (widget.title == "edit") {
+                              await GetDevoteeAPI()
+                                  .advanceSearchDevotee(
+                                widget.searchValue.toString(),
+                                widget.searchBy.toString(),
+                              )
+                                  .then((value) {
+                                devoteeList.addAll(value["data"]);
+                              });
+                            }
                             if (context.mounted) {
                               Navigator.of(context)
                                   .pop(); // Close the circular progress indicator
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => DashboardPage(),
-                                  ));
 
-                              // Navigator.push(context, MaterialPageRoute(
-                              //   builder: (context) {
-                              //     return DevoteeListPage(
-                              //       status: "allDevotee",
-                              //       pageFrom: "Search",
-                              //       devoteeList: devoteeList,
-                              //       searchValue: widget.searchValue,
-                              //       searchBy: widget.searchBy,
-                              //       showClearButton: widget.showClearButton,
-                              //     );
-                              //   },
-                              // ));
+                              if (widget.title == "edit") {
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) {
+                                    return DevoteeListPage(
+                                      status: "allDevotee",
+                                      pageFrom: "Search",
+                                      devoteeList: devoteeList,
+                                      searchValue: widget.searchValue,
+                                      searchBy: widget.searchBy,
+                                      showClearButton: widget.showClearButton,
+                                    );
+                                  },
+                                ));
+                              } else {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DashboardPage(),
+                                    ));
+                              }
                             }
                           } else {
                             if (context.mounted) {

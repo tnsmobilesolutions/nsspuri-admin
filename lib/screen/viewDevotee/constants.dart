@@ -11,10 +11,19 @@ Color getColorByDevotee(DevoteeModel devotee) {
   if (devotee.isSpeciallyAbled == true) return Colors.purple;
   if (devotee.isOrganizer == true) return Colors.red;
 
-  if (devotee.age != null) {
-    int age = devotee.age ?? 0;
-    if (age <= teenAgeLimit) return Colors.green;
-    if (age >= seniorCitizenAgeLimit) return Colors.purple;
+  if (devotee.ageGroup != null) {
+    if (devotee.ageGroup == "0-12") return Colors.green;
+
+    if (devotee.ageGroup == "13-70") {
+      if (devotee.gender == "Male") {
+        return Colors.blue;
+      }
+      if (devotee.gender == "Female") {
+        return Colors.pink;
+      }
+    }
+
+    if (devotee.ageGroup == "70 Above") return Colors.purple;
   }
 
   if (devotee.dob?.isNotEmpty == true && devotee.dob != null) {

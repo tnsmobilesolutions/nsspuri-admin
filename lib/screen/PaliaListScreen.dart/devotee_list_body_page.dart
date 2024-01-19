@@ -279,11 +279,11 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                   ],
                 ),
               ),
-              DataCell(Text(allDevotees[index].sangha ?? '_')),
+              DataCell(Text(allDevotees[index].sangha ?? "")),
               DataCell(
-                allDevotees[index].age != null
+                allDevotees[index].ageGroup != ""
                     ? Text(
-                        allDevotees[index].age.toString(),
+                        allDevotees[index].ageGroup.toString(),
                         textAlign: TextAlign.center,
                       )
                     : Text(
