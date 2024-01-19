@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, unnecessary_null_comparison
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -21,6 +21,57 @@ String dayBeforeYesterdayDate = DateFormat('yyyy-MM-dd')
     .format(DateTime.now().subtract(const Duration(days: 2)));
 
 class _DashboardBodyState extends State<DashboardBody> {
+  late DateTime selectedDate;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedDate = DateTime
+        .now(); // Initialize selectedDate here or with another default value.
+  }
+
+  late List<DashboardStatusModel> todayDateData;
+  late List<DashboardStatusModel> yesterdayDatesData;
+  late List<DashboardStatusModel> dayBeforeYesterdayDatesData;
+  List<DashboardStatusModel> filterDataByDate(
+      List<dynamic> allData, DateTime date) {
+    final formattedDate = DateFormat('yyyy-MM-dd').format(date);
+    return allData
+        .map((item) => DashboardStatusModel.fromMap(item))
+        .where((data) => data.title == formattedDate)
+        .toList();
+  }
+
+  Future<void> fetchData() async {
+    try {
+      final response = await GetDevoteeAPI().adminDashboard();
+      final allDashboardData = response?["data"];
+
+      todayDateData = filterDataByDate(allDashboardData, selectedDate);
+      // yesterdayDatesData = filterDataByDate(
+      //     allDashboardData, selectedDate.subtract(const Duration(days: 1)));
+      // dayBeforeYesterdayDatesData = filterDataByDate(
+      //     allDashboardData, selectedDate.subtract(const Duration(days: 2)));
+    } catch (e) {
+      print("Error fetching data: $e");
+    }
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime picked = (await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+    ))!;
+    if (picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+      fetchData();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -38,11 +89,12 @@ class _DashboardBodyState extends State<DashboardBody> {
           List<DashboardStatusModel> yesterdayDatesData = [];
           List<DashboardStatusModel> dayBeforeYesterdayDatesData = [];
 
-          String todayDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+          String todayDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+
           String yesterdayDate = DateFormat('yyyy-MM-dd')
-              .format(DateTime.now().subtract(const Duration(days: 1)));
+              .format(selectedDate.subtract(const Duration(days: 1)));
           String dayBeforeYesterdayDate = DateFormat('yyyy-MM-dd')
-              .format(DateTime.now().subtract(const Duration(days: 2)));
+              .format(selectedDate.subtract(const Duration(days: 2)));
           for (var item in allDashboardData) {
             DashboardStatusModel dashboarddata =
                 DashboardStatusModel.fromMap(item);
@@ -111,6 +163,11 @@ class _DashboardBodyState extends State<DashboardBody> {
                           todayDate,
                           style: const TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(width: 10),
+                        ElevatedButton(
+                          onPressed: () => _selectDate(context),
+                          child: const Text("Select Date"),
                         ),
                       ],
                     ),

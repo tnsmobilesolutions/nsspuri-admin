@@ -8,6 +8,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 import 'package:sdp/API/get_devotee.dart';
+import 'package:sdp/constant/pdf_delegatecard.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/export_to_excel.dart';
@@ -227,14 +228,14 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
               setState(() {
                 selectedList[index] = value!;
                 if (value) {
-                  if (selectedDevotees.length < 6) {
+                  if (selectedDevotees.length < 4) {
                     selectedDevotees.add(allDevotees[index]);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       elevation: 6,
                       behavior: SnackBarBehavior.floating,
                       content: Text(
-                        'You can only select up to 6 devotees !',
+                        'You can only select up to 4 devotees !',
                       ),
                     ));
                     selectedList[index] = false;
@@ -418,7 +419,11 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                             side: const BorderSide(
                                 width: 1.5, color: Colors.deepOrange),
                             foregroundColor: Colors.black),
-                        onPressed: () {},
+                        onPressed: () {
+                          if (context.mounted) {
+                            DisplayPdf.delegatePDF(selectedDevotees, context);
+                          }
+                        },
                         child: const Text('Print'),
                       ),
                       const SizedBox(width: 12),
