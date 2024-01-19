@@ -17,8 +17,8 @@ import 'package:sdp/screen/viewDevotee/viewDevotee.dart';
 import 'package:sdp/utilities/network_helper.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-class DevoteeListBodyPage extends StatefulWidget {
-  DevoteeListBodyPage(
+class UserTableView extends StatefulWidget {
+  UserTableView(
       {Key? key,
       required this.status,
       required this.pageFrom,
@@ -37,21 +37,19 @@ class DevoteeListBodyPage extends StatefulWidget {
   String status;
 
   @override
-  State<DevoteeListBodyPage> createState() => _DevoteeListBodyPageState();
+  State<UserTableView> createState() => _UserTableViewState();
 }
 
-class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
+class _UserTableViewState extends State<UserTableView>
     with TickerProviderStateMixin {
   bool? allCheck;
   List<DevoteeModel> allDevotees = [], selectedDevotees = [];
-  bool checkedValue = false;
   bool editpaliDate = false;
   bool isAscending = false;
   bool showMenu = false;
   bool isLoading = true;
   bool isSelected = false;
   String? userRole;
-  bool isChecked = false;
   List<String> monthNames = [
     'Jan',
     'Feb',
@@ -247,18 +245,19 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
             },
             cells: [
               DataCell(Text("${index + 1}")),
-              DataCell(SizedBox(
+              const DataCell(SizedBox(
                 height: 50,
                 width: 50,
-                child: allDevotees[index].profilePhotoUrl != null &&
-                        allDevotees[index].profilePhotoUrl!.isNotEmpty == true
-                    ? Image.network(
-                        allDevotees[index].profilePhotoUrl ?? '',
-                        height: 80,
-                        width: 80,
-                      )
-                    : const Image(
-                        image: AssetImage('assets/images/profile.jpeg')),
+                child:
+                    //  allDevotees[index].profilePhotoUrl != null &&
+                    //         allDevotees[index].profilePhotoUrl!.isNotEmpty == true
+                    //     ? Image.network(
+                    //         allDevotees[index].profilePhotoUrl ?? '',
+                    //         height: 80,
+                    //         width: 80,
+                    //       )
+                    //     :
+                    Image(image: AssetImage('assets/images/profile.jpeg')),
               )),
               DataCell(
                 Column(
@@ -279,11 +278,11 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                   ],
                 ),
               ),
-              DataCell(Text(allDevotees[index].sangha ?? "")),
+              DataCell(Text(allDevotees[index].sangha ?? '_')),
               DataCell(
-                allDevotees[index].ageGroup != ""
+                allDevotees[index].age != null
                     ? Text(
-                        allDevotees[index].ageGroup.toString(),
+                        allDevotees[index].age.toString(),
                         textAlign: TextAlign.center,
                       )
                     : Text(
@@ -407,43 +406,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            userRole == "SuperAdmin" ||
-                    userRole == "Admin" ||
-                    userRole == "Approver"
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                            side: const BorderSide(
-                                width: 1.5, color: Colors.deepOrange),
-                            foregroundColor: Colors.black),
-                        onPressed: () {},
-                        child: const Text('Print'),
-                      ),
-                      const SizedBox(width: 12),
-                      OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                            side: const BorderSide(
-                                width: 1.5, color: Colors.deepOrange),
-                            foregroundColor: Colors.black),
-                        onPressed: () {
-                          ExportToExcel().exportToExcel(allDevotees);
-                        },
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text('Export'),
-                            Icon(
-                              Icons.upload_rounded,
-                              color: Colors.deepOrange,
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  )
-                : const SizedBox(),
+            
             Row(
               children: [
                 Expanded(
