@@ -1419,41 +1419,41 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                 );
                               },
                             );
-                            List<DevoteeModel> devoteeList = [];
-                            if (widget.title == "edit") {
-                              await GetDevoteeAPI()
-                                  .advanceSearchDevotee(
-                                widget.searchValue.toString(),
-                                widget.searchBy.toString(),
-                              )
-                                  .then((value) {
-                                devoteeList.addAll(value["data"]);
-                              });
-                            }
+                            // List<DevoteeModel> devoteeList = [];
+                            // if (widget.title == "edit") {
+                            //   await GetDevoteeAPI()
+                            //       .advanceSearchDevotee(
+                            //     widget.searchValue.toString(),
+                            //     widget.searchBy.toString(),
+                            //   )
+                            //       .then((value) {
+                            //     devoteeList.addAll(value["data"]);
+                            //   });
+                            // }
                             if (context.mounted) {
                               Navigator.of(context)
                                   .pop(); // Close the circular progress indicator
 
-                              if (widget.title == "edit") {
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) {
-                                    return DevoteeListPage(
-                                      status: "allDevotee",
-                                      pageFrom: "Search",
-                                      devoteeList: devoteeList,
-                                      searchValue: widget.searchValue,
-                                      searchBy: widget.searchBy,
-                                      showClearButton: widget.showClearButton,
-                                    );
-                                  },
-                                ));
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => DashboardPage(),
-                                    ));
-                              }
+                              // if (widget.title == "edit") {
+                              //   Navigator.push(context, MaterialPageRoute(
+                              //     builder: (context) {
+                              //       return DevoteeListPage(
+                              //         status: "allDevotee",
+                              //         pageFrom: "Search",
+                              //         devoteeList: devoteeList,
+                              //         searchValue: widget.searchValue,
+                              //         searchBy: widget.searchBy,
+                              //         showClearButton: widget.showClearButton,
+                              //       );
+                              //     },
+                              //   ));
+                              // } else {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DashboardPage(),
+                                  ));
+                              // }
                             }
                           } else {
                             if (context.mounted) {

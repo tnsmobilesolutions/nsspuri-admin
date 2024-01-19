@@ -246,19 +246,18 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
             },
             cells: [
               DataCell(Text("${index + 1}")),
-              const DataCell(SizedBox(
+              DataCell(SizedBox(
                 height: 50,
                 width: 50,
-                child:
-                    //  allDevotees[index].profilePhotoUrl != null &&
-                    //         allDevotees[index].profilePhotoUrl!.isNotEmpty == true
-                    //     ? Image.network(
-                    //         allDevotees[index].profilePhotoUrl ?? '',
-                    //         height: 80,
-                    //         width: 80,
-                    //       )
-                    //     :
-                    Image(image: AssetImage('assets/images/profile.jpeg')),
+                child: allDevotees[index].profilePhotoUrl != null &&
+                        allDevotees[index].profilePhotoUrl!.isNotEmpty == true
+                    ? Image.network(
+                        allDevotees[index].profilePhotoUrl ?? '',
+                        height: 80,
+                        width: 80,
+                      )
+                    : const Image(
+                        image: AssetImage('assets/images/profile.jpeg')),
               )),
               DataCell(
                 Column(
