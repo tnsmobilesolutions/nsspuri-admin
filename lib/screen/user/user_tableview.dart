@@ -1,40 +1,27 @@
 // ignore_for_file: file_names, depend_on_referenced_packages, must_be_immutable, iterable_contains_unrelated_type, avoid_print
-import 'dart:typed_data';
 
 import 'package:animate_icons/animate_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:pdf/pdf.dart';
-import 'package:printing/printing.dart';
-import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/export_to_excel.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/printpdf.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
 import 'package:sdp/screen/viewDevotee/viewDevotee.dart';
 import 'package:sdp/utilities/network_helper.dart';
-import 'package:pdf/widgets.dart' as pw;
 
 class UserTableView extends StatefulWidget {
   UserTableView(
       {Key? key,
-      required this.status,
-      required this.pageFrom,
+    
       this.devoteeList,
-      this.showClearButton,
-      this.searchValue,
-      this.searchBy}
+   
+      }
       )
       : super(key: key);
 
   List<DevoteeModel>? devoteeList;
-  String pageFrom;
-  String? searchBy;
-  String? searchValue;
-  bool? showClearButton;
-  String status;
+ 
 
   @override
   State<UserTableView> createState() => _UserTableViewState();
@@ -68,20 +55,7 @@ class _UserTableViewState extends State<UserTableView>
   late AnimateIconController _controller;
   List<bool> selectedList = [];
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimateIconController();
 
-    widget.devoteeList != null
-        ? allDevotees = widget.devoteeList!
-        : fetchAllDevotee();
-    setState(() {
-      userRole = NetworkHelper().currentDevotee?.role;
-      selectedList =
-          List<bool>.generate(allDevotees.length, (int index) => false);
-    });
-  }
 
   // @override
   // void dispose() {
@@ -104,33 +78,7 @@ class _UserTableViewState extends State<UserTableView>
     return "";
   }
 
-  void fetchAllDevotee() async {
-    Map<String, dynamic>? allDevotee;
-
-    if (widget.status == "allDevotee" && widget.pageFrom == "Dashboard") {
-      allDevotee = await GetDevoteeAPI().allDevotee();
-    } else if (widget.status != "allDevotee" &&
-        widget.pageFrom == "Dashboard") {
-      allDevotee = await GetDevoteeAPI().searchDevotee(widget.status, "status");
-    } else if (widget.pageFrom == "Search") {
-      allDevotee = await GetDevoteeAPI().advanceSearchDevotee(
-        widget.searchValue.toString(),
-        widget.searchBy.toString(),
-      );
-    }
-
-    if (allDevotee != null) {
-      setState(() {
-        for (int i = 0; i < allDevotee?["data"].length; i++) {
-          allDevotees.add(allDevotee?["data"][i]);
-        }
-      });
-    } else {
-      print("Error fetching data");
-    }
-    setState(() => isLoading = false);
-  }
-
+ 
   Expanded headingText(String text) {
     return Expanded(
       child: Text(
@@ -364,10 +312,8 @@ class _UserTableViewState extends State<UserTableView>
                                   content: AddPageDilouge(
                                     devoteeId:
                                         allDevotees[index].devoteeId.toString(),
-                                    title: "edit",
-                                    showClearButton: widget.showClearButton,
-                                    searchBy: widget.searchBy,
-                                    searchValue: widget.searchValue,
+                          title: "addDevotee",
+                                  
                                   ));
                             },
                           );

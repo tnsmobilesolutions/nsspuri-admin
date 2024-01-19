@@ -43,8 +43,7 @@ class _UserDashboardState extends State<UserDashboard> {
         ),
       ),
       body: UserTableView(
-        status: "allDevotee",
-        pageFrom: 'Dashboard',
+       
       ),
       //drawer: const AppDrawer(),
     );
