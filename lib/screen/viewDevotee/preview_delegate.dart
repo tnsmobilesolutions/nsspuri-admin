@@ -64,6 +64,30 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
     );
   }
 
+  Text buildSanghaText(String? sanghaName) {
+    double fontSize = 10;
+
+    // Adjust the font size based on the length of the sanghaName
+    if (sanghaName != null) {
+      int nameLength = sanghaName.length;
+
+      if (nameLength > 15) {
+        fontSize = 8; // Reduce font size for longer names
+      } else if (nameLength < 5) {
+        fontSize = 14.0; // Increase font size for shorter names
+      }
+    }
+
+    return Text(
+      _toPascalCase(sanghaName ?? ''),
+      style: TextStyle(
+        color: Colors.black,
+        fontSize: fontSize,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final devotees = widget.devoteeDetails;
@@ -88,20 +112,23 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 30, right: 30),
                       child: Container(
-                        height: 432,
+                        height: 422,
+                        width: 260,
                         decoration: BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color.fromARGB(255, 194, 202, 218),
-                              ),
-                            ],
-                            border: Border.all(
-                              width: 3,
-                              color: const Color.fromARGB(255, 233, 233, 233),
+                          color: Colors.white,
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color.fromARGB(255, 194, 202, 218),
                             ),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(20))),
+                          ],
+                          borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20)),
+                          border: Border.all(
+                            width: 3,
+                            color: const Color.fromARGB(255, 233, 233, 233),
+                          ),
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.all(.0),
                           child: Column(
@@ -109,11 +136,11 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                               Container(
                                 height: 45,
                                 decoration: BoxDecoration(
-                                    color: getColorByDevotee(devotees),
-                                    borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(18),
-                                      topRight: Radius.circular(18),
-                                    )),
+                                  color: getColorByDevotee(devotees),
+                                  borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(20),
+                                      topRight: Radius.circular(20)),
+                                ),
                                 child: const Row(
                                   children: [
                                     Expanded(
@@ -123,7 +150,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 16,
+                                          fontSize: 12,
                                           color: Colors.white,
                                         ),
                                       ),
@@ -132,7 +159,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                 ),
                               ),
                               SizedBox(
-                                height: 375,
+                                height: 370,
                                 child: Column(
                                   children: [
                                     Expanded(
@@ -151,7 +178,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                     'assets/images/3.svg',
                                                     color: getColorByDevotee(
                                                         devotees),
-                                                    height: 18,
+                                                    height: 15,
                                                   );
                                                 },
                                                 separatorBuilder:
@@ -161,7 +188,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                   // You can adjust the size and appearance of the separator here.
                                                   return const SizedBox(
                                                       height:
-                                                          3.3); // Adjust the height as needed.
+                                                          3.6); // Adjust the height as needed.
                                                 },
                                               ),
                                             ),
@@ -179,7 +206,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                           child: Container(
                                                             child: Image.asset(
                                                               'assets/images/nsslogo.png',
-                                                              scale: 35,
+                                                              scale: 50,
                                                             ),
                                                           ),
                                                         ),
@@ -191,7 +218,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                                 'JAYAGURU',
                                                                 style: TextStyle(
                                                                     fontSize:
-                                                                        16,
+                                                                        14,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .bold,
@@ -207,7 +234,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                           child: Container(
                                                             child: Image.asset(
                                                               'assets/images/Subtract.png',
-                                                              scale: 85,
+                                                              scale: 120,
                                                             ),
                                                           ),
                                                         ),
@@ -264,7 +291,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                                   ? Container(
                                                                       width: 60,
                                                                       height:
-                                                                          55,
+                                                                          50,
                                                                       decoration:
                                                                           const BoxDecoration(
                                                                         shape: BoxShape
@@ -279,7 +306,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                                             width:
                                                                                 60,
                                                                             height:
-                                                                                55,
+                                                                                50,
                                                                             decoration:
                                                                                 const BoxDecoration(
                                                                               shape: BoxShape.rectangle,
@@ -297,7 +324,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                                             child:
                                                                                 SizedBox(
                                                                               width: 60,
-                                                                              height: 55,
+                                                                              height: 50,
                                                                               child: Center(
                                                                                 child: Text(
                                                                                   "${widget.devoteeDetails.bloodGroup}",
@@ -342,46 +369,46 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                                             as ImageProvider<Object>,
                                                                   ),
                                                                 ),
-                                                                if (widget.devoteeDetails
-                                                                            .status ==
-                                                                        "paid" ||
-                                                                    widget.devoteeDetails
-                                                                            .status ==
-                                                                        "printed")
-                                                                  Positioned(
-                                                                    top: 50,
-                                                                    left: 105,
-                                                                    child: Transform
-                                                                        .rotate(
-                                                                      angle: 12,
-                                                                      child:
-                                                                          Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .all(
-                                                                            4.0),
-                                                                        child:
-                                                                            Container(
-                                                                          decoration: BoxDecoration(
-                                                                              border: Border.all(color: const Color.fromARGB(255, 44, 7, 209), width: 4),
-                                                                              borderRadius: BorderRadius.circular(4)),
-                                                                          child:
-                                                                              const Padding(
-                                                                            padding:
-                                                                                EdgeInsets.all(4.0),
-                                                                            child:
-                                                                                Text(
-                                                                              'PAID',
-                                                                              style: TextStyle(
-                                                                                fontSize: 30.0,
-                                                                                fontWeight: FontWeight.bold,
-                                                                                color: Color.fromARGB(255, 44, 7, 209),
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
+                                                                // if (widget.devoteeDetails
+                                                                //             .status ==
+                                                                //         "paid" ||
+                                                                //     widget.devoteeDetails
+                                                                //             .status ==
+                                                                //         "printed")
+                                                                //   Positioned(
+                                                                //     top: 50,
+                                                                //     left: 105,
+                                                                //     child: Transform
+                                                                //         .rotate(
+                                                                //       angle: 12,
+                                                                //       child:
+                                                                //           Padding(
+                                                                //         padding: const EdgeInsets
+                                                                //             .all(
+                                                                //             4.0),
+                                                                //         child:
+                                                                //             Container(
+                                                                //           decoration: BoxDecoration(
+                                                                //               border: Border.all(color: const Color.fromARGB(255, 44, 7, 209), width: 4),
+                                                                //               borderRadius: BorderRadius.circular(4)),
+                                                                //           child:
+                                                                //               const Padding(
+                                                                //             padding:
+                                                                //                 EdgeInsets.all(4.0),
+                                                                //             child:
+                                                                //                 Text(
+                                                                //               'PAID',
+                                                                //               style: TextStyle(
+                                                                //                 fontSize: 30.0,
+                                                                //                 fontWeight: FontWeight.bold,
+                                                                //                 color: Color.fromARGB(255, 44, 7, 209),
+                                                                //               ),
+                                                                //             ),
+                                                                //           ),
+                                                                //         ),
+                                                                //       ),
+                                                                //     ),
+                                                                //   ),
                                                               ],
                                                             ),
                                                           ),
@@ -403,7 +430,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                                 const TextStyle(
                                                               color: Colors
                                                                   .deepOrange,
-                                                              fontSize: 18,
+                                                              fontSize: 12,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold,
@@ -427,29 +454,10 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                                       .start,
                                                               children: [
                                                                 Expanded(
-                                                                  flex: 2,
-                                                                  child: widget
-                                                                              .devoteeDetails
-                                                                              .sangha !=
-                                                                          null
-                                                                      ? Text(
-                                                                          _toPascalCase(widget
-                                                                              .devoteeDetails
-                                                                              .sangha
-                                                                              .toString()),
-                                                                          style:
-                                                                              const TextStyle(
-                                                                            color:
-                                                                                Colors.black,
-                                                                            fontSize:
-                                                                                12,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        )
-                                                                      : const Text(
-                                                                          ""),
-                                                                ),
+                                                                    flex: 1,
+                                                                    child: buildSanghaText(widget
+                                                                        .devoteeDetails
+                                                                        .sangha)),
                                                                 Expanded(
                                                                   flex: 1,
                                                                   child: widget
@@ -466,7 +474,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                                             color:
                                                                                 Colors.deepOrange,
                                                                             fontSize:
-                                                                                12,
+                                                                                10,
                                                                             fontWeight:
                                                                                 FontWeight.bold,
                                                                           ),
@@ -475,26 +483,27 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                                           ""),
                                                                 ),
                                                                 const Expanded(
-                                                                  flex: 2,
+                                                                  flex: 1,
                                                                   child: Text(
                                                                     "Sri Sri Thakura Charanasrita",
                                                                     style: TextStyle(
                                                                         fontSize:
-                                                                            12,
+                                                                            7,
                                                                         fontWeight:
                                                                             FontWeight.bold),
                                                                   ),
                                                                 ),
-                                                                const Expanded(
+                                                                Expanded(
                                                                   flex: 1,
-                                                                  child: Text(
-                                                                    "",
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            10,
-                                                                        fontWeight:
-                                                                            FontWeight.bold),
-                                                                  ),
+                                                                  child: Container(
+                                                                      decoration: const BoxDecoration(
+                                                                          image: DecorationImage(
+                                                                    image: AssetImage(
+                                                                        "assets/images/Naresh.jpeg"),
+                                                                    scale: 18,
+                                                                    fit: BoxFit
+                                                                        .fitWidth,
+                                                                  ))),
                                                                 ),
                                                                 const Expanded(
                                                                   flex: 1,
@@ -502,7 +511,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                                     'Secretary',
                                                                     style: TextStyle(
                                                                         fontSize:
-                                                                            12,
+                                                                            10,
                                                                         fontWeight:
                                                                             FontWeight.bold),
                                                                   ),
@@ -546,7 +555,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                 )),
                                             Expanded(
                                               child: ListView.separated(
-                                                itemCount: 19,
+                                                itemCount: 20,
                                                 itemBuilder:
                                                     (BuildContext context,
                                                         int index) {
@@ -554,7 +563,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                     'assets/images/3.svg',
                                                     color: getColorByDevotee(
                                                         devotees),
-                                                    height: 18,
+                                                    height: 15,
                                                   );
                                                 },
                                                 separatorBuilder:
@@ -564,7 +573,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                   // You can adjust the size and appearance of the separator here.
                                                   return const SizedBox(
                                                       height:
-                                                          3.3); // Adjust the height as needed.
+                                                          3.6); // Adjust the height as needed.
                                                 },
                                               ),
                                             ),
@@ -577,7 +586,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                       child: Container(
                                         child: Padding(
                                           padding: const EdgeInsets.only(
-                                              left: 6, right: 6),
+                                              left: 4, right: 4),
                                           child: GridView.builder(
                                             gridDelegate:
                                                 const SliverGridDelegateWithFixedCrossAxisCount(
@@ -613,7 +622,6 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                     ),
                   ),
                 ),
-                
               ],
             ),
           ),
