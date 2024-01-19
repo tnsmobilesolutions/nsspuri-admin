@@ -10,11 +10,13 @@ import 'package:intl/intl.dart';
 
 import 'package:sdp/API/post_devotee.dart';
 import 'package:sdp/API/put_devotee.dart';
+import 'package:sdp/Login/EmailSignIn.dart';
 import 'package:sdp/constant/sangha_list.dart';
 import 'package:sdp/model/address_model.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/appBar/custom_calendar.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
+import 'package:sdp/screen/user/userDashboard.dart';
 import 'package:sdp/utilities/color_palette.dart';
 
 import 'package:uuid/uuid.dart';
@@ -1057,6 +1059,7 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                           String uniqueDevoteeId = const Uuid().v1();
                           DevoteeModel updateDevotee = DevoteeModel(
                               devoteeId: uniqueDevoteeId,
+                              createdById: uniqueDevoteeId,
                               bloodGroup: bloodGroupController,
                               name: nameController.text,
                               remarks: remarksController.text,
@@ -1065,9 +1068,7 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                               hasParichayaPatra: parichayaPatraValue,
                               sangha: sanghaController.text,
                               dob: _formatDOB(dobController.text),
-                              age: ageController.text.isNotEmpty
-                                  ? int.tryParse(ageController.text)
-                                  : null,
+                           
                               mobileNumber: mobileController.text,
                               updatedOn: DateTime.now().toString(),
                               emailId: emailController.text,
@@ -1075,6 +1076,7 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                               isGuest: isGuest,
                               isOrganizer: isOrganizer,
                               uid: uid,
+                              role: "User",
                               address: AddressModel(
                                   addressLine2: addressLine2Controller.text,
                                   addressLine1: addressLine1Controller.text,
@@ -1118,7 +1120,7 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => DashboardPage(),
+                                    builder: (context) => EmailSignIn(),
                                   ));
                             }
                           } else {
@@ -1129,7 +1131,7 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                             // ignore: use_build_context_synchronously
                             ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                    content: Text('devotee update issue')));
+                                    content: Text('devotee Create issue')));
                           }
                         } catch (e) {
                           if (context.mounted) {

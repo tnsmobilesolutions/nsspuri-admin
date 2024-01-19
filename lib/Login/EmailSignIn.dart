@@ -105,26 +105,11 @@ class _EmailSignInState extends State<EmailSignIn> {
                             ));
                       } else if (response?["statusCode"] == 200 &&
                           resDevoteeData.role == "User") {
-                        final devoteelist = await GetDevoteeAPI()
-                            .devoteeListBycreatedById(
-                                resDevoteeData.devoteeId.toString());
-                        if (devoteelist?["data"].length != 0) {
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) {
-                              return DevoteeListPage(
-                                status: "allDevotee",
-                                pageFrom: "Dashboard",
-                                devoteeList: devoteelist?["data"],
-                              );
-                            },
-                          ));
-                        }
-
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (context) => DevoteeListBodyPage(),
-                        //     ));
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return UserDashboard();
+                          },
+                        ));
                       } else {
                         ScaffoldMessenger.of(context)
                             .showSnackBar(const SnackBar(
@@ -154,6 +139,7 @@ class _EmailSignInState extends State<EmailSignIn> {
                 textForSignup: "Don't have a Delegate !",
                 signupOnpressedonLoginButton: () {
                   showDialog<String>(
+                      barrierDismissible: false,
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
                           title: Row(

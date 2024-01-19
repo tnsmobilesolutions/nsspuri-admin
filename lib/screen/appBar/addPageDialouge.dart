@@ -12,9 +12,9 @@ import 'package:sdp/API/put_devotee.dart';
 import 'package:sdp/constant/sangha_list.dart';
 import 'package:sdp/model/address_model.dart';
 import 'package:sdp/model/devotee_model.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
 import 'package:sdp/screen/appBar/custom_calendar.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
+import 'package:sdp/screen/user/userDashboard.dart';
 import 'package:sdp/utilities/color_palette.dart';
 import 'package:sdp/utilities/network_helper.dart';
 import 'package:uuid/uuid.dart';
@@ -27,6 +27,7 @@ class AddPageDilouge extends StatefulWidget {
     this.searchBy,
     this.searchValue,
     this.showClearButton,
+    this.role,
   });
 
   String devoteeId;
@@ -34,6 +35,7 @@ class AddPageDilouge extends StatefulWidget {
   String? searchValue;
   bool? showClearButton;
   String title;
+  String? role;
 
   @override
   State<AddPageDilouge> createState() => _AddPageDilougeState();
@@ -188,7 +190,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   @override
   void initState() {
     super.initState();
-
+    print("widget.devoteeId-----${widget.devoteeId}");
     if (widget.title == "edit") populateData();
   }
 
@@ -1396,6 +1398,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                   city: cityController.text,
                                   state: stateController.text));
                           Map<String, dynamic> response;
+
                           if (widget.title == "edit") {
                             response = await PutDevoteeAPI()
                                 .updateDevotee(updateDevotee, widget.devoteeId);
@@ -1431,29 +1434,38 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                             //   });
                             // }
                             if (context.mounted) {
-                              Navigator.of(context)
-                                  .pop(); // Close the circular progress indicator
+                              if (widget.role == "User") {
+                               
+                                Navigator.of(context)
+                                    .pop(); // Close the circular progress indicator
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => UserDashboard(
+                                         
+                                    )));
+                              } else {
+                                Navigator.of(context)
+                                    .pop(); // Close the circular progress indicator
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DashboardPage(),
+                                    ));
+                              }
 
-                              // if (widget.title == "edit") {
-                              //   Navigator.push(context, MaterialPageRoute(
-                              //     builder: (context) {
-                              //       return DevoteeListPage(
-                              //         status: "allDevotee",
-                              //         pageFrom: "Search",
-                              //         devoteeList: devoteeList,
-                              //         searchValue: widget.searchValue,
-                              //         searchBy: widget.searchBy,
-                              //         showClearButton: widget.showClearButton,
-                              //       );
-                              //     },
-                              //   ));
-                              // } else {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => DashboardPage(),
-                                  ));
-                              // }
+                              // Navigator.push(context, MaterialPageRoute(
+                              //   builder: (context) {
+                              //     return DevoteeListPage(
+                              //       status: "allDevotee",
+                              //       pageFrom: "Search",
+                              //       devoteeList: devoteeList,
+                              //       searchValue: widget.searchValue,
+                              //       searchBy: widget.searchBy,
+                              //       showClearButton: widget.showClearButton,
+                              //     );
+                              //   },
+                              // ));
                             }
                           } else {
                             if (context.mounted) {

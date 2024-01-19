@@ -11,17 +11,12 @@ import 'package:sdp/screen/viewDevotee/viewDevotee.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
 class UserTableView extends StatefulWidget {
-  UserTableView(
-      {Key? key,
-    
-      this.devoteeList,
-   
-      }
-      )
-      : super(key: key);
+  UserTableView({
+    Key? key,
+    required this.devoteeList,
+  }) : super(key: key);
 
-  List<DevoteeModel>? devoteeList;
- 
+  List<DevoteeModel> devoteeList;
 
   @override
   State<UserTableView> createState() => _UserTableViewState();
@@ -29,14 +24,10 @@ class UserTableView extends StatefulWidget {
 
 class _UserTableViewState extends State<UserTableView>
     with TickerProviderStateMixin {
-  bool? allCheck;
-  List<DevoteeModel> allDevotees = [], selectedDevotees = [];
   bool editpaliDate = false;
   bool isAscending = false;
   bool showMenu = false;
   bool isLoading = true;
-  bool isSelected = false;
-  String? userRole;
   List<String> monthNames = [
     'Jan',
     'Feb',
@@ -52,16 +43,7 @@ class _UserTableViewState extends State<UserTableView>
     'Dec'
   ];
 
-  late AnimateIconController _controller;
   List<bool> selectedList = [];
-
-
-
-  // @override
-  // void dispose() {
-  //   _controller.dispose();
-  //   super.dispose();
-  // }
 
   String formatDate(String inputDate) {
     if (inputDate.isNotEmpty) {
@@ -78,7 +60,6 @@ class _UserTableViewState extends State<UserTableView>
     return "";
   }
 
- 
   Expanded headingText(String text) {
     return Expanded(
       child: Text(
@@ -110,9 +91,9 @@ class _UserTableViewState extends State<UserTableView>
   }
 
   Widget devoteeTable(BuildContext context) {
+    List<DevoteeModel> allDevotees = widget.devoteeList;
     return DataTable(
       showBottomBorder: true,
-      showCheckboxColumn: true,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
@@ -137,25 +118,25 @@ class _UserTableViewState extends State<UserTableView>
                       ),
                     ),
               ),
-              AnimateIcons(
-                startIcon: Ionicons.arrow_up,
-                endIcon: Ionicons.arrow_down,
-                startIconColor: Colors.deepOrange,
-                endIconColor: Colors.deepOrange,
-                controller: _controller,
-                duration: const Duration(milliseconds: 800),
-                size: 20.0,
-                onStartIconPress: () {
-                  isAscending = !isAscending;
-                  _sortList(isAscending);
-                  return true;
-                },
-                onEndIconPress: () {
-                  isAscending = !isAscending;
-                  _sortList(isAscending);
-                  return true;
-                },
-              ),
+              // AnimateIcons(
+              //   startIcon: Ionicons.arrow_up,
+              //   endIcon: Ionicons.arrow_down,
+              //   startIconColor: Colors.deepOrange,
+              //   endIconColor: Colors.deepOrange,
+              //   controller: _controller,
+              //   duration: const Duration(milliseconds: 800),
+              //   size: 20.0,
+              //   onStartIconPress: () {
+              //     isAscending = !isAscending;
+              //     _sortList(isAscending);
+              //     return true;
+              //   },
+              //   onEndIconPress: () {
+              //     isAscending = !isAscending;
+              //     _sortList(isAscending);
+              //     return true;
+              //   },
+              // ),
             ],
           ),
         ),
@@ -169,43 +150,12 @@ class _UserTableViewState extends State<UserTableView>
         allDevotees.length,
         (index) {
           return DataRow(
-            selected: selectedList[index],
-            onSelectChanged: (bool? value) {
-              setState(() {
-                selectedList[index] = value!;
-                if (value) {
-                  if (selectedDevotees.length < 6) {
-                    selectedDevotees.add(allDevotees[index]);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      elevation: 6,
-                      behavior: SnackBarBehavior.floating,
-                      content: Text(
-                        'You can only select up to 6 devotees !',
-                      ),
-                    ));
-                    selectedList[index] = false;
-                  }
-                } else {
-                  selectedDevotees.remove(allDevotees[index]);
-                }
-              });
-            },
             cells: [
               DataCell(Text("${index + 1}")),
               const DataCell(SizedBox(
                 height: 50,
                 width: 50,
-                child:
-                    //  allDevotees[index].profilePhotoUrl != null &&
-                    //         allDevotees[index].profilePhotoUrl!.isNotEmpty == true
-                    //     ? Image.network(
-                    //         allDevotees[index].profilePhotoUrl ?? '',
-                    //         height: 80,
-                    //         width: 80,
-                    //       )
-                    //     :
-                    Image(image: AssetImage('assets/images/profile.jpeg')),
+                child: Image(image: AssetImage('assets/images/profile.jpeg')),
               )),
               DataCell(
                 Column(
@@ -228,12 +178,8 @@ class _UserTableViewState extends State<UserTableView>
               ),
               DataCell(Text(allDevotees[index].sangha ?? '_')),
               DataCell(
-                allDevotees[index].age != null
-                    ? Text(
-                        allDevotees[index].age.toString(),
-                        textAlign: TextAlign.center,
-                      )
-                    : Text(
+               
+                    Text(
                         formatDate(allDevotees[index].dob ?? ""),
                         textAlign: TextAlign.center,
                       ),
@@ -312,8 +258,8 @@ class _UserTableViewState extends State<UserTableView>
                                   content: AddPageDilouge(
                                     devoteeId:
                                         allDevotees[index].devoteeId.toString(),
-                          title: "addDevotee",
-                                  
+                                    title: "edit",
+                                    role: "User",
                                   ));
                             },
                           );
@@ -336,7 +282,7 @@ class _UserTableViewState extends State<UserTableView>
 
   void _sortList(bool isAscending) {
     setState(() {
-      allDevotees.sort((a, b) {
+      widget.devoteeList.sort((a, b) {
         final nameA = (a.name ?? '').toLowerCase();
         final nameB = (b.name ?? '').toLowerCase();
         return isAscending ? nameA.compareTo(nameB) : nameB.compareTo(nameA);
@@ -352,7 +298,6 @@ class _UserTableViewState extends State<UserTableView>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            
             Row(
               children: [
                 Expanded(
