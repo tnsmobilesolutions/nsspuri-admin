@@ -45,6 +45,24 @@ class GetDevoteeAPI extends DioFuctionAPI {
     }
   }
 
+  Future<Map<String, dynamic>?> devoteeListBycreatedById(
+      String devoteeId) async {
+    try {
+      final response = await getAPI("devoteeListBycreatedById/$devoteeId");
+      List<DevoteeModel> devotees = [];
+      final devoteelist = response["data"]["devoteeList"];
+      devoteelist.forEach((devotee) {
+        devotees.add(DevoteeModel.fromMap(devotee));
+      });
+      // DevoteeModel devotee =
+      //     DevoteeModel.fromMap(response["data"]["devoteeList"][0]);
+      return {"statusCode": 200, "data": devotees};
+    } catch (e) {
+      print(e);
+      return {"statusCode": 500, "data": null};
+    }
+  }
+
   Future<Map<String, dynamic>?> allDevotee() async {
     try {
       List<DevoteeModel> devotees = [];

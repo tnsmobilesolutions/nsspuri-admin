@@ -5,9 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/firebase/firebase_auth_api.dart';
 import 'package:sdp/model/devotee_model.dart';
+import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_body_page.dart';
+import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
+import 'package:sdp/screen/appBar/addPageDialouge.dart';
 
 import 'package:sdp/screen/dashboard/dashboard.dart';
+import 'package:sdp/screen/dashboard/dashboardBody.dart';
+import 'package:sdp/screen/user/userDashboard.dart';
 import 'package:sdp/utilities/network_helper.dart';
+import 'package:sdp/screen/user/user_signup.dart';
 
 class EmailSignIn extends StatefulWidget {
   const EmailSignIn({super.key});
@@ -71,13 +77,6 @@ class _EmailSignInState extends State<EmailSignIn> {
                   'Sammilani Delegate Admin',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    // shadows: [
-                    //   Shadow(
-                    //     color: Colors.deepOrange,
-                    //     offset: Offset(.1, .1),
-                    //     blurRadius: 8.0,
-                    //   ),
-                    // ],
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                     color: Colors.black54,
@@ -104,6 +103,28 @@ class _EmailSignInState extends State<EmailSignIn> {
                             MaterialPageRoute(
                               builder: (context) => DashboardPage(),
                             ));
+                      } else if (response?["statusCode"] == 200 &&
+                          resDevoteeData.role == "User") {
+                        final devoteelist = await GetDevoteeAPI()
+                            .devoteeListBycreatedById(
+                                resDevoteeData.devoteeId.toString());
+                        if (devoteelist?["data"].length != 0) {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) {
+                              return DevoteeListPage(
+                                status: "allDevotee",
+                                pageFrom: "Dashboard",
+                                devoteeList: devoteelist?["data"],
+                              );
+                            },
+                          ));
+                        }
+
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //       builder: (context) => DevoteeListBodyPage(),
+                        //     ));
                       } else {
                         ScaffoldMessenger.of(context)
                             .showSnackBar(const SnackBar(
@@ -129,7 +150,32 @@ class _EmailSignInState extends State<EmailSignIn> {
                 },
                 obscureText: obscureText,
                 phoneAuthentication: false,
-                isSignUpVisible: false,
+                isSignUpVisible: true,
+                textForSignup: "Don't have a Delegate !",
+                signupOnpressedonLoginButton: () {
+                  showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('Create Delegate'),
+                              IconButton(
+                                  color: Colors.deepOrange,
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  icon: const Icon(
+                                    Icons.close,
+                                    color: Colors.deepOrange,
+                                  ))
+                            ],
+                          ),
+                          content: UserSignUpDelegate(
+                            title: "addDevotee",
+                            devoteeId: "",
+                          )));
+                },
                 buttonColor: Colors.deepOrange,
                 loginButonTextColor: Colors.white,
                 isImageVisible: true,
