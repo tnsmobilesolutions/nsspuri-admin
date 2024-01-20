@@ -5,12 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/firebase/firebase_auth_api.dart';
 import 'package:sdp/model/devotee_model.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_body_page.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
-import 'package:sdp/screen/appBar/addPageDialouge.dart';
-
 import 'package:sdp/screen/dashboard/dashboard.dart';
-import 'package:sdp/screen/dashboard/dashboardBody.dart';
 import 'package:sdp/screen/user/userDashboard.dart';
 import 'package:sdp/utilities/network_helper.dart';
 import 'package:sdp/screen/user/user_signup.dart';
