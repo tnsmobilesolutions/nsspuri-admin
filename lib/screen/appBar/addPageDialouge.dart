@@ -137,7 +137,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     "Coordinator",
     'Approver',
     'PrasadScanner',
-    "SecurityCheck"
+    "SecurityCheck",
     "Viewer"
   ];
   String day = "", month = "", year = "";
