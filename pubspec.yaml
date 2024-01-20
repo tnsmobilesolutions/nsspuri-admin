@@ -92,7 +92,7 @@ flutter:
   assets:
     - assets/images/
     # - assets/images/Naresh.jpg
-    - assets/images/sign.png
+    # - assets/images/sign.png
     - assets/images/naresh.jpeg
     # - images/a_dot_burr.jpeg
     # - images/a_dot_ham.jpeg
