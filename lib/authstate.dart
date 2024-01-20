@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sdp/Login/EmailSignIn.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
+import 'package:sdp/screen/user/userDashboard.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
 class AuthState extends StatefulWidget {
@@ -29,8 +30,12 @@ class _AuthStateState extends State<AuthState> {
     return (uid != null &&
             (NetworkHelper().getCurrentDevotee?.role == "Admin" ||
                 NetworkHelper().getCurrentDevotee?.role == "SuperAdmin" ||
-                NetworkHelper().getCurrentDevotee?.role == "Approver"))
+                NetworkHelper().getCurrentDevotee?.role == "Approver" ||
+                NetworkHelper().getCurrentDevotee?.role == "Viewer")
         ? DashboardPage()
-        : const EmailSignIn();
+        : (NetworkHelper().getCurrentDevotee?.role == "User")
+            ? UserDashboard(
+                devoteeId: NetworkHelper().getCurrentDevotee?.devoteeId ?? "")
+            : const EmailSignIn());
   }
 }
