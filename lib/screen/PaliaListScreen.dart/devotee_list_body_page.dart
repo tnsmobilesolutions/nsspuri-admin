@@ -1,15 +1,21 @@
 // ignore_for_file: file_names, depend_on_referenced_packages, must_be_immutable, iterable_contains_unrelated_type, avoid_print
+import 'dart:typed_data';
+
 import 'package:animate_icons/animate_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:pdf/pdf.dart';
+import 'package:printing/printing.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/devotee_model.dart';
+import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/export_to_excel.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/viewDevotee.dart';
+import 'package:sdp/screen/PaliaListScreen.dart/printpdf.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
 import 'package:sdp/screen/viewDevotee/viewDevotee.dart';
 import 'package:sdp/utilities/network_helper.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 class DevoteeListBodyPage extends StatefulWidget {
   DevoteeListBodyPage(
@@ -36,13 +42,15 @@ class DevoteeListBodyPage extends StatefulWidget {
 class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
     with TickerProviderStateMixin {
   bool? allCheck;
-  List<DevoteeModel> allPaliaList = [];
+  List<DevoteeModel> allDevotees = [], selectedDevotees = [];
   bool checkedValue = false;
   bool editpaliDate = false;
   bool isAscending = false;
   bool showMenu = false;
   bool isLoading = true;
+  bool isSelected = false;
   String? userRole;
+  bool isChecked = false;
   List<String> monthNames = [
     'Jan',
     'Feb',
@@ -59,6 +67,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
   ];
 
   late AnimateIconController _controller;
+  List<bool> selectedList = [];
 
   @override
   void initState() {
@@ -66,10 +75,12 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
     _controller = AnimateIconController();
 
     widget.devoteeList != null
-        ? allPaliaList = widget.devoteeList!
+        ? allDevotees = widget.devoteeList!
         : fetchAllDevotee();
     setState(() {
-      userRole = Networkhelper().currentDevotee?.role;
+      userRole = NetworkHelper().currentDevotee?.role;
+      selectedList =
+          List<bool>.generate(allDevotees.length, (int index) => false);
     });
   }
 
@@ -112,7 +123,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
     if (allDevotee != null) {
       setState(() {
         for (int i = 0; i < allDevotee?["data"].length; i++) {
-          allPaliaList.add(allDevotee?["data"][i]);
+          allDevotees.add(allDevotee?["data"][i]);
         }
       });
     } else {
@@ -143,16 +154,31 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
             softWrap: true,
             style: Theme.of(context).textTheme.titleMedium?.merge(
                   const TextStyle(
-                      color: Colors.blue,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
+                    color: Colors.blue,
+                    fontSize: 18,
+                  ),
                 ),
           ),
         ));
   }
 
+  String getAgeGroup(DevoteeModel? devotee) {
+    if (devotee?.ageGroup?.isNotEmpty == true || devotee?.ageGroup != null) {
+      if (devotee?.ageGroup == "Child") {
+        return "1 to 12";
+      } else if (devotee?.ageGroup == "Adult") {
+        return "13 to 70";
+      } else if (devotee?.ageGroup == "Elder") {
+        return "70 Above";
+      }
+    }
+    return "";
+  }
+
   Widget devoteeTable(BuildContext context) {
     return DataTable(
+      showBottomBorder: true,
+      showCheckboxColumn: true,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
@@ -172,9 +198,9 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                 softWrap: true,
                 style: Theme.of(context).textTheme.titleMedium?.merge(
                       const TextStyle(
-                          color: Colors.blue,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold),
+                        color: Colors.blue,
+                        fontSize: 18,
+                      ),
                     ),
               ),
               AnimateIcons(
@@ -200,67 +226,95 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
           ),
         ),
         dataColumn(context, 'Sangha'),
-        dataColumn(context, 'DOB'),
+        dataColumn(context, 'DOB/Age Group'),
         dataColumn(context, 'Status'),
         dataColumn(context, 'View'),
-        dataColumn(context, 'Edit'),
+        if (NetworkHelper().getCurrentDevotee?.role != "Viewer")
+          dataColumn(context, 'Edit'),
       ],
       rows: List.generate(
-        allPaliaList.length,
+        allDevotees.length,
         (index) {
           return DataRow(
+            // selected: selectedList[index],
+            // onSelectChanged: (bool? value) {
+            //   setState(() {
+            //     selectedList[index] = value!;
+            //     if (value) {
+            //       if (selectedDevotees.length < 6) {
+            //         selectedDevotees.add(allDevotees[index]);
+            //       } else {
+            //         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            //           elevation: 6,
+            //           behavior: SnackBarBehavior.floating,
+            //           content: Text(
+            //             'You can only select up to 6 devotees !',
+            //           ),
+            //         ));
+            //         selectedList[index] = false;
+            //       }
+            //     } else {
+            //       selectedDevotees.remove(allDevotees[index]);
+            //     }
+            //   });
+            // },
             cells: [
               DataCell(Text("${index + 1}")),
               DataCell(SizedBox(
                 height: 50,
                 width: 50,
-                child: allPaliaList[index].profilePhotoUrl != null &&
-                        allPaliaList[index].profilePhotoUrl!.isNotEmpty == true
+                child: allDevotees[index].profilePhotoUrl != null &&
+                        allDevotees[index].profilePhotoUrl!.isNotEmpty == true
                     ? Image.network(
-                        allPaliaList[index].profilePhotoUrl ?? '',
+                        allDevotees[index].profilePhotoUrl ?? '',
                         height: 80,
                         width: 80,
-                        // cacheWidth: 100,
-                        // cacheHeight: 70,
                       )
                     : const Image(
                         image: AssetImage('assets/images/profile.jpeg')),
               )),
-              //DataCell(Text(allPaliaList[index].name ?? '_')),
               DataCell(
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      allPaliaList[index].name != null
-                          ? '${allPaliaList[index].name}'
+                      allDevotees[index].name != null
+                          ? '${allDevotees[index].name}'
                           : "",
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      allPaliaList[index].devoteeCode.toString(),
+                      allDevotees[index].devoteeCode.toString(),
                     ),
                   ],
                 ),
               ),
-              DataCell(Text(allPaliaList[index].sangha ?? '_')),
+              DataCell(Text(allDevotees[index].sangha ?? "")),
               DataCell(
-                Text(
-                  formatDate(allPaliaList[index].dob ?? ""),
-                  textAlign: TextAlign.center,
-                ),
+                allDevotees[index].dob?.isNotEmpty == true
+                    ? Text(
+                        formatDate(allDevotees[index].dob ?? ""),
+                        textAlign: TextAlign.center,
+                      )
+                    : (allDevotees[index].ageGroup?.isNotEmpty == true ||
+                            allDevotees[index].ageGroup != null)
+                        ? Text(
+                            getAgeGroup(allDevotees[index]),
+                            textAlign: TextAlign.center,
+                          )
+                        : const Text(""),
               ),
               DataCell(
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('${allPaliaList[index].status}'),
-                    allPaliaList[index].paidAmount != null
-                        ? Text('₹${allPaliaList[index].paidAmount}')
+                    Text('${allDevotees[index].status}'),
+                    allDevotees[index].paidAmount != null
+                        ? Text('₹${allDevotees[index].paidAmount}')
                         : const SizedBox(),
                   ],
                 ),
@@ -277,7 +331,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(allPaliaList[index].name.toString()),
+                                Text(allDevotees[index].name.toString()),
                                 IconButton(
                                     color: Colors.deepOrange,
                                     onPressed: () {
@@ -286,64 +340,69 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                                     icon: const Icon(Icons.close))
                               ],
                             ),
-                            Text(allPaliaList[index].sangha.toString()),
+                            Text(allDevotees[index].sangha.toString()),
                           ],
                         ),
-                        content: ViewPalia(devoteeDetails: allPaliaList[index]),
+                        content:
+                            ViewDevotee(devoteeDetails: allDevotees[index]),
                       ),
                     );
                   },
                   icon: const Icon(Icons.info, color: Colors.deepOrange),
                 ),
               ),
-              DataCell(
-                IconButton(
-                  color: Colors.deepOrange,
-                  onPressed:
-                      Networkhelper().currentDevotee?.role == "Approver" &&
-                              allPaliaList[index].status == "paid"
-                          ? null
-                          : () {
-                              showDialog<void>(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                      title: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text('Edit Devotee Details'),
-                                          IconButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              icon: const Icon(
-                                                Icons.close,
-                                                color: Colors.deepOrange,
-                                              ))
-                                        ],
-                                      ),
-                                      content: AddPageDilouge(
-                                        devoteeId: allPaliaList[index]
-                                            .devoteeId
-                                            .toString(),
-                                        title: "edit",
-                                        showClearButton: widget.showClearButton,
-                                        searchBy: widget.searchBy,
-                                        searchValue: widget.searchValue,
-                                      ));
-                                },
-                              );
-                            },
-                  icon: Icon(
-                    Icons.edit,
-                    color: Networkhelper().currentDevotee?.role == "Approver" &&
-                            allPaliaList[index].status == "paid"
-                        ? const Color.fromARGB(255, 206, 206, 206)
-                        : Colors.deepOrange,
+              if (NetworkHelper().getCurrentDevotee?.role != "Viewer")
+                DataCell(
+                  IconButton(
+                    color: Colors.deepOrange,
+                    onPressed: NetworkHelper().currentDevotee?.role ==
+                                "Approver" &&
+                            allDevotees[index].status == "paid"
+                        ? null
+                        : () {
+                            showDialog<void>(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                    title: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text('Edit Devotee Details'),
+                                        IconButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            icon: const Icon(
+                                              Icons.close,
+                                              color: Colors.deepOrange,
+                                            ))
+                                      ],
+                                    ),
+                                    content: AddPageDilouge(
+                                      devoteeId: allDevotees[index]
+                                          .devoteeId
+                                          .toString(),
+                                      title: "edit",
+                                      showClearButton: widget.showClearButton,
+                                      searchBy: widget.searchBy,
+                                      searchValue: widget.searchValue,
+                                    ));
+                              },
+                            );
+                          },
+                    icon: Icon(
+                      Icons.edit,
+                      color: ((NetworkHelper().currentDevotee?.role ==
+                                      "Approver" &&
+                                  allDevotees[index].status == "paid" ||
+                              (NetworkHelper().getCurrentDevotee?.role ==
+                                  "Viewer")))
+                          ? const Color.fromARGB(255, 206, 206, 206)
+                          : Colors.deepOrange,
+                    ),
                   ),
                 ),
-              ),
             ],
           );
         },
@@ -353,7 +412,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
 
   void _sortList(bool isAscending) {
     setState(() {
-      allPaliaList.sort((a, b) {
+      allDevotees.sort((a, b) {
         final nameA = (a.name ?? '').toLowerCase();
         final nameB = (b.name ?? '').toLowerCase();
         return isAscending ? nameA.compareTo(nameB) : nameB.compareTo(nameA);
@@ -372,33 +431,61 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
             userRole == "SuperAdmin" ||
                     userRole == "Admin" ||
                     userRole == "Approver"
-                ? SizedBox(
-                    width: 150,
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                          side: const BorderSide(
-                              width: 1.5, color: Colors.deepOrange),
-                          foregroundColor: Colors.black),
-                      onPressed: () {
-                        ExportToExcel().exportToExcel(allPaliaList);
-                      },
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text('Export'),
-                          SizedBox(width: 10),
-                          Icon(
-                            Icons.upload_rounded,
-                            color: Colors.blue,
-                          )
-                        ],
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                                width: 1.5, color: Colors.deepOrange),
+                            foregroundColor: Colors.black),
+                        onPressed: (NetworkHelper().getCurrentDevotee?.role !=
+                                "Viewer")
+                            ? () {}
+                            : null,
+                        child: const Text('Print'),
                       ),
-                    ),
+                      const SizedBox(width: 12),
+                      OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                                width: 1.5, color: Colors.deepOrange),
+                            foregroundColor: Colors.black),
+                        onPressed: (NetworkHelper().getCurrentDevotee?.role !=
+                                "Viewer")
+                            ? () {
+                                ExportToExcel().exportToExcel(allDevotees);
+                              }
+                            : null,
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text('Export'),
+                            Icon(
+                              Icons.upload_rounded,
+                              color: Colors.deepOrange,
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
                   )
                 : const SizedBox(),
             Row(
               children: [
-                Expanded(child: devoteeTable(context)),
+                Expanded(
+                  child: Responsive(
+                    desktop: devoteeTable(context),
+                    tablet: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: devoteeTable(context),
+                    ),
+                    mobile: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: devoteeTable(context),
+                    ),
+                  ),
+                ),
               ],
             ),
           ],

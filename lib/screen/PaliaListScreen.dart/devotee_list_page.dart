@@ -2,11 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:sdp/model/devotee_model.dart';
-import 'package:sdp/screen/appBar/actionWidget.dart';
+import 'package:sdp/responsive.dart';
+import 'package:sdp/screen/appBar/action_widget.dart';
 import 'package:sdp/screen/appBar/leadingImage.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_body_page.dart';
+import 'package:sdp/screen/dashboard/dashboard.dart';
 
-class DevoteeListPage extends StatefulWidget {
+class DevoteeListPage extends StatelessWidget {
   DevoteeListPage(
       {Key? key,
       required this.status,
@@ -26,97 +28,58 @@ class DevoteeListPage extends StatefulWidget {
   bool? showClearButton;
 
   @override
-  State<DevoteeListPage> createState() => _DevoteeListPageState();
-}
-
-class _DevoteeListPageState extends State<DevoteeListPage> {
-  @override
-  void initState() {
-    super.initState();
-
-    setState(() {
-      if (widget.advanceStatus != null) {
-        print("inside palia list page init state - success");
-      } else {
-        print("nside palia list page init state - failure");
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return SelectionArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          // toolbarHeight: Responsive.isDesktop(context)
-          //     ? 150
-          //     : Responsive.isLargeMobile(context)
-          //         ? 150
-          //         : 120,
-          toolbarHeight: 120,
-          automaticallyImplyLeading: false,
-          title: const TitleAppBar(),
-          // leading: IconButton(
-          //   onPressed: () {
-          //     Navigator.push(context, MaterialPageRoute(
-          //       builder: (context) {
-          //         return DashboardPage();
-          //       },
-          //     ));
-          //   },
-          //   icon: const Icon(
-          //     Icons.arrow_back_outlined,
-          //     color: Colors.white,
-          //   ),
-          // ),
-          actions: [
-            AppbarActionButtonWidget(
-              searchBy: widget.searchBy,
-              searchValue: widget.searchValue,
-              showClearButton: widget.showClearButton,
-              advanceStatus: widget.advanceStatus ?? "dataSubmitted",
+        appBar: PreferredSize(
+          preferredSize:
+              Size.fromHeight(Responsive.isMobile(context) ? 150 : 80),
+          child: Responsive(
+            desktop: AppBar(
+              toolbarHeight: 80,
+              automaticallyImplyLeading: false,
+              centerTitle: false,
+              title: const TitleAppBar(),
+              actions: [
+                AppbarActionButtonWidget(
+                  searchBy: searchBy,
+                  searchValue: searchValue,
+                  showClearButton: showClearButton,
+                  advanceStatus: advanceStatus,
+                ),
+              ],
             ),
-          ],
-          // actions: !Responsive.isLargeMobile(context)
-          //     ? [
-          //         AppbarActionButtonWidget(
-          //           searchBy: widget.searchBy,
-          //           searchValue: widget.searchValue,
-          //           showClearButton: widget.showClearButton,
-          //         ),
-          //       ]
-          //     : [],
-          // bottom: PreferredSize(
-          //   preferredSize: Responsive.isLargeMobile(context)
-          //       ? const Size.fromHeight(50)
-          //       : const Size.fromHeight(50),
-          //   child: Responsive.isLargeMobile(context)
-          //       ? Padding(
-          //           padding: const EdgeInsets.only(bottom: 20),
-          //           child: Row(
-          //             mainAxisAlignment: MainAxisAlignment.center,
-          //             children: [
-          //               AppbarActionButtonWidget(
-          //                 searchBy: widget.searchBy,
-          //                 searchValue: widget.searchValue,
-          //                 showClearButton: widget.showClearButton,
-          //                 advanceStatus: widget.advanceStatus,
-          //               ),
-          //             ],
-          //           ),
-          //         )
-          //       : const SizedBox(),
-          // ),
+            tablet: AppBar(
+              toolbarHeight: 80,
+              automaticallyImplyLeading: false,
+              centerTitle: false,
+              title: const TitleAppBar(),
+              actions: [
+                AppbarActionButtonWidget(
+                  searchBy: searchBy,
+                  searchValue: searchValue,
+                  showClearButton: showClearButton,
+                  advanceStatus: advanceStatus,
+                ),
+              ],
+            ),
+            mobile: ResponsiveAppBar(
+              searchBy: searchBy,
+              searchValue: searchValue,
+              showClearButton: showClearButton,
+              advanceStatus: advanceStatus,
+            ),
+          ),
         ),
         body: SafeArea(
             child: DevoteeListBodyPage(
-          status: widget.status,
-          pageFrom: widget.pageFrom,
-          searchValue: widget.searchValue,
-          searchBy: widget.searchBy,
-          showClearButton: widget.showClearButton,
-          devoteeList: widget.devoteeList,
+          status: status,
+          pageFrom: pageFrom,
+          searchValue: searchValue,
+          searchBy: searchBy,
+          showClearButton: showClearButton,
+          devoteeList: devoteeList,
         )),
       ),
     );

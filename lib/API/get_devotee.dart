@@ -3,11 +3,13 @@
 import 'package:sdp/API/dio_fuction.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/model/sangha_model.dart';
+import 'package:sdp/utilities/network_helper.dart';
 
 class GetDevoteeAPI extends DioFuctionAPI {
   Future<Map<String, dynamic>?> loginDevotee(String uid) async {
     try {
       final response = await loginAPI("login/$uid");
+      await fetchCurrentuser();
       print(response);
       DevoteeModel devotee =
           DevoteeModel.fromMap(response["data"]["singleDevotee"]);
@@ -39,6 +41,24 @@ class GetDevoteeAPI extends DioFuctionAPI {
       DevoteeModel devotee =
           DevoteeModel.fromMap(response["data"]["singleDevotee"][0]);
       return {"statusCode": 200, "data": devotee};
+    } catch (e) {
+      print(e);
+      return {"statusCode": 500, "data": null};
+    }
+  }
+
+  Future<Map<String, dynamic>?> devoteeListBycreatedById(
+      String devoteeId) async {
+    try {
+      final response = await getAPI("devoteeListBycreatedById/$devoteeId");
+      List<DevoteeModel> devotees = [];
+      final devoteelist = response["data"]["devoteeList"];
+      devoteelist.forEach((devotee) {
+        devotees.add(DevoteeModel.fromMap(devotee));
+      });
+      // DevoteeModel devotee =
+      //     DevoteeModel.fromMap(response["data"]["devoteeList"][0]);
+      return {"statusCode": 200, "data": devotees};
     } catch (e) {
       print(e);
       return {"statusCode": 500, "data": null};

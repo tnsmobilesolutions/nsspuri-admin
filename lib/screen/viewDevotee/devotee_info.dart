@@ -49,9 +49,22 @@ class _DevoteeInfoTabState extends State<DevoteeInfoTab> {
     return "";
   }
 
+  String getAgeGroup(DevoteeModel? devotee) {
+    if (devotee?.ageGroup?.isNotEmpty == true || devotee?.ageGroup != null) {
+      if (devotee?.ageGroup == "Child") {
+        return "1 to 12";
+      } else if (devotee?.ageGroup == "Adult") {
+        return "13 to 70";
+      } else if (devotee?.ageGroup == "Elder") {
+        return "70 Above";
+      }
+    }
+    return "";
+  }
+
   @override
   Widget build(BuildContext context) {
-    final devotees = widget.devoteeDetails;
+    // final devotees = widget.devoteeDetails;
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: Center(
@@ -111,16 +124,27 @@ class _DevoteeInfoTabState extends State<DevoteeInfoTab> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Date Of Birth',
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      Text(formatDate(widget.devoteeDetails.dob ?? ""))
-                    ],
-                  ),
+                  widget.devoteeDetails.ageGroup?.isNotEmpty == true
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Age Group',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                            Text(getAgeGroup(widget.devoteeDetails))
+                          ],
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'DOB',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                            Text(formatDate(widget.devoteeDetails.dob ?? ""))
+                          ],
+                        ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -217,16 +241,34 @@ class _DevoteeInfoTabState extends State<DevoteeInfoTab> {
                         Text(widget.devoteeDetails.createdById.toString())
                       ],
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Approved By',
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                        Text(widget.devoteeDetails.approvedBy.toString())
-                      ],
-                    ),
+                    (widget.devoteeDetails.approvedBy != null &&
+                            widget.devoteeDetails.approvedBy != "")
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Approved By',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              Text(widget.devoteeDetails.approvedBy.toString())
+                            ],
+                          )
+                        : SizedBox(
+                            height: 0,
+                            width: 0,
+                          ),
+                    if (widget.devoteeDetails.rejectedBy != null &&
+                        widget.devoteeDetails.rejectedBy != "")
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Rejected By',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                          Text(widget.devoteeDetails.rejectedBy.toString())
+                        ],
+                      ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [

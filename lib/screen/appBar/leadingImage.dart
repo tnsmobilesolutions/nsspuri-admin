@@ -16,8 +16,8 @@ class TitleAppBar extends StatelessWidget {
           const Image(
               image: AssetImage('assets/images/login.png'),
               fit: BoxFit.cover,
-              height: 80.00,
-              width: 90.00),
+              height: 60.00,
+              width: 60.00),
           const SizedBox(width: 20),
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -32,12 +32,12 @@ class TitleAppBar extends StatelessWidget {
                   overflow: TextOverflow.clip,
                 ),
               ),
-              const SizedBox(height: 20),
+              //const SizedBox(height: 10),
               SizedBox(
                 width:
                     Responsive.isLargeMobile(context) ? 300 : screenWidth / 7,
                 child: Text(
-                  "${Networkhelper().getCurrentDevotee?.name}",
+                  "${NetworkHelper().getCurrentDevotee?.name}",
                   style: const TextStyle(color: Colors.white, fontSize: 18),
                   softWrap: true,
                   overflow: TextOverflow.clip,
@@ -47,11 +47,55 @@ class TitleAppBar extends StatelessWidget {
                 width:
                     Responsive.isLargeMobile(context) ? 300 : screenWidth / 7,
                 child: Text(
-                  "${Networkhelper().getCurrentDevotee?.role}",
+                  "${NetworkHelper().getCurrentDevotee?.role}",
                   style: const TextStyle(color: Colors.white, fontSize: 15),
                   softWrap: true,
                   overflow: TextOverflow.clip,
                 ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class TitleAppBarMobile extends StatelessWidget {
+  const TitleAppBarMobile({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      child: Row(
+        children: [
+          const Image(
+              image: AssetImage('assets/images/login.png'),
+              fit: BoxFit.cover,
+              height: 60.00,
+              width: 60.00),
+          const SizedBox(width: 20),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Sammilani Delegate',
+                style: TextStyle(color: Colors.white, fontSize: 17),
+                softWrap: true,
+                overflow: TextOverflow.clip,
+              ),
+              Text(
+                "${NetworkHelper().getCurrentDevotee?.name}",
+                style: const TextStyle(color: Colors.white, fontSize: 14),
+                softWrap: true,
+                overflow: TextOverflow.clip,
+              ),
+              Text(
+                "${NetworkHelper().getCurrentDevotee?.role}",
+                style: const TextStyle(color: Colors.white, fontSize: 12),
+                softWrap: true,
+                overflow: TextOverflow.clip,
               ),
             ],
           ),

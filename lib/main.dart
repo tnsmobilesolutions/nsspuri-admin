@@ -10,7 +10,7 @@ Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  await fetchCurrentuser();
+  // await fetchCurrentuser();
   await Firebase.initializeApp(
     options: FirebaseOptions(
         apiKey: "AIzaSyDlUZaghUvp0OSayMgnYisIoSlAzKUBSAQ",
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
         title: 'Sammilani Delegate Admin',
         theme: ThemeData(
           appBarTheme: AppBarTheme(color: Color(0xff0064B4)),
-          primarySwatch: generateMaterialColor(color: Color(0XFF3f51b5)),
+          //primarySwatch: generateMaterialColor(color: Color(0XFF3f51b5)),
         ),
         home: AuthState());
   }
