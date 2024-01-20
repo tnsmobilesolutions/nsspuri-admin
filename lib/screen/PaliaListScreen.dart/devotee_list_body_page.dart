@@ -25,8 +25,7 @@ class DevoteeListBodyPage extends StatefulWidget {
       this.devoteeList,
       this.showClearButton,
       this.searchValue,
-      this.searchBy}
-      )
+      this.searchBy})
       : super(key: key);
 
   List<DevoteeModel>? devoteeList;
@@ -223,28 +222,28 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         allDevotees.length,
         (index) {
           return DataRow(
-            // selected: selectedList[index],
-            // onSelectChanged: (bool? value) {
-            //   setState(() {
-            //     selectedList[index] = value!;
-            //     if (value) {
-            //       if (selectedDevotees.length < 6) {
-            //         selectedDevotees.add(allDevotees[index]);
-            //       } else {
-            //         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            //           elevation: 6,
-            //           behavior: SnackBarBehavior.floating,
-            //           content: Text(
-            //             'You can only select up to 6 devotees !',
-            //           ),
-            //         ));
-            //         selectedList[index] = false;
-            //       }
-            //     } else {
-            //       selectedDevotees.remove(allDevotees[index]);
-            //     }
-            //   });
-            // },
+            selected: selectedList[index],
+            onSelectChanged: (bool? value) {
+              setState(() {
+                selectedList[index] = value!;
+                if (value) {
+                  if (selectedDevotees.length < 6) {
+                    selectedDevotees.add(allDevotees[index]);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      elevation: 6,
+                      behavior: SnackBarBehavior.floating,
+                      content: Text(
+                        'You can only select up to 6 devotees !',
+                      ),
+                    ));
+                    selectedList[index] = false;
+                  }
+                } else {
+                  selectedDevotees.remove(allDevotees[index]);
+                }
+              });
+            },
             cells: [
               DataCell(Text("${index + 1}")),
               DataCell(SizedBox(

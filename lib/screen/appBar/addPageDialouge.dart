@@ -174,8 +174,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'Dec'
   ];
 
-  List<String> ageGroup = ["Child", "Adult", "Elder"];
-  String selectedAgeGroup = "Adult";
+  List<String> ageGroup = ["0 to 12", "13 to 70", "70 Above"];
+  String selectedAgeGroup = "13 to 70";
 
   FocusNode dobFocusNode = FocusNode();
   FocusNode ageFocusNode = FocusNode();
@@ -281,9 +281,9 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
 
   String getAgeGroup(DevoteeModel? devotee) {
     if (devotee?.ageGroup?.isNotEmpty == true || devotee?.ageGroup != null) {
-      return devotee?.ageGroup.toString() ?? "Adult";
+      return devotee?.ageGroup.toString() ?? "13 to 70";
     }
-    return "Adult";
+    return "13 to 70";
   }
 
   int getAgeGroupIndex(DevoteeModel? devotee) {
@@ -976,9 +976,9 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                 onChanged: (newValue) {
                                   setState(() {
                                     ageGroupIndex = newValue ?? 0;
-                                    // if (ageGroupIndex == 0) {
-                                    //   ageController.clear();
-                                    // }
+                                    if (ageGroupIndex == 0) {
+                                      selectedAgeGroup = "13 to 70";
+                                    }
                                   });
                                 },
                                 activeColor: RadioButtonColor,
@@ -1358,16 +1358,27 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                           formKey.currentState!.validate()) {
                         showDialog(
                           context: context,
-                          barrierDismissible:
-                              false, // Prevent dismissing by tapping outside
+                          barrierDismissible: false,
                           builder: (BuildContext context) {
                             return const Center(
                               child: CircularProgressIndicator(),
                             );
                           },
                         );
-                        await Future.delayed(
-                            const Duration(seconds: 1)); // Simulating a delay
+                        await Future.delayed(const Duration(seconds: 1));
+
+                        String setAgeGroupToDB() {
+                          if (ageGroupIndex == 0) {
+                            if (dobController.text.isEmpty) {
+                              return selectedAgeGroup;
+                            } else {
+                              return "";
+                            }
+                          } else {
+                            return selectedAgeGroup;
+                          }
+                        }
+
                         try {
                           String? profileURL = image?["selectedImage"] != null
                               ? await uploadImageToFirebaseStorage(
@@ -1401,10 +1412,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                               hasParichayaPatra: parichayaPatraValue,
                               sangha: sanghaController.text,
                               dob: _formatDOB(dobController.text),
-                              ageGroup: ageGroupIndex == 0 &&
-                                      dobController.text.isEmpty
-                                  ? ""
-                                  : selectedAgeGroup,
+                              ageGroup: setAgeGroupToDB(),
                               mobileNumber: mobileController.text,
                               updatedOn: DateTime.now().toString(),
                               emailId: emailController.text,
