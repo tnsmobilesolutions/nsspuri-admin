@@ -416,46 +416,8 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Guest'),
-                      Checkbox(
-                        checkColor: Colors.deepOrange,
-                        fillColor: MaterialStateProperty.resolveWith(getColor),
-                        value: isGuest,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            isGuest = value!;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Has Parichaya Patra?',
-                      ),
-                      Checkbox(
-                        checkColor: Colors.deepOrange,
-                        fillColor: MaterialStateProperty.resolveWith(getColor),
-                        value: parichayaPatraValue,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            parichayaPatraValue = value!;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ),
+             
+  
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: nameController,
@@ -1075,8 +1037,7 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                               updatedOn: DateTime.now().toString(),
                               emailId: emailController.text,
                               isSpeciallyAbled: isSpeciallyAbled,
-                              isGuest: isGuest,
-                              isOrganizer: isOrganizer,
+                        
                               uid: uid,
                               role: "User",
                               address: AddressModel(

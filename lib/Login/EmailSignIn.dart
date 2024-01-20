@@ -97,7 +97,7 @@ class _EmailSignInState extends State<EmailSignIn> {
                       if (response?["statusCode"] == 200 &&
                           (resDevoteeData.role == "Admin" ||
                               resDevoteeData.role == "SuperAdmin" ||
-                              resDevoteeData.role == "Approver")) {
+                              resDevoteeData.role == "Approver" || resDevoteeData.role == "Viewer")) {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
