@@ -20,18 +20,17 @@ class _AuthStateState extends State<AuthState> {
 
   void fetchUser() async {
     await fetchCurrentuser();
-    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     final uid = FirebaseAuth.instance.currentUser?.uid;
-    return (uid != null) ? DashboardPage() : const EmailSignIn();
-    // return (uid != null &&
-    //         (NetworkHelper().getCurrentDevotee?.role == "Admin" ||
-    //             NetworkHelper().getCurrentDevotee?.role == "SuperAdmin" ||
-    //             NetworkHelper().getCurrentDevotee?.role == "Approver"))
-    //     ? DashboardPage()
-    //     : const EmailSignIn();
+    //return (uid != null) ? DashboardPage() : const EmailSignIn();
+    return (uid != null &&
+            (NetworkHelper().getCurrentDevotee?.role == "Admin" ||
+                NetworkHelper().getCurrentDevotee?.role == "SuperAdmin" ||
+                NetworkHelper().getCurrentDevotee?.role == "Approver"))
+        ? DashboardPage()
+        : const EmailSignIn();
   }
 }
