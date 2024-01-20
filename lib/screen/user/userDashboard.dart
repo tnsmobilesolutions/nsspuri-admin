@@ -10,31 +10,14 @@ import 'package:sdp/screen/dashboard/dashboard.dart';
 import 'package:sdp/screen/user/user_tableview.dart';
 
 class UserDashboard extends StatefulWidget {
-  UserDashboard({
-    Key? key,
-  });
+  UserDashboard({Key? key, required this.devoteeId});
+  String devoteeId;
   @override
   State<UserDashboard> createState() => _UserDashboardState();
 }
 
 class _UserDashboardState extends State<UserDashboard> {
   List<DevoteeModel> allDevotee = [];
-  cuserData() async {
-    final currentUserResponse = await GetDevoteeAPI().currentDevotee();
-    DevoteeModel currentDevotee = currentUserResponse?["data"];
-    final listDevoteeResponse = await GetDevoteeAPI()
-        .devoteeListBycreatedById(currentDevotee.devoteeId.toString());
-    setState(() {
-      allDevotee = listDevoteeResponse?["data"];
-    });
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    cuserData();
-  }
 
   @override
   @override
@@ -68,8 +51,21 @@ class _UserDashboardState extends State<UserDashboard> {
             mobile: ResponsiveAppBar(),
           ),
         ),
-        body: UserTableView(
-          devoteeList: allDevotee,
+        body: FutureBuilder(
+          future: GetDevoteeAPI().devoteeListBycreatedById(widget.devoteeId),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if ((snapshot.connectionState == ConnectionState.waiting) ||
+                snapshot.hasError) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else {
+              List<DevoteeModel> devotees = snapshot.data["data"];
+              return UserTableView(
+                devoteeList: devotees,
+              );
+            }
+          },
         ),
         //drawer: const AppDrawer(),
       ),

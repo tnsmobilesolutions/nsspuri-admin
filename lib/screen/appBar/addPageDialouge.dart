@@ -479,7 +479,13 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                 //   },
                 // ),
                 const SizedBox(height: 10),
-                widget.title == "edit"
+                (widget.title == "edit" &&
+                        (NetworkHelper().getCurrentDevotee?.role ==
+                                "SuperAdmin" ||
+                            NetworkHelper().getCurrentDevotee?.role ==
+                                "Admin" ||
+                            NetworkHelper().getCurrentDevotee?.role ==
+                                "Approver"))
                     ? SizedBox(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -600,7 +606,10 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                           ],
                         ),
                       )
-                    : const SizedBox(),
+                    : const SizedBox(
+                        height: 0,
+                        width: 0,
+                      ),
                 shouldShowPranamiField == true ||
                         (selectedDevotee != null &&
                             selectedDevotee?.paidAmount != null)
@@ -798,9 +807,9 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                 TextFormField(
                   controller: nameController,
                   onSaved: (newValue) => nameController,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp("[a-z A-Z]"))
-                  ],
+                  // inputFormatters: [
+                  //   FilteringTextInputFormatter.allow(RegExp("[a-z A-Z]"))
+                  // ],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter name';
@@ -1422,28 +1431,19 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                 );
                               },
                             );
-                            // List<DevoteeModel> devoteeList = [];
-                            // if (widget.title == "edit") {
-                            //   await GetDevoteeAPI()
-                            //       .advanceSearchDevotee(
-                            //     widget.searchValue.toString(),
-                            //     widget.searchBy.toString(),
-                            //   )
-                            //       .then((value) {
-                            //     devoteeList.addAll(value["data"]);
-                            //   });
-                            // }
                             if (context.mounted) {
                               if (widget.role == "User") {
-                               
                                 Navigator.of(context)
                                     .pop(); // Close the circular progress indicator
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => UserDashboard(
-                                         
-                                    )));
+                                        builder: (context) => UserDashboard(
+                                              devoteeId: NetworkHelper()
+                                                      .getCurrentDevotee
+                                                      ?.devoteeId ??
+                                                  "",
+                                            )));
                               } else {
                                 Navigator.of(context)
                                     .pop(); // Close the circular progress indicator

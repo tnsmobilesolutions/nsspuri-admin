@@ -7,17 +7,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:sdp/API/get_devotee.dart';
 
 import 'package:sdp/API/post_devotee.dart';
-import 'package:sdp/API/put_devotee.dart';
-import 'package:sdp/Login/EmailSignIn.dart';
 import 'package:sdp/constant/sangha_list.dart';
 import 'package:sdp/model/address_model.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/appBar/custom_calendar.dart';
-import 'package:sdp/screen/dashboard/dashboard.dart';
+
 import 'package:sdp/screen/user/userDashboard.dart';
 import 'package:sdp/utilities/color_palette.dart';
+import 'package:sdp/utilities/network_helper.dart';
 
 import 'package:uuid/uuid.dart';
 
@@ -460,9 +460,9 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                 TextFormField(
                   controller: nameController,
                   onSaved: (newValue) => nameController,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp("[a-z A-Z]"))
-                  ],
+                  // inputFormatters: [
+                  //   FilteringTextInputFormatter.allow(RegExp("[a-z A-Z]"))
+                  // ],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter name';
@@ -1068,7 +1068,9 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                               hasParichayaPatra: parichayaPatraValue,
                               sangha: sanghaController.text,
                               dob: _formatDOB(dobController.text),
-                           
+                              status: "dataSubbmited",
+                              
+                              
                               mobileNumber: mobileController.text,
                               updatedOn: DateTime.now().toString(),
                               emailId: emailController.text,
@@ -1087,51 +1089,53 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                                   city: cityController.text,
                                   state: stateController.text));
                           Map<String, dynamic> response;
-                          if (uid != null || uid != "") {}
-                          response = await PostDevoteeAPI()
-                              .addRelativeDevotee(updateDevotee);
-                          print("devotee add response: $response");
+                          if (uid != null || uid != "") {
+                            response = await PostDevoteeAPI()
+                                .signupDevotee(updateDevotee);
+                            print("devotee add response: $response");
 
-                          if (response["statusCode"] == 200) {
-                            // Show a circular progress indicator while navigating
-                            // ignore: use_build_context_synchronously
-                            showDialog(
-                              context: context,
-                              barrierDismissible:
-                                  false, // Prevent dismissing by tapping outside
-                              builder: (BuildContext context) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              },
-                            );
-                            List<DevoteeModel> devoteeList = [];
-                            // await GetDevoteeAPI()
-                            //     .advanceSearchDevotee(
-                            //   widget.searchValue.toString(),
-                            //   widget.searchBy.toString(),
-                            // )
-                            //     .then((value) {
-                            //   devoteeList.addAll(value["data"]);
-                            // });
-                            if (context.mounted) {
-                              Navigator.of(context)
-                                  .pop(); // Close the circular progress indicator
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => EmailSignIn(),
-                                  ));
+                            if (response["statusCode"] == 200) {
+                              // Show a circular progress indicator while navigating
+                              // ignore: use_build_context_synchronously
+                              showDialog(
+                                context: context,
+                                barrierDismissible:
+                                    false, // Prevent dismissing by tapping outside
+                                builder: (BuildContext context) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                },
+                              );
+                              final currentDevoteeResponse =
+                                  await GetDevoteeAPI()
+                                      .loginDevotee(uid.toString());
+                              await fetchCurrentuser();
+                              print(
+                                  "currentDevoteeResponse----------$currentDevoteeResponse");
+                              DevoteeModel currentDevotee =
+                                  currentDevoteeResponse?["data"];
+
+                              if (context.mounted) {
+                                Navigator.of(context)
+                                    .pop(); // Close the circular progress indicator
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => UserDashboard(
+                                          devoteeId: currentDevotee.devoteeId
+                                              .toString()),
+                                    ));
+                              }
+                            } else {
+                              // if (context.mounted) {
+                              //   Navigator.of(context).pop();
+                              // }
+                              // ignore: use_build_context_synchronously
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('devotee Create issue')));
                             }
-                          } else {
-                            if (context.mounted) {
-                              Navigator.of(context).pop();
-                            }
-// Close the circular progress indicator
-                            // ignore: use_build_context_synchronously
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('devotee Create issue')));
                           }
                         } catch (e) {
                           if (context.mounted) {

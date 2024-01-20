@@ -107,7 +107,7 @@ class _EmailSignInState extends State<EmailSignIn> {
                           resDevoteeData.role == "User") {
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) {
-                            return UserDashboard();
+                            return UserDashboard(devoteeId: resDevoteeData.devoteeId.toString(),);
                           },
                         ));
                       } else {
