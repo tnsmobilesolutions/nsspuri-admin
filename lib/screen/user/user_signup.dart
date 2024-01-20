@@ -1,5 +1,6 @@
 // ignore_for_file: file_names, must_be_immutable, avoid_print
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,27 +8,27 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:sdp/API/get_devotee.dart';
+
 import 'package:sdp/API/post_devotee.dart';
-import 'package:sdp/API/put_devotee.dart';
 import 'package:sdp/constant/sangha_list.dart';
 import 'package:sdp/model/address_model.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/appBar/custom_calendar.dart';
-import 'package:sdp/screen/dashboard/dashboard.dart';
+
 import 'package:sdp/screen/user/userDashboard.dart';
 import 'package:sdp/utilities/color_palette.dart';
 import 'package:sdp/utilities/network_helper.dart';
+
 import 'package:uuid/uuid.dart';
 
-class AddPageDilouge extends StatefulWidget {
-  AddPageDilouge({
+class UserSignUpDelegate extends StatefulWidget {
+  UserSignUpDelegate({
     super.key,
     required this.title,
     required this.devoteeId,
     this.searchBy,
     this.searchValue,
     this.showClearButton,
-    this.role,
   });
 
   String devoteeId;
@@ -35,21 +36,15 @@ class AddPageDilouge extends StatefulWidget {
   String? searchValue;
   bool? showClearButton;
   String title;
-  String? role;
 
   @override
-  State<AddPageDilouge> createState() => _AddPageDilougeState();
+  State<UserSignUpDelegate> createState() => _UserSignUpDelegateState();
 }
 
-class _AddPageDilougeState extends State<AddPageDilouge> {
+class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
   TextEditingController addressLine1Controller = TextEditingController();
   TextEditingController addressLine2Controller = TextEditingController();
-  List<String> approverstatusOptions = [
-    'dataSubmitted',
-    'approved',
-    "rejected"
-  ];
-
+  String? uid;
   String? bloodGroupController;
   List<String> bloodGrouplist = <String>[
     'A+',
@@ -62,6 +57,30 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'AB-',
     "Don't know",
   ];
+  final passwordController = TextEditingController();
+  final textFieldFocusNode = FocusNode();
+  bool _obscured1 = true;
+  bool _obscured2 = true;
+
+  void _toggleObscured1() {
+    setState(() {
+      _obscured1 = !_obscured1;
+      if (textFieldFocusNode.hasPrimaryFocus)
+        return; // If focus is on text field, dont unfocus
+      textFieldFocusNode.canRequestFocus =
+          false; // Prevents focus if tap on eye
+    });
+  }
+
+  void _toggleObscured2() {
+    setState(() {
+      _obscured2 = !_obscured2;
+      if (textFieldFocusNode.hasPrimaryFocus)
+        return; // If focus is on text field, dont unfocus
+      textFieldFocusNode.canRequestFocus =
+          false; // Prevents focus if tap on eye
+    });
+  }
 
   TextEditingController cityController = TextEditingController();
   TextEditingController countryController = TextEditingController();
@@ -92,7 +111,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
 
   List gender = ["Male", "Female"];
   int genderIndex = 0;
-  int ageGroupIndex = 0;
+  int ageIndex = 0;
   Map<String, dynamic>? image;
   String? imageName;
   String? imageUploadData;
@@ -130,15 +149,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   TextEditingController remarksController = TextEditingController();
   String? profileImage;
   String profilePhotoUrl = "";
-  List<String> roleList = [
-    'User',
-    'Admin',
-    'SuperAdmin',
-    "Coordinator",
-    'Approver',
-    'PrasadScanner',
-    "SecurityCheck"
-  ];
+
   String day = "", month = "", year = "";
   TextEditingController sanghaController = TextEditingController();
   String? select;
@@ -148,17 +159,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   String selectedStatus = 'dataSubmitted';
   List<int>? selectedimage;
   TextEditingController stateController = TextEditingController();
-  List<String> statusOptions = [
-    'dataSubmitted',
-    'paid',
-    'rejected',
-    'approved',
-    'printed',
-    'withdrawn',
-    'lost',
-    'reissued',
-    "blacklisted"
-  ];
+
   List<String> monthNames = [
     'Jan',
     'Feb',
@@ -174,9 +175,6 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'Dec'
   ];
 
-  List<String> ageGroup = ["0-12", "13-70", "70 Above"];
-  String selectedAgeGroup = "13-70";
-
   FocusNode dobFocusNode = FocusNode();
   FocusNode ageFocusNode = FocusNode();
 
@@ -190,8 +188,6 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   @override
   void initState() {
     super.initState();
-    print("widget.devoteeId-----${widget.devoteeId}");
-    if (widget.title == "edit") populateData();
   }
 
   get districtList => null;
@@ -277,72 +273,6 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
       print("Error parsing date: $e");
       return '';
     }
-  }
-
-  populateData() async {
-    final devoteeData =
-        await GetDevoteeAPI().devoteeDetailsById(widget.devoteeId);
-    setState(() {
-      selectedDevotee = devoteeData?["data"];
-      if (devoteeData?["statusCode"] == 200) {
-        if (selectedDevotee?.dob != null || selectedDevotee?.dob != "") {
-          List<String> dateParts = selectedDevotee?.dob?.split('-') ?? [];
-
-          if (dateParts.length >= 3) {
-            setState(() {
-              day = int.tryParse(dateParts[2])?.toString() ?? '';
-              month = int.tryParse(dateParts[1])?.toString() ?? '';
-              year = int.tryParse(dateParts[0])?.toString() ?? '';
-            });
-          } else {
-            print('Invalid date format: ${selectedDevotee?.dob}');
-          }
-        }
-        selectedStatus = selectedDevotee?.status ?? "dataSubmitted";
-        selectedRole = selectedDevotee?.role ?? "User";
-        nameController.text = selectedDevotee?.name ?? "";
-        emailController.text = selectedDevotee?.emailId ?? "";
-        mobileController.text = selectedDevotee?.mobileNumber ?? "";
-        sanghaController.text = selectedDevotee?.sangha ?? "";
-        parichayaPatraValue = selectedDevotee?.hasParichayaPatra ?? false;
-        dobController.text =
-            selectedDevotee?.dob != null || selectedDevotee?.dob != ""
-                ? formatDate(selectedDevotee?.dob ?? "")
-                : "";
-        pranamiController.text = (selectedDevotee?.paidAmount != null
-            ? selectedDevotee?.paidAmount.toString()
-            : "")!;
-        remarksController.text = selectedDevotee?.remarks ?? "";
-        addressLine1Controller.text =
-            selectedDevotee?.address?.addressLine1 ?? "";
-        addressLine2Controller.text =
-            selectedDevotee?.address?.addressLine2 ?? "";
-        cityController.text = selectedDevotee?.address?.city ?? "";
-        stateController.text = selectedDevotee?.address?.state ?? "";
-        countryController.text = selectedDevotee?.address?.country ?? "";
-        postalCodeController.text =
-            (selectedDevotee?.address?.postalCode != null ||
-                    selectedDevotee?.address?.postalCode != 0)
-                ? selectedDevotee?.address?.postalCode.toString() ?? ""
-                : "";
-        selectedDevotee?.address?.postalCode.toString() ?? "";
-        profilePhotoUrl = selectedDevotee?.profilePhotoUrl ?? "";
-        isAdmin = selectedDevotee?.isAdmin ?? false;
-        isKYDVerified = selectedDevotee?.isKYDVerified ?? false;
-        isSpeciallyAbled = selectedDevotee?.isSpeciallyAbled ?? false;
-        isGuest = selectedDevotee?.isGuest ?? false;
-        isOrganizer = selectedDevotee?.isOrganizer ?? false;
-        isApproved = selectedDevotee?.isApproved ?? false;
-        isGruhasanaApproved = selectedDevotee?.isGruhasanaApproved ?? false;
-        bloodGroupController = selectedDevotee?.bloodGroup ?? "Don't know";
-        genderIndex = selectedDevotee?.gender == "Male" ? 0 : 1;
-        ageController.text = selectedDevotee?.ageGroup?.toString() ?? "";
-        ageGroupIndex = selectedDevotee?.ageGroup == "" ? 0 : 1;
-        selectedAgeGroup = selectedDevotee?.ageGroup != ""
-            ? (selectedDevotee?.ageGroup.toString() ?? "")
-            : "13-70";
-      }
-    });
   }
 
   String formatDate(String inputDate) {
@@ -466,257 +396,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                         )),
                   ),
                 ),
-
-                // UploadProfileImage(
-                //   selectedImage: selectedImage,
-                //   // data: widget.carousalData,
-                //   onImageSelected: (image, xfileImage) {
-                //     setState(() {
-                //       selectedImage = image?['selectedImage'];
-                //       imageName = image?['fileName'];
-                //       fileImage = xfileImage;
-                //     });
-                //   },
-                // ),
                 const SizedBox(height: 10),
-                (widget.title == "edit" &&
-                        (NetworkHelper().getCurrentDevotee?.role ==
-                                "SuperAdmin" ||
-                            NetworkHelper().getCurrentDevotee?.role ==
-                                "Admin" ||
-                            NetworkHelper().getCurrentDevotee?.role ==
-                                "Approver"))
-                    ? SizedBox(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            const Text(
-                              "Status :",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Expanded(
-                              child: DropdownButton<String>(
-                                value: selectedStatus,
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    selectedStatus = newValue!;
-                                    shouldShowPranamiField = newValue == "paid";
-                                    if (shouldShowPranamiField ?? false) {
-                                      pranamiController.text = "400";
-                                    }
-                                  });
-                                },
-                                underline: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.grey), // Border color
-                                    borderRadius: BorderRadius.circular(
-                                        30.0), // Border radius
-                                  ),
-                                ),
-                                elevation: 16,
-                                style: const TextStyle(
-                                    color: Colors.black), // Dropdown text color
-                                items: NetworkHelper()
-                                            .getCurrentDevotee
-                                            ?.role ==
-                                        "Approver"
-                                    ? approverstatusOptions
-                                        .map<DropdownMenuItem<String>>(
-                                            (String value) {
-                                        return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(value),
-                                          ),
-                                        );
-                                      }).toList()
-                                    : statusOptions
-                                        .map<DropdownMenuItem<String>>(
-                                            (String value) {
-                                        return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(value),
-                                          ),
-                                        );
-                                      }).toList(),
-                              ),
-                            ),
-                            //  SizedBox(height: 10),
-                            // const VerticalDivider(
-                            //   thickness: 1
-                            // ),
-                            //const SizedBox(width: 20),
-                            (widget.title == "edit" &&
-                                    NetworkHelper().getCurrentDevotee?.role ==
-                                        "SuperAdmin")
-                                ? const Text(
-                                    "Role :",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  )
-                                : const SizedBox(
-                                    height: 0,
-                                    width: 0,
-                                  ),
-                            (widget.title == "edit" &&
-                                    NetworkHelper().getCurrentDevotee?.role ==
-                                        "SuperAdmin")
-                                ? Expanded(
-                                    child: DropdownButton<String>(
-                                      value: selectedRole,
-                                      onChanged: (String? newValue) {
-                                        setState(() {
-                                          selectedRole = newValue!;
-                                        });
-                                      },
-                                      underline: Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color:
-                                                  Colors.grey), // Border color
-                                          borderRadius: BorderRadius.circular(
-                                              30.0), // Border radius
-                                        ),
-                                      ),
-                                      elevation: 16,
-                                      style: const TextStyle(
-                                          color: Colors
-                                              .black), // Dropdown text color
-                                      items: roleList
-                                          .map<DropdownMenuItem<String>>(
-                                              (String value) {
-                                        return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(value),
-                                          ),
-                                        );
-                                      }).toList(),
-                                    ),
-                                  )
-                                : const SizedBox(
-                                    height: 0,
-                                    width: 0,
-                                  ),
-                          ],
-                        ),
-                      )
-                    : const SizedBox(
-                        height: 0,
-                        width: 0,
-                      ),
-                shouldShowPranamiField == true ||
-                        (selectedDevotee != null &&
-                            selectedDevotee?.paidAmount != null)
-                    ? const SizedBox(height: 20)
-                    : const SizedBox(),
-                shouldShowPranamiField == true ||
-                        (selectedDevotee != null &&
-                            selectedDevotee?.paidAmount != null)
-                    ? TextFormField(
-                        keyboardType: TextInputType.phone,
-                        // controller: widget.title == "edit"
-                        //     ? pranamiController
-                        //     : pranamiController
-                        //   ..text = "700",
-                        controller: pranamiController,
-                        onSaved: (newValue) => pranamiController,
-                        validator: (value) {
-                          RegExp regex = RegExp(r'^[0-9]*$');
-                          if (shouldShowPranamiField == true &&
-                              value?.isEmpty == true) {
-                            return "Please enter amount !";
-                          }
-                          if (!regex.hasMatch(value.toString())) {
-                            return ("Only numbers are allowed !");
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          labelText: "Pranami",
-                          labelStyle:
-                              TextStyle(color: Colors.grey[600], fontSize: 15),
-                          filled: true,
-                          floatingLabelBehavior: FloatingLabelBehavior.auto,
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              borderSide: const BorderSide(
-                                  width: 0, style: BorderStyle.solid)),
-                        ),
-                      )
-                    : const SizedBox(),
-                const SizedBox(height: 20),
-                // widget.title == "edit"
-                //     ? Padding(
-                //         padding: const EdgeInsets.all(8.0),
-                //         child: Row(
-                //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //           children: [
-                //             const Text('Gruhasana Approved'),
-                //             Checkbox(
-                //               checkColor: Colors.deepOrange,
-                //               fillColor:
-                //                   MaterialStateProperty.resolveWith(getColor),
-                //               value: isGruhasanaApproved,
-                //               onChanged: (bool? value) {
-                //                 setState(() {
-                //                   isGruhasanaApproved = value!;
-                //                 });
-                //               },
-                //             ),
-                //           ],
-                //         ),
-                //       )
-                //     : const SizedBox(),
-                // widget.title == "edit"
-                //     ? Padding(
-                //         padding: const EdgeInsets.all(8.0),
-                //         child: Row(
-                //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //           children: [
-                //             const Text('KYD Verified'),
-                //             Checkbox(
-                //               checkColor: Colors.deepOrange,
-                //               fillColor:
-                //                   MaterialStateProperty.resolveWith(getColor),
-                //               value: isKYDVerified,
-                //               onChanged: (bool? value) {
-                //                 setState(() {
-                //                   isKYDVerified = value!;
-                //                 });
-                //               },
-                //             ),
-                //           ],
-                //         ),
-                //       )
-                //     : const SizedBox(),
-                widget.title == "edit"
-                    ? Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('Organizer'),
-                            Checkbox(
-                              checkColor: Colors.deepOrange,
-                              fillColor:
-                                  MaterialStateProperty.resolveWith(getColor),
-                              value: isOrganizer,
-                              onChanged: (bool? value) {
-                                setState(() {
-                                  isOrganizer = value!;
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                      )
-                    : const SizedBox(),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -776,33 +456,6 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     ],
                   ),
                 ),
-
-                // Padding(
-                //   padding: const EdgeInsets.only(left: 20, right: 20),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     children: [
-                //       //SizedBox
-                //       const Text(
-                //         'Has Parichaya Patra?',
-                //       ), //Text
-                //       //SizedBox
-                //       /** Checkbox Widget **/
-                //       Transform.scale(
-                //         scale: 1.5,
-                //         child: Checkbox(
-                //           activeColor: Colors.deepOrange,
-                //           value: parichayaPatraValue,
-                //           onChanged: (bool? value) {
-                //             setState(() {
-                //               parichayaPatraValue = value;
-                //             });
-                //           },
-                //         ),
-                //       ), //Checkbox
-                //     ], //<Widget>[]
-                //   ),
-                // ),
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: nameController,
@@ -828,14 +481,13 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                             width: 0, style: BorderStyle.solid)),
                   ),
                 ),
-
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: emailController,
                   onSaved: (newValue) => emailController,
                   validator: (value) {
                     if (value?.isEmpty == true || value == null) {
-                      return null;
+                      return "Please Enter Your Email";
                     }
                     if (!emailRegex.hasMatch(value)) {
                       return "Invalid email !";
@@ -852,6 +504,59 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                         borderRadius: BorderRadius.circular(10.0),
                         borderSide: const BorderSide(
                             width: 0, style: BorderStyle.solid)),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  autovalidateMode: AutovalidateMode.always,
+
+                  // style: Theme.of(context).textTheme.displaySmall,
+                  controller: passwordController,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.deny(
+                        RegExp(r'\s')), // Deny whitespace
+                  ],
+                  onSaved: (newValue) => passwordController,
+                  validator: (value) {
+                    if (value?.isEmpty == true || value == null) {
+                      return 'Please enter Password';
+                    } else if (value.length < 6) {
+                      return "Password must be at least 6 characters long !";
+                    }
+                    return null;
+                  },
+                  keyboardType: TextInputType.visiblePassword,
+                  obscureText: _obscured1,
+                  focusNode: textFieldFocusNode,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(12),
+                    labelText: "Password",
+                    labelStyle:
+                        TextStyle(color: Colors.grey[600], fontSize: 15),
+                    filled: true,
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: const BorderSide(
+                            width: 0, style: BorderStyle.solid)),
+                    hintText: "Password",
+                    hintStyle:
+                        const TextStyle(fontSize: 16, color: Colors.grey),
+                    suffixIcon: Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                      child: GestureDetector(
+                        onTap: _toggleObscured1,
+                        child: Icon(
+                          _obscured1
+                              ? Icons.visibility_off_rounded
+                              : Icons.visibility_rounded,
+                          size: 20,
+                          color: IconButtonColor,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -953,40 +658,54 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                               flex: 1,
                               child: RadioListTile(
                                 value: 0,
-                                groupValue: ageGroupIndex,
+                                groupValue: ageIndex,
                                 title: const Text(
                                   "DOB",
                                 ),
                                 onChanged: (newValue) {
                                   setState(() {
-                                    ageGroupIndex = newValue ?? 0;
-                                    if (ageGroupIndex == 0) {
+                                    ageIndex = newValue ?? 0;
+                                    if (ageIndex == 0) {
                                       ageController.clear();
                                     }
                                   });
                                 },
+                                // onChanged: (newValue) {
+                                //   if (dobController.text.isEmpty) {
+                                //     setState(() {
+                                //       ageIndex = newValue ?? 0;
+                                //       FocusScope.of(context)
+                                //           .requestFocus(dobFocusNode);
+                                //     });
+                                //   }
+                                // },
                                 activeColor: RadioButtonColor,
+                                //selectedTileColor: RadioButtonColor,
                                 selected: false,
+                                //selected: ageIndex == 0,
                               ),
                             ),
                             Expanded(
                               flex: 1,
                               child: RadioListTile(
                                 value: 1,
-                                groupValue: ageGroupIndex,
+                                groupValue: ageIndex,
                                 title: const Text(
                                   "Age",
                                 ),
                                 onChanged: (newValue) {
                                   setState(() {
-                                    ageGroupIndex = newValue ?? 1;
-                                    if (ageGroupIndex == 1) {
+                                    ageIndex = newValue ?? 1;
+                                    if (ageIndex == 1) {
                                       dobController.clear();
                                     }
                                   });
                                 },
+
                                 activeColor: RadioButtonColor,
+                                //selectedTileColor: RadioButtonColor,
                                 selected: false,
+                                //selected: ageIndex == 1,
                               ),
                             ),
                           ],
@@ -995,9 +714,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 20),
-                ageGroupIndex == 0
+                ageIndex == 0
                     ? GestureDetector(
                         child: TextField(
                           controller: dobController,
@@ -1019,15 +737,16 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                           onTap: () => _showCustomCalendarDialog(context),
                         ),
                       )
-                    : DropdownButtonFormField<String>(
-                        value: selectedAgeGroup,
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            selectedAgeGroup = newValue!;
-                          });
-                        },
+                    : TextFormField(
+                        controller: ageController,
+                        //focusNode: ageFocusNode,
+                        onSaved: (newValue) => ageController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
                         decoration: InputDecoration(
-                          labelText: "Select age group",
+                          labelText: "Age",
                           labelStyle:
                               TextStyle(color: Colors.grey[600], fontSize: 15),
                           filled: true,
@@ -1037,34 +756,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                               borderSide: const BorderSide(
                                   width: 0, style: BorderStyle.solid)),
                         ),
-                        items: ageGroup
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
                       ),
-                // TextFormField(
-                //     controller: ageController,
-                //     //focusNode: ageFocusNode,
-                //     onSaved: (newValue) => ageController,
-                //     keyboardType: TextInputType.number,
-                //     inputFormatters: [
-                //       FilteringTextInputFormatter.digitsOnly,
-                //     ],
-                //     decoration: InputDecoration(
-                //       labelText: "Age",
-                //       labelStyle:
-                //           TextStyle(color: Colors.grey[600], fontSize: 15),
-                //       filled: true,
-                //       floatingLabelBehavior: FloatingLabelBehavior.auto,
-                //       border: OutlineInputBorder(
-                //           borderRadius: BorderRadius.circular(10.0),
-                //           borderSide: const BorderSide(
-                //               width: 0, style: BorderStyle.solid)),
-                //     ),
-                //   ),
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1327,9 +1019,6 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     ),
                   ),
                 ),
-                widget.title == "edit"
-                    ? const SizedBox(height: 20)
-                    : const SizedBox(),
                 Container(
                   width: MediaQuery.of(context).size.width,
                   height: 50,
@@ -1353,6 +1042,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                         await Future.delayed(
                             const Duration(seconds: 1)); // Simulating a delay
                         try {
+//firebase signup
+                          await FirebaseAuth.instance
+                              .createUserWithEmailAndPassword(
+                                email: emailController.text.trim(),
+                                password: passwordController.text.trim(),
+                              )
+                              .then((value) => uid = value.user?.uid);
+
                           String? profileURL = image?["selectedImage"] != null
                               ? await uploadImageToFirebaseStorage(
                                   image?["selectedImage"] as List<int>,
@@ -1361,42 +1058,27 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
 
                           String uniqueDevoteeId = const Uuid().v1();
                           DevoteeModel updateDevotee = DevoteeModel(
-                              devoteeCode:
-                                  selectedDevotee?.devoteeCode?.toInt() ?? 0,
-                              createdById: widget.title == "edit"
-                                  ? selectedDevotee?.createdById
-                                  : uniqueDevoteeId,
-                              status: selectedStatus,
-                              role: selectedRole,
-                              createdOn: selectedDevotee?.createdOn ??
-                                  DateFormat('yyyy-MM-dd HH:mm')
-                                      .format(DateTime.now()),
-                              isApproved: isApproved,
-                              devoteeId: widget.title == "edit"
-                                  ? widget.devoteeId
-                                  : uniqueDevoteeId,
+                              devoteeId: uniqueDevoteeId,
+                              createdById: uniqueDevoteeId,
                               bloodGroup: bloodGroupController,
                               name: nameController.text,
                               remarks: remarksController.text,
-                              paidAmount:
-                                  double.tryParse(pranamiController.text),
                               gender: gender[genderIndex],
                               profilePhotoUrl: profileURL,
                               hasParichayaPatra: parichayaPatraValue,
                               sangha: sanghaController.text,
                               dob: _formatDOB(dobController.text),
-                              ageGroup: dobController.text.isEmpty
-                                  ? selectedAgeGroup
-                                  : "",
+                              status: "dataSubbmited",
+                              
+                              
                               mobileNumber: mobileController.text,
                               updatedOn: DateTime.now().toString(),
                               emailId: emailController.text,
-                              // isGruhasanaApproved: isGruhasanaApproved,
-                              // isKYDVerified: isKYDVerified,
                               isSpeciallyAbled: isSpeciallyAbled,
                               isGuest: isGuest,
                               isOrganizer: isOrganizer,
-                              uid: selectedDevotee?.uid ?? "",
+                              uid: uid,
+                              role: "User",
                               address: AddressModel(
                                   addressLine2: addressLine2Controller.text,
                                   addressLine1: addressLine1Controller.text,
@@ -1407,75 +1089,53 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                   city: cityController.text,
                                   state: stateController.text));
                           Map<String, dynamic> response;
-
-                          if (widget.title == "edit") {
-                            response = await PutDevoteeAPI()
-                                .updateDevotee(updateDevotee, widget.devoteeId);
-                            print("devotee update response: $response");
-                          } else {
+                          if (uid != null || uid != "") {
                             response = await PostDevoteeAPI()
-                                .addRelativeDevotee(updateDevotee);
+                                .signupDevotee(updateDevotee);
                             print("devotee add response: $response");
-                          }
 
-                          if (response["statusCode"] == 200) {
-                            // Show a circular progress indicator while navigating
-                            // ignore: use_build_context_synchronously
-                            showDialog(
-                              context: context,
-                              barrierDismissible:
-                                  false, // Prevent dismissing by tapping outside
-                              builder: (BuildContext context) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              },
-                            );
-                            if (context.mounted) {
-                              if (widget.role == "User") {
+                            if (response["statusCode"] == 200) {
+                              // Show a circular progress indicator while navigating
+                              // ignore: use_build_context_synchronously
+                              showDialog(
+                                context: context,
+                                barrierDismissible:
+                                    false, // Prevent dismissing by tapping outside
+                                builder: (BuildContext context) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                },
+                              );
+                              final currentDevoteeResponse =
+                                  await GetDevoteeAPI()
+                                      .loginDevotee(uid.toString());
+                              await fetchCurrentuser();
+                              print(
+                                  "currentDevoteeResponse----------$currentDevoteeResponse");
+                              DevoteeModel currentDevotee =
+                                  currentDevoteeResponse?["data"];
+
+                              if (context.mounted) {
                                 Navigator.of(context)
                                     .pop(); // Close the circular progress indicator
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => UserDashboard(
-                                              devoteeId: NetworkHelper()
-                                                      .getCurrentDevotee
-                                                      ?.devoteeId ??
-                                                  "",
-                                            )));
-                              } else {
-                                Navigator.of(context)
-                                    .pop(); // Close the circular progress indicator
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => DashboardPage(),
+                                      builder: (context) => UserDashboard(
+                                          devoteeId: currentDevotee.devoteeId
+                                              .toString()),
                                     ));
                               }
-
-                              // Navigator.push(context, MaterialPageRoute(
-                              //   builder: (context) {
-                              //     return DevoteeListPage(
-                              //       status: "allDevotee",
-                              //       pageFrom: "Search",
-                              //       devoteeList: devoteeList,
-                              //       searchValue: widget.searchValue,
-                              //       searchBy: widget.searchBy,
-                              //       showClearButton: widget.showClearButton,
-                              //     );
-                              //   },
-                              // ));
+                            } else {
+                              // if (context.mounted) {
+                              //   Navigator.of(context).pop();
+                              // }
+                              // ignore: use_build_context_synchronously
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('devotee Create issue')));
                             }
-                          } else {
-                            if (context.mounted) {
-                              Navigator.of(context).pop();
-                            }
-// Close the circular progress indicator
-                            // ignore: use_build_context_synchronously
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('devotee update issue')));
                           }
                         } catch (e) {
                           if (context.mounted) {
@@ -1504,8 +1164,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(90)))),
                     child: Text(
-                      widget.title == "edit" ? "Update" : "Add",
-                      style: const TextStyle(color: Colors.white, fontSize: 15),
+                      "Signup",
+                      style: TextStyle(color: Colors.white, fontSize: 15),
                     ),
 
                     //Row

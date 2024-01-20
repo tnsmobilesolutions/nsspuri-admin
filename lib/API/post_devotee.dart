@@ -18,7 +18,6 @@ class PostDevoteeAPI extends DioFuctionAPI {
       return {"statusCode": 500, "error": e};
     }
   }
-
   Future<Map<String, dynamic>> addRelativeDevotee(DevoteeModel devotee) async {
     // Dio dio = Dio();
     var encodedata = jsonEncode(devotee.toMap());

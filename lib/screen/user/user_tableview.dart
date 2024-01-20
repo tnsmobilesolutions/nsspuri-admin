@@ -1,57 +1,33 @@
 // ignore_for_file: file_names, depend_on_referenced_packages, must_be_immutable, iterable_contains_unrelated_type, avoid_print
-import 'dart:typed_data';
 
 import 'package:animate_icons/animate_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:pdf/pdf.dart';
-import 'package:printing/printing.dart';
-import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/export_to_excel.dart';
-import 'package:sdp/screen/PaliaListScreen.dart/printpdf.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
 import 'package:sdp/screen/viewDevotee/viewDevotee.dart';
 import 'package:sdp/utilities/network_helper.dart';
-import 'package:pdf/widgets.dart' as pw;
 
-class DevoteeListBodyPage extends StatefulWidget {
-  DevoteeListBodyPage(
-      {Key? key,
-      required this.status,
-      required this.pageFrom,
-      this.devoteeList,
-      this.showClearButton,
-      this.searchValue,
-      this.searchBy}
-      )
-      : super(key: key);
+class UserTableView extends StatefulWidget {
+  UserTableView({
+    Key? key,
+    required this.devoteeList,
+  }) : super(key: key);
 
-  List<DevoteeModel>? devoteeList;
-  String pageFrom;
-  String? searchBy;
-  String? searchValue;
-  bool? showClearButton;
-  String status;
+  List<DevoteeModel> devoteeList;
 
   @override
-  State<DevoteeListBodyPage> createState() => _DevoteeListBodyPageState();
+  State<UserTableView> createState() => _UserTableViewState();
 }
 
-class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
+class _UserTableViewState extends State<UserTableView>
     with TickerProviderStateMixin {
-  bool? allCheck;
-  List<DevoteeModel> allDevotees = [], selectedDevotees = [];
-  bool checkedValue = false;
   bool editpaliDate = false;
   bool isAscending = false;
   bool showMenu = false;
   bool isLoading = true;
-  bool isSelected = false;
-  String? userRole;
-  bool isChecked = false;
   List<String> monthNames = [
     'Jan',
     'Feb',
@@ -67,29 +43,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
     'Dec'
   ];
 
-  late AnimateIconController _controller;
   List<bool> selectedList = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimateIconController();
-
-    widget.devoteeList != null
-        ? allDevotees = widget.devoteeList!
-        : fetchAllDevotee();
-    setState(() {
-      userRole = NetworkHelper().currentDevotee?.role;
-      selectedList =
-          List<bool>.generate(allDevotees.length, (int index) => false);
-    });
-  }
-
-  // @override
-  // void dispose() {
-  //   _controller.dispose();
-  //   super.dispose();
-  // }
 
   String formatDate(String inputDate) {
     if (inputDate.isNotEmpty) {
@@ -104,33 +58,6 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
       return formattedDate;
     }
     return "";
-  }
-
-  void fetchAllDevotee() async {
-    Map<String, dynamic>? allDevotee;
-
-    if (widget.status == "allDevotee" && widget.pageFrom == "Dashboard") {
-      allDevotee = await GetDevoteeAPI().allDevotee();
-    } else if (widget.status != "allDevotee" &&
-        widget.pageFrom == "Dashboard") {
-      allDevotee = await GetDevoteeAPI().searchDevotee(widget.status, "status");
-    } else if (widget.pageFrom == "Search") {
-      allDevotee = await GetDevoteeAPI().advanceSearchDevotee(
-        widget.searchValue.toString(),
-        widget.searchBy.toString(),
-      );
-    }
-
-    if (allDevotee != null) {
-      setState(() {
-        for (int i = 0; i < allDevotee?["data"].length; i++) {
-          allDevotees.add(allDevotee?["data"][i]);
-        }
-      });
-    } else {
-      print("Error fetching data");
-    }
-    setState(() => isLoading = false);
   }
 
   Expanded headingText(String text) {
@@ -164,9 +91,9 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
   }
 
   Widget devoteeTable(BuildContext context) {
+    List<DevoteeModel> allDevotees = widget.devoteeList;
     return DataTable(
       showBottomBorder: true,
-      showCheckboxColumn: true,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
@@ -191,25 +118,25 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                       ),
                     ),
               ),
-              AnimateIcons(
-                startIcon: Ionicons.arrow_up,
-                endIcon: Ionicons.arrow_down,
-                startIconColor: Colors.deepOrange,
-                endIconColor: Colors.deepOrange,
-                controller: _controller,
-                duration: const Duration(milliseconds: 800),
-                size: 20.0,
-                onStartIconPress: () {
-                  isAscending = !isAscending;
-                  _sortList(isAscending);
-                  return true;
-                },
-                onEndIconPress: () {
-                  isAscending = !isAscending;
-                  _sortList(isAscending);
-                  return true;
-                },
-              ),
+              // AnimateIcons(
+              //   startIcon: Ionicons.arrow_up,
+              //   endIcon: Ionicons.arrow_down,
+              //   startIconColor: Colors.deepOrange,
+              //   endIconColor: Colors.deepOrange,
+              //   controller: _controller,
+              //   duration: const Duration(milliseconds: 800),
+              //   size: 20.0,
+              //   onStartIconPress: () {
+              //     isAscending = !isAscending;
+              //     _sortList(isAscending);
+              //     return true;
+              //   },
+              //   onEndIconPress: () {
+              //     isAscending = !isAscending;
+              //     _sortList(isAscending);
+              //     return true;
+              //   },
+              // ),
             ],
           ),
         ),
@@ -223,42 +150,12 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         allDevotees.length,
         (index) {
           return DataRow(
-            selected: selectedList[index],
-            onSelectChanged: (bool? value) {
-              setState(() {
-                selectedList[index] = value!;
-                if (value) {
-                  if (selectedDevotees.length < 6) {
-                    selectedDevotees.add(allDevotees[index]);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      elevation: 6,
-                      behavior: SnackBarBehavior.floating,
-                      content: Text(
-                        'You can only select up to 6 devotees !',
-                      ),
-                    ));
-                    selectedList[index] = false;
-                  }
-                } else {
-                  selectedDevotees.remove(allDevotees[index]);
-                }
-              });
-            },
             cells: [
               DataCell(Text("${index + 1}")),
-              DataCell(SizedBox(
+              const DataCell(SizedBox(
                 height: 50,
                 width: 50,
-                child: allDevotees[index].profilePhotoUrl != null &&
-                        allDevotees[index].profilePhotoUrl!.isNotEmpty == true
-                    ? Image.network(
-                        allDevotees[index].profilePhotoUrl ?? '',
-                        height: 80,
-                        width: 80,
-                      )
-                    : const Image(
-                        image: AssetImage('assets/images/profile.jpeg')),
+                child: Image(image: AssetImage('assets/images/profile.jpeg')),
               )),
               DataCell(
                 Column(
@@ -279,14 +176,10 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                   ],
                 ),
               ),
-              DataCell(Text(allDevotees[index].sangha ?? "")),
+              DataCell(Text(allDevotees[index].sangha ?? '_')),
               DataCell(
-                allDevotees[index].ageGroup != ""
-                    ? Text(
-                        allDevotees[index].ageGroup.toString(),
-                        textAlign: TextAlign.center,
-                      )
-                    : Text(
+               
+                    Text(
                         formatDate(allDevotees[index].dob ?? ""),
                         textAlign: TextAlign.center,
                       ),
@@ -366,9 +259,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                                     devoteeId:
                                         allDevotees[index].devoteeId.toString(),
                                     title: "edit",
-                                    showClearButton: widget.showClearButton,
-                                    searchBy: widget.searchBy,
-                                    searchValue: widget.searchValue,
+                                    role: "User",
                                   ));
                             },
                           );
@@ -391,7 +282,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
 
   void _sortList(bool isAscending) {
     setState(() {
-      allDevotees.sort((a, b) {
+      widget.devoteeList.sort((a, b) {
         final nameA = (a.name ?? '').toLowerCase();
         final nameB = (b.name ?? '').toLowerCase();
         return isAscending ? nameA.compareTo(nameB) : nameB.compareTo(nameA);
@@ -407,43 +298,6 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            userRole == "SuperAdmin" ||
-                    userRole == "Admin" ||
-                    userRole == "Approver"
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                            side: const BorderSide(
-                                width: 1.5, color: Colors.deepOrange),
-                            foregroundColor: Colors.black),
-                        onPressed: () {},
-                        child: const Text('Print'),
-                      ),
-                      const SizedBox(width: 12),
-                      OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                            side: const BorderSide(
-                                width: 1.5, color: Colors.deepOrange),
-                            foregroundColor: Colors.black),
-                        onPressed: () {
-                          ExportToExcel().exportToExcel(allDevotees);
-                        },
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text('Export'),
-                            Icon(
-                              Icons.upload_rounded,
-                              color: Colors.deepOrange,
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  )
-                : const SizedBox(),
             Row(
               children: [
                 Expanded(
