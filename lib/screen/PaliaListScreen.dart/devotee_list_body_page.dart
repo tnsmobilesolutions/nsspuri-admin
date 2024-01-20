@@ -162,6 +162,19 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         ));
   }
 
+  String getAgeGroup(DevoteeModel? devotee) {
+    if (devotee?.ageGroup?.isNotEmpty == true || devotee?.ageGroup != null) {
+      if (devotee?.ageGroup == "Child") {
+        return "0 to 12";
+      } else if (devotee?.ageGroup == "Adult") {
+        return "13 to 70";
+      } else if (devotee?.ageGroup == "Elder") {
+        return "70 Above";
+      }
+    }
+    return "";
+  }
+
   Widget devoteeTable(BuildContext context) {
     return DataTable(
       showBottomBorder: true,
@@ -246,18 +259,19 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
             // },
             cells: [
               DataCell(Text("${index + 1}")),
-              DataCell(SizedBox(
+              const DataCell(SizedBox(
                 height: 50,
                 width: 50,
-                child: allDevotees[index].profilePhotoUrl != null &&
-                        allDevotees[index].profilePhotoUrl!.isNotEmpty == true
-                    ? Image.network(
-                        allDevotees[index].profilePhotoUrl ?? '',
-                        height: 80,
-                        width: 80,
-                      )
-                    : const Image(
-                        image: AssetImage('assets/images/profile.jpeg')),
+                child:
+                    //  allDevotees[index].profilePhotoUrl != null &&
+                    //         allDevotees[index].profilePhotoUrl!.isNotEmpty == true
+                    //     ? Image.network(
+                    //         allDevotees[index].profilePhotoUrl ?? '',
+                    //         height: 80,
+                    //         width: 80,
+                    //       )
+                    //     :
+                    Image(image: AssetImage('assets/images/profile.jpeg')),
               )),
               DataCell(
                 Column(
@@ -288,7 +302,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                     : (allDevotees[index].ageGroup?.isNotEmpty == true ||
                             allDevotees[index].ageGroup != null)
                         ? Text(
-                            allDevotees[index].ageGroup.toString(),
+                            getAgeGroup(allDevotees[index]),
                             textAlign: TextAlign.center,
                           )
                         : const Text(""),

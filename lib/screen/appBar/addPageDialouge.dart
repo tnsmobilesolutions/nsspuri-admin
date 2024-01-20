@@ -138,7 +138,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'Approver',
     'PrasadScanner',
     "SecurityCheck"
-    "Viewer"
+        "Viewer"
   ];
   String day = "", month = "", year = "";
   TextEditingController sanghaController = TextEditingController();
@@ -282,15 +282,24 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
 
   String getAgeGroup(DevoteeModel? devotee) {
     if (devotee?.ageGroup?.isNotEmpty == true || devotee?.ageGroup != null) {
-      return devotee?.ageGroup.toString() ?? "13 to 70";
+      if (devotee?.ageGroup == "Child") {
+        return "0 to 12";
+      } else if (devotee?.ageGroup == "Adult") {
+        return "13 to 70";
+      } else if (devotee?.ageGroup == "Elder") {
+        return "70 Above";
+      }
+      // return devotee?.ageGroup.toString() ?? "13 to 70";
     }
     return "13 to 70";
   }
 
   int getAgeGroupIndex(DevoteeModel? devotee) {
     if (devotee?.dob?.isEmpty == true || devotee?.dob == null) {
-      if (devotee?.ageGroup?.isNotEmpty == true || devotee?.ageGroup != null) {
+      if (devotee?.ageGroup?.isNotEmpty == true) {
         return 1;
+      } else {
+        return 0;
       }
     }
     return 0;
@@ -1370,13 +1379,16 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
 
                         String setAgeGroupToDB() {
                           if (ageGroupIndex == 0) {
-                            if (dobController.text.isEmpty) {
-                              return selectedAgeGroup;
-                            } else {
-                              return "";
-                            }
+                            return "";
                           } else {
-                            return selectedAgeGroup;
+                            if (selectedAgeGroup == "0 to 12") {
+                              return "Child";
+                            } else if (selectedAgeGroup == "13 to 70") {
+                              return "Adult";
+                            } else if (selectedAgeGroup == "70 Above") {
+                              return "Elder";
+                            }
+                            return "Adult";
                           }
                         }
 
