@@ -340,47 +340,57 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
               DataCell(
                 IconButton(
                   color: Colors.deepOrange,
-                  onPressed: NetworkHelper().currentDevotee?.role ==
-                              "Approver" &&
-                          allDevotees[index].status == "paid"
-                      ? null
-                      : () {
-                          showDialog<void>(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                  title: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text('Edit Devotee Details'),
-                                      IconButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          icon: const Icon(
-                                            Icons.close,
-                                            color: Colors.deepOrange,
-                                          ))
-                                    ],
-                                  ),
-                                  content: AddPageDilouge(
-                                    devoteeId:
-                                        allDevotees[index].devoteeId.toString(),
-                                    title: "edit",
-                                    showClearButton: widget.showClearButton,
-                                    searchBy: widget.searchBy,
-                                    searchValue: widget.searchValue,
-                                  ));
+                  onPressed:
+                      NetworkHelper().currentDevotee?.role == "Approver" &&
+                              allDevotees[index].status == "paid"
+                          ? null
+                          : () {
+                              showDialog<void>(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                      title: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text('Edit Devotee Details'),
+                                          IconButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              icon: const Icon(
+                                                Icons.close,
+                                                color: Colors.deepOrange,
+                                              ))
+                                        ],
+                                      ),
+                                      content: (NetworkHelper()
+                                                  .getCurrentDevotee
+                                                  ?.role !=
+                                              "Viewer")
+                                          ? AddPageDilouge(
+                                              devoteeId: allDevotees[index]
+                                                  .devoteeId
+                                                  .toString(),
+                                              title: "edit",
+                                              showClearButton:
+                                                  widget.showClearButton,
+                                              searchBy: widget.searchBy,
+                                              searchValue: widget.searchValue,
+                                            )
+                                          : null);
+                                },
+                              );
                             },
-                          );
-                        },
                   icon: Icon(
                     Icons.edit,
-                    color: NetworkHelper().currentDevotee?.role == "Approver" &&
-                            allDevotees[index].status == "paid"
-                        ? const Color.fromARGB(255, 206, 206, 206)
-                        : Colors.deepOrange,
+                    color:
+                        ((NetworkHelper().currentDevotee?.role == "Approver" &&
+                                    allDevotees[index].status == "paid" ||
+                                (NetworkHelper().getCurrentDevotee?.role !=
+                                    "Viewer")))
+                            ? const Color.fromARGB(255, 206, 206, 206)
+                            : Colors.deepOrange,
                   ),
                 ),
               ),
@@ -420,7 +430,10 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                             side: const BorderSide(
                                 width: 1.5, color: Colors.deepOrange),
                             foregroundColor: Colors.black),
-                        onPressed: () {},
+                        onPressed: (NetworkHelper().getCurrentDevotee?.role !=
+                                "Viewer")
+                            ? () {}
+                            : null,
                         child: const Text('Print'),
                       ),
                       const SizedBox(width: 12),
@@ -429,9 +442,12 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                             side: const BorderSide(
                                 width: 1.5, color: Colors.deepOrange),
                             foregroundColor: Colors.black),
-                        onPressed: () {
-                          ExportToExcel().exportToExcel(allDevotees);
-                        },
+                        onPressed: (NetworkHelper().getCurrentDevotee?.role !=
+                                "Viewer")
+                            ? () {
+                                ExportToExcel().exportToExcel(allDevotees);
+                              }
+                            : null,
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [

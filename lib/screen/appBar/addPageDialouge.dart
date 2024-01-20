@@ -138,6 +138,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'Approver',
     'PrasadScanner',
     "SecurityCheck"
+    "Viewer"
   ];
   String day = "", month = "", year = "";
   TextEditingController sanghaController = TextEditingController();

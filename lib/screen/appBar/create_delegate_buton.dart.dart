@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
+import 'package:sdp/utilities/network_helper.dart';
 
 class CreateDelegateButton extends StatelessWidget {
   CreateDelegateButton({super.key, this.role});
@@ -28,7 +29,7 @@ class CreateDelegateButton extends StatelessWidget {
         ),
         foregroundColor: Colors.white,
       ),
-      onPressed: (() {
+      onPressed: (NetworkHelper().getCurrentDevotee?.role != "Viewer") ? (() {
         showDialog<void>(
           context: context,
           builder: (BuildContext context) {
@@ -55,7 +56,7 @@ class CreateDelegateButton extends StatelessWidget {
                 ));
           },
         );
-      }),
+      }) : null,
       child: const Text(
         'Create Delegate',
         style: TextStyle(color: Colors.white),
