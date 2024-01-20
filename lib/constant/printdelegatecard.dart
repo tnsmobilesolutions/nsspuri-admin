@@ -29,7 +29,7 @@ class _PrintingDocsPageState extends State<PrintingDocsPage> {
       appBar: AppBar(
         title: Text(
           'Print your Invoice',
-          style: Theme.of(context).textTheme.headlineLarge,
+          style: TextStyle(fontSize: 18, color: Colors.white),
         ),
         centerTitle: false,
         leading: BackArrowButton.backArrowIcon(context, () {

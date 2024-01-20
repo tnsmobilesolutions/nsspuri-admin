@@ -49,9 +49,9 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
   bool isAscending = false;
   bool showMenu = false;
   bool isLoading = true;
-  bool isSelected = false;
+  bool isSelected = true;
   String? userRole;
-  bool isChecked = false;
+//  bool isSelected = false;
   List<String> monthNames = [
     'Jan',
     'Feb',
@@ -223,28 +223,31 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         allDevotees.length,
         (index) {
           return DataRow(
-            selected: selectedList[index],
-            onSelectChanged: (bool? value) {
-              setState(() {
-                selectedList[index] = value!;
-                if (value) {
-                  if (selectedDevotees.length < 4) {
-                    selectedDevotees.add(allDevotees[index]);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      elevation: 6,
-                      behavior: SnackBarBehavior.floating,
-                      content: Text(
-                        'You can only select up to 4 devotees !',
-                      ),
-                    ));
-                    selectedList[index] = false;
-                  }
-                } else {
-                  selectedDevotees.remove(allDevotees[index]);
-                }
-              });
-            },
+            selected: isSelected ? false : selectedList[index],
+            onSelectChanged: isSelected
+                ? null
+                : (bool? value) {
+                    setState(() {
+                      selectedList[index] = value!;
+                      if (value) {
+                        if (selectedDevotees.length < 4) {
+                          selectedDevotees.add(allDevotees[index]);
+                        } else {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            elevation: 6,
+                            behavior: SnackBarBehavior.floating,
+                            content: Text(
+                              'You can only select up to 4 devotees !',
+                            ),
+                          ));
+                          selectedList[index] = false;
+                        }
+                      } else {
+                        selectedDevotees.remove(allDevotees[index]);
+                      }
+                    });
+                  },
             cells: [
               DataCell(Text("${index + 1}")),
               const DataCell(SizedBox(
@@ -414,18 +417,32 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                            side: const BorderSide(
-                                width: 1.5, color: Colors.deepOrange),
-                            foregroundColor: Colors.black),
-                        onPressed: () {
-                          if (context.mounted) {
-                            DisplayPdf.delegatePDF(selectedDevotees, context);
-                          }
-                        },
-                        child: const Text('Print'),
-                      ),
+                      isSelected
+                          ? OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(
+                                      width: 1.5, color: Colors.deepOrange),
+                                  foregroundColor: Colors.black),
+                              onPressed: () {
+                                setState(() {
+                                  isSelected = false;
+                                });
+                              },
+                              child: const Text('Select'),
+                            )
+                          : OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(
+                                      width: 1.5, color: Colors.deepOrange),
+                                  foregroundColor: Colors.black),
+                              onPressed: () {
+                                if (context.mounted) {
+                                  DisplayPdf.delegatePDF(
+                                      selectedDevotees, context);
+                                }
+                              },
+                              child: const Text('Print'),
+                            ),
                       const SizedBox(width: 12),
                       OutlinedButton(
                         style: OutlinedButton.styleFrom(
