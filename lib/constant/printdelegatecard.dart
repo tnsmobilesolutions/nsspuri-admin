@@ -27,7 +27,7 @@ class _PrintingDocsPageState extends State<PrintingDocsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Print your Invoice',
           style: TextStyle(fontSize: 18, color: Colors.white),
         ),

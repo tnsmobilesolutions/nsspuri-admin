@@ -10,6 +10,8 @@ import 'package:sdp/screen/viewDevotee/constants.dart';
 import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 
 class DisplayPdf {
+  static const PIXEL_PER_INCH = 72.0;
+
   static void delegatePDF(
       List<DevoteeModel> deviteeselecteddata, BuildContext context) async {
     final img1 = await rootBundle.load('assets/images/blood.png');
@@ -101,10 +103,8 @@ class DisplayPdf {
 
     pw.Widget buildCard(pw.Context context, DevoteeModel cardData) {
       return pw.Container(
-          // height: 100,
-          // // 4.4 * 72.0, // 1 inch = 72.0 points in Flutter
-          // width: 100,
-          //2.7 * 72.0,
+          height: 4.4 * PIXEL_PER_INCH,
+          width: 2.7 * PIXEL_PER_INCH,
           margin: const pw.EdgeInsets.all(8),
           padding: const pw.EdgeInsets.all(8),
           decoration: pw.BoxDecoration(
@@ -113,119 +113,7 @@ class DisplayPdf {
           child: pw.Padding(
               padding: const pw.EdgeInsets.all(5.0),
               child: pw.Column(children: [
-                pw.Container(
-                  //height: MediaQuery.of(context).size.height / 13,
-                  decoration: pw.BoxDecoration(
-                      color: getColorByDevotee(cardData),
-                      borderRadius: const pw.BorderRadius.only(
-                        topLeft: pw.Radius.circular(18),
-                        topRight: pw.Radius.circular(18),
-                      )),
-                  child: pw.Center(
-                    child: pw.Expanded(
-                      //flex: 4,
-                      child: pw.Text(
-                        'DELEGATE CARD',
-                        textAlign: pw.TextAlign.center,
-                        style: pw.TextStyle(
-                          fontWeight: pw.FontWeight.bold,
-                          fontSize: 16,
-                          color: PdfColors.white,
-                        ),
-                      ),
-                    ),
-
-                    //  SizedBox(
-                    //   width: 50,
-                    // ),
-                  ),
-                ),
                 pw.Column(children: [
-                  pw.SizedBox(
-                      height: 30,
-                      width: 1000,
-                      child: pw.Row(children: [
-                        // pw.Expanded(
-                        //   // flex: 1,
-                        //   child: pw.ListView.separated(
-                        //     itemCount: 22,
-                        //     itemBuilder: (pw.Context context, int index) {
-                        //       return svgImage;
-                        //     },
-                        //     separatorBuilder: (pw.Context context, int index) {
-                        //       // This widget will be used as a separator between items.
-                        //       // You can adjust the size and appearance of the separator here.
-                        //       return pw.SizedBox(
-                        //           height: 3); // Adjust the height as needed.
-                        //     },
-                        //   ),
-                        // ),
-                        pw.Expanded(
-
-//                           //flex: 8,
-                            child: pw.Row(
-                                mainAxisAlignment:
-                                    pw.MainAxisAlignment.spaceEvenly,
-                                children: [
-                              pw.Expanded(
-                                flex: 1,
-                                child: pw.Container(
-                                    height: 20, width: 20, child: nssLogo),
-                              ),
-                              pw.Expanded(
-                                //flex: 4,
-                                child: pw.Container(
-                                  child: pw.Center(
-                                    child: customText1(
-                                      'JAYAGURU',
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              pw.Expanded(
-                                child: pw.Container(
-                                    height: 20,
-                                    width: 20,
-                                    child: puneSammilaniLogo),
-                              ),
-                            ]))
-                      ])),
-                  pw.SizedBox(
-                      child: pw.Column(
-                    children: [
-                      customText1(
-                        'NILACHALA SARASWATA SANGHA, PURI',
-                      ),
-                      pw.SizedBox(height: 5),
-                      customText1(
-                        '73RD UTKALA PRADESHIKA',
-                      ),
-                      pw.SizedBox(height: 5),
-                      customText1(
-                        'BHAKTA SAMMILANI, PUNE - 2024',
-                      ),
-                    ],
-                  )),
-                  pw.SizedBox(height: 5),
-                  pw.SizedBox(
-                      //  height: MediaQuery.of(context).size.height / 1.79,
-                      child: pw.Row(children: [
-                    // pw.Expanded(
-                    //   // flex: 1,
-                    //   child: pw.ListView.separated(
-                    //     itemCount: 22,
-                    //     itemBuilder: (pw.Context context, int index) {
-                    //       return svgImage;
-                    //     },
-                    //     separatorBuilder: (pw.Context context, int index) {
-                    //       // This widget will be used as a separator between items.
-                    //       // You can adjust the size and appearance of the separator here.
-                    //       return pw.SizedBox(
-                    //           height: 3); // Adjust the height as needed.
-                    //     },
-                    //   ),
-                    // )
-                  ])),
                   pw.SizedBox(
                       height: 30,
                       width: 1000,
@@ -248,7 +136,7 @@ class DisplayPdf {
                                       child: pw.Stack(
                                         children: [
                                           pw.Container(
-                                            width: 75,
+                                            width: 30,
                                             height: 60,
                                             decoration: const pw.BoxDecoration(
                                               shape: pw.BoxShape.rectangle,
@@ -258,14 +146,16 @@ class DisplayPdf {
                                           pw.Positioned(
                                             top: 7,
                                             left: 0,
+                                            right: 0,
                                             child: pw.SizedBox(
-                                              width: 75,
-                                              height: 60,
+                                              width: 30,
+                                              height: 20,
                                               child: pw.Center(
                                                 child: pw.Text(
                                                   "${cardData.bloodGroup}",
                                                   style: pw.TextStyle(
-                                                    fontSize: 14,
+                                                    fontSize: 5,
+                                                    color: PdfColors.white,
                                                     // color: PdfColors.fromARGB(
                                                     //     255,
                                                     //     255,
@@ -281,7 +171,6 @@ class DisplayPdf {
                                         ],
                                       ),
                                     ),
-                              // Return an empty Container if the condition is false
                             ),
                           ),
                         ]))
@@ -436,60 +325,12 @@ class DisplayPdf {
 //                                     ],
 //                                   ),
 //                                 ),
-//                                 // pw.Flexible(
-//                                 //   flex: 3,
-//                                 //   child: pw.Container(
-//                                 //     padding:
-//                                 //           const pw.EdgeInsets.all(0),
-//                                 //     // height:
-//                                 //     //     MediaQuery.of(context)
-//                                 //     //             .size
-//                                 //     //             .height /
-//                                 //     //         4.8,
-//                                 //     // width:
-//                                 //     //     MediaQuery.of(context)
-//                                 //     //             .size
-//                                 //     //             .height /
-//                                 //     //         4.8,
-//                                 //     child: SfBarcodeGenerator(
-//                                 //       value: cardData
-//                                 //           .devoteeCode
-//                                 //           .toString(),
-//                                 //       symbology: QRCode(),
-//                                 //       showValue: false,
-//                                 //     ),
-//                                 //   ),
-//                                 // ),
+//
 //                               ],
 //                             ),
 //                           ),
 //                         ],
 //                       )),
-// //                                  pw.Expanded(
-// //   child: pw.ListView.separated(
-// //     itemCount: 22,
-// //     itemBuilder: (pw.Context context, int index) async{
-// //       return pw.Container(
-// //         height: 20,
-// //         child: pw.Image(
-// //           pw.MemoryImage(
-// //             ( await rootBundle.load('assets/images/3.png')),
-
-// //           ),
-// //           color: getColorByDevotee(cardData),
-// //         ),
-// //       );
-// //     },
-// //     separatorBuilder: (pw.Context context, int index) {
-// //       // This widget will be used as a separator between items.
-// //       // You can adjust the size and appearance of the separator here.
-// //       return pw.SizedBox(height: 3); // Adjust the height as needed.
-// //     },
-// //   ),
-// // ),
-//                     ],
-//                   ),
-//                 ),
               ])));
     }
 
