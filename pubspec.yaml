@@ -69,7 +69,6 @@ dependencies:
   lazy_data_table: ^0.3.1
   sticky_headers: ^0.3.0+2
   qr_bar_code_scanner_dialog: ^0.0.5
-
   qr_flutter: ^4.1.0
 
 dev_dependencies:

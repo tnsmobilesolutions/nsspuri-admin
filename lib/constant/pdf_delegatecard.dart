@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, constant_identifier_names
 
 import 'dart:io';
 
@@ -6,10 +6,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
+import 'package:printing/printing.dart';
 import 'package:sdp/constant/printdelegatecard.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 
 class DisplayPdf {
   static const PIXEL_PER_INCH = 72.0;
@@ -23,8 +23,6 @@ class DisplayPdf {
     final img5 = await rootBundle.load('assets/images/del_bg_guest.png');
     final img6 = await rootBundle.load('assets/images/del_bg_old.png');
     // final img6 = await rootBundle.load('assets/images/del_bg_old.png');
-
-
 
     final imageBytes1 = img1.buffer.asUint8List();
     final imageBytes2 = img2.buffer.asUint8List();
@@ -128,26 +126,11 @@ class DisplayPdf {
       if (devotee.gender == "Male") return bhaiCardColor;
       if (devotee.gender == "Female") return maaCardColor;
 
-      return Colors.blue;
-    }
-
-    Future<Uint8List> fetchImage(String imageUrl) async {
-      try {
-        Response<List<int>> response = await Dio().get<List<int>>(
-          imageUrl,
-          options: Options(responseType: ResponseType.bytes),
-        );
-
-        return Uint8List.fromList(response.data!);
-      } catch (e) {
-        // Handle error
-        print("Error fetching image: $e");
-        return Uint8List(0); // Return an empty Uint8List in case of error
-      }
+      return bhaiCardColor;
     }
 
     pw.Widget buildCard(pw.Context context, DevoteeModel cardData) {
-
+      int age = cardData.age ?? 0;
       return pw.Container(
         height: 4.4 * PIXEL_PER_INCH,
         width: 2.7 * PIXEL_PER_INCH,
@@ -159,16 +142,56 @@ class DisplayPdf {
         child: pw.Stack(
           children: [
             pw.Positioned.fill(
-              child: cardData.gender == "Male" ? bhaiCardColor : childCardColor,
+              child: cardData.gender == "Female"
+                  ? maaCardColor
+                  : cardData.gender == "Male"
+                      ? bhaiCardColor
+                      : age <= teenAgeLimit
+                          ? childCardColor
+                          : age >= seniorCitizenAgeLimit
+                              ? oldCardColor
+                              : bhaiCardColor,
             ),
 
-            pw.Positioned(
-              top: 160,
-              left: 35,
-              child: customText(
-                cardData.bloodGroup ?? '',
-              ),
-            ),
+            cardData.gender == "Female"
+                ? pw.Positioned(
+                    top: 165,
+                    left: 35,
+                    child: customText(
+                      cardData.bloodGroup != "Don't know"
+                          ? cardData.bloodGroup ?? ''
+                          : '',
+                    ),
+                  )
+                : cardData.gender == "Male"
+                    ? pw.Positioned(
+                        top: 165,
+                        left: 35,
+                        child: customText(
+                          cardData.bloodGroup != "Don't know"
+                              ? cardData.bloodGroup ?? ''
+                              : '',
+                        ),
+                      )
+                    : age <= teenAgeLimit
+                        ? pw.Positioned(
+                            top: 155,
+                            left: 30,
+                            child: customText(
+                              cardData.bloodGroup != "Don't know"
+                                  ? cardData.bloodGroup ?? ''
+                                  : '',
+                            ),
+                          )
+                        : pw.Positioned(
+                            top: 155,
+                            left: 35,
+                            child: customText(
+                              cardData.bloodGroup != "Don't know"
+                                  ? cardData.bloodGroup ?? ''
+                                  : '',
+                            ),
+                          ),
 
             // pw.Positioned(
             //   top: 155,
@@ -181,16 +204,27 @@ class DisplayPdf {
             //   ),
             // ),
 
-            pw.Positioned(
-              bottom: 115,
-              right: 50,
-              left: 50,
-              child: pw.Center(
-                child: customText2(
-                  cardData.name ?? '',
-                ),
-              ),
-            ),
+            cardData.gender == "Male"
+                ? pw.Positioned(
+                    bottom: 110,
+                    right: 50,
+                    left: 50,
+                    child: pw.Center(
+                      child: customText2(
+                        cardData.name ?? '',
+                      ),
+                    ),
+                  )
+                : pw.Positioned(
+                    bottom: 115,
+                    right: 50,
+                    left: 50,
+                    child: pw.Center(
+                      child: customText2(
+                        cardData.name ?? '',
+                      ),
+                    ),
+                  ),
             pw.Positioned(
               bottom: 80,
               left: 20,
@@ -205,6 +239,7 @@ class DisplayPdf {
                 "${cardData.devoteeCode}",
               ),
             ),
+
             // pw.Positioned(
             //   bottom: 70,
             //   left: 20,
