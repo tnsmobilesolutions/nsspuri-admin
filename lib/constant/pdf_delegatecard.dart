@@ -16,25 +16,30 @@ class DisplayPdf {
 
   static void delegatePDF(
       List<DevoteeModel> devoteeselecteddata, BuildContext context) async {
-    final img3 = await rootBundle.load('assets/image/del_bg_cordinator.png');
-    final imageBytes3 = img3.buffer.asUint8List();
-    pw.Image cardcoordinator = pw.Image(pw.MemoryImage(imageBytes3));
-    final img5 = await rootBundle.load('assets/image/del_bg_cordinator.png');
-    final imageBytes5 = img5.buffer.asUint8List();
-    pw.Image cardguest = pw.Image(pw.MemoryImage(imageBytes5));
-    final img6 = await rootBundle.load('assets/image/del_bg_old.png');
-    final imageBytes6 = img3.buffer.asUint8List();
-    pw.Image oldcard = pw.Image(pw.MemoryImage(imageBytes3));
-    final img4 = await rootBundle.load('assets/images/delegatebg_green.png');
-    final imageBytes4 = img4.buffer.asUint8List();
-    pw.Image containerImage = pw.Image(pw.MemoryImage(imageBytes4));
-    final image1 = await rootBundle.load('assets/images/del_bg_bhai.png');
-    final imageBytes1 = image1.buffer.asUint8List();
-    pw.Image bhaiColor = pw.Image(pw.MemoryImage(imageBytes1));
-
+    final img1 = await rootBundle.load('assets/images/del_bg_bhai.png');
     final img2 = await rootBundle.load('assets/images/del_bg_maa.png');
+    final img3 = await rootBundle.load('assets/images/del_bg_cordinator.png');
+    final img4 = await rootBundle.load('assets/images/del_bg_child.png');
+    final img5 = await rootBundle.load('assets/images/del_bg_guest.png');
+    final img6 = await rootBundle.load('assets/images/del_bg_old.png');
+    // final img6 = await rootBundle.load('assets/images/del_bg_old.png');
+
+
+
+    final imageBytes1 = img1.buffer.asUint8List();
     final imageBytes2 = img2.buffer.asUint8List();
-    pw.Image maaColor = pw.Image(pw.MemoryImage(imageBytes2));
+    final imageBytes3 = img3.buffer.asUint8List();
+    final imageBytes4 = img4.buffer.asUint8List();
+    final imageBytes5 = img5.buffer.asUint8List();
+    final imageBytes6 = img6.buffer.asUint8List();
+
+    pw.Image bhaiCardColor = pw.Image(pw.MemoryImage(imageBytes1));
+    pw.Image maaCardColor = pw.Image(pw.MemoryImage(imageBytes2));
+    pw.Image cordinatorCardColor = pw.Image(pw.MemoryImage(imageBytes3));
+    pw.Image childCardColor = pw.Image(pw.MemoryImage(imageBytes4));
+    pw.Image guestCardColor = pw.Image(pw.MemoryImage(imageBytes5));
+    pw.Image oldCardColor = pw.Image(pw.MemoryImage(imageBytes6));
+
     // final img3 = await rootBundle.load('assets/images/Subtract.png');
     // final imageBytes3 = img3.buffer.asUint8List();
     // pw.Image puneSammilaniLogo = pw.Image(pw.MemoryImage(imageBytes3));
@@ -68,6 +73,7 @@ class DisplayPdf {
         text,
         style: pw.TextStyle(
           fontSize: 7,
+          color: PdfColors.red,
           fontWeight: pw.FontWeight.bold,
         ),
       );
@@ -103,24 +109,24 @@ class DisplayPdf {
     }
 
     Object getColorByDevotee(DevoteeModel devotee) {
-      if (devotee.isGuest == true) return cardguest;
-      if (devotee.isSpeciallyAbled == true) return oldcard;
-      if (devotee.isOrganizer == true) return cardcoordinator;
+      if (devotee.isGuest == true) return guestCardColor;
+      if (devotee.isSpeciallyAbled == true) return oldCardColor;
+      if (devotee.isOrganizer == true) return cordinatorCardColor;
 
       if (devotee.age != null) {
         int age = devotee.age ?? 0;
-        if (age <= teenAgeLimit) return containerImage;
-        if (age >= seniorCitizenAgeLimit) return oldcard;
+        if (age <= teenAgeLimit) return childCardColor;
+        if (age >= seniorCitizenAgeLimit) return oldCardColor;
       }
 
       if (devotee.dob?.isNotEmpty == true && devotee.dob != null) {
         int age = calculateAge(DateTime.parse(devotee.dob.toString()));
-        if (age <= teenAgeLimit) return containerImage;
-        if (age >= seniorCitizenAgeLimit) return oldcard;
+        if (age <= teenAgeLimit) return childCardColor;
+        if (age >= seniorCitizenAgeLimit) return oldCardColor;
       }
 
-      if (devotee.gender == "Male") return bhaiColor;
-      if (devotee.gender == "Female") return maaColor;
+      if (devotee.gender == "Male") return bhaiCardColor;
+      if (devotee.gender == "Female") return maaCardColor;
 
       return Colors.blue;
     }
@@ -141,7 +147,6 @@ class DisplayPdf {
     }
 
     pw.Widget buildCard(pw.Context context, DevoteeModel cardData) {
-      //final netImage = networkImage(cardData.profilePhotoUrl ?? '');
 
       return pw.Container(
         height: 4.4 * PIXEL_PER_INCH,
@@ -153,14 +158,13 @@ class DisplayPdf {
         ),
         child: pw.Stack(
           children: [
-            // Your image as the background
             pw.Positioned.fill(
-              child: cardData.gender == "Male" ? bhaiColor : containerImage,
+              child: cardData.gender == "Male" ? bhaiCardColor : childCardColor,
             ),
 
             pw.Positioned(
-              top: 155,
-              left: 30,
+              top: 160,
+              left: 35,
               child: customText(
                 cardData.bloodGroup ?? '',
               ),
@@ -190,7 +194,7 @@ class DisplayPdf {
             pw.Positioned(
               bottom: 80,
               left: 20,
-              child: customText2(
+              child: customText(
                 cardData.sangha ?? '',
               ),
             ),
