@@ -32,6 +32,25 @@ abstract class DioFuctionAPI {
       return {"statusCode": 500, "error": e};
     }
   }
+  Future<Map<String, dynamic>> getSanghaAPI(String url) async {
+    try {
+
+
+      final response = await dio.get(
+        baseUrl + url,
+      );
+
+      if (response.statusCode == 200) {
+        return {"statusCode": 200, "data": response.data};
+      } else {
+        return {"statusCode": 500, "error": "Get api error"};
+      }
+    } catch (e) {
+      print(e);
+      return {"statusCode": 500, "error": e};
+    }
+  }
+
 
   //GET
 
