@@ -401,7 +401,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                     color:
                         ((NetworkHelper().currentDevotee?.role == "Approver" &&
                                     allDevotees[index].status == "paid" ||
-                                (NetworkHelper().getCurrentDevotee?.role !=
+                                (NetworkHelper().getCurrentDevotee?.role ==
                                     "Viewer")))
                             ? const Color.fromARGB(255, 206, 206, 206)
                             : Colors.deepOrange,

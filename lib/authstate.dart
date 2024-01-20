@@ -20,6 +20,7 @@ class _AuthStateState extends State<AuthState> {
 
   void fetchUser() async {
     await fetchCurrentuser();
+    setState(() {});
   }
 
   @override
