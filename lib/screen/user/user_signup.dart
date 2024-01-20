@@ -61,6 +61,24 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
   final textFieldFocusNode = FocusNode();
   bool _obscured1 = true;
   bool _obscured2 = true;
+  int ageGroupIndex = 0;
+  List<String> ageGroup = ["1 to 12", "13 to 70", "70 Above"];
+  String selectedAgeGroup = "13 to 70";
+  String getAgeGroup(DevoteeModel? devotee) {
+    if (devotee?.ageGroup != null && devotee?.ageGroup?.isNotEmpty == true) {
+      return devotee?.ageGroup.toString() ?? "";
+    }
+    return "";
+  }
+
+  int getAgeGroupIndex(DevoteeModel? devotee) {
+    if (devotee?.dob?.isEmpty == true || devotee?.dob == null) {
+      if (devotee?.ageGroup?.isNotEmpty == true || devotee?.ageGroup != null) {
+        return 1;
+      }
+    }
+    return 0;
+  }
 
   void _toggleObscured1() {
     setState(() {
@@ -396,7 +414,27 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                         )),
                   ),
                 ),
-                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Has Parichaya Patra?',
+                      ),
+                      Checkbox(
+                        checkColor: Colors.deepOrange,
+                        fillColor: MaterialStateProperty.resolveWith(getColor),
+                        value: parichayaPatraValue,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            parichayaPatraValue = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -416,8 +454,6 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                     ],
                   ),
                 ),
-             
-  
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: nameController,
@@ -620,54 +656,40 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                               flex: 1,
                               child: RadioListTile(
                                 value: 0,
-                                groupValue: ageIndex,
+                                groupValue: ageGroupIndex,
                                 title: const Text(
                                   "DOB",
                                 ),
                                 onChanged: (newValue) {
                                   setState(() {
-                                    ageIndex = newValue ?? 0;
-                                    if (ageIndex == 0) {
-                                      ageController.clear();
+                                    ageGroupIndex = newValue ?? 0;
+                                    if (ageGroupIndex == 0) {
+                                      selectedAgeGroup = "";
                                     }
                                   });
                                 },
-                                // onChanged: (newValue) {
-                                //   if (dobController.text.isEmpty) {
-                                //     setState(() {
-                                //       ageIndex = newValue ?? 0;
-                                //       FocusScope.of(context)
-                                //           .requestFocus(dobFocusNode);
-                                //     });
-                                //   }
-                                // },
                                 activeColor: RadioButtonColor,
-                                //selectedTileColor: RadioButtonColor,
                                 selected: false,
-                                //selected: ageIndex == 0,
                               ),
                             ),
                             Expanded(
                               flex: 1,
                               child: RadioListTile(
                                 value: 1,
-                                groupValue: ageIndex,
+                                groupValue: ageGroupIndex,
                                 title: const Text(
-                                  "Age",
+                                  "Age Group",
                                 ),
                                 onChanged: (newValue) {
                                   setState(() {
-                                    ageIndex = newValue ?? 1;
-                                    if (ageIndex == 1) {
+                                    ageGroupIndex = newValue ?? 1;
+                                    if (ageGroupIndex == 1) {
                                       dobController.clear();
                                     }
                                   });
                                 },
-
                                 activeColor: RadioButtonColor,
-                                //selectedTileColor: RadioButtonColor,
                                 selected: false,
-                                //selected: ageIndex == 1,
                               ),
                             ),
                           ],
@@ -677,7 +699,7 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                ageIndex == 0
+                ageGroupIndex == 0
                     ? GestureDetector(
                         child: TextField(
                           controller: dobController,
@@ -699,16 +721,15 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                           onTap: () => _showCustomCalendarDialog(context),
                         ),
                       )
-                    : TextFormField(
-                        controller: ageController,
-                        //focusNode: ageFocusNode,
-                        onSaved: (newValue) => ageController,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
+                    : DropdownButtonFormField<String>(
+                        value: selectedAgeGroup,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedAgeGroup = newValue!;
+                          });
+                        },
                         decoration: InputDecoration(
-                          labelText: "Age",
+                          labelText: "Select age group",
                           labelStyle:
                               TextStyle(color: Colors.grey[600], fontSize: 15),
                           filled: true,
@@ -718,6 +739,13 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                               borderSide: const BorderSide(
                                   width: 0, style: BorderStyle.solid)),
                         ),
+                        items: ageGroup
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
                       ),
                 const SizedBox(height: 20),
                 Row(
@@ -991,6 +1019,21 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                     onPressed: () async {
                       if (formKey.currentState != null &&
                           formKey.currentState!.validate()) {
+                        String setAgeGroupToDB() {
+                          if (ageGroupIndex == 0) {
+                            return "";
+                          } else {
+                            if (selectedAgeGroup == "1 to 12") {
+                              return "Child";
+                            } else if (selectedAgeGroup == "13 to 70") {
+                              return "Adult";
+                            } else if (selectedAgeGroup == "70 Above") {
+                              return "Elder";
+                            }
+                            return "Adult";
+                          }
+                        }
+
                         showDialog(
                           context: context,
                           barrierDismissible:
@@ -1030,14 +1073,12 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                               hasParichayaPatra: parichayaPatraValue,
                               sangha: sanghaController.text,
                               dob: _formatDOB(dobController.text),
+                              ageGroup: setAgeGroupToDB(),
                               status: "dataSubbmited",
-                              
-                              
                               mobileNumber: mobileController.text,
                               updatedOn: DateTime.now().toString(),
                               emailId: emailController.text,
                               isSpeciallyAbled: isSpeciallyAbled,
-                        
                               uid: uid,
                               role: "User",
                               address: AddressModel(

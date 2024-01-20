@@ -68,10 +68,12 @@ class ResponsiveAppBar extends StatelessWidget {
       this.advanceStatus,
       this.searchBy,
       this.searchValue,
+      this.role,
       this.showClearButton});
   String? searchValue;
   String? searchBy;
   String? advanceStatus;
+  String? role;
   bool? showClearButton;
   MenuOption? selectedMenu;
   MenuOption option = MenuOption.create;
@@ -86,6 +88,7 @@ class ResponsiveAppBar extends StatelessWidget {
           ? const SizedBox()
           : const TitleAppBarMobile(),
       actions: [
+        
         PopupMenuButton<MenuOption>(
           icon: const Icon(
             Icons.more_vert,
@@ -94,10 +97,13 @@ class ResponsiveAppBar extends StatelessWidget {
           onSelected: (MenuOption value) {
             switch (value) {
               case MenuOption.home:
-                Navigator.push(
+              if(role != "User"){ // change to hide home menu later for userdashboard
+                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => DashboardPage()),
                 );
+              }
+               
                 break;
               case MenuOption.create:
                 showDialog<void>(

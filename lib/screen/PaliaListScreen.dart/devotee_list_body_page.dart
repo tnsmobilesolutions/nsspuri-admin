@@ -165,7 +165,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
   String getAgeGroup(DevoteeModel? devotee) {
     if (devotee?.ageGroup?.isNotEmpty == true || devotee?.ageGroup != null) {
       if (devotee?.ageGroup == "Child") {
-        return "0 to 12";
+        return "1 to 12";
       } else if (devotee?.ageGroup == "Adult") {
         return "13 to 70";
       } else if (devotee?.ageGroup == "Elder") {
@@ -229,7 +229,8 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         dataColumn(context, 'DOB/Age Group'),
         dataColumn(context, 'Status'),
         dataColumn(context, 'View'),
-        dataColumn(context, 'Edit'),
+        if (NetworkHelper().getCurrentDevotee?.role != "Viewer")
+          dataColumn(context, 'Edit'),
       ],
       rows: List.generate(
         allDevotees.length,
@@ -350,63 +351,58 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                   icon: const Icon(Icons.info, color: Colors.deepOrange),
                 ),
               ),
-              DataCell(
-                IconButton(
-                  color: Colors.deepOrange,
-                  onPressed:
-                      NetworkHelper().currentDevotee?.role == "Approver" &&
-                              allDevotees[index].status == "paid"
-                          ? null
-                          : () {
-                              showDialog<void>(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                      title: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text('Edit Devotee Details'),
-                                          IconButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              icon: const Icon(
-                                                Icons.close,
-                                                color: Colors.deepOrange,
-                                              ))
-                                        ],
-                                      ),
-                                      content: (NetworkHelper()
-                                                  .getCurrentDevotee
-                                                  ?.role !=
-                                              "Viewer")
-                                          ? AddPageDilouge(
-                                              devoteeId: allDevotees[index]
-                                                  .devoteeId
-                                                  .toString(),
-                                              title: "edit",
-                                              showClearButton:
-                                                  widget.showClearButton,
-                                              searchBy: widget.searchBy,
-                                              searchValue: widget.searchValue,
-                                            )
-                                          : null);
-                                },
-                              );
-                            },
-                  icon: Icon(
-                    Icons.edit,
-                    color:
-                        ((NetworkHelper().currentDevotee?.role == "Approver" &&
-                                    allDevotees[index].status == "paid" ||
-                                (NetworkHelper().getCurrentDevotee?.role ==
-                                    "Viewer")))
-                            ? const Color.fromARGB(255, 206, 206, 206)
-                            : Colors.deepOrange,
+              if (NetworkHelper().getCurrentDevotee?.role != "Viewer")
+                DataCell(
+                  IconButton(
+                    color: Colors.deepOrange,
+                    onPressed: NetworkHelper().currentDevotee?.role ==
+                                "Approver" &&
+                            allDevotees[index].status == "paid"
+                        ? null
+                        : () {
+                            showDialog<void>(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                    title: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text('Edit Devotee Details'),
+                                        IconButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            icon: const Icon(
+                                              Icons.close,
+                                              color: Colors.deepOrange,
+                                            ))
+                                      ],
+                                    ),
+                                    content: AddPageDilouge(
+                                      devoteeId: allDevotees[index]
+                                          .devoteeId
+                                          .toString(),
+                                      title: "edit",
+                                      showClearButton: widget.showClearButton,
+                                      searchBy: widget.searchBy,
+                                      searchValue: widget.searchValue,
+                                    ));
+                              },
+                            );
+                          },
+                    icon: Icon(
+                      Icons.edit,
+                      color: ((NetworkHelper().currentDevotee?.role ==
+                                      "Approver" &&
+                                  allDevotees[index].status == "paid" ||
+                              (NetworkHelper().getCurrentDevotee?.role ==
+                                  "Viewer")))
+                          ? const Color.fromARGB(255, 206, 206, 206)
+                          : Colors.deepOrange,
+                    ),
                   ),
                 ),
-              ),
             ],
           );
         },
