@@ -123,7 +123,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   bool? parichayaPatraValue = false, shouldShowPranamiField = false;
   XFile? pickImage;
   TextEditingController postalCodeController = TextEditingController();
-  TextEditingController ageController = TextEditingController();
+  // TextEditingController ageController = TextEditingController();
   TextEditingController pranamiController = TextEditingController();
   TextEditingController remarksController = TextEditingController();
   String? profileImage;
@@ -172,8 +172,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'Dec'
   ];
 
-  List<String> ageGroup = ["0-12", "13-70", "70 Above"];
-  String selectedAgeGroup = "13-70";
+  List<String> ageGroup = ["Child", "Adult", "Elder"];
+  String selectedAgeGroup = "Adult";
 
   FocusNode dobFocusNode = FocusNode();
   FocusNode ageFocusNode = FocusNode();
@@ -277,6 +277,22 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     }
   }
 
+  String getAgeGroup(DevoteeModel? devotee) {
+    if (devotee?.ageGroup?.isNotEmpty == true || devotee?.ageGroup != null) {
+      return devotee?.ageGroup.toString() ?? "Adult";
+    }
+    return "Adult";
+  }
+
+  int getAgeGroupIndex(DevoteeModel? devotee) {
+    if (devotee?.dob?.isEmpty == true || devotee?.dob == null) {
+      if (devotee?.ageGroup?.isNotEmpty == true || devotee?.ageGroup != null) {
+        return 1;
+      }
+    }
+    return 0;
+  }
+
   populateData() async {
     final devoteeData =
         await GetDevoteeAPI().devoteeDetailsById(widget.devoteeId);
@@ -334,11 +350,11 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
         isGruhasanaApproved = selectedDevotee?.isGruhasanaApproved ?? false;
         bloodGroupController = selectedDevotee?.bloodGroup ?? "Don't know";
         genderIndex = selectedDevotee?.gender == "Male" ? 0 : 1;
-        ageController.text = selectedDevotee?.ageGroup?.toString() ?? "";
-        ageGroupIndex = selectedDevotee?.ageGroup == "" ? 0 : 1;
-        selectedAgeGroup = selectedDevotee?.ageGroup != ""
-            ? (selectedDevotee?.ageGroup.toString() ?? "")
-            : "13-70";
+        //ageController.text = selectedDevotee?.ageGroup?.toString() ?? "";
+        ageGroupIndex = getAgeGroupIndex(selectedDevotee);
+        if (selectedDevotee?.ageGroup?.isNotEmpty == true) {
+          selectedAgeGroup = getAgeGroup(selectedDevotee);
+        }
       }
     });
   }
@@ -949,9 +965,9 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                 onChanged: (newValue) {
                                   setState(() {
                                     ageGroupIndex = newValue ?? 0;
-                                    if (ageGroupIndex == 0) {
-                                      ageController.clear();
-                                    }
+                                    // if (ageGroupIndex == 0) {
+                                    //   ageController.clear();
+                                    // }
                                   });
                                 },
                                 activeColor: RadioButtonColor,
@@ -964,7 +980,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                 value: 1,
                                 groupValue: ageGroupIndex,
                                 title: const Text(
-                                  "Age",
+                                  "Age Group",
                                 ),
                                 onChanged: (newValue) {
                                   setState(() {
@@ -1374,9 +1390,10 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                               hasParichayaPatra: parichayaPatraValue,
                               sangha: sanghaController.text,
                               dob: _formatDOB(dobController.text),
-                              ageGroup: dobController.text.isEmpty
-                                  ? selectedAgeGroup
-                                  : "",
+                              ageGroup: ageGroupIndex == 0 &&
+                                      dobController.text.isEmpty
+                                  ? ""
+                                  : selectedAgeGroup,
                               mobileNumber: mobileController.text,
                               updatedOn: DateTime.now().toString(),
                               emailId: emailController.text,

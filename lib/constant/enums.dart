@@ -1,1 +1,1 @@
-enum AgeGroup { teenager, adult, above70 }
+enum AgeGroup { child, adult, elder }
