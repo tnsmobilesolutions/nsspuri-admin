@@ -228,6 +228,7 @@ class _DevoteeInfoTabState extends State<DevoteeInfoTab> {
                         Text(widget.devoteeDetails.createdById.toString())
                       ],
                     ),
+                      if (widget.devoteeDetails.approvedBy  != null )
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -235,7 +236,20 @@ class _DevoteeInfoTabState extends State<DevoteeInfoTab> {
                           'Approved By',
                           style: TextStyle(color: Colors.grey),
                         ),
+                     
                         Text(widget.devoteeDetails.approvedBy.toString())
+                      ],
+                    ),
+                     if (widget.devoteeDetails.rejectedBy  != null )
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Rejected By',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                     
+                        Text(widget.devoteeDetails.rejectedBy.toString())
                       ],
                     ),
                     Column(
