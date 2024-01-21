@@ -43,8 +43,9 @@ class _CardFlipState extends State<CardFlip> {
       child: Padding(
         padding: const EdgeInsets.only(left: 30, right: 30),
         child: SizedBox(
-          height: 432,
           child: Container(
+            height: 324,
+            width: 198,
             decoration: BoxDecoration(
                 color: widget.color,
                 boxShadow: const [
@@ -56,7 +57,9 @@ class _CardFlipState extends State<CardFlip> {
                   width: 3,
                   color: const Color.fromARGB(255, 233, 233, 233),
                 ),
-                borderRadius: const BorderRadius.all(Radius.circular(20))),
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20))),
             child: PageView.builder(
               // shrinkWrap: true,
               itemBuilder: (
@@ -75,7 +78,7 @@ class _CardFlipState extends State<CardFlip> {
                         ),
                         color: widget.color,
                       ),
-                      height: 45,
+                      height: 30,
 
                       child: const Center(
                         child: Padding(
@@ -83,7 +86,7 @@ class _CardFlipState extends State<CardFlip> {
                           child: Text(
                             'ବିଧି ନିଷେଧ',
                             style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 14,
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold),
                           ),
@@ -92,162 +95,167 @@ class _CardFlipState extends State<CardFlip> {
 
                       // Background color of the container
                     ),
-                    Container(
-                      height: 340,
-
-                      decoration: BoxDecoration(
-                        color: widget.color,
-                      ),
-                      // ignore: prefer_const_constructors
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            top: 1, left: 8, right: 8, bottom: 16),
-                        child: const Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Divider(
+                    // ignore: prefer_const_constructors
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 1, left: 8, right: 8, bottom: 16),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Divider(
+                            color: Colors.white,
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '୧.',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.normal,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  'ସମ୍ମିଳନୀରେ ସର୍ବଦା ଶୁଦ୍ଧପୂତ ଓ ପବିତ୍ର ଭାବରେ ଚଳିବେ| କେହି ମାଦକ ଦ୍ରବ୍ୟ ସେବନ କରିବେ ନାହିଁ|',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '୨.',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.normal,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  'ସମ୍ମିଳନୀ ପରିସର ମଧ୍ୟରେ ପରନିନ୍ଦା, ପରଚର୍ଚ୍ଚା ଓ ଅବାନ୍ତର ଆଲୋଚନା କରିବେ ନିଷିଦ୍ଧ|',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '୩.',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.normal,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  'ମାତୃଜାତିର ସମ୍ମାନରେ ବାଧା ପ୍ରଦାନ କରିବେ ନାହିଁ|',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '૪.',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.normal,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  'କୌଣସି ଆଦର୍ଶ ହାନୀକାର କାର୍ଯ୍ୟ ଦେଖିଲେ ବା ଶୁଣିଲେ ସମ୍ମିଳନୀ କାର୍ଯ୍ୟାଳୟରେ ଜଣାଇବେ|',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '୫.',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.normal,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  'ସୁନାଗହଣା ଆଦି ମୂଲ୍ୟବାନ ଦ୍ରବ୍ୟ ସାଙ୍ଗରେ ଆଣିବେ ନାହଁ|',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '୬.',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.normal,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  'କ୍ୟାମ୍ପରେ ଟେପ ରେକର୍ଡର ବ୍ୟବହାର ନିଷିଦ୍ଧ|',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Expanded(
+                            child: Divider(
                               color: Colors.white,
                             ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '୧.',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.normal,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    'ସମ୍ମିଳନୀରେ ସର୍ବଦା ଶୁଦ୍ଧପୂତ ଓ ପବିତ୍ର ଭାବରେ ଚଳିବେ| କେହି ମାଦକ ଦ୍ରବ୍ୟ ସେବନ କରିବେ ନାହିଁ|',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.normal,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '୨.',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.normal,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    'ସମ୍ମିଳନୀ ପରିସର ମଧ୍ୟରେ ପରନିନ୍ଦା, ପରଚର୍ଚ୍ଚା ଓ ଅବାନ୍ତର ଆଲୋଚନା କରିବେ ନିଷିଦ୍ଧ|',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.normal,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '୩.',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.normal,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    'ମାତୃଜାତିର ସମ୍ମାନରେ ବାଧା ପ୍ରଦାନ କରିବେ ନାହିଁ|',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.normal,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '૪.',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.normal,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    'କୌଣସି ଆଦର୍ଶ ହାନୀକାର କାର୍ଯ୍ୟ ଦେଖିଲେ ବା ଶୁଣିଲେ ସମ୍ମିଳନୀ କାର୍ଯ୍ୟାଳୟରେ ଜଣାଇବେ|',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.normal,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '୫.',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.normal,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    'ସୁନାଗହଣା ଆଦି ମୂଲ୍ୟବାନ ଦ୍ରବ୍ୟ ସାଙ୍ଗରେ ଆଣିବେ ନାହଁ|',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.normal,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '୬.',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.normal,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    'କ୍ୟାମ୍ପରେ ଟେପ ରେକର୍ଡର ବ୍ୟବହାର ନିଷିଦ୍ଧ|',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.normal,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                          ),
+                          Expanded(
+                            child: Center(
+                                child: Text(
+                              'ହଜିଯାଇଥିଲେ ଯୋଗାଯୋଗ କରନ୍ତୁ 7738261091',
+                              style: TextStyle(color: Colors.white),
+                            )),
+                          ),
+                        ],
                       ),
                     ),
                     const Column(
