@@ -1074,7 +1074,7 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                               sangha: sanghaController.text,
                               dob: _formatDOB(dobController.text),
                               ageGroup: setAgeGroupToDB(),
-                              status: "dataSubbmited",
+                              status: "dataSubmitted",
                               mobileNumber: mobileController.text,
                               updatedOn: DateTime.now().toString(),
                               emailId: emailController.text,
