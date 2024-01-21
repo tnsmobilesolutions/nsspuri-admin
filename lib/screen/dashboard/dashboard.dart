@@ -128,6 +128,7 @@ class ResponsiveAppBar extends StatelessWidget {
                         content: AddPageDilouge(
                           title: "addDevotee",
                           devoteeId: "",
+                          role: role,
                         ));
                   },
                 );
