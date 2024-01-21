@@ -88,9 +88,14 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 30, right: 30),
                       child: Container(
-                        height: 432,
+                        height: 324,
+                        width: 198,
                         decoration: BoxDecoration(
                             color: Colors.white,
+                            image: const DecorationImage(
+                              fit: BoxFit.fill,
+                              image: AssetImage('assets/images/maa.png'),
+                            ),
                             boxShadow: const [
                               BoxShadow(
                                 color: Color.fromARGB(255, 194, 202, 218),
@@ -100,31 +105,256 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                               width: 3,
                               color: const Color.fromARGB(255, 233, 233, 233),
                             ),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(20))),
+                            borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(15),
+                                topRight: Radius.circular(15))),
                         child: Padding(
                           padding: const EdgeInsets.all(.0),
                           child: Column(
                             children: [
-                              Container(
-                                height: 45,
-                                decoration: BoxDecoration(
-                                    color: getColorByDevotee(devotees),
-                                    borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(18),
-                                      topRight: Radius.circular(18),
-                                    )),
-                                child: const Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 4,
-                                      child: Text(
-                                        'DELEGATE CARD',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
+                              Expanded(
+                                flex: 5,
+                                child: Container(),
+                              ),
+                              SizedBox(
+                                height: 13,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 4),
+                                child: Expanded(
+                                  flex: 5,
+                                  child: Row(
+                                    children: [
+                                      SizedBox(),
+                                      Expanded(
+                                        child: Container(
+                                          child: widget.devoteeDetails
+                                                          .bloodGroup ==
+                                                      "Don't know" ||
+                                                  widget.devoteeDetails
+                                                          .bloodGroup ==
+                                                      null
+                                              ? Container(
+                                                  width: 45,
+                                                  height: 40,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    shape: BoxShape.rectangle,
+                                                  ),
+                                                )
+                                              : Center(
+                                                  child: Stack(
+                                                    children: [
+                                                      Container(
+                                                        width: 45,
+                                                        height: 40,
+                                                        decoration:
+                                                            const BoxDecoration(
+                                                          shape: BoxShape
+                                                              .rectangle,
+                                                          image:
+                                                              DecorationImage(
+                                                            fit: BoxFit.fill,
+                                                            image: AssetImage(
+                                                                'assets/images/blood.png'),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Positioned(
+                                                        top: 7,
+                                                        left: 0,
+                                                        child: SizedBox(
+                                                          width: 45,
+                                                          height: 40,
+                                                          child: Center(
+                                                            child: Text(
+                                                              "${widget.devoteeDetails.bloodGroup}",
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 10,
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        255,
+                                                                        255,
+                                                                        255),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                          // Return an empty Container if the condition is false
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 3,
+                                        child: Stack(
+                                          clipBehavior: Clip.none,
+                                          children: [
+                                            Positioned(
+                                              child: CircleAvatar(
+                                                radius:
+                                                    45, // Adjust the radius as needed
+                                                backgroundColor:
+                                                    getColorByDevotee(devotees),
+                                                backgroundImage: widget
+                                                                .devoteeDetails
+                                                                .profilePhotoUrl !=
+                                                            null &&
+                                                        widget
+                                                            .devoteeDetails
+                                                            .profilePhotoUrl!
+                                                            .isNotEmpty
+                                                    ? NetworkImage(widget
+                                                        .devoteeDetails
+                                                        .profilePhotoUrl
+                                                        .toString())
+                                                    : const AssetImage(
+                                                            'assets/images/profile.jpeg')
+                                                        as ImageProvider<
+                                                            Object>,
+                                              ),
+                                            ),
+                                            // if (widget.devoteeDetails.status ==
+                                            //         "paid" ||
+                                            //     widget.devoteeDetails.status ==
+                                            //         "printed")
+                                            //   Positioned(
+                                            //     top: 50,
+                                            //     left: 105,
+                                            //     child: Transform.rotate(
+                                            //       angle: 12,
+                                            //       child: Padding(
+                                            //         padding: const EdgeInsets.all(4.0),
+                                            //         child: Container(
+                                            //           decoration: BoxDecoration(
+                                            //               border: Border.all(
+                                            //                   color:
+                                            //                       const Color.fromARGB(
+                                            //                           255, 44, 7, 209),
+                                            //                   width: 4),
+                                            //               borderRadius:
+                                            //                   BorderRadius.circular(4)),
+                                            //           child: const Padding(
+                                            //             padding: EdgeInsets.all(4.0),
+                                            //             child: Text(
+                                            //               'PAID',
+                                            //               style: TextStyle(
+                                            //                 fontSize: 12.0,
+                                            //                 fontWeight: FontWeight.bold,
+                                            //                 color: Color.fromARGB(
+                                            //                     255, 44, 7, 209),
+                                            //               ),
+                                            //             ),
+                                            //           ),
+                                            //         ),
+                                            //       ),
+                                            //     ),
+                                            //   ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: widget.devoteeDetails.name != null
+                                    ? Text(
+                                        _toPascalCase(widget.devoteeDetails.name
+                                            .toString()),
+                                        style: const TextStyle(
+                                          color: Colors.deepOrange,
+                                          fontSize: 14,
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : const Text(""),
+                              ),
+                              Expanded(
+                                flex: 5,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Flexible(
+                                      flex: 2,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 14),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: Container(),
+                                            ),
+                                            Expanded(
+                                              child: widget.devoteeDetails
+                                                          .sangha !=
+                                                      null
+                                                  ? Text(
+                                                      _toPascalCase(widget
+                                                          .devoteeDetails.sangha
+                                                          .toString()),
+                                                      style: const TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    )
+                                                  : const Text(""),
+                                            ),
+                                            Expanded(
+                                              child: widget.devoteeDetails
+                                                          .devoteeCode !=
+                                                      null
+                                                  ? Text(
+                                                      _toPascalCase(widget
+                                                          .devoteeDetails
+                                                          .devoteeCode
+                                                          .toString()),
+                                                      style: const TextStyle(
+                                                        color:
+                                                            Colors.deepOrange,
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    )
+                                                  : const Text(""),
+                                            ),
+                                            Expanded(
+                                              child: Container(),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      flex: 3,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(0),
+                                        height:
+                                            MediaQuery.of(context).size.height /
+                                                4.8,
+                                        width:
+                                            MediaQuery.of(context).size.height /
+                                                4.8,
+                                        child: SfBarcodeGenerator(
+                                          value: widget
+                                              .devoteeDetails.devoteeCode
+                                              .toString(),
+                                          symbology: QRCode(),
+                                          showValue: false,
                                         ),
                                       ),
                                     ),
@@ -132,480 +362,8 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                 ),
                               ),
                               SizedBox(
-                                height: 375,
-                                child: Column(
-                                  children: [
-                                    Expanded(
-                                      flex: 20,
-                                      child: Container(
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              flex: 1,
-                                              child: ListView.separated(
-                                                itemCount: 19,
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  return SvgPicture.asset(
-                                                    'assets/images/3.svg',
-                                                    color: getColorByDevotee(
-                                                        devotees),
-                                                    height: 18,
-                                                  );
-                                                },
-                                                separatorBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  // This widget will be used as a separator between items.
-                                                  // You can adjust the size and appearance of the separator here.
-                                                  return const SizedBox(
-                                                      height:
-                                                          3.3); // Adjust the height as needed.
-                                                },
-                                              ),
-                                            ),
-                                            Expanded(
-                                                flex: 8,
-                                                child: Column(
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Expanded(
-                                                          flex: 1,
-                                                          child: Container(
-                                                            child: Image.asset(
-                                                              'assets/images/nsslogo.png',
-                                                              scale: 35,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          flex: 4,
-                                                          child: Container(
-                                                            child: const Center(
-                                                              child: Text(
-                                                                'JAYAGURU',
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        16,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color: Colors
-                                                                        .black // Text color
-                                                                    ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          flex: 1,
-                                                          child: Container(
-                                                            child: Image.asset(
-                                                              'assets/images/Subtract.png',
-                                                              scale: 85,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    const Text(
-                                                      'NILACHALA SARASWATA SANGHA, PURI',
-                                                      style: TextStyle(
-                                                          fontSize: 10,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Colors
-                                                              .deepOrange // Text color
-                                                          ),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    const Text(
-                                                      '73RD UTKALA PRADESHIKA',
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 10,
-                                                          color: Colors
-                                                              .black // Text color
-                                                          ),
-                                                    ),
-                                                    const Text(
-                                                      'BHAKTA SAMMILANI, PUNE - 2024',
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 10,
-                                                          color: Colors
-                                                              .black // Text color
-                                                          ),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Expanded(
-                                                      child: Row(
-                                                        children: [
-                                                          Expanded(
-                                                            flex: 3,
-                                                            child: Container(
-                                                              child: widget.devoteeDetails
-                                                                              .bloodGroup ==
-                                                                          "Don't know" ||
-                                                                      widget.devoteeDetails
-                                                                              .bloodGroup ==
-                                                                          null
-                                                                  ? Container(
-                                                                      width: 60,
-                                                                      height:
-                                                                          55,
-                                                                      decoration:
-                                                                          const BoxDecoration(
-                                                                        shape: BoxShape
-                                                                            .rectangle,
-                                                                      ),
-                                                                    )
-                                                                  : Center(
-                                                                      child:
-                                                                          Stack(
-                                                                        children: [
-                                                                          Container(
-                                                                            width:
-                                                                                60,
-                                                                            height:
-                                                                                55,
-                                                                            decoration:
-                                                                                const BoxDecoration(
-                                                                              shape: BoxShape.rectangle,
-                                                                              image: DecorationImage(
-                                                                                fit: BoxFit.fill,
-                                                                                image: AssetImage('assets/images/blood.png'),
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                          Positioned(
-                                                                            top:
-                                                                                7,
-                                                                            left:
-                                                                                0,
-                                                                            child:
-                                                                                SizedBox(
-                                                                              width: 60,
-                                                                              height: 55,
-                                                                              child: Center(
-                                                                                child: Text(
-                                                                                  "${widget.devoteeDetails.bloodGroup}",
-                                                                                  style: const TextStyle(
-                                                                                    fontSize: 14,
-                                                                                    color: Color.fromARGB(255, 255, 255, 255),
-                                                                                    fontWeight: FontWeight.bold,
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                              // Return an empty Container if the condition is false
-                                                            ),
-                                                          ),
-                                                          Expanded(
-                                                            flex: 9,
-                                                            child: Stack(
-                                                              clipBehavior:
-                                                                  Clip.none,
-                                                              children: [
-                                                                Positioned(
-                                                                  child:
-                                                                      CircleAvatar(
-                                                                    radius:
-                                                                        55, // Adjust the radius as needed
-                                                                    backgroundColor:
-                                                                        getColorByDevotee(
-                                                                            devotees),
-                                                                    backgroundImage: widget.devoteeDetails.profilePhotoUrl !=
-                                                                                null &&
-                                                                            widget
-                                                                                .devoteeDetails.profilePhotoUrl!.isNotEmpty
-                                                                        ? NetworkImage(widget
-                                                                            .devoteeDetails
-                                                                            .profilePhotoUrl
-                                                                            .toString())
-                                                                        : const AssetImage('assets/images/profile.jpeg')
-                                                                            as ImageProvider<Object>,
-                                                                  ),
-                                                                ),
-                                                                if (widget.devoteeDetails
-                                                                            .status ==
-                                                                        "paid" ||
-                                                                    widget.devoteeDetails
-                                                                            .status ==
-                                                                        "printed")
-                                                                  Positioned(
-                                                                    top: 50,
-                                                                    left: 105,
-                                                                    child: Transform
-                                                                        .rotate(
-                                                                      angle: 12,
-                                                                      child:
-                                                                          Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .all(
-                                                                            4.0),
-                                                                        child:
-                                                                            Container(
-                                                                          decoration: BoxDecoration(
-                                                                              border: Border.all(color: const Color.fromARGB(255, 44, 7, 209), width: 4),
-                                                                              borderRadius: BorderRadius.circular(4)),
-                                                                          child:
-                                                                              const Padding(
-                                                                            padding:
-                                                                                EdgeInsets.all(4.0),
-                                                                            child:
-                                                                                Text(
-                                                                              'PAID',
-                                                                              style: TextStyle(
-                                                                                fontSize: 30.0,
-                                                                                fontWeight: FontWeight.bold,
-                                                                                color: Color.fromARGB(255, 44, 7, 209),
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 8,
-                                                    ),
-                                                    widget.devoteeDetails
-                                                                .name !=
-                                                            null
-                                                        ? Text(
-                                                            _toPascalCase(widget
-                                                                .devoteeDetails
-                                                                .name
-                                                                .toString()),
-                                                            style:
-                                                                const TextStyle(
-                                                              color: Colors
-                                                                  .deepOrange,
-                                                              fontSize: 18,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                          )
-                                                        : const Text(""),
-                                                    const SizedBox(
-                                                      height: 6,
-                                                    ),
-                                                    Expanded(
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceEvenly,
-                                                        children: [
-                                                          Flexible(
-                                                            flex: 2,
-                                                            child: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                Expanded(
-                                                                  flex: 2,
-                                                                  child: widget
-                                                                              .devoteeDetails
-                                                                              .sangha !=
-                                                                          null
-                                                                      ? Text(
-                                                                          _toPascalCase(widget
-                                                                              .devoteeDetails
-                                                                              .sangha
-                                                                              .toString()),
-                                                                          style:
-                                                                              const TextStyle(
-                                                                            color:
-                                                                                Colors.black,
-                                                                            fontSize:
-                                                                                12,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        )
-                                                                      : const Text(
-                                                                          ""),
-                                                                ),
-                                                                Expanded(
-                                                                  flex: 1,
-                                                                  child: widget
-                                                                              .devoteeDetails
-                                                                              .devoteeCode !=
-                                                                          null
-                                                                      ? Text(
-                                                                          _toPascalCase(widget
-                                                                              .devoteeDetails
-                                                                              .devoteeCode
-                                                                              .toString()),
-                                                                          style:
-                                                                              const TextStyle(
-                                                                            color:
-                                                                                Colors.deepOrange,
-                                                                            fontSize:
-                                                                                12,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        )
-                                                                      : const Text(
-                                                                          ""),
-                                                                ),
-                                                                const Expanded(
-                                                                  flex: 2,
-                                                                  child: Text(
-                                                                    "Sri Sri Thakura Charanasrita",
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            12,
-                                                                        fontWeight:
-                                                                            FontWeight.bold),
-                                                                  ),
-                                                                ),
-                                                                const Expanded(
-                                                                  flex: 1,
-                                                                  child: Text(
-                                                                    "",
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            10,
-                                                                        fontWeight:
-                                                                            FontWeight.bold),
-                                                                  ),
-                                                                ),
-                                                                const Expanded(
-                                                                  flex: 1,
-                                                                  child: Text(
-                                                                    'Secretary',
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            12,
-                                                                        fontWeight:
-                                                                            FontWeight.bold),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          Flexible(
-                                                            flex: 3,
-                                                            child: Container(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(0),
-                                                              height: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .height /
-                                                                  4.8,
-                                                              width: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .height /
-                                                                  4.8,
-                                                              child:
-                                                                  SfBarcodeGenerator(
-                                                                value: widget
-                                                                    .devoteeDetails
-                                                                    .devoteeCode
-                                                                    .toString(),
-                                                                symbology:
-                                                                    QRCode(),
-                                                                showValue:
-                                                                    false,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )),
-                                            Expanded(
-                                              child: ListView.separated(
-                                                itemCount: 19,
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  return SvgPicture.asset(
-                                                    'assets/images/3.svg',
-                                                    color: getColorByDevotee(
-                                                        devotees),
-                                                    height: 18,
-                                                  );
-                                                },
-                                                separatorBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  // This widget will be used as a separator between items.
-                                                  // You can adjust the size and appearance of the separator here.
-                                                  return const SizedBox(
-                                                      height:
-                                                          3.3); // Adjust the height as needed.
-                                                },
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: Container(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 6, right: 6),
-                                          child: GridView.builder(
-                                            gridDelegate:
-                                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount:
-                                                  12, // Number of columns
-                                              crossAxisSpacing:
-                                                  4.0, // Adjust the spacing between columns
-                                              mainAxisSpacing:
-                                                  8.0, // Adjust the spacing between rows
-                                            ),
-                                            itemCount:
-                                                12, // Change this number based on your actual requirement
-                                            itemBuilder: (BuildContext context,
-                                                int index) {
-                                              return SvgPicture.asset(
-                                                'assets/images/3.svg',
-                                                height: 15,
-                                                color:
-                                                    getColorByDevotee(devotees),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                                height: 5,
+                              )
                             ],
                           ),
                         ),
@@ -613,7 +371,6 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                     ),
                   ),
                 ),
-                
               ],
             ),
           ),
