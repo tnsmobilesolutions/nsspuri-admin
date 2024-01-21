@@ -88,7 +88,6 @@ class ResponsiveAppBar extends StatelessWidget {
           ? const SizedBox()
           : const TitleAppBarMobile(),
       actions: [
-        
         PopupMenuButton<MenuOption>(
           icon: const Icon(
             Icons.more_vert,
@@ -97,13 +96,14 @@ class ResponsiveAppBar extends StatelessWidget {
           onSelected: (MenuOption value) {
             switch (value) {
               case MenuOption.home:
-              if(role != "User"){ // change to hide home menu later for userdashboard
-                 Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => DashboardPage()),
-                );
-              }
-               
+                if (role != "User") {
+                  // change to hide home menu later for userdashboard
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DashboardPage()),
+                  );
+                }
+
                 break;
               case MenuOption.create:
                 showDialog<void>(
@@ -173,34 +173,37 @@ class ResponsiveAppBar extends StatelessWidget {
                 break;
             }
           },
-          itemBuilder: (BuildContext context) => MenuOption.values
-              .map((MenuOption option) => PopupMenuItem<MenuOption>(
-                    value: option,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(
-                          _getIconForMenuOption(option),
-                          color: Colors.blue,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(option.value),
-                      ],
-                    ),
-                  ))
-              .toList(),
+          itemBuilder: (BuildContext context) =>
+              MenuOption.values.map((MenuOption option) {
+            return PopupMenuItem<MenuOption>(
+              value: option,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Icon(
+                    _getIconForMenuOption(option),
+                    color: Colors.blue,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(option.value),
+                ],
+              ),
+            );
+          }).toList(),
         ),
       ],
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(0),
-        child: ResponsiveAppbarActionButtonWidget(
-          advanceStatus: advanceStatus,
-          searchBy: searchBy,
-          searchValue: searchValue,
-          showClearButton: showClearButton,
-        ),
-      ),
+      bottom: role != "User"
+          ? PreferredSize(
+              preferredSize: const Size.fromHeight(0),
+              child: ResponsiveAppbarActionButtonWidget(
+                advanceStatus: advanceStatus,
+                searchBy: searchBy,
+                searchValue: searchValue,
+                showClearButton: showClearButton,
+              ),
+            )
+          : null,
     );
   }
 
