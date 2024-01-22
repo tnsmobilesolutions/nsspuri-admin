@@ -50,6 +50,30 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
     );
   }
 
+   Text buildSanghaText(String? sanghaName) {
+    double fontSize = 10;
+
+    if (sanghaName != null) {
+      int nameLength = sanghaName.length;
+
+      if (nameLength > 15) {
+        fontSize = 7;
+      } else if (nameLength < 5) {
+        fontSize = 14.0;
+      }
+    }
+
+    return Text(
+      _toPascalCase(sanghaName ?? ''),
+      style: TextStyle(
+        color: Colors.black,
+        fontSize: fontSize,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+
   pw.Expanded printSearchheadingText(String text) {
     return pw.Expanded(
       child: pw.Text(
@@ -116,8 +140,8 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                 flex: 5,
                                 child: Container(),
                               ),
-                              SizedBox(
-                                height: 13,
+                              const SizedBox(
+                                height: 10,
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 4),
@@ -125,7 +149,6 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                   flex: 5,
                                   child: Row(
                                     children: [
-                                      SizedBox(),
                                       Expanded(
                                         child: Container(
                                           child: widget.devoteeDetails
@@ -264,6 +287,9 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                   ),
                                 ),
                               ),
+                              const SizedBox(
+                                height: 6,
+                              ),
                               Expanded(
                                 flex: 1,
                                 child: widget.devoteeDetails.name != null
@@ -294,26 +320,11 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Expanded(
-                                              child: Container(),
-                                            ),
+                                                flex: 2,
+                                                child: buildSanghaText(widget
+                                                    .devoteeDetails.sangha)),
                                             Expanded(
-                                              child: widget.devoteeDetails
-                                                          .sangha !=
-                                                      null
-                                                  ? Text(
-                                                      _toPascalCase(widget
-                                                          .devoteeDetails.sangha
-                                                          .toString()),
-                                                      style: const TextStyle(
-                                                        color: Colors.black,
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    )
-                                                  : const Text(""),
-                                            ),
-                                            Expanded(
+                                              flex: 1,
                                               child: widget.devoteeDetails
                                                           .devoteeCode !=
                                                       null
@@ -332,7 +343,11 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                     )
                                                   : const Text(""),
                                             ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
                                             Expanded(
+                                              flex: 2,
                                               child: Container(),
                                             ),
                                           ],
@@ -361,7 +376,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                   ],
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 5,
                               )
                             ],
