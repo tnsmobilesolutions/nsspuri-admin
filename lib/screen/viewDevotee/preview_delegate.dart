@@ -164,7 +164,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                   onTapFlipping: true,
                   axis: FlipAxis.vertical,
                   controller: con,
-                  backWidget: CardFlip(color: getColorByDevotee(devotees)),
+                  backWidget: CardFlip(color: Colors.white),
                   frontWidget: Center(
                     child: Padding(
                       padding: const EdgeInsets.only(left: 30, right: 30),

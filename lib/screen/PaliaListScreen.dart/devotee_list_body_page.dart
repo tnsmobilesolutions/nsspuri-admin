@@ -370,7 +370,10 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                           devoteeDetails: allDevotees[index]);
                     }));
                   },
-                  icon: const Icon(Icons.print),
+                  icon: const Icon(
+                    Icons.print,
+                    color: Colors.deepOrange,
+                  ),
                 )),
               if (NetworkHelper().getCurrentDevotee?.role != "Viewer")
                 DataCell(
