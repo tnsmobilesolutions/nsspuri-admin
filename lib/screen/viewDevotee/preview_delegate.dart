@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/viewDevotee/constants.dart';
 import 'package:sdp/screen/viewDevotee/delegate_back.dart';
+import 'package:sdp/utilities/network_helper.dart';
 import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -295,42 +296,54 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                       as ImageProvider<Object>,
                                             ),
                                           ),
-                                          Positioned(
-                                            top: 50,
-                                            left: 0,
-                                            child: Transform.rotate(
-                                              angle: 12,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(4.0),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: const Color
-                                                              .fromARGB(
+                                          if (NetworkHelper()
+                                                      .getCurrentDevotee
+                                                      ?.role !=
+                                                  "Admin" &&
+                                              NetworkHelper()
+                                                      .getCurrentDevotee
+                                                      ?.role !=
+                                                  "SuperAdmin" &&
+                                              NetworkHelper()
+                                                      .getCurrentDevotee
+                                                      ?.role !=
+                                                  "Approver")
+                                            Positioned(
+                                              top: 50,
+                                              left: 0,
+                                              child: Transform.rotate(
+                                                angle: 12,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(4.0),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color: const Color
+                                                                .fromARGB(255,
+                                                                44, 7, 209),
+                                                            width: 4),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(4)),
+                                                    child: const Padding(
+                                                      padding:
+                                                          EdgeInsets.all(4.0),
+                                                      child: Text(
+                                                        'Preview',
+                                                        style: TextStyle(
+                                                          fontSize: 18.0,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Color.fromARGB(
                                                               255, 44, 7, 209),
-                                                          width: 4),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              4)),
-                                                  child: const Padding(
-                                                    padding:
-                                                        EdgeInsets.all(4.0),
-                                                    child: Text(
-                                                      'Preview',
-                                                      style: TextStyle(
-                                                        fontSize: 18.0,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Color.fromARGB(
-                                                            255, 44, 7, 209),
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                          ),
                                         ],
                                       ),
                                     ),
