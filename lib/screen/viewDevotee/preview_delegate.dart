@@ -300,42 +300,42 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                             Object>,
                                               ),
                                             ),
-                                            // if (widget.devoteeDetails.status ==
-                                            //         "paid" ||
-                                            //     widget.devoteeDetails.status ==
-                                            //         "printed")
-                                            //   Positioned(
-                                            //     top: 50,
-                                            //     left: 105,
-                                            //     child: Transform.rotate(
-                                            //       angle: 12,
-                                            //       child: Padding(
-                                            //         padding: const EdgeInsets.all(4.0),
-                                            //         child: Container(
-                                            //           decoration: BoxDecoration(
-                                            //               border: Border.all(
-                                            //                   color:
-                                            //                       const Color.fromARGB(
-                                            //                           255, 44, 7, 209),
-                                            //                   width: 4),
-                                            //               borderRadius:
-                                            //                   BorderRadius.circular(4)),
-                                            //           child: const Padding(
-                                            //             padding: EdgeInsets.all(4.0),
-                                            //             child: Text(
-                                            //               'PAID',
-                                            //               style: TextStyle(
-                                            //                 fontSize: 12.0,
-                                            //                 fontWeight: FontWeight.bold,
-                                            //                 color: Color.fromARGB(
-                                            //                     255, 44, 7, 209),
-                                            //               ),
-                                            //             ),
-                                            //           ),
-                                            //         ),
-                                            //       ),
-                                            //     ),
-                                            //   ),
+                                            Positioned(
+                                              top: 50,
+                                              left: 0,
+                                              child: Transform.rotate(
+                                                angle: 12,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(4.0),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color: const Color
+                                                                .fromARGB(255,
+                                                                44, 7, 209),
+                                                            width: 4),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(4)),
+                                                    child: const Padding(
+                                                      padding:
+                                                          EdgeInsets.all(4.0),
+                                                      child: Text(
+                                                        'Preview',
+                                                        style: TextStyle(
+                                                          fontSize: 12.0,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Color.fromARGB(
+                                                              255, 44, 7, 209),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
                                           ],
                                         ),
                                       ),
