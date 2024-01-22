@@ -16,12 +16,12 @@ class DisplayPdf {
 
   static void delegatePDF(
       List<DevoteeModel> devoteeselecteddata, BuildContext context) async {
-    final img1 = await rootBundle.load('assets/images/del_bg_bhai.png');
-    final img2 = await rootBundle.load('assets/images/del_bg_maa.png');
-    final img3 = await rootBundle.load('assets/images/del_bg_cordinator.png');
-    final img4 = await rootBundle.load('assets/images/del_bg_child.png');
-    final img5 = await rootBundle.load('assets/images/del_bg_guest.png');
-    final img6 = await rootBundle.load('assets/images/del_bg_old.png');
+    final img1 = await rootBundle.load('assets/images/bhai.png');
+    final img2 = await rootBundle.load('assets/images/maa.png');
+    final img3 = await rootBundle.load('assets/images/organiser.png');
+    final img4 = await rootBundle.load('assets/images/child.png');
+    final img5 = await rootBundle.load('assets/images/guest.png');
+    final img6 = await rootBundle.load('assets/images/old.png');
     // final img6 = await rootBundle.load('assets/images/del_bg_old.png');
 
     final imageBytes1 = img1.buffer.asUint8List();
@@ -50,7 +50,7 @@ class DisplayPdf {
     pw.Text customText(String text) {
       return pw.Text(
         text,
-        style: const pw.TextStyle(fontSize: 8, color: PdfColors.white
+        style: const pw.TextStyle(fontSize: 8, color: PdfColors.black
             //color: pdfColor,
             ),
       );

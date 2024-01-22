@@ -34,7 +34,7 @@ class _PrintingDocsPageState extends State<PrintingDocsPage> {
         centerTitle: false,
         leading: BackArrowButton.backArrowIcon(context, () {
           Navigator.pop(context);
-        }),
+        }, Colors.white),
       ),
       body: Center(
         child: PdfPreview(
