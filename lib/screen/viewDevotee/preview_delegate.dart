@@ -87,6 +87,55 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
     );
   }
 
+  AssetImage getCardImage(DevoteeModel devotee) {
+    if (devotee.isGuest == true)
+      return const AssetImage('assets/images/guest.png');
+    if (devotee.isSpeciallyAbled == true)
+      return const AssetImage('assets/images/old.png');
+    if (devotee.isOrganizer == true)
+      return const AssetImage('assets/images/organiser.png');
+
+    if (devotee.ageGroup != "") {
+      if (devotee.ageGroup == "Child")
+        return const AssetImage('assets/images/child.png');
+
+      if (devotee.ageGroup == "Adult") {
+        if (devotee.gender == "Male") {
+          return const AssetImage('assets/images/bhai.png');
+        }
+        if (devotee.gender == "Female") {
+          return const AssetImage('assets/images/maa.png');
+        }
+      }
+
+      if (devotee.ageGroup == "Elder")
+        return const AssetImage('assets/images/old.png');
+    }
+
+    if (devotee.dob?.isNotEmpty == true && devotee.dob != null) {
+      int age = calculateAge(DateTime.parse(devotee.dob.toString()));
+      if (age <= teenAgeLimit)
+        return const AssetImage('assets/images/child.png');
+      if (age >= seniorCitizenAgeLimit)
+        return const AssetImage('assets/images/bhai.png');
+    }
+
+    if (devotee.gender == "Male")
+      return const AssetImage('assets/images/bhai.png');
+    if (devotee.gender == "Female")
+      return const AssetImage('assets/images/maa.png');
+
+    return const AssetImage('assets/images/bhai.png');
+  }
+
+  AssetImage _getFemaleImage(int age) {
+    if (age < 18) {
+      return const AssetImage('assets/images/girl.png');
+    } else {
+      return const AssetImage('assets/images/woman.png');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final devotees = widget.devoteeDetails;
@@ -115,10 +164,9 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                         width: 198,
                         decoration: BoxDecoration(
                             color: Colors.white,
-                            image: const DecorationImage(
-                              fit: BoxFit.fill,
-                              image: AssetImage('assets/images/maa.png'),
-                            ),
+                            image: DecorationImage(
+                                fit: BoxFit.fill,
+                                image: getCardImage(devotees)),
                             boxShadow: const [
                               BoxShadow(
                                 color: Color.fromARGB(255, 194, 202, 218),
@@ -168,7 +216,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                   child: Stack(
                                                     children: [
                                                       Container(
-                                                        width: 45,
+                                                        width: 50,
                                                         height: 40,
                                                         decoration:
                                                             const BoxDecoration(
@@ -184,7 +232,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                       ),
                                                       Positioned(
                                                         top: 7,
-                                                        left: 0,
+                                                        left: 4,
                                                         child: SizedBox(
                                                           width: 45,
                                                           height: 40,
@@ -216,70 +264,88 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                       ),
                                       Expanded(
                                         flex: 3,
-                                        child: Stack(
-                                          clipBehavior: Clip.none,
-                                          children: [
-                                            Positioned(
-                                              child: CircleAvatar(
-                                                radius:
-                                                    45, // Adjust the radius as needed
-                                                backgroundColor:
-                                                    getColorByDevotee(devotees),
-                                                backgroundImage: widget
-                                                                .devoteeDetails
-                                                                .profilePhotoUrl !=
-                                                            null &&
-                                                        widget
-                                                            .devoteeDetails
-                                                            .profilePhotoUrl!
-                                                            .isNotEmpty
-                                                    ? NetworkImage(widget
-                                                        .devoteeDetails
-                                                        .profilePhotoUrl
-                                                        .toString())
-                                                    : const AssetImage(
-                                                            'assets/images/profile.jpeg')
-                                                        as ImageProvider<
-                                                            Object>,
+                                        child: Center(
+                                          child: Stack(
+                                            clipBehavior: Clip.none,
+                                            children: [
+                                              // Image in the center
+                                              SizedBox(
+                                                height: 50,
+                                                width: 50,
+                                                child: Image(
+                                                  image: widget.devoteeDetails
+                                                                  .profilePhotoUrl !=
+                                                              null &&
+                                                          widget
+                                                              .devoteeDetails
+                                                              .profilePhotoUrl!
+                                                              .isNotEmpty
+                                                      ? NetworkImage(widget
+                                                          .devoteeDetails
+                                                          .profilePhotoUrl
+                                                          .toString())
+                                                      : const AssetImage(
+                                                              'assets/images/profile.jpeg')
+                                                          as ImageProvider<
+                                                              Object>,
+                                                ),
                                               ),
-                                            ),
-                                            // if (widget.devoteeDetails.status ==
-                                            //         "paid" ||
-                                            //     widget.devoteeDetails.status ==
-                                            //         "printed")
-                                            //   Positioned(
-                                            //     top: 50,
-                                            //     left: 105,
-                                            //     child: Transform.rotate(
-                                            //       angle: 12,
-                                            //       child: Padding(
-                                            //         padding: const EdgeInsets.all(4.0),
-                                            //         child: Container(
-                                            //           decoration: BoxDecoration(
-                                            //               border: Border.all(
-                                            //                   color:
-                                            //                       const Color.fromARGB(
-                                            //                           255, 44, 7, 209),
-                                            //                   width: 4),
-                                            //               borderRadius:
-                                            //                   BorderRadius.circular(4)),
-                                            //           child: const Padding(
-                                            //             padding: EdgeInsets.all(4.0),
-                                            //             child: Text(
-                                            //               'PAID',
-                                            //               style: TextStyle(
-                                            //                 fontSize: 12.0,
-                                            //                 fontWeight: FontWeight.bold,
-                                            //                 color: Color.fromARGB(
-                                            //                     255, 44, 7, 209),
-                                            //               ),
-                                            //             ),
-                                            //           ),
-                                            //         ),
-                                            //       ),
-                                            //     ),
-                                            //   ),
-                                          ],
+                                              // "PAID" text beside the image
+                                              if (widget.devoteeDetails
+                                                          .status ==
+                                                      "paid" ||
+                                                  widget.devoteeDetails
+                                                          .status ==
+                                                      "printed")
+                                                Positioned(
+                                                  top: 7,
+                                                  left:
+                                                      80, // Adjust the left position as needed
+                                                  child: Transform.rotate(
+                                                    angle: 12,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              4.0),
+                                                      child: Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          border: Border.all(
+                                                            color: const Color
+                                                                .fromARGB(255,
+                                                                44, 7, 209),
+                                                            width: 4,
+                                                          ),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(4),
+                                                        ),
+                                                        child: const Padding(
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  4.0),
+                                                          child: Text(
+                                                            'PAID',
+                                                            style: TextStyle(
+                                                              fontSize: 12.0,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: Color
+                                                                  .fromARGB(
+                                                                      255,
+                                                                      44,
+                                                                      7,
+                                                                      209),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -356,13 +422,13 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                     Flexible(
                                       flex: 3,
                                       child: Container(
-                                        padding: const EdgeInsets.all(0),
+                                        padding: const EdgeInsets.all(5),
                                         height:
                                             MediaQuery.of(context).size.height /
-                                                4.8,
+                                                5,
                                         width:
                                             MediaQuery.of(context).size.height /
-                                                4.8,
+                                                5,
                                         child: SfBarcodeGenerator(
                                           value: widget
                                               .devoteeDetails.devoteeCode
