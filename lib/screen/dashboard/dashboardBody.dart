@@ -74,9 +74,11 @@ class _DashboardBodyState extends State<DashboardBody> {
                             child: InkWell(
                               highlightColor:
                                   const Color.fromARGB(255, 0, 0, 0),
-                              onTap: NetworkHelper().getCurrentDevotee?.role ==
-                                          "Approver" &&
-                                      (index != 1)
+                              onTap: (NetworkHelper().getCurrentDevotee?.role ==
+                                              "Approver" &&
+                                          (index != 1) ||
+                                      NetworkHelper().getCurrentDevotee?.role ==
+                                          "Viewer")
                                   ? null
                                   : () {
                                       Navigator.push(context, MaterialPageRoute(
@@ -91,11 +93,15 @@ class _DashboardBodyState extends State<DashboardBody> {
                                       ));
                                     },
                               child: Card(
-                                  color: NetworkHelper()
+                                  color: (NetworkHelper()
+                                                      .getCurrentDevotee
+                                                      ?.role ==
+                                                  "Approver" &&
+                                              (index != 1) ||
+                                          NetworkHelper()
                                                   .getCurrentDevotee
                                                   ?.role ==
-                                              "Approver" &&
-                                          (index != 1)
+                                              "Viewer")
                                       ? const Color.fromARGB(255, 216, 216, 216)
                                       : Colors.yellowAccent,
                                   child: DashBoardData(

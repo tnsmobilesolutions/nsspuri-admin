@@ -175,7 +175,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'Dec'
   ];
 
-  List<String> ageGroup = ["0 to 12", "13 to 70", "70 Above"];
+  List<String> ageGroup = ["1 to 12", "13 to 70", "70 Above"];
   String selectedAgeGroup = "13 to 70";
 
   FocusNode dobFocusNode = FocusNode();
@@ -283,7 +283,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   String getAgeGroup(DevoteeModel? devotee) {
     if (devotee?.ageGroup?.isNotEmpty == true || devotee?.ageGroup != null) {
       if (devotee?.ageGroup == "Child") {
-        return "0 to 12";
+        return "1 to 12";
       } else if (devotee?.ageGroup == "Adult") {
         return "13 to 70";
       } else if (devotee?.ageGroup == "Elder") {
@@ -721,7 +721,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                 //         ),
                 //       )
                 //     : const SizedBox(),
-                widget.title == "edit"
+                (widget.title == "edit" && widget.role != "User")
                     ? Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
@@ -762,25 +762,27 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Guest'),
-                      Checkbox(
-                        checkColor: Colors.deepOrange,
-                        fillColor: MaterialStateProperty.resolveWith(getColor),
-                        value: isGuest,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            isGuest = value!;
-                          });
-                        },
-                      ),
-                    ],
+                if (widget.role != "User")
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Guest'),
+                        Checkbox(
+                          checkColor: Colors.deepOrange,
+                          fillColor:
+                              MaterialStateProperty.resolveWith(getColor),
+                          value: isGuest,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              isGuest = value!;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -987,7 +989,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                   setState(() {
                                     ageGroupIndex = newValue ?? 0;
                                     if (ageGroupIndex == 0) {
-                                      selectedAgeGroup = "13 to 70";
+                                      selectedAgeGroup = "";
                                     }
                                   });
                                 },
@@ -1381,7 +1383,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                           if (ageGroupIndex == 0) {
                             return "";
                           } else {
-                            if (selectedAgeGroup == "0 to 12") {
+                            if (selectedAgeGroup == "1 to 12") {
                               return "Child";
                             } else if (selectedAgeGroup == "13 to 70") {
                               return "Adult";

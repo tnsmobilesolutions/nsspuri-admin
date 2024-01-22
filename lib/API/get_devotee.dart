@@ -150,7 +150,7 @@ class GetDevoteeAPI extends DioFuctionAPI {
 
   Future<Map<String, dynamic>?> fetchAllSangha() async {
     try {
-      final response = await getAPI("sangha");
+      final response = await getSanghaAPI("sangha");
       print('888888$response');
       return {"statusCode": 200, "data": response["data"]["allSangha"]};
     } catch (e) {

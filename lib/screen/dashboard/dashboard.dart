@@ -1,17 +1,22 @@
 // ignore_for_file: must_be_immutable, avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/Login/EmailSignIn.dart';
 import 'package:sdp/firebase/firebase_auth_api.dart';
+import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
+import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
 import 'package:sdp/screen/appBar/action_widget.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
 import 'package:sdp/screen/appBar/leadingImage.dart';
 import 'package:sdp/screen/appBar/responsive_action_widget.dart';
 import 'package:sdp/screen/dashboard/dashboardBody.dart';
+import 'package:sdp/utilities/network_helper.dart';
 
 enum MenuOption {
   home,
+  createdByMe,
   create,
   logout,
 }
@@ -21,6 +26,8 @@ extension MenuOptionExtension on MenuOption {
     switch (this) {
       case MenuOption.home:
         return 'Home';
+      case MenuOption.createdByMe:
+        return 'Created By Me';
       case MenuOption.create:
         return 'Create Delegate';
       case MenuOption.logout:
@@ -62,19 +69,46 @@ class DashboardPage extends StatelessWidget {
   }
 }
 
-class ResponsiveAppBar extends StatelessWidget {
+class ResponsiveAppBar extends StatefulWidget {
   ResponsiveAppBar(
       {super.key,
       this.advanceStatus,
       this.searchBy,
       this.searchValue,
+      this.role,
       this.showClearButton});
   String? searchValue;
   String? searchBy;
   String? advanceStatus;
+  String? role;
   bool? showClearButton;
+
+  @override
+  State<ResponsiveAppBar> createState() => _ResponsiveAppBarState();
+}
+
+class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
   MenuOption? selectedMenu;
+
   MenuOption option = MenuOption.create;
+
+  List<DevoteeModel> allDevoteesCreatedByMe = [];
+
+  Future<void> fetchDelegatesByMe() async {
+    var currentUser = NetworkHelper().currentDevotee;
+    var allDevotees = await GetDevoteeAPI()
+        .devoteeListBycreatedById(currentUser?.createdById.toString() ?? "");
+    if (allDevotees != null) {
+      print("all devotee by me length: ${allDevotees["data"].length}");
+      setState(() {
+        for (int i = 0; i < allDevotees["data"].length; i++) {
+          allDevoteesCreatedByMe.add(allDevotees["data"][i]);
+        }
+      });
+    } else {
+      print("No delegates by me !");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +116,7 @@ class ResponsiveAppBar extends StatelessWidget {
       toolbarHeight: 200,
       automaticallyImplyLeading: false,
       centerTitle: false,
-      title: showClearButton == true
+      title: widget.showClearButton == true
           ? const SizedBox()
           : const TitleAppBarMobile(),
       actions: [
@@ -91,13 +125,31 @@ class ResponsiveAppBar extends StatelessWidget {
             Icons.more_vert,
             color: Colors.white,
           ),
-          onSelected: (MenuOption value) {
+          onSelected: (MenuOption value) async {
             switch (value) {
               case MenuOption.home:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => DashboardPage()),
-                );
+                if (widget.role != "User") {
+                  // change to hide home menu later for userdashboard
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DashboardPage()),
+                  );
+                }
+
+                break;
+              case MenuOption.createdByMe:
+                await fetchDelegatesByMe();
+                if (context.mounted) {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) {
+                      return DevoteeListPage(
+                        pageFrom: "Dashboard",
+                        status: "allDevotee",
+                        devoteeList: allDevoteesCreatedByMe,
+                      );
+                    },
+                  ));
+                }
                 break;
               case MenuOption.create:
                 showDialog<void>(
@@ -122,6 +174,7 @@ class ResponsiveAppBar extends StatelessWidget {
                         content: AddPageDilouge(
                           title: "addDevotee",
                           devoteeId: "",
+                          role: widget.role,
                         ));
                   },
                 );
@@ -167,34 +220,37 @@ class ResponsiveAppBar extends StatelessWidget {
                 break;
             }
           },
-          itemBuilder: (BuildContext context) => MenuOption.values
-              .map((MenuOption option) => PopupMenuItem<MenuOption>(
-                    value: option,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(
-                          _getIconForMenuOption(option),
-                          color: Colors.blue,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(option.value),
-                      ],
-                    ),
-                  ))
-              .toList(),
+          itemBuilder: (BuildContext context) =>
+              MenuOption.values.map((MenuOption option) {
+            return PopupMenuItem<MenuOption>(
+              value: option,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Icon(
+                    _getIconForMenuOption(option),
+                    color: Colors.blue,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(option.value),
+                ],
+              ),
+            );
+          }).toList(),
         ),
       ],
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(0),
-        child: ResponsiveAppbarActionButtonWidget(
-          advanceStatus: advanceStatus,
-          searchBy: searchBy,
-          searchValue: searchValue,
-          showClearButton: showClearButton,
-        ),
-      ),
+      bottom: widget.role != "User"
+          ? PreferredSize(
+              preferredSize: const Size.fromHeight(0),
+              child: ResponsiveAppbarActionButtonWidget(
+                advanceStatus: widget.advanceStatus,
+                searchBy: widget.searchBy,
+                searchValue: widget.searchValue,
+                showClearButton: widget.showClearButton,
+              ),
+            )
+          : null,
     );
   }
 
@@ -202,61 +258,63 @@ class ResponsiveAppBar extends StatelessWidget {
     switch (option) {
       case MenuOption.home:
         return Icons.home;
+      case MenuOption.createdByMe:
+        return Icons.card_membership_rounded;
       case MenuOption.create:
-        return Icons.create_rounded;
+        return Icons.card_membership_rounded;
       case MenuOption.logout:
         return Icons.logout_rounded;
     }
   }
 }
 
-class AppDrawer extends StatelessWidget {
-  const AppDrawer({super.key});
+// class AppDrawer extends StatelessWidget {
+//   const AppDrawer({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
-            ),
-            child: Text(
-              'App Drawer',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-              ),
-            ),
-          ),
-          ListTile(
-            leading: const Icon(Icons.home),
-            title: const Text('Home'),
-            onTap: () {
-              // Handle the Home option
-              Navigator.pop(context); // Close the drawer
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text('Create Delegate'),
-            onTap: () {
-              // Handle the Settings option
-              Navigator.pop(context); // Close the drawer
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.help),
-            title: const Text('Logout'),
-            onTap: () {
-              // Handle the Help option
-              Navigator.pop(context); // Close the drawer
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Drawer(
+//       child: ListView(
+//         padding: EdgeInsets.zero,
+//         children: <Widget>[
+//           const DrawerHeader(
+//             decoration: BoxDecoration(
+//               color: Colors.blue,
+//             ),
+//             child: Text(
+//               'App Drawer',
+//               style: TextStyle(
+//                 color: Colors.white,
+//                 fontSize: 24,
+//               ),
+//             ),
+//           ),
+//           ListTile(
+//             leading: const Icon(Icons.home),
+//             title: const Text('Home'),
+//             onTap: () {
+//               // Handle the Home option
+//               Navigator.pop(context); // Close the drawer
+//             },
+//           ),
+//           ListTile(
+//             leading: const Icon(Icons.settings),
+//             title: const Text('Create Delegate'),
+//             onTap: () {
+//               // Handle the Settings option
+//               Navigator.pop(context); // Close the drawer
+//             },
+//           ),
+//           ListTile(
+//             leading: const Icon(Icons.help),
+//             title: const Text('Logout'),
+//             onTap: () {
+//               // Handle the Help option
+//               Navigator.pop(context); // Close the drawer
+//             },
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }

@@ -47,8 +47,8 @@ class _UserDashboardState extends State<UserDashboard> {
                     child: const LogoutButton(),
                   )
                 ]),
-            tablet: ResponsiveAppBar(),
-            mobile: ResponsiveAppBar(),
+            tablet: ResponsiveAppBar(role: "User"),
+            mobile: ResponsiveAppBar(role: "User"),
           ),
         ),
         body: FutureBuilder(

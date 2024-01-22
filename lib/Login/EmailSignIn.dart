@@ -69,7 +69,7 @@ class _EmailSignInState extends State<EmailSignIn> {
                 cardElevation: 20,
                 loginImage: const AssetImage('assets/images/login.png'),
                 title: const Text(
-                  'Sammilani Delegate Admin',
+                  'Sammilani Online Delegate System',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 25,
@@ -92,7 +92,8 @@ class _EmailSignInState extends State<EmailSignIn> {
                       if (response?["statusCode"] == 200 &&
                           (resDevoteeData.role == "Admin" ||
                               resDevoteeData.role == "SuperAdmin" ||
-                              resDevoteeData.role == "Approver" || resDevoteeData.role == "Viewer")) {
+                              resDevoteeData.role == "Approver" ||
+                              resDevoteeData.role == "Viewer")) {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -102,7 +103,9 @@ class _EmailSignInState extends State<EmailSignIn> {
                           resDevoteeData.role == "User") {
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) {
-                            return UserDashboard(devoteeId: resDevoteeData.devoteeId.toString(),);
+                            return UserDashboard(
+                              devoteeId: resDevoteeData.devoteeId.toString(),
+                            );
                           },
                         ));
                       } else {

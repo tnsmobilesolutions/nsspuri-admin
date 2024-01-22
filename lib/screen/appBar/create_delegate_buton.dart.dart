@@ -29,7 +29,7 @@ class CreateDelegateButton extends StatelessWidget {
         ),
         foregroundColor: Colors.white,
       ),
-      onPressed: (NetworkHelper().getCurrentDevotee?.role != "Viewer") ? (() {
+      onPressed: (() {
         showDialog<void>(
           context: context,
           builder: (BuildContext context) {
@@ -56,7 +56,7 @@ class CreateDelegateButton extends StatelessWidget {
                 ));
           },
         );
-      }) : null,
+      }),
       child: const Text(
         'Create Delegate',
         style: TextStyle(color: Colors.white),
