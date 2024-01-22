@@ -48,9 +48,9 @@ class GetDevoteeAPI extends DioFuctionAPI {
   }
 
   Future<Map<String, dynamic>?> devoteeListBycreatedById(
-      String devoteeId) async {
+      String createdById) async {
     try {
-      final response = await getAPI("devoteeListBycreatedById/$devoteeId");
+      final response = await getAPI("devoteeListBycreatedById/$createdById");
       List<DevoteeModel> devotees = [];
       final devoteelist = response["data"]["devoteeList"];
       devoteelist.forEach((devotee) {
