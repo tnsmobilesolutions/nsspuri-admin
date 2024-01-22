@@ -324,7 +324,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                       child: Text(
                                                         'Preview',
                                                         style: TextStyle(
-                                                          fontSize: 12.0,
+                                                          fontSize: 18.0,
                                                           fontWeight:
                                                               FontWeight.bold,
                                                           color: Color.fromARGB(
