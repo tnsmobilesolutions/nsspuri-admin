@@ -16,13 +16,13 @@ class DisplayPdf {
 
   static void delegatePDF(
       List<DevoteeModel> devoteeselecteddata, BuildContext context) async {
-    final img3 = await rootBundle.load('assets/image/del_bg_cordinator.png');
+    final img3 = await rootBundle.load('assets/images/del_bg_cordinator.png');
     final imageBytes3 = img3.buffer.asUint8List();
     pw.Image cardcoordinator = pw.Image(pw.MemoryImage(imageBytes3));
-    final img5 = await rootBundle.load('assets/image/del_bg_cordinator.png');
+    final img5 = await rootBundle.load('assets/images/del_bg_cordinator.png');
     final imageBytes5 = img5.buffer.asUint8List();
     pw.Image cardguest = pw.Image(pw.MemoryImage(imageBytes5));
-    final img6 = await rootBundle.load('assets/image/del_bg_old.png');
+    final img6 = await rootBundle.load('assets/images/del_bg_old.png');
     final imageBytes6 = img3.buffer.asUint8List();
     pw.Image oldcard = pw.Image(pw.MemoryImage(imageBytes3));
     final img4 = await rootBundle.load('assets/images/delegatebg_green.png');
@@ -122,7 +122,7 @@ class DisplayPdf {
       if (devotee.gender == "Male") return bhaiColor;
       if (devotee.gender == "Female") return maaColor;
 
-      return Colors.blue;
+      return bhaiColor;
     }
 
     Future<Uint8List> fetchImage(String imageUrl) async {
@@ -178,7 +178,7 @@ class DisplayPdf {
             // ),
 
             pw.Positioned(
-              bottom: 115,
+              bottom: 110,
               right: 50,
               left: 50,
               child: pw.Center(
