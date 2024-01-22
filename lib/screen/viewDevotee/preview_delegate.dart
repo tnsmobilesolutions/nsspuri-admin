@@ -148,14 +148,14 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
   @override
   Widget build(BuildContext context) {
     final devotees = widget.devoteeDetails;
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Center(
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.only(
-              left: 50,
-              right: 50,
+              left: 20,
+              right: 20,
             ),
             child: Column(
               children: [
@@ -400,7 +400,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                   : const Text(""),
                                             ),
                                             const SizedBox(
-                                              height: 10,
+                                              height: 20,
                                             ),
                                             Expanded(
                                               flex: 2,

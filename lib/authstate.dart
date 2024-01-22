@@ -28,7 +28,7 @@ class _AuthStateState extends State<AuthState> {
               if (currentDevoteeSnapshot.connectionState ==
                       ConnectionState.waiting ||
                   currentDevoteeSnapshot.hasError) {
-                return Center(
+                return const Center(
                   child: CircularProgressIndicator(),
                 );
               } else {
@@ -45,16 +45,16 @@ class _AuthStateState extends State<AuthState> {
                     return UserDashboard(
                         devoteeId: currentDevotee.devoteeId.toString());
                   } else {
-                    return EmailSignIn();
+                    return const EmailSignIn();
                   }
                 } else {
-                  return EmailSignIn();
+                  return const EmailSignIn();
                 }
               }
             },
           );
         } else {
-          return Scaffold(
+          return const Scaffold(
             body: Center(
               child: CircularProgressIndicator(),
             ),
