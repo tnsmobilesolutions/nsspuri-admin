@@ -22,7 +22,7 @@ class NetworkHelper {
 
 fetchCurrentuser() async {
   try {
-    final currentDevoteedata = await GetDevoteeAPI().currentDevotee();
+    Map<String, dynamic>? currentDevoteedata = await GetDevoteeAPI().currentDevotee();
     NetworkHelper().setCurrentDevotee = currentDevoteedata?["data"];
     
   } catch (e) {
