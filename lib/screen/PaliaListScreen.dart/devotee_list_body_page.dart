@@ -339,8 +339,8 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                                     allDevotees[index].sangha != ''
                                 ? Text(
                                     "(${allDevotees[index].sangha.toString()})")
-                                : Text(''),
-                            Spacer(),
+                                : const Text(''),
+                            const Spacer(),
                             IconButton(
                                 color: Colors.deepOrange,
                                 onPressed: () {
