@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_flip_card/controllers/flip_card_controllers.dart';
 import 'package:flutter_flip_card/flipcard/flip_card.dart';
 import 'package:flutter_flip_card/modal/flip_side.dart';
 import 'dart:typed_data';
-import 'dart:convert' show base64Encode;
+// import 'dart:convert' show base64Encode;
 import 'dart:html' as html;
+import 'dart:ui' as ui;
+
 import 'package:screenshot/screenshot.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/viewDevotee/constants.dart';
@@ -27,6 +30,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
   final con = FlipCardController();
   bool? downloading;
   ScreenshotController screenshotController = ScreenshotController();
+  GlobalKey _globalKey = GlobalKey();
 
   String _toPascalCase(String input) {
     if (input.isEmpty) {
@@ -165,32 +169,51 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
   //     ..download = 'devoteecard_screenshot.png'
   //     ..click();
   // }
-  Future<void> _downloadImage() async {
-    Uint8List? capturedImage = await screenshotController.capture();
+  // Future<void> _downloadImage() async {
+  //   Uint8List? capturedImage = await screenshotController.capture();
 
-    // Check if the capturedImage is not null
-    if (capturedImage != null) {
-      // Convert the Uint8List to a base64-encoded string
-      String base64Image = base64Encode(capturedImage);
+  //   // Check if the capturedImage is not null
+  //   if (capturedImage != null) {
+  //     // Convert the Uint8List to a base64-encoded string
+  //     String base64Image = base64Encode(capturedImage);
 
-      // Create a data URL for the image
-      String dataUrl = 'data:image/png;base64,$base64Image';
+  //     // Create a data URL for the image
+  //     String dataUrl = 'data:image/png;base64,$base64Image';
 
-      // Create a temporary anchor element
-      final anchor = html.AnchorElement(href: dataUrl)
-        ..target = 'blank'
-        ..download = 'devoteecard_screenshot.png';
+  //     // Create a temporary anchor element
+  //     final anchor = html.AnchorElement(href: dataUrl)
+  //       ..target = 'blank'
+  //       ..download = 'devoteecard_screenshot.png';
 
-      // Attach the anchor element to the DOM
-      html.document.body?.append(anchor);
+  //     // Attach the anchor element to the DOM
+  //     html.document.body?.append(anchor);
 
-      // Simulate a click on the anchor element
-      anchor.click();
+  //     // Simulate a click on the anchor element
+  //     anchor.click();
 
-      // Remove the anchor element from the DOM
-      anchor.remove();
-    }
+  //     // Remove the anchor element from the DOM
+  //     anchor.remove();
+  //   }
+  // }
+  Future<void> _downloadWidget() async {
+    RenderRepaintBoundary boundary =
+        _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+
+    ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+    ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    Uint8List pngBytes = byteData!.buffer.asUint8List();
+
+    html.Blob blob = html.Blob([pngBytes]);
+    String url = html.Url.createObjectUrlFromBlob(blob);
+
+    html.AnchorElement(href: url)
+      ..target = 'blank'
+      ..download = 'screenshot.png' // Specify the filename
+      ..click();
+
+    html.Url.revokeObjectUrl(url);
   }
+
   // Future<void> _downloadImage() async {
   //   setState(() {
   //     downloading = true;
@@ -231,8 +254,8 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
             ),
             child: Column(
               children: [
-                Screenshot(
-                  controller: screenshotController,
+                RepaintBoundary(
+                  key: _globalKey,
                   child: FlipCard(
                     rotateSide: RotateSide.right,
                     onTapFlipping: true,
@@ -538,7 +561,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                 ),
                 ElevatedButton(
                     onPressed: () {
-                      _downloadImage();
+                      _downloadWidget();
                     },
                     child: const Text("Download"))
               ],
