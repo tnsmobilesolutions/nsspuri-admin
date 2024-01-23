@@ -406,6 +406,22 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                                           .devoteeId
                                           .toString(),
                                       title: "edit",
+                                      onUpdateDevotee: (allVakta,
+                                          status,
+                                          pageFrom,
+                                          searchBy,
+                                          searchValue,
+                                          showClearButton) {
+                                        setState(() {
+                                          allDevotees = allVakta;
+                                          widget.status = status.toString();
+                                          widget.pageFrom = pageFrom.toString();
+                                          widget.searchBy = widget.searchBy;
+                                          widget.searchValue = searchValue;
+                                          widget.showClearButton =
+                                              showClearButton;
+                                        });
+                                      },
                                       showClearButton: widget.showClearButton,
                                       searchBy: widget.searchBy,
                                       searchValue: widget.searchValue,

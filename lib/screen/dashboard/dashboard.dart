@@ -175,6 +175,7 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
                           title: "addDevotee",
                           devoteeId: "",
                           role: widget.role,
+                          //onUpdateDevotee: (allDevotees) {},
                         ));
                   },
                 );
