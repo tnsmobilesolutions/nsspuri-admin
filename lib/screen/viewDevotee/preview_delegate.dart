@@ -124,7 +124,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
         return const AssetImage('assets/images/child.png');
       }
       if (age >= seniorCitizenAgeLimit) {
-        return const AssetImage('assets/images/bhai.png');
+        return const AssetImage('assets/images/old.png');
       }
     }
 
