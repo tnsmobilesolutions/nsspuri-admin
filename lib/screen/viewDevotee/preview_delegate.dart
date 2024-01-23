@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -30,7 +32,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
   final con = FlipCardController();
   bool? downloading;
   ScreenshotController screenshotController = ScreenshotController();
-  GlobalKey _globalKey = GlobalKey();
+  final GlobalKey _globalKey = GlobalKey();
 
   String _toPascalCase(String input) {
     if (input.isEmpty) {
@@ -176,7 +178,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
     RenderRepaintBoundary boundary =
         _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
 
-    ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+    ui.Image image = boundary.toImageSync(pixelRatio: 3.0);
     ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     Uint8List pngBytes = byteData!.buffer.asUint8List();
 
@@ -218,13 +220,13 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
   // }
 
   Text buildSanghaText(String? sanghaName) {
-    double fontSize = 9;
+    double fontSize = 13;
     if (sanghaName != null) {
       int nameLength = sanghaName.length;
       if (nameLength > 15) {
-        fontSize = 6;
+        fontSize = 13;
       } else if (nameLength < 5) {
-        fontSize = 14.0;
+        fontSize = 17;
       }
     }
     return Text(
@@ -238,13 +240,13 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
   }
 
   Text buildNameText(String? devoteeName) {
-    double fontSize = 10;
+    double fontSize = 17;
     if (devoteeName != null) {
       int nameLength = devoteeName.length;
       if (nameLength > 20) {
-        fontSize = 9;
+        fontSize = 16;
       } else if (nameLength < 5) {
-        fontSize = 14.0;
+        fontSize = 22;
       }
     }
     return Text(
@@ -487,7 +489,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                         flex: 2,
                                         child: Padding(
                                           padding:
-                                              const EdgeInsets.only(left: 14),
+                                              const EdgeInsets.only(left: 0),
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -496,6 +498,13 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                   flex: 2,
                                                   child: buildSanghaText(widget
                                                       .devoteeDetails.sangha)),
+                                              widget.devoteeDetails.sangha !=
+                                                          null &&
+                                                      widget.devoteeDetails
+                                                              .sangha!.length >
+                                                          18
+                                                  ? const SizedBox(height: 20)
+                                                  : const SizedBox(height: 10),
                                               Expanded(
                                                 flex: 5,
                                                 child: widget.devoteeDetails
@@ -531,14 +540,8 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                         flex: 3,
                                         child: Container(
                                           padding: const EdgeInsets.all(0),
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              4.8,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              4.8,
+                                          height: 130,
+                                          width: 130,
                                           child: SfBarcodeGenerator(
                                             value: widget
                                                 .devoteeDetails.devoteeCode
