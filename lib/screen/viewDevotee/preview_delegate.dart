@@ -908,7 +908,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                     : const Text(""),
                                               ),
                                               const SizedBox(
-                                                height: 20,
+                                                height: 3,
                                               ),
                                               Expanded(
                                                 flex: 2,
