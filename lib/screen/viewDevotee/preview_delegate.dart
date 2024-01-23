@@ -90,7 +90,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
 
   AssetImage getCardImage(DevoteeModel devotee) {
     if (devotee.isGuest == true) {
-      return const AssetImage('assets/images/guest .png');
+      return const AssetImage('assets/images/guest.png');
     }
     if (devotee.isSpeciallyAbled == true) {
       return const AssetImage('assets/images/old.png');
@@ -124,7 +124,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
         return const AssetImage('assets/images/child.png');
       }
       if (age >= seniorCitizenAgeLimit) {
-        return const AssetImage('assets/images/bhai.png');
+        return const AssetImage('assets/images/old.png');
       }
     }
 
