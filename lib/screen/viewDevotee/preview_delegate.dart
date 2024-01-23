@@ -529,7 +529,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
   // }
 
   Text buildSanghaText(String? sanghaName) {
-    double fontSize = 10;
+    double fontSize = 16;
 
     if (sanghaName != null) {
       int nameLength = sanghaName.length;
@@ -895,10 +895,12 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                             .devoteeDetails
                                                             .devoteeCode
                                                             .toString()),
+                                                        textAlign:
+                                                            TextAlign.left,
                                                         style: const TextStyle(
                                                           color:
                                                               Colors.deepOrange,
-                                                          fontSize: 10,
+                                                          fontSize: 20,
                                                           fontWeight:
                                                               FontWeight.bold,
                                                         ),
@@ -918,22 +920,19 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                       ),
                                       Flexible(
                                         flex: 3,
-                                        child: Container(
-                                          padding: const EdgeInsets.all(0),
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              4.8,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              4.8,
-                                          child: SfBarcodeGenerator(
-                                            value: widget
-                                                .devoteeDetails.devoteeCode
-                                                .toString(),
-                                            symbology: QRCode(),
-                                            showValue: false,
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 8.0),
+                                          child: SizedBox(
+                                            height: 130,
+                                            width: 130,
+                                            child: SfBarcodeGenerator(
+                                              value: widget
+                                                  .devoteeDetails.devoteeCode
+                                                  .toString(),
+                                              symbology: QRCode(),
+                                              showValue: false,
+                                            ),
                                           ),
                                         ),
                                       ),
