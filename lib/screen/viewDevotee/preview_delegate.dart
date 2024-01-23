@@ -66,13 +66,13 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
   // }
 
   Text buildSanghaText(String? sanghaName) {
-    double fontSize = 10;
+    double fontSize = 9;
 
     if (sanghaName != null) {
       int nameLength = sanghaName.length;
 
       if (nameLength > 15) {
-        fontSize = 7;
+        fontSize = 6;
       } else if (nameLength < 5) {
         fontSize = 14.0;
       }
@@ -82,6 +82,29 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
       _toPascalCase(sanghaName ?? ''),
       style: TextStyle(
         color: Colors.black,
+        fontSize: fontSize,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  Text buildNameText(String? devoteeName) {
+    double fontSize = 10;
+
+    if (devoteeName != null) {
+      int nameLength = devoteeName.length;
+
+      if (nameLength > 20) {
+        fontSize = 9;
+      } else if (nameLength < 5) {
+        fontSize = 14.0;
+      }
+    }
+
+    return Text(
+      _toPascalCase(devoteeName ?? ''),
+      style: TextStyle(
+        color: Colors.deepOrange,
         fontSize: fontSize,
         fontWeight: FontWeight.bold,
       ),
@@ -354,19 +377,9 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                 height: 6,
                               ),
                               Expanded(
-                                flex: 1,
-                                child: widget.devoteeDetails.name != null
-                                    ? Text(
-                                        _toPascalCase(widget.devoteeDetails.name
-                                            .toString()),
-                                        style: const TextStyle(
-                                          color: Colors.deepOrange,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      )
-                                    : const Text(""),
-                              ),
+                                  flex: 1,
+                                  child: buildNameText(
+                                      widget.devoteeDetails.name)),
                               Expanded(
                                 flex: 5,
                                 child: Row(
@@ -382,12 +395,15 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            buildSanghaText(
+                                                widget.devoteeDetails.sangha),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
                                             Expanded(
-                                                flex: 2,
-                                                child: buildSanghaText(widget
-                                                    .devoteeDetails.sangha)),
-                                            Expanded(
-                                              flex: 1,
                                               child: widget.devoteeDetails
                                                           .devoteeCode !=
                                                       null
@@ -408,10 +424,6 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                             ),
                                             const SizedBox(
                                               height: 20,
-                                            ),
-                                            Expanded(
-                                              flex: 2,
-                                              child: Container(),
                                             ),
                                           ],
                                         ),
