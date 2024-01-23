@@ -73,29 +73,6 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
   //   );
   // }
 
-  Text buildSanghaText(String? sanghaName) {
-    double fontSize = 18;
-
-    if (sanghaName != null) {
-      int nameLength = sanghaName.length;
-
-      if (nameLength > 15) {
-        fontSize = 7;
-      } else if (nameLength < 5) {
-        fontSize = 14.0;
-      }
-    }
-
-    return Text(
-      _toPascalCase(sanghaName ?? ''),
-      style: TextStyle(
-        color: Colors.black,
-        fontSize: fontSize,
-        fontWeight: FontWeight.bold,
-      ),
-    );
-  }
-
   AssetImage getCardImage(DevoteeModel devotee) {
     if (devotee.isGuest == true) {
       return const AssetImage('assets/images/guest.png');
@@ -239,6 +216,46 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
   //     });
   //   });
   // }
+
+  Text buildSanghaText(String? sanghaName) {
+    double fontSize = 9;
+    if (sanghaName != null) {
+      int nameLength = sanghaName.length;
+      if (nameLength > 15) {
+        fontSize = 6;
+      } else if (nameLength < 5) {
+        fontSize = 14.0;
+      }
+    }
+    return Text(
+      _toPascalCase(sanghaName ?? ''),
+      style: TextStyle(
+        color: Colors.black,
+        fontSize: fontSize,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  Text buildNameText(String? devoteeName) {
+    double fontSize = 10;
+    if (devoteeName != null) {
+      int nameLength = devoteeName.length;
+      if (nameLength > 20) {
+        fontSize = 9;
+      } else if (nameLength < 5) {
+        fontSize = 14.0;
+      }
+    }
+    return Text(
+      _toPascalCase(devoteeName ?? ''),
+      style: TextStyle(
+        color: Colors.deepOrange,
+        fontSize: fontSize,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -457,20 +474,9 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                   height: 6,
                                 ),
                                 Expanded(
-                                  flex: 1,
-                                  child: widget.devoteeDetails.name != null
-                                      ? Text(
-                                          _toPascalCase(widget
-                                              .devoteeDetails.name
-                                              .toString()),
-                                          style: const TextStyle(
-                                            color: Colors.deepOrange,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        )
-                                      : const Text(""),
-                                ),
+                                    flex: 1,
+                                    child: buildNameText(
+                                        widget.devoteeDetails.name)),
                                 Expanded(
                                   flex: 5,
                                   child: Row(
