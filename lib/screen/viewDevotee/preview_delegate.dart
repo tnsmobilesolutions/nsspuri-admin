@@ -70,7 +70,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
   // }
 
   Text buildSanghaText(String? sanghaName) {
-    double fontSize = 10;
+    double fontSize = 18;
 
     if (sanghaName != null) {
       int nameLength = sanghaName.length;
@@ -150,20 +150,46 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
     }
   }
 
+  // Future<void> _downloadImage() async {
+  //   Uint8List? capturedImage = await screenshotController.capture();
+
+  //   // Convert the Uint8List to a base64-encoded string
+  //   String base64Image = base64Encode(capturedImage!);
+
+  //   // Create a data URL for the image
+  //   String dataUrl = 'data:image/png;base64,$base64Image';
+
+  //   // Create a temporary anchor element
+  //   html.AnchorElement(href: dataUrl)
+  //     ..target = 'blank'
+  //     ..download = 'devoteecard_screenshot.png'
+  //     ..click();
+  // }
   Future<void> _downloadImage() async {
     Uint8List? capturedImage = await screenshotController.capture();
 
-    // Convert the Uint8List to a base64-encoded string
-    String base64Image = base64Encode(capturedImage!);
+    // Check if the capturedImage is not null
+    if (capturedImage != null) {
+      // Convert the Uint8List to a base64-encoded string
+      String base64Image = base64Encode(capturedImage);
 
-    // Create a data URL for the image
-    String dataUrl = 'data:image/png;base64,$base64Image';
+      // Create a data URL for the image
+      String dataUrl = 'data:image/png;base64,$base64Image';
 
-    // Create a temporary anchor element
-    html.AnchorElement(href: dataUrl)
-      ..target = 'blank'
-      ..download = 'devoteecard_screenshot.png'
-      ..click();
+      // Create a temporary anchor element
+      final anchor = html.AnchorElement(href: dataUrl)
+        ..target = 'blank'
+        ..download = 'devoteecard_screenshot.png';
+
+      // Attach the anchor element to the DOM
+      html.document.body?.append(anchor);
+
+      // Simulate a click on the anchor element
+      anchor.click();
+
+      // Remove the anchor element from the DOM
+      anchor.remove();
+    }
   }
   // Future<void> _downloadImage() async {
   //   setState(() {
@@ -416,7 +442,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                               .toString()),
                                           style: const TextStyle(
                                             color: Colors.deepOrange,
-                                            fontSize: 14,
+                                            fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         )
@@ -442,7 +468,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                   child: buildSanghaText(widget
                                                       .devoteeDetails.sangha)),
                                               Expanded(
-                                                flex: 1,
+                                                flex: 5,
                                                 child: widget.devoteeDetails
                                                             .devoteeCode !=
                                                         null
@@ -454,7 +480,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                         style: const TextStyle(
                                                           color:
                                                               Colors.deepOrange,
-                                                          fontSize: 10,
+                                                          fontSize: 18,
                                                           fontWeight:
                                                               FontWeight.bold,
                                                         ),
