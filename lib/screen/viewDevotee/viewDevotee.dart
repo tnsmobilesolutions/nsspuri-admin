@@ -5,6 +5,7 @@ import 'package:flutter_flip_card/controllers/flip_card_controllers.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/viewDevotee/devotee_info.dart';
 import 'package:sdp/screen/viewDevotee/preview_delegate.dart';
+import 'package:sdp/utilities/network_helper.dart';
 
 // ignore: must_be_immutable
 class ViewDevotee extends StatefulWidget {
@@ -33,7 +34,7 @@ class _ViewDevoteeState extends State<ViewDevotee>
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 500,
+      height: 1000,
       width: 500,
       child: SelectionArea(
         child: Scaffold(

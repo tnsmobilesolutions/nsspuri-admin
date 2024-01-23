@@ -13,6 +13,7 @@ import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/export_to_excel.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/printpdf.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
+import 'package:sdp/screen/viewDevotee/preview_delegate.dart';
 import 'package:sdp/screen/viewDevotee/viewDevotee.dart';
 import 'package:sdp/utilities/network_helper.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -229,6 +230,10 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         dataColumn(context, 'DOB/Age Group'),
         dataColumn(context, 'Status'),
         dataColumn(context, 'View'),
+        if (NetworkHelper().getCurrentDevotee?.role == "Admin" ||
+            NetworkHelper().getCurrentDevotee?.role == "SuperAdmin" ||
+            NetworkHelper().getCurrentDevotee?.role == "Approver")
+          dataColumn(context, 'Print'),
         if (NetworkHelper().getCurrentDevotee?.role != "Viewer")
           dataColumn(context, 'Edit'),
       ],
@@ -327,22 +332,23 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                     showDialog<String>(
                       context: context,
                       builder: (BuildContext context) => AlertDialog(
-                        title: Column(
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(allDevotees[index].name.toString()),
-                                IconButton(
-                                    color: Colors.deepOrange,
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    icon: const Icon(Icons.close))
-                              ],
-                            ),
-                            Text(allDevotees[index].sangha.toString()),
+                            Text(allDevotees[index].name.toString()),
+                            allDevotees[index].sangha != null &&
+                                    allDevotees[index].sangha != ''
+                                ? Text(
+                                    "(${allDevotees[index].sangha.toString()})")
+                                : Text(''),
+                            Spacer(),
+                            IconButton(
+                                color: Colors.deepOrange,
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                icon: const Icon(Icons.close))
                           ],
                         ),
                         content:
@@ -353,6 +359,22 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                   icon: const Icon(Icons.info, color: Colors.deepOrange),
                 ),
               ),
+              if (NetworkHelper().getCurrentDevotee?.role == "Admin" ||
+                  NetworkHelper().getCurrentDevotee?.role == "SuperAdmin" ||
+                  NetworkHelper().getCurrentDevotee?.role == "Approver")
+                DataCell(IconButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return PreviewDelegateTab(
+                          devoteeDetails: allDevotees[index]);
+                    }));
+                  },
+                  icon: const Icon(
+                    Icons.print,
+                    color: Colors.deepOrange,
+                  ),
+                )),
               if (NetworkHelper().getCurrentDevotee?.role != "Viewer")
                 DataCell(
                   IconButton(

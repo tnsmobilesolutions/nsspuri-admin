@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/viewDevotee/constants.dart';
 import 'package:sdp/screen/viewDevotee/delegate_back.dart';
+import 'package:sdp/utilities/network_helper.dart';
 import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -50,19 +51,19 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
     );
   }
 
-  pw.Expanded printSearchheadingText(String text) {
-    return pw.Expanded(
-      child: pw.Text(
-        text,
-        textAlign: pw.TextAlign.center,
-        style: pw.TextStyle(
-          fontSize: 20,
-          // font: baloobhainaheading,
-          fontWeight: pw.FontWeight.bold,
-        ),
-      ),
-    );
-  }
+  // pw.Expanded printSearchheadingText(String text) {
+  //   return pw.Expanded(
+  //     child: pw.Text(
+  //       text,
+  //       textAlign: pw.TextAlign.center,
+  //       style: pw.TextStyle(
+  //         fontSize: 20,
+  //         // font: baloobhainaheading,
+  //         fontWeight: pw.FontWeight.bold,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Text buildSanghaText(String? sanghaName) {
     double fontSize = 10;
@@ -89,7 +90,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
 
   AssetImage getCardImage(DevoteeModel devotee) {
     if (devotee.isGuest == true) {
-      return const AssetImage('assets/images/guest.png');
+      return const AssetImage('assets/images/guest .png');
     }
     if (devotee.isSpeciallyAbled == true) {
       return const AssetImage('assets/images/old.png');
@@ -148,14 +149,14 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
   @override
   Widget build(BuildContext context) {
     final devotees = widget.devoteeDetails;
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Center(
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.only(
-              left: 50,
-              right: 50,
+              left: 20,
+              right: 20,
             ),
             child: Column(
               children: [
@@ -164,7 +165,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                   onTapFlipping: true,
                   axis: FlipAxis.vertical,
                   controller: con,
-                  backWidget: CardFlip(color: getColorByDevotee(devotees)),
+                  backWidget: CardFlip(color: Colors.white),
                   frontWidget: Center(
                     child: Padding(
                       padding: const EdgeInsets.only(left: 30, right: 30),
@@ -192,155 +193,161 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                           padding: const EdgeInsets.all(.0),
                           child: Column(
                             children: [
-                              Expanded(
+                              const Expanded(
                                 flex: 5,
-                                child: Container(),
+                                child: SizedBox(),
                               ),
                               const SizedBox(
                                 height: 10,
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 4),
-                                child: Expanded(
-                                  flex: 5,
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                          child: widget.devoteeDetails
-                                                          .bloodGroup ==
-                                                      "Don't know" ||
-                                                  widget.devoteeDetails
-                                                          .bloodGroup ==
-                                                      null
-                                              ? Container(
-                                                  width: 45,
-                                                  height: 40,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    shape: BoxShape.rectangle,
-                                                  ),
-                                                )
-                                              : Center(
-                                                  child: Stack(
-                                                    children: [
-                                                      Container(
-                                                        width: 45,
-                                                        height: 40,
-                                                        decoration:
-                                                            const BoxDecoration(
-                                                          shape: BoxShape
-                                                              .rectangle,
-                                                          image:
-                                                              DecorationImage(
-                                                            fit: BoxFit.fill,
-                                                            image: AssetImage(
-                                                                'assets/images/blood.png'),
-                                                          ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        child: widget.devoteeDetails
+                                                        .bloodGroup ==
+                                                    "Don't know" ||
+                                                widget.devoteeDetails
+                                                        .bloodGroup ==
+                                                    null
+                                            ? Container(
+                                                width: 45,
+                                                height: 40,
+                                                decoration: const BoxDecoration(
+                                                  shape: BoxShape.rectangle,
+                                                ),
+                                              )
+                                            : Center(
+                                                child: Stack(
+                                                  children: [
+                                                    Container(
+                                                      width: 45,
+                                                      height: 40,
+                                                      decoration:
+                                                          const BoxDecoration(
+                                                        shape:
+                                                            BoxShape.rectangle,
+                                                        image: DecorationImage(
+                                                          fit: BoxFit.fill,
+                                                          image: AssetImage(
+                                                              'assets/images/blood.png'),
                                                         ),
                                                       ),
-                                                      Positioned(
-                                                        top: 7,
-                                                        left: 0,
-                                                        child: SizedBox(
-                                                          width: 45,
-                                                          height: 40,
-                                                          child: Center(
-                                                            child: Text(
-                                                              "${widget.devoteeDetails.bloodGroup}",
-                                                              style:
-                                                                  const TextStyle(
-                                                                fontSize: 10,
-                                                                color: Color
-                                                                    .fromARGB(
-                                                                        255,
-                                                                        255,
-                                                                        255,
-                                                                        255),
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
+                                                    ),
+                                                    Positioned(
+                                                      top: 7,
+                                                      left: 0,
+                                                      child: SizedBox(
+                                                        width: 45,
+                                                        height: 40,
+                                                        child: Center(
+                                                          child: Text(
+                                                            "${widget.devoteeDetails.bloodGroup}",
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 10,
+                                                              color: Color
+                                                                  .fromARGB(
+                                                                      255,
+                                                                      255,
+                                                                      255,
+                                                                      255),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
                                                             ),
                                                           ),
                                                         ),
                                                       ),
-                                                    ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                        // Return an empty Container if the condition is false
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 3,
+                                      child: Stack(
+                                        clipBehavior: Clip.none,
+                                        children: [
+                                          Positioned(
+                                            child: CircleAvatar(
+                                              radius:
+                                                  45, // Adjust the radius as needed
+                                              backgroundColor:
+                                                  getColorByDevotee(devotees),
+                                              backgroundImage: widget
+                                                              .devoteeDetails
+                                                              .profilePhotoUrl !=
+                                                          null &&
+                                                      widget
+                                                          .devoteeDetails
+                                                          .profilePhotoUrl!
+                                                          .isNotEmpty
+                                                  ? NetworkImage(widget
+                                                      .devoteeDetails
+                                                      .profilePhotoUrl
+                                                      .toString())
+                                                  : const AssetImage(
+                                                          'assets/images/profile.jpeg')
+                                                      as ImageProvider<Object>,
+                                            ),
+                                          ),
+                                          if (NetworkHelper()
+                                                      .getCurrentDevotee
+                                                      ?.role !=
+                                                  "Admin" &&
+                                              NetworkHelper()
+                                                      .getCurrentDevotee
+                                                      ?.role !=
+                                                  "SuperAdmin" &&
+                                              NetworkHelper()
+                                                      .getCurrentDevotee
+                                                      ?.role !=
+                                                  "Approver")
+                                            Positioned(
+                                              top: 50,
+                                              left: 0,
+                                              child: Transform.rotate(
+                                                angle: 12,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(4.0),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color: const Color
+                                                                .fromARGB(255,
+                                                                44, 7, 209),
+                                                            width: 4),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(4)),
+                                                    child: const Padding(
+                                                      padding:
+                                                          EdgeInsets.all(4.0),
+                                                      child: Text(
+                                                        'Preview',
+                                                        style: TextStyle(
+                                                          fontSize: 18.0,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Color.fromARGB(
+                                                              255, 44, 7, 209),
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
-                                          // Return an empty Container if the condition is false
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 3,
-                                        child: Stack(
-                                          clipBehavior: Clip.none,
-                                          children: [
-                                            Positioned(
-                                              child: CircleAvatar(
-                                                radius:
-                                                    45, // Adjust the radius as needed
-                                                backgroundColor:
-                                                    getColorByDevotee(devotees),
-                                                backgroundImage: widget
-                                                                .devoteeDetails
-                                                                .profilePhotoUrl !=
-                                                            null &&
-                                                        widget
-                                                            .devoteeDetails
-                                                            .profilePhotoUrl!
-                                                            .isNotEmpty
-                                                    ? NetworkImage(widget
-                                                        .devoteeDetails
-                                                        .profilePhotoUrl
-                                                        .toString())
-                                                    : const AssetImage(
-                                                            'assets/images/profile.jpeg')
-                                                        as ImageProvider<
-                                                            Object>,
                                               ),
                                             ),
-                                            // if (widget.devoteeDetails.status ==
-                                            //         "paid" ||
-                                            //     widget.devoteeDetails.status ==
-                                            //         "printed")
-                                            //   Positioned(
-                                            //     top: 50,
-                                            //     left: 105,
-                                            //     child: Transform.rotate(
-                                            //       angle: 12,
-                                            //       child: Padding(
-                                            //         padding: const EdgeInsets.all(4.0),
-                                            //         child: Container(
-                                            //           decoration: BoxDecoration(
-                                            //               border: Border.all(
-                                            //                   color:
-                                            //                       const Color.fromARGB(
-                                            //                           255, 44, 7, 209),
-                                            //                   width: 4),
-                                            //               borderRadius:
-                                            //                   BorderRadius.circular(4)),
-                                            //           child: const Padding(
-                                            //             padding: EdgeInsets.all(4.0),
-                                            //             child: Text(
-                                            //               'PAID',
-                                            //               style: TextStyle(
-                                            //                 fontSize: 12.0,
-                                            //                 fontWeight: FontWeight.bold,
-                                            //                 color: Color.fromARGB(
-                                            //                     255, 44, 7, 209),
-                                            //               ),
-                                            //             ),
-                                            //           ),
-                                            //         ),
-                                            //       ),
-                                            //     ),
-                                            //   ),
-                                          ],
-                                        ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               const SizedBox(
@@ -400,7 +407,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                   : const Text(""),
                                             ),
                                             const SizedBox(
-                                              height: 10,
+                                              height: 20,
                                             ),
                                             Expanded(
                                               flex: 2,
