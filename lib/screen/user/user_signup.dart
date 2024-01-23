@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:intl_phone_field/country_picker_dialog.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:sdp/API/get_devotee.dart';
 
 import 'package:sdp/API/post_devotee.dart';
@@ -100,6 +102,7 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
     });
   }
 
+  FocusNode focusNode = FocusNode();
   TextEditingController cityController = TextEditingController();
   TextEditingController countryController = TextEditingController();
   TextEditingController dobController = TextEditingController();
@@ -557,17 +560,81 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                     ),
                   ),
                 ),
+                // const SizedBox(height: 20),
+                // TextFormField(
+                //   keyboardType: TextInputType.phone,
+                //   controller: mobileController,
+                //   onSaved: (newValue) => mobileController,
+                //   validator: (value) {
+                //     RegExp regex = RegExp(r'^.{10}$');
+                //     if (value!.isEmpty) {
+                //       return null;
+                //     }
+                //     if (!regex.hasMatch(value) && value.length != 10) {
+                //       return ("Enter 10 Digit Mobile Number");
+                //     }
+                //     return null;
+                //   },
+                //   decoration: InputDecoration(
+                //     labelText: "Mobile Number",
+                //     labelStyle:
+                //         TextStyle(color: Colors.grey[600], fontSize: 15),
+                //     filled: true,
+                //     floatingLabelBehavior: FloatingLabelBehavior.auto,
+                //     border: OutlineInputBorder(
+                //         borderRadius: BorderRadius.circular(10.0),
+                //         borderSide: const BorderSide(
+                //             width: 0, style: BorderStyle.solid)),
+                //   ),
+                // ),
                 const SizedBox(height: 20),
-                TextFormField(
-                  keyboardType: TextInputType.phone,
+                IntlPhoneField(
+                  dropdownIcon: const Icon(
+                    Icons.arrow_drop_down,
+                    color: Colors.deepOrange,
+                  ),
+                  focusNode: focusNode,
                   controller: mobileController,
-                  onSaved: (newValue) => mobileController,
-                  validator: (value) {
+                  invalidNumberMessage: "Please enter a valid phone number !",
+                  keyboardType: TextInputType.phone,
+                  pickerDialogStyle: PickerDialogStyle(
+                    searchFieldCursorColor: Colors.deepOrange,
+                    searchFieldInputDecoration: InputDecoration(
+                      label: const Text('Search Country'),
+                      labelStyle: const TextStyle(
+                        color: Colors.black,
+                      ),
+                      hintStyle: TextStyle(
+                        color: Colors.black.withOpacity(0.5),
+                      ),
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.deepOrange),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.black.withOpacity(0.5),
+                        ),
+                      ),
+                    ),
+                    backgroundColor: Colors.white,
+                  ),
+                  // validator: (phone) {
+                  //   if (phone?.number.isEmpty == true) {
+                  //     return "Mobile number is required !";
+                  //   } else {
+                  //     return null;
+                  //   }
+                  // },
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                  ],
+                  validator: (phone) {
                     RegExp regex = RegExp(r'^.{10}$');
-                    if (value!.isEmpty) {
+                    if (phone?.number.isEmpty == true) {
                       return null;
                     }
-                    if (!regex.hasMatch(value) && value.length != 10) {
+                    if (!regex.hasMatch(phone!.number) &&
+                        phone.number.length != 10) {
                       return ("Enter 10 Digit Mobile Number");
                     }
                     return null;
@@ -583,6 +650,13 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                         borderSide: const BorderSide(
                             width: 0, style: BorderStyle.solid)),
                   ),
+                  initialCountryCode: 'IN',
+                  onSaved: (value) {
+                    mobileController.text = value.toString();
+                  },
+                  onChanged: (phone) {
+                    print(phone.completeNumber);
+                  },
                 ),
                 const SizedBox(height: 20),
                 Column(
@@ -710,6 +784,10 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                                 color: Colors.grey[600], fontSize: 15),
                             filled: true,
                             floatingLabelBehavior: FloatingLabelBehavior.auto,
+                            suffixIcon: const Icon(
+                              Icons.calendar_month_rounded,
+                              color: Colors.deepOrange,
+                            ),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                                 borderSide: const BorderSide(
@@ -1165,7 +1243,7 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(90)))),
-                    child: Text(
+                    child: const Text(
                       "Signup",
                       style: TextStyle(color: Colors.white, fontSize: 15),
                     ),

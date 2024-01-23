@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:intl_phone_field/country_picker_dialog.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/API/post_devotee.dart';
 import 'package:sdp/API/put_devotee.dart';
@@ -49,6 +51,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'approved',
     "rejected"
   ];
+
+  FocusNode focusNode = FocusNode();
 
   String? bloodGroupController;
   List<String> bloodGrouplist = <String>[
@@ -335,6 +339,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
             selectedDevotee?.dob != null || selectedDevotee?.dob != ""
                 ? formatDate(selectedDevotee?.dob ?? "")
                 : "";
+        shouldShowPranamiField = selectedDevotee?.status == "paid";
         pranamiController.text = (selectedDevotee?.paidAmount != null
             ? selectedDevotee?.paidAmount.toString()
             : "")!;
@@ -530,6 +535,9 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                     if (shouldShowPranamiField ?? false) {
                                       pranamiController.text = "400";
                                     }
+                                    if (selectedStatus != "paid") {
+                                      pranamiController.text = "0";
+                                    }
                                   });
                                 },
                                 underline: Container(
@@ -636,14 +644,10 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                         height: 0,
                         width: 0,
                       ),
-                shouldShowPranamiField == true ||
-                        (selectedDevotee != null &&
-                            selectedDevotee?.paidAmount != null)
+                shouldShowPranamiField == true
                     ? const SizedBox(height: 20)
                     : const SizedBox(),
-                shouldShowPranamiField == true ||
-                        (selectedDevotee != null &&
-                            selectedDevotee?.paidAmount != null)
+                shouldShowPranamiField == true
                     ? TextFormField(
                         keyboardType: TextInputType.phone,
                         // controller: widget.title == "edit"
@@ -663,8 +667,11 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                           }
                           return null;
                         },
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                        ],
                         decoration: InputDecoration(
-                          labelText: "Pranami",
+                          labelText: "Pranami (₹)",
                           labelStyle:
                               TextStyle(color: Colors.grey[600], fontSize: 15),
                           filled: true,
@@ -882,21 +889,74 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                             width: 0, style: BorderStyle.solid)),
                   ),
                 ),
+                // const SizedBox(height: 20),
+                // TextFormField(
+                //   keyboardType: TextInputType.phone,
+                //   controller: mobileController,
+                //   onSaved: (newValue) => mobileController,
+                // validator: (value) {
+                //   RegExp regex = RegExp(r'^.{10}$');
+                //   if (value!.isEmpty) {
+                //     return null;
+                //   }
+                //   if (!regex.hasMatch(value) && value.length != 10) {
+                //     return ("Enter 10 Digit Mobile Number");
+                //   }
+                //   return null;
+                // },
+                //   decoration: InputDecoration(
+                //     labelText: "Mobile Number",
+                //     labelStyle:
+                //         TextStyle(color: Colors.grey[600], fontSize: 15),
+                //     filled: true,
+                //     floatingLabelBehavior: FloatingLabelBehavior.auto,
+                //     border: OutlineInputBorder(
+                //         borderRadius: BorderRadius.circular(10.0),
+                //         borderSide: const BorderSide(
+                //             width: 0, style: BorderStyle.solid)),
+                //   ),
+                // ),
                 const SizedBox(height: 20),
-                TextFormField(
-                  keyboardType: TextInputType.phone,
+                IntlPhoneField(
+                  dropdownIcon: const Icon(
+                    Icons.arrow_drop_down,
+                    color: Colors.deepOrange,
+                  ),
+                  focusNode: focusNode,
                   controller: mobileController,
-                  onSaved: (newValue) => mobileController,
-                  validator: (value) {
-                    RegExp regex = RegExp(r'^.{10}$');
-                    if (value!.isEmpty) {
-                      return null;
-                    }
-                    if (!regex.hasMatch(value) && value.length != 10) {
-                      return ("Enter 10 Digit Mobile Number");
-                    }
-                    return null;
-                  },
+                  invalidNumberMessage: "Please enter a valid phone number !",
+                  keyboardType: TextInputType.phone,
+                  pickerDialogStyle: PickerDialogStyle(
+                    searchFieldCursorColor: Colors.deepOrange,
+                    searchFieldInputDecoration: InputDecoration(
+                      label: const Text('Search Country'),
+                      labelStyle: const TextStyle(
+                        color: Colors.black,
+                      ),
+                      hintStyle: TextStyle(
+                        color: Colors.black.withOpacity(0.5),
+                      ),
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.deepOrange),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.black.withOpacity(0.5),
+                        ),
+                      ),
+                    ),
+                    backgroundColor: Colors.white,
+                  ),
+                  // validator: (phone) {
+                  //   if (phone?.number.isEmpty == true) {
+                  //     return "Mobile number is required !";
+                  //   } else {
+                  //     return null;
+                  //   }
+                  // },
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                  ],
                   decoration: InputDecoration(
                     labelText: "Mobile Number",
                     labelStyle:
@@ -908,6 +968,13 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                         borderSide: const BorderSide(
                             width: 0, style: BorderStyle.solid)),
                   ),
+                  initialCountryCode: 'IN',
+                  onSaved: (value) {
+                    mobileController.text = value.toString();
+                  },
+                  onChanged: (phone) {
+                    print(phone.completeNumber);
+                  },
                 ),
                 const SizedBox(height: 20),
                 Column(
@@ -989,7 +1056,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                   setState(() {
                                     ageGroupIndex = newValue ?? 0;
                                     if (ageGroupIndex == 0) {
-                                      selectedAgeGroup = "";
+                                      selectedAgeGroup = "13 to 70";
                                     }
                                   });
                                 },
@@ -1036,6 +1103,10 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                 color: Colors.grey[600], fontSize: 15),
                             filled: true,
                             floatingLabelBehavior: FloatingLabelBehavior.auto,
+                            suffixIcon: const Icon(
+                              Icons.calendar_month_rounded,
+                              color: Colors.deepOrange,
+                            ),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                                 borderSide: const BorderSide(
