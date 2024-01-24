@@ -83,7 +83,7 @@ class _EmailSignInState extends State<EmailSignIn> {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return Center(
+                        return const Center(
                           child: CircularProgressIndicator(),
                         );
                       },
@@ -97,29 +97,27 @@ class _EmailSignInState extends State<EmailSignIn> {
 
                     if (uid != null) {
                       final response = await GetDevoteeAPI().loginDevotee(uid);
-                      DevoteeModel resDevoteeData = response?["data"];
+                      DevoteeModel resDevoteeData = response["data"];
 
                       NetworkHelper().setCurrentDevotee = resDevoteeData;
-
-                      // Delay for 2 seconds (just for demonstration, replace with actual data loading logic)
                       await Future.delayed(Duration(seconds: 2));
 
-                      Navigator.pop(
-                          context); // Close the circular progress indicator
-
-                      if (response?["statusCode"] == 200 &&
+                      if (response["statusCode"] == 200 &&
                           (resDevoteeData.role == "Admin" ||
                               resDevoteeData.role == "SuperAdmin" ||
                               resDevoteeData.role == "Approver" ||
                               resDevoteeData.role == "Viewer")) {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => DashboardPage(),
                           ),
                         );
-                      } else if (response?["statusCode"] == 200 &&
+                      } else if (response["statusCode"] == 200 &&
                           resDevoteeData.role == "User") {
+                        Navigator.of(context).pop();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -129,6 +127,7 @@ class _EmailSignInState extends State<EmailSignIn> {
                           ),
                         );
                       } else {
+                        Navigator.pop(context);
                         ScaffoldMessenger.of(context)
                             .showSnackBar(const SnackBar(
                           elevation: 6,
@@ -153,6 +152,7 @@ class _EmailSignInState extends State<EmailSignIn> {
                   } catch (e) {
                     Navigator.pop(
                         context); // Close the circular progress indicator
+                    Navigator.pop(context);
                     print(e.toString());
                   }
                 },

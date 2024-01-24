@@ -152,6 +152,7 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
                 }
                 break;
               case MenuOption.create:
+                // ignore: use_build_context_synchronously
                 showDialog<void>(
                   context: context,
                   builder: (BuildContext context) {

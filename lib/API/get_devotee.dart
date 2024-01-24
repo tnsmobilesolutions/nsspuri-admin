@@ -6,7 +6,7 @@ import 'package:sdp/model/sangha_model.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
 class GetDevoteeAPI extends DioFuctionAPI {
-  Future<Map<String, dynamic>?> loginDevotee(String uid) async {
+  Future<Map<String, dynamic>> loginDevotee(String uid) async {
     try {
       final response = await loginAPI("login/$uid");
       await fetchCurrentuser();
@@ -24,6 +24,7 @@ class GetDevoteeAPI extends DioFuctionAPI {
     try {
       final response = await getAPI("devotee/currentUser");
       print("response of currentuser -- $response");
+      
       DevoteeModel devotee =
           DevoteeModel.fromMap(response["data"]["singleDevotee"][0]);
       return {"statusCode": 200, "data": devotee};

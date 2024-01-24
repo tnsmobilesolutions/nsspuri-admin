@@ -20,45 +20,63 @@ class _AuthStateState extends State<AuthState> {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
-        if (snapshot.connectionState == ConnectionState.active) {
-          final uid = snapshot.data?.uid;
-          return FutureBuilder<Map<String, dynamic>?>(
-            future: (uid != null) ? GetDevoteeAPI().currentDevotee() : null,
-            builder: (context, currentDevoteeSnapshot) {
-              if (currentDevoteeSnapshot.connectionState ==
-                      ConnectionState.waiting ||
-                  currentDevoteeSnapshot.hasError) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else {
-                if (uid != null && currentDevoteeSnapshot.hasData) {
-                  DevoteeModel currentDevotee =
-                      currentDevoteeSnapshot.data?["data"];
-                  NetworkHelper().setCurrentDevotee = currentDevotee;
-                  if (currentDevotee.role == "SuperAdmin" ||
-                      currentDevotee.role == "Admin" ||
-                      currentDevotee.role == "Approver" ||
-                      currentDevotee.role == "Viewer") {
-                    return DashboardPage();
-                  } else if (currentDevotee.role == "User") {
-                    return UserDashboard(
-                        devoteeId: currentDevotee.devoteeId.toString());
+        try {
+          if (snapshot.connectionState == ConnectionState.active) {
+            final uid = snapshot.data?.uid;
+            return FutureBuilder<Map<String, dynamic>?>(
+              future: GetDevoteeAPI().currentDevotee(),
+              builder: (context, currentDevoteeSnapshot) {
+                if (currentDevoteeSnapshot.connectionState ==
+                        ConnectionState.waiting ||
+                    currentDevoteeSnapshot.hasError) {
+                  print(
+                      "Error fetching current devotee: ${currentDevoteeSnapshot.error}");
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else {
+                  if (uid != null && currentDevoteeSnapshot.hasData) {
+                    print("API Response: ${currentDevoteeSnapshot.data}");
+
+                    final DevoteeModel currentDevotee =
+                        currentDevoteeSnapshot.data?["data"] ?? DevoteeModel();
+
+                    print(
+                        "Current Devotee Data: ${currentDevoteeSnapshot.data?["data"]}");
+
+                    print("authstate-------$currentDevotee");
+                    if (currentDevotee.devoteeId != null &&
+                        currentDevotee.devoteeId != "") {
+                      NetworkHelper().setCurrentDevotee = currentDevotee;
+                      if (currentDevotee.role == "SuperAdmin" ||
+                          currentDevotee.role == "Admin" ||
+                          currentDevotee.role == "Approver" ||
+                          currentDevotee.role == "Viewer") {
+                        return DashboardPage();
+                      } else if (currentDevotee.role == "User") {
+                        return UserDashboard(
+                            devoteeId: currentDevotee.devoteeId.toString());
+                      } else {
+                        return const EmailSignIn();
+                      }
+                    }
                   } else {
                     return const EmailSignIn();
                   }
-                } else {
-                  return const EmailSignIn();
                 }
-              }
-            },
-          );
-        } else {
-          return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
+                return const EmailSignIn();
+              },
+            );
+          } else {
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+        } catch (e) {
+          print("error in authstate -------$e");
+          return const EmailSignIn();
         }
       },
     );

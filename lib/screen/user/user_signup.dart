@@ -273,7 +273,7 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
       print("selected date: $selectedDate");
       dobController.text = selectedDate;
       List<String> selectedDateParts = selectedDate.split('-');
-      print("selected date parts: $selectedDateParts");
+     
       setState(() {
         day = selectedDateParts[0];
         month = selectedDateParts[1];
@@ -655,7 +655,7 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                     mobileController.text = value.toString();
                   },
                   onChanged: (phone) {
-                    print(phone.completeNumber);
+                   
                   },
                 ),
                 const SizedBox(height: 20),
@@ -1172,7 +1172,7 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                           if (uid != null || uid != "") {
                             response = await PostDevoteeAPI()
                                 .signupDevotee(updateDevotee);
-                            print("devotee add response: $response");
+                           
 
                             if (response["statusCode"] == 200) {
                               // Show a circular progress indicator while navigating
@@ -1191,8 +1191,7 @@ class _UserSignUpDelegateState extends State<UserSignUpDelegate> {
                                   await GetDevoteeAPI()
                                       .loginDevotee(uid.toString());
                               await fetchCurrentuser();
-                              print(
-                                  "currentDevoteeResponse----------$currentDevoteeResponse");
+                             
                               DevoteeModel currentDevotee =
                                   currentDevoteeResponse?["data"];
 

@@ -29,3 +29,12 @@ fetchCurrentuser() async {
     print('fetching currentDevotee error : $e');
   }
 }
+// Future<void> setCurrentUser(DevoteeModel devotee) async {
+//   try {
+//     NetworkHelper().setCurrentDevotee = devotee; 
+    
+//   } catch (e) {
+//     print('fetching currentDevotee error : $e');
+//   }
+// }
+
