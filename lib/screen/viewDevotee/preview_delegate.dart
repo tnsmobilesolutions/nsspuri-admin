@@ -219,18 +219,20 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
   //   });
   // }
 
-  Text buildSanghaText(String? sanghaName) {
-    double fontSize = 13;
+  Widget buildSanghaText(String? sanghaName) {
+    double fontSize = 18;
     if (sanghaName != null) {
       int nameLength = sanghaName.length;
-      if (nameLength > 15) {
+      if (nameLength > 20) {
         fontSize = 13;
-      } else if (nameLength < 5) {
-        fontSize = 17;
+      } else {
+        fontSize = 18;
       }
     }
     return Text(
+      //"123456789012345678901234567890",
       _toPascalCase(sanghaName ?? ''),
+      overflow: TextOverflow.clip,
       style: TextStyle(
         color: Colors.black,
         fontSize: fontSize,
@@ -240,13 +242,13 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
   }
 
   Text buildNameText(String? devoteeName) {
-    double fontSize = 17;
+    double fontSize = 27;
     if (devoteeName != null) {
       int nameLength = devoteeName.length;
-      if (nameLength > 20) {
+      if (nameLength > 22) {
         fontSize = 16;
-      } else if (nameLength < 5) {
-        fontSize = 22;
+      } else {
+        fontSize = 27;
       }
     }
     return Text(
@@ -328,8 +330,8 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                           .bloodGroup ==
                                                       null
                                               ? Container(
-                                                  width: 45,
-                                                  height: 40,
+                                                  width: 90,
+                                                  height: 70,
                                                   decoration:
                                                       const BoxDecoration(
                                                     shape: BoxShape.rectangle,
@@ -338,24 +340,19 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                               : Center(
                                                   child: Stack(
                                                     children: [
-                                                      Container(
-                                                        width: 45,
-                                                        height: 40,
-                                                        decoration:
-                                                            const BoxDecoration(
-                                                          shape: BoxShape
-                                                              .rectangle,
-                                                          image:
-                                                              DecorationImage(
-                                                            fit: BoxFit.fill,
+                                                      const SizedBox(
+                                                        height: 70,
+                                                        width: 90,
+                                                        child: Center(
+                                                          child: Image(
                                                             image: AssetImage(
                                                                 'assets/images/blood.png'),
                                                           ),
                                                         ),
                                                       ),
                                                       Positioned(
-                                                        top: 7,
-                                                        left: 0,
+                                                        top: 25,
+                                                        left: 22,
                                                         child: SizedBox(
                                                           width: 45,
                                                           height: 40,
@@ -364,13 +361,9 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                               "${widget.devoteeDetails.bloodGroup}",
                                                               style:
                                                                   const TextStyle(
-                                                                fontSize: 10,
-                                                                color: Color
-                                                                    .fromARGB(
-                                                                        255,
-                                                                        255,
-                                                                        255,
-                                                                        255),
+                                                                fontSize: 15,
+                                                                color: Colors
+                                                                    .white,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold,
@@ -489,7 +482,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                         flex: 2,
                                         child: Padding(
                                           padding:
-                                              const EdgeInsets.only(left: 0),
+                                              const EdgeInsets.only(left: 10),
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -540,8 +533,8 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                         flex: 3,
                                         child: Container(
                                           padding: const EdgeInsets.all(0),
-                                          height: 130,
-                                          width: 130,
+                                          height: 168,
+                                          width: 168,
                                           child: SfBarcodeGenerator(
                                             value: widget
                                                 .devoteeDetails.devoteeCode
