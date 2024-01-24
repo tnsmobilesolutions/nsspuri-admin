@@ -79,35 +79,55 @@ class _EmailSignInState extends State<EmailSignIn> {
                 ),
                 onEmailLoginPressed: (userEmail, userPassword) async {
                   try {
-                    String? uid = await FirebaseAuthentication()
-                        .signinWithFirebase(userEmail.toString().trim(),
-                            userPassword.toString().trim());
+                    // Show circular progress indicator while loading
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                    );
+
+                    String? uid =
+                        await FirebaseAuthentication().signinWithFirebase(
+                      userEmail.toString().trim(),
+                      userPassword.toString().trim(),
+                    );
 
                     if (uid != null) {
                       final response = await GetDevoteeAPI().loginDevotee(uid);
                       DevoteeModel resDevoteeData = response?["data"];
 
                       NetworkHelper().setCurrentDevotee = resDevoteeData;
-                      await Future.delayed(Duration(milliseconds: 5));
+
+                      // Delay for 2 seconds (just for demonstration, replace with actual data loading logic)
+                      await Future.delayed(Duration(seconds: 2));
+
+                      Navigator.pop(
+                          context); // Close the circular progress indicator
+
                       if (response?["statusCode"] == 200 &&
                           (resDevoteeData.role == "Admin" ||
                               resDevoteeData.role == "SuperAdmin" ||
                               resDevoteeData.role == "Approver" ||
                               resDevoteeData.role == "Viewer")) {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DashboardPage(),
-                            ));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DashboardPage(),
+                          ),
+                        );
                       } else if (response?["statusCode"] == 200 &&
                           resDevoteeData.role == "User") {
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) {
-                            return UserDashboard(
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UserDashboard(
                               devoteeId: resDevoteeData.devoteeId.toString(),
-                            );
-                          },
-                        ));
+                            ),
+                          ),
+                        );
                       } else {
                         ScaffoldMessenger.of(context)
                             .showSnackBar(const SnackBar(
@@ -119,6 +139,9 @@ class _EmailSignInState extends State<EmailSignIn> {
                         ));
                       }
                     } else {
+                      Navigator.pop(
+                          context); // Close the circular progress indicator
+
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         elevation: 6,
                         behavior: SnackBarBehavior.floating,
@@ -128,6 +151,8 @@ class _EmailSignInState extends State<EmailSignIn> {
                       ));
                     }
                   } catch (e) {
+                    Navigator.pop(
+                        context); // Close the circular progress indicator
                     print(e.toString());
                   }
                 },
