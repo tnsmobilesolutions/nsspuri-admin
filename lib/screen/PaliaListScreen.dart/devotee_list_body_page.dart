@@ -252,9 +252,6 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                         allDevotees[index].profilePhotoUrl ?? '',
                         height: 80,
                         width: 80,
-                        headers: {
-                          'origin': '*',
-                        },
                       )
                     : const Image(
                         image: AssetImage('assets/images/profile.jpeg')),
