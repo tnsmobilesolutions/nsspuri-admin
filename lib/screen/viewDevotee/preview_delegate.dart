@@ -220,19 +220,19 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
   // }
 
   Widget buildSanghaText(String? sanghaName) {
-    double fontSize = 18;
+    double fontSize = 17;
     if (sanghaName != null) {
       int nameLength = sanghaName.length;
       if (nameLength > 16) {
         fontSize = 13;
       } else {
-        fontSize = 18;
+        fontSize = 17;
       }
     }
     return Text(
       //"123456789012345678901234567890",
       _toPascalCase(sanghaName ?? ''),
-      overflow: TextOverflow.clip,
+      // overflow: TextOverflow.clip,
       style: TextStyle(
         color: Colors.black,
         fontSize: fontSize,
