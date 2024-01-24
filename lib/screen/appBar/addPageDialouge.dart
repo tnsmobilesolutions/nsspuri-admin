@@ -1626,203 +1626,203 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   decoration:
                       BoxDecoration(borderRadius: BorderRadius.circular(90)),
                   child: ElevatedButton(
-                    // onPressed: () async {
-                    //   if (formKey.currentState == null ||
-                    //       !formKey.currentState!.validate()) {
-                    //     return;
-                    //   }
-
-                    //   showDialog(
-                    //     context: context,
-                    //     barrierDismissible: false,
-                    //     builder: (BuildContext context) {
-                    //       return const Center(
-                    //         child: CircularProgressIndicator(),
-                    //       );
-                    //     },
-                    //   );
-
-                    //   try {
-                    //     await Future.delayed(const Duration(seconds: 1));
-                    //     String? profileURL = await uploadProfileImage();
-
-                    //     DevoteeModel updateDevotee =
-                    //         buildDevoteeModel(profileURL);
-
-                    //     Map<String, dynamic> response =
-                    //         await submitDevoteeData(updateDevotee);
-
-                    //     handleDevoteeSubmissionResponse(response);
-                    //   } catch (e) {
-                    //     handleException(e);
-                    //   }
-                    // },
                     onPressed: () async {
-                      if (formKey.currentState != null &&
-                          formKey.currentState!.validate()) {
-                        showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (BuildContext context) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          },
-                        );
-                        await Future.delayed(const Duration(seconds: 1));
-
-                        String setAgeGroupToDB() {
-                          if (ageGroupIndex == 0) {
-                            return "";
-                          } else {
-                            if (selectedAgeGroup == "1 to 12") {
-                              return "Child";
-                            } else if (selectedAgeGroup == "13 to 70") {
-                              return "Adult";
-                            } else if (selectedAgeGroup == "70 Above") {
-                              return "Elder";
-                            }
-                            return "Adult";
-                          }
-                        }
-
-                        try {
-                          String? profileURL = image?["selectedImage"] != null
-                              ? await uploadImageToFirebaseStorage(
-                                  image?["selectedImage"] as List<int>,
-                                  nameController.text)
-                              : selectedDevotee?.profilePhotoUrl;
-
-                          String uniqueDevoteeId = const Uuid().v1();
-                          DevoteeModel updateDevotee = DevoteeModel(
-                              devoteeCode:
-                                  selectedDevotee?.devoteeCode?.toInt() ?? 0,
-                              createdById: widget.title == "edit"
-                                  ? selectedDevotee?.createdById
-                                  : uniqueDevoteeId,
-                              status: selectedStatus,
-                              role: selectedRole,
-                              createdOn: selectedDevotee?.createdOn ??
-                                  DateFormat('yyyy-MM-dd HH:mm')
-                                      .format(DateTime.now()),
-                              isApproved: isApproved,
-                              devoteeId: widget.title == "edit"
-                                  ? widget.devoteeId
-                                  : uniqueDevoteeId,
-                              bloodGroup: bloodGroupController,
-                              name: nameController.text,
-                              remarks: remarksController.text,
-                              paidAmount:
-                                  double.tryParse(pranamiController.text),
-                              gender: gender[genderIndex],
-                              profilePhotoUrl: profileURL,
-                              hasParichayaPatra: parichayaPatraValue,
-                              sangha: sanghaController.text,
-                              dob: _formatDOB(dobController.text),
-                              ageGroup: setAgeGroupToDB(),
-                              mobileNumber: mobileController.text,
-                              updatedOn: DateTime.now().toString(),
-                              emailId: emailController.text,
-                              // isGruhasanaApproved: isGruhasanaApproved,
-                              // isKYDVerified: isKYDVerified,
-                              isSpeciallyAbled: isSpeciallyAbled,
-                              isGuest: isGuest,
-                              isOrganizer: isOrganizer,
-                              uid: selectedDevotee?.uid ?? "",
-                              address: AddressModel(
-                                  addressLine2: addressLine2Controller.text,
-                                  addressLine1: addressLine1Controller.text,
-                                  country: countryController.text,
-                                  postalCode: (postalCodeController.text != "")
-                                      ? int.tryParse(postalCodeController.text)
-                                      : 0,
-                                  city: cityController.text,
-                                  state: stateController.text));
-                          Map<String, dynamic> response;
-
-                          if (widget.title == "edit") {
-                            response = await PutDevoteeAPI()
-                                .updateDevotee(updateDevotee, widget.devoteeId);
-                            print("devotee update response: $response");
-                          } else {
-                            response = await PostDevoteeAPI()
-                                .addRelativeDevotee(updateDevotee);
-                            print("devotee add response: $response");
-                          }
-
-                          if (response["statusCode"] == 200) {
-                            // Show a circular progress indicator while navigating
-                            // ignore: use_build_context_synchronously
-                            showDialog(
-                              context: context,
-                              barrierDismissible:
-                                  false, // Prevent dismissing by tapping outside
-                              builder: (BuildContext context) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              },
-                            );
-                            if (context.mounted) {
-                              if (widget.role == "User") {
-                                Navigator.of(context)
-                                    .pop(); // Close the circular progress indicator
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => UserDashboard(
-                                              devoteeId: NetworkHelper()
-                                                      .getCurrentDevotee
-                                                      ?.devoteeId ??
-                                                  "",
-                                            )));
-                              } else {
-                                Navigator.of(context)
-                                    .pop(); // Close the circular progress indicator
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => DashboardPage(),
-                                    ));
-                              }
-
-                              // Navigator.push(context, MaterialPageRoute(
-                              //   builder: (context) {
-                              //     return DevoteeListPage(
-                              //       status: "allDevotee",
-                              //       pageFrom: "Search",
-                              //       devoteeList: devoteeList,
-                              //       searchValue: widget.searchValue,
-                              //       searchBy: widget.searchBy,
-                              //       showClearButton: widget.showClearButton,
-                              //     );
-                              //   },
-                              // ));
-                            }
-                          } else {
-                            if (context.mounted) {
-                              Navigator.of(context).pop();
-                            }
-// Close the circular progress indicator
-                            // ignore: use_build_context_synchronously
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('devotee update issue')));
-                          }
-                        } catch (e) {
-                          if (context.mounted) {
-                            Navigator.of(context).pop();
-                          }
-// Close the circular progress indicator
-                          // ignore: use_build_context_synchronously
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(e.toString())));
-                          print(e);
-                        }
-                      } else {
+                      if (formKey.currentState == null ||
+                          !formKey.currentState!.validate()) {
                         return;
                       }
+
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      );
+
+                      try {
+                        await Future.delayed(const Duration(seconds: 1));
+                        String? profileURL = await uploadProfileImage();
+
+                        DevoteeModel updateDevotee =
+                            buildDevoteeModel(profileURL);
+
+                        Map<String, dynamic> response =
+                            await submitDevoteeData(updateDevotee);
+
+                        handleDevoteeSubmissionResponse(response);
+                      } catch (e) {
+                        handleException(e);
+                      }
                     },
+//                     onPressed: () async {
+//                       if (formKey.currentState != null &&
+//                           formKey.currentState!.validate()) {
+//                         showDialog(
+//                           context: context,
+//                           barrierDismissible: false,
+//                           builder: (BuildContext context) {
+//                             return const Center(
+//                               child: CircularProgressIndicator(),
+//                             );
+//                           },
+//                         );
+//                         await Future.delayed(const Duration(seconds: 1));
+
+//                         String setAgeGroupToDB() {
+//                           if (ageGroupIndex == 0) {
+//                             return "";
+//                           } else {
+//                             if (selectedAgeGroup == "1 to 12") {
+//                               return "Child";
+//                             } else if (selectedAgeGroup == "13 to 70") {
+//                               return "Adult";
+//                             } else if (selectedAgeGroup == "70 Above") {
+//                               return "Elder";
+//                             }
+//                             return "Adult";
+//                           }
+//                         }
+
+//                         try {
+//                           String? profileURL = image?["selectedImage"] != null
+//                               ? await uploadImageToFirebaseStorage(
+//                                   image?["selectedImage"] as List<int>,
+//                                   nameController.text)
+//                               : selectedDevotee?.profilePhotoUrl;
+
+//                           String uniqueDevoteeId = const Uuid().v1();
+//                           DevoteeModel updateDevotee = DevoteeModel(
+//                               devoteeCode:
+//                                   selectedDevotee?.devoteeCode?.toInt() ?? 0,
+//                               createdById: widget.title == "edit"
+//                                   ? selectedDevotee?.createdById
+//                                   : uniqueDevoteeId,
+//                               status: selectedStatus,
+//                               role: selectedRole,
+//                               createdOn: selectedDevotee?.createdOn ??
+//                                   DateFormat('yyyy-MM-dd HH:mm')
+//                                       .format(DateTime.now()),
+//                               isApproved: isApproved,
+//                               devoteeId: widget.title == "edit"
+//                                   ? widget.devoteeId
+//                                   : uniqueDevoteeId,
+//                               bloodGroup: bloodGroupController,
+//                               name: nameController.text,
+//                               remarks: remarksController.text,
+//                               paidAmount:
+//                                   double.tryParse(pranamiController.text),
+//                               gender: gender[genderIndex],
+//                               profilePhotoUrl: profileURL,
+//                               hasParichayaPatra: parichayaPatraValue,
+//                               sangha: sanghaController.text,
+//                               dob: _formatDOB(dobController.text),
+//                               ageGroup: setAgeGroupToDB(),
+//                               mobileNumber: mobileController.text,
+//                               updatedOn: DateTime.now().toString(),
+//                               emailId: emailController.text,
+//                               // isGruhasanaApproved: isGruhasanaApproved,
+//                               // isKYDVerified: isKYDVerified,
+//                               isSpeciallyAbled: isSpeciallyAbled,
+//                               isGuest: isGuest,
+//                               isOrganizer: isOrganizer,
+//                               uid: selectedDevotee?.uid ?? "",
+//                               address: AddressModel(
+//                                   addressLine2: addressLine2Controller.text,
+//                                   addressLine1: addressLine1Controller.text,
+//                                   country: countryController.text,
+//                                   postalCode: (postalCodeController.text != "")
+//                                       ? int.tryParse(postalCodeController.text)
+//                                       : 0,
+//                                   city: cityController.text,
+//                                   state: stateController.text));
+//                           Map<String, dynamic> response;
+
+//                           if (widget.title == "edit") {
+//                             response = await PutDevoteeAPI()
+//                                 .updateDevotee(updateDevotee, widget.devoteeId);
+//                             print("devotee update response: $response");
+//                           } else {
+//                             response = await PostDevoteeAPI()
+//                                 .addRelativeDevotee(updateDevotee);
+//                             print("devotee add response: $response");
+//                           }
+
+//                           if (response["statusCode"] == 200) {
+//                             // Show a circular progress indicator while navigating
+//                             // ignore: use_build_context_synchronously
+//                             showDialog(
+//                               context: context,
+//                               barrierDismissible:
+//                                   false, // Prevent dismissing by tapping outside
+//                               builder: (BuildContext context) {
+//                                 return const Center(
+//                                   child: CircularProgressIndicator(),
+//                                 );
+//                               },
+//                             );
+//                             if (context.mounted) {
+//                               if (widget.role == "User") {
+//                                 Navigator.of(context)
+//                                     .pop(); // Close the circular progress indicator
+//                                 Navigator.push(
+//                                     context,
+//                                     MaterialPageRoute(
+//                                         builder: (context) => UserDashboard(
+//                                               devoteeId: NetworkHelper()
+//                                                       .getCurrentDevotee
+//                                                       ?.devoteeId ??
+//                                                   "",
+//                                             )));
+//                               } else {
+//                                 Navigator.of(context)
+//                                     .pop(); // Close the circular progress indicator
+//                                 Navigator.push(
+//                                     context,
+//                                     MaterialPageRoute(
+//                                       builder: (context) => DashboardPage(),
+//                                     ));
+//                               }
+
+//                               // Navigator.push(context, MaterialPageRoute(
+//                               //   builder: (context) {
+//                               //     return DevoteeListPage(
+//                               //       status: "allDevotee",
+//                               //       pageFrom: "Search",
+//                               //       devoteeList: devoteeList,
+//                               //       searchValue: widget.searchValue,
+//                               //       searchBy: widget.searchBy,
+//                               //       showClearButton: widget.showClearButton,
+//                               //     );
+//                               //   },
+//                               // ));
+//                             }
+//                           } else {
+//                             if (context.mounted) {
+//                               Navigator.of(context).pop();
+//                             }
+// // Close the circular progress indicator
+//                             // ignore: use_build_context_synchronously
+//                             ScaffoldMessenger.of(context).showSnackBar(
+//                                 const SnackBar(
+//                                     content: Text('devotee update issue')));
+//                           }
+//                         } catch (e) {
+//                           if (context.mounted) {
+//                             Navigator.of(context).pop();
+//                           }
+// // Close the circular progress indicator
+//                           // ignore: use_build_context_synchronously
+//                           ScaffoldMessenger.of(context).showSnackBar(
+//                               SnackBar(content: Text(e.toString())));
+//                           print(e);
+//                         }
+//                       } else {
+//                         return;
+//                       }
+//                     },
                     style: ButtonStyle(
                         backgroundColor:
                             MaterialStateProperty.resolveWith((states) {

@@ -223,7 +223,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
     double fontSize = 18;
     if (sanghaName != null) {
       int nameLength = sanghaName.length;
-      if (nameLength > 20) {
+      if (nameLength > 16) {
         fontSize = 13;
       } else {
         fontSize = 18;
