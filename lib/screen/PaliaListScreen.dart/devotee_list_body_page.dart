@@ -246,19 +246,17 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
               DataCell(SizedBox(
                 height: 50,
                 width: 50,
-                child:
-                    //  allDevotees[index].profilePhotoUrl != null &&
-                    //         allDevotees[index].profilePhotoUrl!.isNotEmpty == true
-                    //     ? Image.network(
-                    //         allDevotees[index].profilePhotoUrl ?? '',
-                    //         height: 80,
-                    //         width: 80,
-                    //         headers: {
-                    //           'Access-Control-Allow-Origin': '*',
-                    //         },
-                    //       )
-                    //     :
-                    const Image(
+                child: allDevotees[index].profilePhotoUrl != null &&
+                        allDevotees[index].profilePhotoUrl!.isNotEmpty == true
+                    ? Image.network(
+                        allDevotees[index].profilePhotoUrl ?? '',
+                        height: 80,
+                        width: 80,
+                        headers: {
+                          'Access-Control-Allow-Origin': '*',
+                        },
+                      )
+                    : const Image(
                         image: AssetImage('assets/images/profile.jpeg')),
               )),
               DataCell(
