@@ -253,7 +253,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                         height: 80,
                         width: 80,
                         headers: {
-                          'Access-Control-Allow-Origin': '*',
+                          'origin': '*',
                         },
                       )
                     : const Image(
