@@ -100,14 +100,13 @@ class _EmailSignInState extends State<EmailSignIn> {
                       DevoteeModel resDevoteeData = response["data"];
 
                       NetworkHelper().setCurrentDevotee = resDevoteeData;
-                      await Future.delayed(Duration(seconds: 2));
-
+                      // await Future.delayed(Duration(seconds: 2));
                       if (response["statusCode"] == 200 &&
                           (resDevoteeData.role == "Admin" ||
                               resDevoteeData.role == "SuperAdmin" ||
                               resDevoteeData.role == "Approver" ||
                               resDevoteeData.role == "Viewer")) {
-                        // Navigator.pop(context);
+                        Navigator.pop(context);
                         // Navigator.pop(context);
                         Navigator.push(
                           context,
