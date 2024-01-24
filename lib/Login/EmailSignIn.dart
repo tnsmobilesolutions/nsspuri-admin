@@ -107,8 +107,8 @@ class _EmailSignInState extends State<EmailSignIn> {
                               resDevoteeData.role == "SuperAdmin" ||
                               resDevoteeData.role == "Approver" ||
                               resDevoteeData.role == "Viewer")) {
-                        Navigator.pop(context);
-                        Navigator.pop(context);
+                        // Navigator.pop(context);
+                        // Navigator.pop(context);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
