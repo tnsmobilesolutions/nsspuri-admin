@@ -75,6 +75,7 @@ class DevoteeListPage extends StatelessWidget {
         body: SafeArea(
             child: DevoteeListBodyPage(
           status: status,
+          advanceStatus: advanceStatus,
           pageFrom: pageFrom,
           searchValue: searchValue,
           searchBy: searchBy,
