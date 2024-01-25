@@ -102,7 +102,7 @@ class _AppbarActionButtonWidgetState extends State<AppbarActionButtonWidget> {
     return Padding(
       padding: const EdgeInsets.all(10),
       child: DropdownMenu<String>(
-        width: 200,
+        width: 150,
         label: selectedStatus != null
             ? Text(
                 selectedStatus!,
@@ -209,25 +209,23 @@ class _AppbarActionButtonWidgetState extends State<AppbarActionButtonWidget> {
       mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const GotoHomeButton(),
-        Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: SearchDevotee(
-              status: "allDevotee",
-              searchBy: widget.searchBy,
-              searchStatus: selectedStatus,
-              searchValue: widget.searchValue,
-              onFieldValueChanged: (isEmpty) {},
-            )),
+        SearchDevotee(
+          status: "allDevotee",
+          searchBy: widget.searchBy,
+          searchStatus: selectedStatus,
+          searchValue: widget.searchValue,
+          onFieldValueChanged: (isEmpty) {},
+        ),
         widget.showClearButton == true
             ? advanceSearchDropdown(context)
             : const SizedBox(),
         SearchClearButton(widget: widget),
-        const CreatedByMe(),
-        CreateDelegateButton(pageFrom: widget.pageFrom),
-        const SizedBox(width: 10),
-        const LogoutButton(),
-        const SizedBox(width: 10),
+        //const GotoHomeButton(),
+        // const CreatedByMe(),
+        // CreateDelegateButton(pageFrom: widget.pageFrom),
+        //const SizedBox(width: 5),
+        //const LogoutButton(),
+        // const SizedBox(width: 5),
       ],
     );
   }

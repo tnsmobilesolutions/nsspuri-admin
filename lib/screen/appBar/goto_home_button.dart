@@ -8,30 +8,25 @@ class GotoHomeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        OutlinedButton(
-          style: OutlinedButton.styleFrom(
-            side: const BorderSide(
-              width: 1.0,
-              color: Colors.white,
-            ),
-            foregroundColor: Colors.white,
-          ),
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(
-              builder: (context) {
-                return DashboardPage();
-              },
-            ));
-          },
-          child: const Text(
-            'Home',
-            style: TextStyle(color: Colors.white, fontSize: 12),
-          ),
+    return OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        side: const BorderSide(
+          width: 1.0,
+          color: Colors.white,
         ),
-        const SizedBox(width: 10),
-      ],
+        foregroundColor: Colors.white,
+      ),
+      onPressed: () {
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) {
+            return DashboardPage();
+          },
+        ));
+      },
+      child: const Text(
+        'Home',
+        style: TextStyle(color: Colors.white, fontSize: 12),
+      ),
     );
   }
 }
