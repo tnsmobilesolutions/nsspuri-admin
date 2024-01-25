@@ -178,7 +178,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
     RenderRepaintBoundary boundary =
         _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
 
-    ui.Image image = boundary.toImageSync(pixelRatio: 3.0);
+    ui.Image image = await boundary.toImage(pixelRatio: 3.0);
     ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     Uint8List pngBytes = byteData!.buffer.asUint8List();
 
