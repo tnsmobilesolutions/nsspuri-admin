@@ -54,7 +54,11 @@ class DashboardPage extends StatelessWidget {
               automaticallyImplyLeading: false,
               centerTitle: false,
               title: const TitleAppBar(),
-              actions: [AppbarActionButtonWidget()],
+              actions: [
+                AppbarActionButtonWidget(
+                  pageFrom: "Dashboard",
+                )
+              ],
             ),
             tablet: ResponsiveAppBar(),
             mobile: ResponsiveAppBar(),

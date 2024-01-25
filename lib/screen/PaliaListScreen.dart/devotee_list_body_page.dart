@@ -22,7 +22,7 @@ class DevoteeListBodyPage extends StatefulWidget {
   DevoteeListBodyPage(
       {Key? key,
       required this.status,
-      required this.pageFrom,
+      this.pageFrom,
       this.devoteeList,
       this.showClearButton,
       this.searchValue,
@@ -30,7 +30,7 @@ class DevoteeListBodyPage extends StatefulWidget {
       : super(key: key);
 
   List<DevoteeModel>? devoteeList;
-  String pageFrom;
+  String? pageFrom;
   String? searchBy;
   String? searchValue;
   bool? showClearButton;
@@ -246,17 +246,19 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
               DataCell(SizedBox(
                 height: 50,
                 width: 50,
-                child: allDevotees[index].profilePhotoUrl != null &&
-                        allDevotees[index].profilePhotoUrl!.isNotEmpty == true
-                    ? Image.network(
-                        allDevotees[index].profilePhotoUrl ?? '',
-                        height: 80,
-                        width: 80,
-                        headers: {
-                          'Access-Control-Allow-Origin': '*',
-                        },
-                      )
-                    : const Image(
+                child:
+                    //  allDevotees[index].profilePhotoUrl != null &&
+                    //         allDevotees[index].profilePhotoUrl!.isNotEmpty == true
+                    //     ? Image.network(
+                    //         allDevotees[index].profilePhotoUrl ?? '',
+                    //         height: 80,
+                    //         width: 80,
+                    //         headers: {
+                    //           'Access-Control-Allow-Origin': '*',
+                    //         },
+                    //       )
+                    //     :
+                    const Image(
                         image: AssetImage('assets/images/profile.jpeg')),
               )),
               DataCell(
@@ -387,12 +389,14 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                                           .devoteeId
                                           .toString(),
                                       title: "edit",
-                                      onUpdateDevotee: (allVakta,
-                                          status,
-                                          pageFrom,
-                                          searchBy,
-                                          searchValue,
-                                          showClearButton) {
+                                      onUpdateDevotee: (
+                                        allVakta,
+                                        status,
+                                        pageFrom,
+                                        searchBy,
+                                        searchValue,
+                                        showClearButton,
+                                      ) {
                                         setState(() {
                                           allDevotees = allVakta;
                                           widget.status = status.toString();
@@ -404,6 +408,8 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                                         });
                                       },
                                       showClearButton: widget.showClearButton,
+                                      status: widget.status,
+                                      pageFrom: widget.pageFrom,
                                       searchBy: widget.searchBy,
                                       searchValue: widget.searchValue,
                                     ));

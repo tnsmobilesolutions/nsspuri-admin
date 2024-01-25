@@ -5,7 +5,12 @@ import 'package:sdp/screen/appBar/addPageDialouge.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
 class CreateDelegateButton extends StatelessWidget {
-  CreateDelegateButton({super.key, this.role});
+  CreateDelegateButton({
+    super.key,
+    this.role,
+    this.pageFrom,
+  });
+  String? pageFrom;
   String? role;
   // final _formKey = GlobalKey<FormState>();
   final paliaNameController = TextEditingController();
@@ -52,6 +57,7 @@ class CreateDelegateButton extends StatelessWidget {
                 content: AddPageDilouge(
                   title: "addDevotee",
                   devoteeId: "",
+                  pageFrom: pageFrom,
                   role: role,
                 ));
           },

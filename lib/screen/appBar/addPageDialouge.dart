@@ -16,7 +16,6 @@ import 'package:sdp/model/address_model.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
 import 'package:sdp/screen/appBar/custom_calendar.dart';
-import 'package:sdp/screen/dashboard/dashboard.dart';
 import 'package:sdp/screen/user/userDashboard.dart';
 import 'package:sdp/utilities/color_palette.dart';
 import 'package:sdp/utilities/network_helper.dart';
@@ -31,6 +30,8 @@ class AddPageDilouge extends StatefulWidget {
     this.searchValue,
     this.showClearButton,
     this.role,
+    this.pageFrom,
+    this.status,
     this.onUpdateDevotee,
   });
 
@@ -44,6 +45,8 @@ class AddPageDilouge extends StatefulWidget {
 
   String devoteeId;
   String? role;
+  String? pageFrom;
+  String? status;
   String? searchBy;
   String? searchValue;
   bool? showClearButton;
@@ -207,6 +210,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     super.initState();
     print("widget.devoteeId-----${widget.devoteeId}");
     if (widget.title == "edit") populateData();
+    print("page from: ${widget.pageFrom}");
   }
 
   get districtList => null;
@@ -448,11 +452,15 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
 
   Future<Map<String, dynamic>> submitDevoteeData(
       DevoteeModel updateDevotee) async {
-    if (widget.title == "edit") {
-      return await PutDevoteeAPI()
-          .updateDevotee(updateDevotee, widget.devoteeId);
-    } else {
-      return await PostDevoteeAPI().addRelativeDevotee(updateDevotee);
+    try {
+      if (widget.title == "edit") {
+        return await PutDevoteeAPI()
+            .updateDevotee(updateDevotee, widget.devoteeId);
+      } else {
+        return await PostDevoteeAPI().addRelativeDevotee(updateDevotee);
+      }
+    } on Exception catch (e) {
+      return {};
     }
   }
 
@@ -513,28 +521,85 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   }
 
   void updateDevoteeListOnEdit() async {
-    Map<String, dynamic>? allDevotee =
-        await GetDevoteeAPI().advanceSearchDevotee(
-      widget.searchValue.toString(),
-      widget.searchBy.toString(),
-      status: "", //TODO
-    );
-    List<DevoteeModel> allDevotees = [];
-    for (int i = 0; i < allDevotee["data"].length; i++) {
-      allDevotees.add(allDevotee["data"][i]);
-    }
-    widget.onUpdateDevotee!(
-      allDevotees,
-      "allDevotee",
-      "Search",
-      widget.searchBy,
-      widget.searchValue,
-      widget.showClearButton,
-    );
-    if (context.mounted) {
-      Navigator.of(context).pop();
-      Navigator.of(context).pop();
-      Navigator.of(context).pop();
+    try {
+      Map<String, dynamic>? allDevotee;
+      List<DevoteeModel> allDevotees = [];
+
+      if (widget.pageFrom == "Dashboard") {
+        switch (selectedStatus) {
+          case "allDevotee":
+            allDevotee = await GetDevoteeAPI().allDevotee();
+            break;
+          case "dataSubmitted":
+            allDevotee =
+                await GetDevoteeAPI().searchDevotee("dataSubmitted", "status");
+            break;
+          case "Approved":
+            allDevotee =
+                await GetDevoteeAPI().searchDevotee("Approved", "status");
+            break;
+          case "paid":
+            allDevotee = await GetDevoteeAPI().searchDevotee("paid", "status");
+            break;
+          case "printed":
+            allDevotee =
+                await GetDevoteeAPI().searchDevotee("printed", "status");
+            break;
+          case "rejected":
+            allDevotee =
+                await GetDevoteeAPI().searchDevotee("rejected", "status");
+            break;
+          case "blacklisted":
+            allDevotee =
+                await GetDevoteeAPI().searchDevotee("blacklisted", "status");
+            break;
+          case "lost":
+            allDevotee = await GetDevoteeAPI().searchDevotee("lost", "status");
+            break;
+          default:
+        }
+        for (int i = 0; i < allDevotee?["data"].length; i++) {
+          allDevotees.add(allDevotee?["data"][i]);
+        }
+        print("******************** all devotees: ${allDevotees.length}");
+        widget.onUpdateDevotee!(
+          allDevotees,
+          widget.status,
+          "Dashboard",
+          widget.searchBy,
+          widget.searchValue,
+          widget.showClearButton,
+        );
+      } else {
+        // allDevotee = await GetDevoteeAPI().advanceSearchDevotee(
+        // widget.searchValue ?? selectedStatus,
+        // widget.searchBy ?? "status",
+        //   status: "",
+        // );
+        allDevotee = await GetDevoteeAPI().searchDevotee(
+            widget.searchValue ?? selectedStatus, widget.searchBy ?? "status");
+        for (int i = 0; i < allDevotee["data"].length; i++) {
+          allDevotees.add(allDevotee["data"][i]);
+        }
+        widget.onUpdateDevotee!(
+          allDevotees,
+          "allDevotee",
+          "Search",
+          widget.searchBy,
+          widget.searchValue,
+          widget.showClearButton,
+        );
+      }
+
+      if (context.mounted) {
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+      } else {
+        print("context is not mounted");
+      }
+    } on Exception catch (e) {
+      print("some error: $e");
     }
   }
 
@@ -550,7 +615,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
         MaterialPageRoute(
           builder: (context) => DevoteeListPage(
             status: "allDevotee",
-            pageFrom: "Search",
+            pageFrom: widget.pageFrom,
             devoteeList: allDevotees,
             searchValue: widget.searchValue,
             searchBy: widget.searchBy,
