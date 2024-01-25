@@ -246,6 +246,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
               DataCell(SizedBox(
                 height: 50,
                 width: 50,
+<<<<<<< HEAD
                 child:
                     //  allDevotees[index].profilePhotoUrl != null &&
                     //         allDevotees[index].profilePhotoUrl!.isNotEmpty == true
@@ -259,6 +260,38 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                     //       )
                     //     :
                     const Image(
+=======
+                child: allDevotees[index].profilePhotoUrl != null &&
+                        allDevotees[index].profilePhotoUrl!.isNotEmpty == true
+                    ? Image.network(
+                        allDevotees[index].profilePhotoUrl ?? '',
+                        height: 80,
+                        width: 80,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          } else {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes !=
+                                        null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        (loadingProgress.expectedTotalBytes ??
+                                            1)
+                                    : null,
+                              ),
+                            );
+                          }
+                        },
+                        errorBuilder: (BuildContext context, Object error,
+                            StackTrace? stackTrace) {
+                          return Icon(Icons
+                              .error); // or display another placeholder for error state
+                        },
+                      )
+                    : const Image(
+>>>>>>> 51080c2480409fab3c49e164e29a21e2fc273d0e
                         image: AssetImage('assets/images/profile.jpeg')),
               )),
               DataCell(
