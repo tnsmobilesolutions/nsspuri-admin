@@ -102,7 +102,7 @@ class _AppbarActionButtonWidgetState extends State<AppbarActionButtonWidget> {
     return Padding(
       padding: const EdgeInsets.all(10),
       child: DropdownMenu<String>(
-        width: 150,
+        width: 200,
         label: selectedStatus != null
             ? Text(
                 selectedStatus!,

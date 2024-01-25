@@ -97,7 +97,11 @@ class _DashboardPageState extends State<DashboardPage> {
               title: const TitleAppBar(),
               flexibleSpace: Padding(
                 padding: const EdgeInsets.only(right: 50),
-                child: Center(child: AppbarActionButtonWidget()),
+                child: Center(
+                  child: AppbarActionButtonWidget(
+                    pageFrom: "Dashboard",
+                  ),
+                ),
               ),
               actions: [
                 PopupMenuButton<MenuOption>(
