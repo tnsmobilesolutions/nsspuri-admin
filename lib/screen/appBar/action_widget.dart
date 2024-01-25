@@ -15,6 +15,7 @@ class AppbarActionButtonWidget extends StatefulWidget {
   AppbarActionButtonWidget({
     super.key,
     this.searchBy,
+    this.pageFrom,
     this.searchValue,
     this.advanceStatus,
     this.showClearButton,
@@ -22,6 +23,7 @@ class AppbarActionButtonWidget extends StatefulWidget {
 
   String? advanceStatus;
   String? searchBy;
+  String? pageFrom;
   String? searchValue;
   bool? showClearButton;
 
@@ -177,7 +179,7 @@ class _AppbarActionButtonWidgetState extends State<AppbarActionButtonWidget> {
                 return DevoteeListPage(
                   status: "allDevotee",
                   advanceStatus: selectedStatus,
-                  pageFrom: "Search",
+                  //pageFrom: "Search",
                   devoteeList: devoteeList,
                   searchValue: widget.searchValue.toString(),
                   searchBy: widget.searchBy,
@@ -222,7 +224,7 @@ class _AppbarActionButtonWidgetState extends State<AppbarActionButtonWidget> {
             : const SizedBox(),
         SearchClearButton(widget: widget),
         const CreatedByMe(),
-        CreateDelegateButton(),
+        CreateDelegateButton(pageFrom: widget.pageFrom),
         const SizedBox(width: 10),
         const LogoutButton(),
         const SizedBox(width: 10),

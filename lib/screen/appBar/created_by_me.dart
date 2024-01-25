@@ -19,7 +19,7 @@ class _CreatedByMeState extends State<CreatedByMe> {
   Future<void> fetchDelegatesByMe() async {
     var currentUser = NetworkHelper().currentDevotee;
     var allDevotees = await GetDevoteeAPI()
-        .devoteeListBycreatedById(currentUser?.createdById.toString() ?? "");
+        .devoteeListBycreatedById(currentUser?.devoteeId.toString() ?? "");
     if (allDevotees != null) {
       print("all devotee by me length: ${allDevotees["data"].length}");
       setState(() {

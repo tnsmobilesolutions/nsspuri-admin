@@ -67,6 +67,10 @@ dependencies:
   data_table_2: ^2.5.10
   lazy_data_table: ^0.3.1
   sticky_headers: ^0.3.0+2
+  intl_phone_field: ^3.2.0
+  image_downloader_web: ^2.0.4
+  screenshot: ^2.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

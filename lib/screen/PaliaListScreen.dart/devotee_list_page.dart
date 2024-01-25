@@ -13,7 +13,7 @@ class DevoteeListPage extends StatelessWidget {
       {Key? key,
       required this.status,
       this.advanceStatus,
-      required this.pageFrom,
+      this.pageFrom,
       this.devoteeList,
       this.searchValue,
       this.showClearButton,
@@ -21,7 +21,7 @@ class DevoteeListPage extends StatelessWidget {
       : super(key: key);
   String status;
   String? advanceStatus;
-  String pageFrom;
+  String? pageFrom;
   List<DevoteeModel>? devoteeList;
   String? searchValue;
   String? searchBy;

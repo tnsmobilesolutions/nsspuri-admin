@@ -22,7 +22,7 @@ class DevoteeListBodyPage extends StatefulWidget {
   DevoteeListBodyPage(
       {Key? key,
       required this.status,
-      required this.pageFrom,
+      this.pageFrom,
       this.devoteeList,
       this.showClearButton,
       this.searchValue,
@@ -30,7 +30,7 @@ class DevoteeListBodyPage extends StatefulWidget {
       : super(key: key);
 
   List<DevoteeModel>? devoteeList;
-  String pageFrom;
+  String? pageFrom;
   String? searchBy;
   String? searchValue;
   bool? showClearButton;
@@ -241,28 +241,6 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         allDevotees.length,
         (index) {
           return DataRow(
-            // selected: selectedList[index],
-            // onSelectChanged: (bool? value) {
-            //   setState(() {
-            //     selectedList[index] = value!;
-            //     if (value) {
-            //       if (selectedDevotees.length < 6) {
-            //         selectedDevotees.add(allDevotees[index]);
-            //       } else {
-            //         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            //           elevation: 6,
-            //           behavior: SnackBarBehavior.floating,
-            //           content: Text(
-            //             'You can only select up to 6 devotees !',
-            //           ),
-            //         ));
-            //         selectedList[index] = false;
-            //       }
-            //     } else {
-            //       selectedDevotees.remove(allDevotees[index]);
-            //     }
-            //   });
-            // },
             cells: [
               DataCell(Text("${index + 1}")),
               DataCell(SizedBox(
@@ -274,6 +252,27 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                         allDevotees[index].profilePhotoUrl ?? '',
                         height: 80,
                         width: 80,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          } else {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes !=
+                                        null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        (loadingProgress.expectedTotalBytes ??
+                                            1)
+                                    : null,
+                              ),
+                            );
+                          }
+                        },
+                        errorBuilder: (BuildContext context, Object error,
+                            StackTrace? stackTrace) {
+                          return const Icon(Icons.error);
+                        },
                       )
                     : const Image(
                         image: AssetImage('assets/images/profile.jpeg')),
@@ -339,8 +338,8 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                                     allDevotees[index].sangha != ''
                                 ? Text(
                                     "(${allDevotees[index].sangha.toString()})")
-                                : Text(''),
-                            Spacer(),
+                                : const Text(''),
+                            const Spacer(),
                             IconButton(
                                 color: Colors.deepOrange,
                                 onPressed: () {
@@ -406,7 +405,27 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                                           .devoteeId
                                           .toString(),
                                       title: "edit",
+                                      onUpdateDevotee: (
+                                        allVakta,
+                                        status,
+                                        pageFrom,
+                                        searchBy,
+                                        searchValue,
+                                        showClearButton,
+                                      ) {
+                                        setState(() {
+                                          allDevotees = allVakta;
+                                          widget.status = status.toString();
+                                          widget.pageFrom = pageFrom.toString();
+                                          widget.searchBy = widget.searchBy;
+                                          widget.searchValue = searchValue;
+                                          widget.showClearButton =
+                                              showClearButton;
+                                        });
+                                      },
                                       showClearButton: widget.showClearButton,
+                                      status: widget.status,
+                                      pageFrom: widget.pageFrom,
                                       searchBy: widget.searchBy,
                                       searchValue: widget.searchValue,
                                     ));

@@ -44,7 +44,7 @@ int calculateAge(DateTime dob) {
   if (now.month < dob.month || (now.month == dob.month && now.day < dob.day)) {
     age--;
   }
-  print("age: $age");
+
   return age;
 }
 

@@ -54,7 +54,11 @@ class DashboardPage extends StatelessWidget {
               automaticallyImplyLeading: false,
               centerTitle: false,
               title: const TitleAppBar(),
-              actions: [AppbarActionButtonWidget()],
+              actions: [
+                AppbarActionButtonWidget(
+                  pageFrom: "Dashboard",
+                )
+              ],
             ),
             tablet: ResponsiveAppBar(),
             mobile: ResponsiveAppBar(),
@@ -152,6 +156,7 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
                 }
                 break;
               case MenuOption.create:
+                // ignore: use_build_context_synchronously
                 showDialog<void>(
                   context: context,
                   builder: (BuildContext context) {
@@ -175,6 +180,7 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
                           title: "addDevotee",
                           devoteeId: "",
                           role: widget.role,
+                          //onUpdateDevotee: (allDevotees) {},
                         ));
                   },
                 );

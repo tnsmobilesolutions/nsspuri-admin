@@ -6,8 +6,8 @@ class DeleteDevoteeAPI extends DioFuctionAPI {
     try {
     await deleteAPI("devotee/$devoteeId");
     } catch (e) {
-      print("Post Error....");
-      print(e);
+      print("Post Error.... $e");
+     
       return {"statusCode": 500, "error": e};
     }
   }

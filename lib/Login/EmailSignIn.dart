@@ -79,36 +79,54 @@ class _EmailSignInState extends State<EmailSignIn> {
                 ),
                 onEmailLoginPressed: (userEmail, userPassword) async {
                   try {
-                    String? uid = await FirebaseAuthentication()
-                        .signinWithFirebase(userEmail.toString().trim(),
-                            userPassword.toString().trim());
+                    // Show circular progress indicator while loading
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                    );
+
+                    String? uid =
+                        await FirebaseAuthentication().signinWithFirebase(
+                      userEmail.toString().trim(),
+                      userPassword.toString().trim(),
+                    );
 
                     if (uid != null) {
                       final response = await GetDevoteeAPI().loginDevotee(uid);
-                      DevoteeModel resDevoteeData = response?["data"];
+                      DevoteeModel resDevoteeData = response["data"];
 
                       NetworkHelper().setCurrentDevotee = resDevoteeData;
-                      await Future.delayed(Duration(milliseconds: 5));
-                      if (response?["statusCode"] == 200 &&
+                      // await Future.delayed(Duration(seconds: 2));
+                      if (response["statusCode"] == 200 &&
                           (resDevoteeData.role == "Admin" ||
                               resDevoteeData.role == "SuperAdmin" ||
                               resDevoteeData.role == "Approver" ||
                               resDevoteeData.role == "Viewer")) {
+                        Navigator.pop(context);
+                        // Navigator.pop(context);
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DashboardPage(),
-                            ));
-                      } else if (response?["statusCode"] == 200 &&
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DashboardPage(),
+                          ),
+                        );
+                      } else if (response["statusCode"] == 200 &&
                           resDevoteeData.role == "User") {
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) {
-                            return UserDashboard(
+                        Navigator.of(context).pop();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UserDashboard(
                               devoteeId: resDevoteeData.devoteeId.toString(),
-                            );
-                          },
-                        ));
+                            ),
+                          ),
+                        );
                       } else {
+                        Navigator.pop(context);
                         ScaffoldMessenger.of(context)
                             .showSnackBar(const SnackBar(
                           elevation: 6,
@@ -119,6 +137,9 @@ class _EmailSignInState extends State<EmailSignIn> {
                         ));
                       }
                     } else {
+                      Navigator.pop(
+                          context); // Close the circular progress indicator
+
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         elevation: 6,
                         behavior: SnackBarBehavior.floating,
@@ -128,6 +149,9 @@ class _EmailSignInState extends State<EmailSignIn> {
                       ));
                     }
                   } catch (e) {
+                    Navigator.pop(
+                        context); // Close the circular progress indicator
+                    Navigator.pop(context);
                     print(e.toString());
                   }
                 },
