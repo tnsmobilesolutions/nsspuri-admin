@@ -184,6 +184,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                                   devoteeList: devoteeList,
                                   searchValue: sdpSearchController.text,
                                   searchBy: _selectedSearchType,
+                                  advanceStatus: widget.searchStatus,
                                   showClearButton:
                                       showClearButton, // devoteeList.isNotEmpty,
                                 );

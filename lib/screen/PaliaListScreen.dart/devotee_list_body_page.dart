@@ -22,6 +22,7 @@ class DevoteeListBodyPage extends StatefulWidget {
   DevoteeListBodyPage(
       {Key? key,
       required this.status,
+      this.advanceStatus,
       this.pageFrom,
       this.devoteeList,
       this.showClearButton,
@@ -35,6 +36,7 @@ class DevoteeListBodyPage extends StatefulWidget {
   String? searchValue;
   bool? showClearButton;
   String status;
+  String? advanceStatus;
 
   @override
   State<DevoteeListBodyPage> createState() => _DevoteeListBodyPageState();
@@ -243,38 +245,40 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
           return DataRow(
             cells: [
               DataCell(Text("${index + 1}")),
-              DataCell(SizedBox(
+              const DataCell(SizedBox(
                 height: 50,
                 width: 50,
-                child: allDevotees[index].profilePhotoUrl != null &&
-                        allDevotees[index].profilePhotoUrl!.isNotEmpty == true
-                    ? Image.network(
-                        allDevotees[index].profilePhotoUrl ?? '',
-                        height: 80,
-                        width: 80,
-                        loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent? loadingProgress) {
-                          if (loadingProgress == null) {
-                            return child;
-                          } else {
-                            return Center(
-                              child: CircularProgressIndicator(
-                                value: loadingProgress.expectedTotalBytes !=
-                                        null
-                                    ? loadingProgress.cumulativeBytesLoaded /
-                                        (loadingProgress.expectedTotalBytes ??
-                                            1)
-                                    : null,
-                              ),
-                            );
-                          }
-                        },
-                        errorBuilder: (BuildContext context, Object error,
-                            StackTrace? stackTrace) {
-                          return const Icon(Icons.error);
-                        },
-                      )
-                    : const Image(
+                child:
+                    //  allDevotees[index].profilePhotoUrl != null &&
+                    //         allDevotees[index].profilePhotoUrl!.isNotEmpty == true
+                    //     ? Image.network(
+                    //         allDevotees[index].profilePhotoUrl ?? '',
+                    //         height: 80,
+                    //         width: 80,
+                    //         loadingBuilder: (BuildContext context, Widget child,
+                    //             ImageChunkEvent? loadingProgress) {
+                    //           if (loadingProgress == null) {
+                    //             return child;
+                    //           } else {
+                    //             return Center(
+                    //               child: CircularProgressIndicator(
+                    //                 value: loadingProgress.expectedTotalBytes !=
+                    //                         null
+                    //                     ? loadingProgress.cumulativeBytesLoaded /
+                    //                         (loadingProgress.expectedTotalBytes ??
+                    //                             1)
+                    //                     : null,
+                    //               ),
+                    //             );
+                    //           }
+                    //         },
+                    //         errorBuilder: (BuildContext context, Object error,
+                    //             StackTrace? stackTrace) {
+                    //           return const Icon(Icons.error);
+                    //         },
+                    //       )
+                    //     :
+                    Image(
                         image: AssetImage('assets/images/profile.jpeg')),
               )),
               DataCell(
@@ -425,6 +429,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                                       },
                                       showClearButton: widget.showClearButton,
                                       status: widget.status,
+                                      advanceStatus: widget.advanceStatus,
                                       pageFrom: widget.pageFrom,
                                       searchBy: widget.searchBy,
                                       searchValue: widget.searchValue,

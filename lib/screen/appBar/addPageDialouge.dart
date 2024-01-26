@@ -30,6 +30,7 @@ class AddPageDilouge extends StatefulWidget {
     this.searchValue,
     this.showClearButton,
     this.role,
+    this.advanceStatus,
     this.pageFrom,
     this.status,
     this.onUpdateDevotee,
@@ -44,6 +45,7 @@ class AddPageDilouge extends StatefulWidget {
       bool? showClearButton)? onUpdateDevotee;
 
   String devoteeId;
+  String? advanceStatus;
   String? role;
   String? pageFrom;
   String? status;
@@ -526,7 +528,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
       List<DevoteeModel> allDevotees = [];
 
       if (widget.pageFrom == "Dashboard") {
-        switch (selectedStatus) {
+        switch (widget.status) {
           case "allDevotee":
             allDevotee = await GetDevoteeAPI().allDevotee();
             break;
@@ -571,13 +573,19 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
           widget.showClearButton,
         );
       } else {
-        // allDevotee = await GetDevoteeAPI().advanceSearchDevotee(
-        // widget.searchValue ?? selectedStatus,
-        // widget.searchBy ?? "status",
-        //   status: "",
-        // );
-        allDevotee = await GetDevoteeAPI().searchDevotee(
-            widget.searchValue ?? selectedStatus, widget.searchBy ?? "status");
+        if (widget.pageFrom == "Dashboard") {
+          allDevotee = await GetDevoteeAPI().searchDevotee(
+            widget.searchValue ?? selectedStatus,
+            widget.searchBy ?? "status",
+          );
+        } else {
+          allDevotee = await GetDevoteeAPI().advanceSearchDevotee(
+            widget.searchValue ?? selectedStatus,
+            widget.searchBy ?? "status",
+            status: widget.advanceStatus ?? "",
+          );
+        }
+
         for (int i = 0; i < allDevotee["data"].length; i++) {
           allDevotees.add(allDevotee["data"][i]);
         }
