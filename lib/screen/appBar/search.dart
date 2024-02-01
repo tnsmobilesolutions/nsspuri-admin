@@ -139,8 +139,8 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                           ? () async {
                               List<DevoteeModel> devoteeList = [];
                               await GetDevoteeAPI()
-                                  .searchDevotee(
-                                      sdpSearchController.text, "devoteeName")
+                                  .searchDevotee(sdpSearchController.text,
+                                      "devoteeName", 1, 10)
                                   .then((value) {
                                 devoteeList.addAll(value["data"]);
                               });

@@ -24,7 +24,7 @@ class GetDevoteeAPI extends DioFuctionAPI {
     try {
       final response = await getAPI("devotee/currentUser");
       print("response of currentuser -- $response");
-      
+
       DevoteeModel devotee =
           DevoteeModel.fromMap(response["data"]["singleDevotee"][0]);
       return {"statusCode": 200, "data": devotee};
@@ -66,19 +66,34 @@ class GetDevoteeAPI extends DioFuctionAPI {
     }
   }
 
-  Future<Map<String, dynamic>?> allDevotee() async {
+  Future<Map<String, dynamic>?> allDevotee(int page, int limit) async {
     try {
       List<DevoteeModel> devotees = [];
-      final response = await getAPI("devotee");
+      final response = await getAPI("devotee?page=$page&limit=$limit");
       final devoteelist = response["data"]["allDevotee"];
+      final count = response["data"]["count"];
+      final totalPages = response["data"]["totalPages"];
+      final currentPage = response["data"]["page"];
       devoteelist.forEach((devotee) {
         devotees.add(DevoteeModel.fromMap(devotee));
       });
 
-      return {"statusCode": 200, "data": devotees};
+      return {
+        "statusCode": 200,
+        "data": devotees,
+        "count": count,
+        "totalPages": totalPages,
+        "currentPage": currentPage,
+      };
     } catch (e) {
       print(e);
-      return {"statusCode": 500, "data": null};
+      return {
+        "statusCode": 500,
+        "data": null,
+        "count": 0,
+        "totalPages": 0,
+        "currentPage": 1,
+      };
     }
   }
 
@@ -93,24 +108,39 @@ class GetDevoteeAPI extends DioFuctionAPI {
   }
 
   Future<Map<String, dynamic>> searchDevotee(
-      String query, String searchBy) async {
+      String query, String searchBy, int page, int limit) async {
     try {
       Map<String, dynamic> response;
       List<DevoteeModel> devotees = [];
       if (searchBy == "devoteeName") {
         response = await getAPI("devotee/search?devoteeName=$query");
       } else {
-        response = await getAPI("devotee/search?status=$query");
+        response = await getAPI(
+            "devotee/search?status=$query&page=$page&limit=$limit");
       }
       final devoteelist = response["data"]["searchDevotee"];
       devoteelist.forEach((devotee) {
         devotees.add(DevoteeModel.fromMap(devotee));
       });
-
-      return {"statusCode": 200, "data": devotees};
+      final count = response["data"]["count"];
+      final totalPages = response["data"]["totalPages"];
+      final currentPage = response["data"]["page"];
+      return {
+        "statusCode": 200,
+        "data": devotees,
+        "count": count,
+        "totalPages": totalPages,
+        "currentPage": currentPage,
+      };
     } catch (e) {
       print(e);
-      return {"statusCode": 500, "data": null};
+      return {
+        "statusCode": 500,
+        "data": null,
+        "count": 0,
+        "totalPages": 0,
+        "currentPage": 1,
+      };
     }
   }
 

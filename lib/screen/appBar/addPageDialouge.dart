@@ -530,33 +530,35 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
       if (widget.pageFrom == "Dashboard") {
         switch (widget.status) {
           case "allDevotee":
-            allDevotee = await GetDevoteeAPI().allDevotee();
+            allDevotee = await GetDevoteeAPI().allDevotee(1, 10);
             break;
           case "dataSubmitted":
-            allDevotee =
-                await GetDevoteeAPI().searchDevotee("dataSubmitted", "status");
+            allDevotee = await GetDevoteeAPI()
+                .searchDevotee("dataSubmitted", "status", 1, 10);
             break;
           case "Approved":
-            allDevotee =
-                await GetDevoteeAPI().searchDevotee("Approved", "status");
+            allDevotee = await GetDevoteeAPI()
+                .searchDevotee("Approved", "status", 1, 10);
             break;
           case "paid":
-            allDevotee = await GetDevoteeAPI().searchDevotee("paid", "status");
+            allDevotee =
+                await GetDevoteeAPI().searchDevotee("paid", "status", 1, 10);
             break;
           case "printed":
             allDevotee =
-                await GetDevoteeAPI().searchDevotee("printed", "status");
+                await GetDevoteeAPI().searchDevotee("printed", "status", 1, 10);
             break;
           case "rejected":
-            allDevotee =
-                await GetDevoteeAPI().searchDevotee("rejected", "status");
+            allDevotee = await GetDevoteeAPI()
+                .searchDevotee("rejected", "status", 1, 10);
             break;
           case "blacklisted":
-            allDevotee =
-                await GetDevoteeAPI().searchDevotee("blacklisted", "status");
+            allDevotee = await GetDevoteeAPI()
+                .searchDevotee("blacklisted", "status", 1, 10);
             break;
           case "lost":
-            allDevotee = await GetDevoteeAPI().searchDevotee("lost", "status");
+            allDevotee =
+                await GetDevoteeAPI().searchDevotee("lost", "status", 1, 10);
             break;
           default:
         }
@@ -575,9 +577,10 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
       } else {
         if (widget.pageFrom == "Dashboard") {
           allDevotee = await GetDevoteeAPI().searchDevotee(
-            widget.searchValue ?? selectedStatus,
-            widget.searchBy ?? "status",
-          );
+              widget.searchValue ?? selectedStatus,
+              widget.searchBy ?? "status",
+              1,
+              10);
         } else {
           allDevotee = await GetDevoteeAPI().advanceSearchDevotee(
             widget.searchValue ?? selectedStatus,
@@ -612,7 +615,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   }
 
   void navigateToDevoteeListPage() async {
-    Map<String, dynamic>? allDevotee = await GetDevoteeAPI().allDevotee();
+    Map<String, dynamic>? allDevotee = await GetDevoteeAPI().allDevotee(1, 10);
     List<DevoteeModel> allDevotees = [];
     for (int i = 0; i < allDevotee?["data"].length; i++) {
       allDevotees.add(allDevotee?["data"][i]);

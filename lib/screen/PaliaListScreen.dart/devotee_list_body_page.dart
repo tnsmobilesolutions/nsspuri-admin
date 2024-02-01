@@ -8,9 +8,11 @@ import 'package:ionicons/ionicons.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 import 'package:sdp/API/get_devotee.dart';
+import 'package:sdp/constant/pagination_value.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/export_to_excel.dart';
+import 'package:sdp/screen/PaliaListScreen.dart/pagination_row.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/printpdf.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
 import 'package:sdp/screen/viewDevotee/preview_delegate.dart';
@@ -30,13 +32,13 @@ class DevoteeListBodyPage extends StatefulWidget {
       this.searchBy})
       : super(key: key);
 
+  String? advanceStatus;
   List<DevoteeModel>? devoteeList;
   String? pageFrom;
   String? searchBy;
   String? searchValue;
   bool? showClearButton;
   String status;
-  String? advanceStatus;
 
   @override
   State<DevoteeListBodyPage> createState() => _DevoteeListBodyPageState();
@@ -47,13 +49,12 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
   bool? allCheck;
   List<DevoteeModel> allDevotees = [], selectedDevotees = [];
   bool checkedValue = false;
+  Map<String, dynamic> data = {};
   bool editpaliDate = false;
   bool isAscending = false;
-  bool showMenu = false;
+  bool isChecked = false;
   bool isLoading = true;
   bool isSelected = false;
-  String? userRole;
-  bool isChecked = false;
   List<String> monthNames = [
     'Jan',
     'Feb',
@@ -69,8 +70,12 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
     'Dec'
   ];
 
-  late AnimateIconController _controller;
   List<bool> selectedList = [];
+  bool showMenu = false;
+  int totalPages = 0, dataCount = 0, currentPage = 1, totalDevoteeCount = 0;
+  String? userRole;
+
+  late AnimateIconController _controller;
 
   @override
   void initState() {
@@ -79,7 +84,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
 
     widget.devoteeList != null
         ? allDevotees = widget.devoteeList!
-        : fetchAllDevotee();
+        : fetchAllDevotee(currentPage);
     setState(() {
       userRole = NetworkHelper().currentDevotee?.role;
       selectedList =
@@ -108,14 +113,17 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
     return "";
   }
 
-  void fetchAllDevotee() async {
+  void fetchAllDevotee(int pageValue) async {
+    setState(() => isLoading = true);
     Map<String, dynamic>? allDevotee;
 
-    if (widget.status == "allDevotee" && widget.pageFrom == "Dashboard") {
-      allDevotee = await GetDevoteeAPI().allDevotee();
-    } else if (widget.status != "allDevotee" &&
-        widget.pageFrom == "Dashboard") {
-      allDevotee = await GetDevoteeAPI().searchDevotee(widget.status, "status");
+    if (widget.pageFrom == "Dashboard") {
+      if (widget.status == "allDevotee") {
+        allDevotee = await GetDevoteeAPI().allDevotee(pageValue, dataLimit);
+      } else {
+        allDevotee = await GetDevoteeAPI()
+            .searchDevotee(widget.status, "status", pageValue, dataLimit);
+      }
     } else if (widget.pageFrom == "Search") {
       allDevotee = await GetDevoteeAPI().advanceSearchDevotee(
         widget.searchValue.toString(),
@@ -124,10 +132,14 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
     }
 
     if (allDevotee != null) {
+      allDevotees.clear();
       setState(() {
         for (int i = 0; i < allDevotee?["data"].length; i++) {
           allDevotees.add(allDevotee?["data"][i]);
         }
+        totalPages = allDevotee?["totalPages"];
+        dataCount = allDevotee?["count"];
+        currentPage = allDevotee?["currentPage"];
       });
     } else {
       print("Error fetching data");
@@ -176,6 +188,44 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
       }
     }
     return "";
+  }
+
+  Future<void> pageNavigator(int pageValue) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    Map<String, dynamic>? allDevotee;
+
+    if (widget.status == "allDevotee" && widget.pageFrom == "Dashboard") {
+      allDevotee = await GetDevoteeAPI().allDevotee(pageValue, dataLimit);
+    } else if (widget.status != "allDevotee" &&
+        widget.pageFrom == "Dashboard") {
+      allDevotee = await GetDevoteeAPI()
+          .searchDevotee(widget.status, "status", pageValue, dataLimit);
+    } else if (widget.pageFrom == "Search") {
+      allDevotee = await GetDevoteeAPI().advanceSearchDevotee(
+        widget.searchValue.toString(),
+        widget.searchBy.toString(),
+      );
+    }
+
+    if (allDevotee != null) {
+      setState(() {
+        allDevotees.clear();
+        for (int i = 0; i < allDevotee?["data"].length; i++) {
+          allDevotees.add(allDevotee?["data"][i]);
+        }
+        totalPages = allDevotee?["totalPages"];
+        dataCount = allDevotee?["count"];
+        currentPage = allDevotee?["currentPage"];
+      });
+    } else {
+      print("Error fetching data");
+    }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   Widget devoteeTable(BuildContext context) {
@@ -245,7 +295,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
           return DataRow(
             cells: [
               DataCell(Text("${index + 1}")),
-              DataCell(SizedBox(
+              const DataCell(SizedBox(
                 height: 50,
                 width: 50,
                 child:
@@ -278,8 +328,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                     //         },
                     //       )
                     //     :
-                    const Image(
-                        image: AssetImage('assets/images/profile.jpeg')),
+                    Image(image: AssetImage('assets/images/profile.jpeg')),
               )),
               DataCell(
                 Column(
@@ -470,73 +519,96 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            userRole == "SuperAdmin" ||
-                    userRole == "Admin" ||
-                    userRole == "Approver"
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                            side: const BorderSide(
-                                width: 1.5, color: Colors.deepOrange),
-                            foregroundColor: Colors.black),
-                        onPressed: (NetworkHelper().getCurrentDevotee?.role !=
-                                "Viewer")
-                            ? () {}
-                            : null,
-                        child: const Text('Print'),
-                      ),
-                      const SizedBox(width: 12),
-                      OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                            side: const BorderSide(
-                                width: 1.5, color: Colors.deepOrange),
-                            foregroundColor: Colors.black),
-                        onPressed: (NetworkHelper().getCurrentDevotee?.role !=
-                                "Viewer")
-                            ? () {
-                                ExportToExcel().exportToExcel(allDevotees);
-                              }
-                            : null,
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      child: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  userRole == "SuperAdmin" ||
+                          userRole == "Admin" ||
+                          userRole == "Approver"
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Text('Export'),
-                            Icon(
-                              Icons.upload_rounded,
-                              color: Colors.deepOrange,
-                            )
+                            OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(
+                                      width: 1.5, color: Colors.deepOrange),
+                                  foregroundColor: Colors.black),
+                              onPressed:
+                                  (NetworkHelper().getCurrentDevotee?.role !=
+                                          "Viewer")
+                                      ? () {}
+                                      : null,
+                              child: const Text('Print'),
+                            ),
+                            const SizedBox(width: 12),
+                            OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(
+                                      width: 1.5, color: Colors.deepOrange),
+                                  foregroundColor: Colors.black),
+                              onPressed:
+                                  (NetworkHelper().getCurrentDevotee?.role !=
+                                          "Viewer")
+                                      ? () {
+                                          ExportToExcel()
+                                              .exportToExcel(allDevotees);
+                                        }
+                                      : null,
+                              child: const Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text('Export'),
+                                  Icon(
+                                    Icons.upload_rounded,
+                                    color: Colors.deepOrange,
+                                  )
+                                ],
+                              ),
+                            ),
                           ],
-                        ),
+                        )
+                      : const SizedBox(),
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Responsive(
+                              desktop: devoteeTable(context),
+                              tablet: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: devoteeTable(context),
+                              ),
+                              mobile: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: devoteeTable(context),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      PaginationRow(
+                        dataCount: dataCount,
+                        currentPage: currentPage,
+                        totalPages: totalPages,
+                        fetchAllDevotee: fetchAllDevotee,
+                        onFieldSubmitted: (page) {
+                          if (page != null &&
+                              int.tryParse(page)! > 0 &&
+                              int.tryParse(page)! < totalPages) {
+                            fetchAllDevotee(int.tryParse(page) ?? 1);
+                          }
+                        },
                       ),
                     ],
-                  )
-                : const SizedBox(),
-            Row(
-              children: [
-                Expanded(
-                  child: Responsive(
-                    desktop: devoteeTable(context),
-                    tablet: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: devoteeTable(context),
-                    ),
-                    mobile: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: devoteeTable(context),
-                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
     );
   }
 }
