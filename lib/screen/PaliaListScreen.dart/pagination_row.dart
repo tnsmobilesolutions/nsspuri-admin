@@ -5,12 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:sdp/constant/pagination_value.dart';
 
 class PaginationRow extends StatelessWidget {
-  final int dataCount;
-  final int currentPage;
-  final int totalPages;
-  final Function(int page) fetchAllDevotee;
-  final Function(String? page) onFieldSubmitted;
-
   PaginationRow({
     super.key,
     required this.dataCount,
@@ -19,7 +13,14 @@ class PaginationRow extends StatelessWidget {
     required this.fetchAllDevotee,
     required this.onFieldSubmitted,
   });
+
+  final int currentPage;
+  final int dataCount;
+  final Function(int page) fetchAllDevotee;
+  final Function(String? page) onFieldSubmitted;
   TextEditingController pageController = TextEditingController();
+  final int totalPages;
+
   InputDecoration fieldDecoration(BuildContext context) {
     return const InputDecoration(
       filled: true,
@@ -30,7 +31,7 @@ class PaginationRow extends StatelessWidget {
       focusedBorder:
           OutlineInputBorder(borderSide: BorderSide(color: Colors.deepOrange)),
       enabledBorder:
-          OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+          OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
     );
   }
 
@@ -115,9 +116,9 @@ class PaginationRow extends StatelessWidget {
 }
 
 class MaxValueFormatter extends TextInputFormatter {
-  final int maxValue;
-
   MaxValueFormatter(this.maxValue);
+
+  final int maxValue;
 
   @override
   TextEditingValue formatEditUpdate(

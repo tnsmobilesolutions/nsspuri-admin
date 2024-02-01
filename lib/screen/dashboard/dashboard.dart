@@ -18,6 +18,7 @@ enum MenuOption {
   home,
   createdByMe,
   create,
+  settings,
   logout,
 }
 
@@ -30,6 +31,8 @@ extension MenuOptionExtension on MenuOption {
         return 'Created By Me';
       case MenuOption.create:
         return 'Create Delegate';
+      case MenuOption.settings:
+        return 'Settings';
       case MenuOption.logout:
         return 'Logout';
     }
@@ -54,6 +57,8 @@ class _DashboardPageState extends State<DashboardPage> {
         return Icons.card_membership_rounded;
       case MenuOption.create:
         return Icons.card_membership_rounded;
+      case MenuOption.settings:
+        return Icons.settings;
       case MenuOption.logout:
         return Icons.logout_rounded;
     }
@@ -166,6 +171,21 @@ class _DashboardPageState extends State<DashboardPage> {
                                 ));
                           },
                         );
+                        break;
+                      case MenuOption.settings:
+                        await fetchDelegatesByMe();
+                        if (context.mounted) {
+                          //TODO
+                          // Navigator.push(context, MaterialPageRoute(
+                          //   builder: (context) {
+                          //     return DevoteeListPage(
+                          //       pageFrom: "Dashboard",
+                          //       status: "allDevotee",
+                          //       devoteeList: allDevoteesCreatedByMe,
+                          //     );
+                          //   },
+                          // ));
+                        }
                         break;
                       case MenuOption.logout:
                         showDialog<String>(
@@ -360,6 +380,21 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
                   },
                 );
                 break;
+              case MenuOption.settings:
+                await fetchDelegatesByMe();
+                if (context.mounted) {
+                  //TODO
+                  // Navigator.push(context, MaterialPageRoute(
+                  //   builder: (context) {
+                  //     return DevoteeListPage(
+                  //       pageFrom: "Dashboard",
+                  //       status: "allDevotee",
+                  //       devoteeList: allDevoteesCreatedByMe,
+                  //     );
+                  //   },
+                  // ));
+                }
+                break;
               case MenuOption.logout:
                 showDialog<String>(
                   context: context,
@@ -443,6 +478,8 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
         return Icons.card_membership_rounded;
       case MenuOption.create:
         return Icons.card_membership_rounded;
+      case MenuOption.settings:
+        return Icons.settings;
       case MenuOption.logout:
         return Icons.logout_rounded;
     }
