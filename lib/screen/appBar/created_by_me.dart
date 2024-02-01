@@ -45,8 +45,19 @@ class _CreatedByMeState extends State<CreatedByMe> {
             foregroundColor: Colors.white,
           ),
           onPressed: () async {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+            );
+
             await fetchDelegatesByMe();
+
             if (context.mounted) {
+              Navigator.pop(context);
               Navigator.push(context, MaterialPageRoute(
                 builder: (context) {
                   return DevoteeListPage(

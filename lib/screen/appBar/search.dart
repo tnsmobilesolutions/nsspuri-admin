@@ -161,6 +161,14 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                     onFieldSubmitted: (sdpSearchController.text.isNotEmpty &&
                             _selectedSearchType?.toLowerCase() != null)
                         ? (value) async {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              },
+                            );
                             List<DevoteeModel> devoteeList = [];
                             await GetDevoteeAPI()
                                 .advanceSearchDevotee(
@@ -176,6 +184,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                             widget.onFieldValueChanged!(devoteeList.isNotEmpty);
                             print(
                                 "search devotee count: ${devoteeList.length}");
+                            Navigator.pop(context);
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) {
                                 return DevoteeListPage(
@@ -198,6 +207,14 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                         onPressed: (sdpSearchController.text.isNotEmpty &&
                                 _selectedSearchType?.toLowerCase() != null)
                             ? () async {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  },
+                                );
                                 List<DevoteeModel> devoteeList = [];
                                 await GetDevoteeAPI()
                                     .advanceSearchDevotee(
@@ -207,6 +224,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                                     .then((value) {
                                   devoteeList.addAll(value["data"]);
                                 });
+                                Navigator.pop(context);
                                 Navigator.push(context, MaterialPageRoute(
                                   builder: (context) {
                                     return DevoteeListPage(
