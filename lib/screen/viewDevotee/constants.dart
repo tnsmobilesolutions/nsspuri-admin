@@ -6,34 +6,34 @@ import 'package:sdp/model/devotee_model.dart';
 int seniorCitizenAgeLimit = 70;
 int teenAgeLimit = 12;
 
-Color getColorByDevotee(DevoteeModel devotee) {
-  if (devotee.isGuest == true) return Colors.yellow;
-  if (devotee.isSpeciallyAbled == true) return Colors.purple;
-  if (devotee.isOrganizer == true) return Colors.red;
+Color getColorByDevotee(DevoteeModel? devotee) {
+  if (devotee?.isGuest == true) return Colors.yellow;
+  if (devotee?.isSpeciallyAbled == true) return Colors.purple;
+  if (devotee?.isOrganizer == true) return Colors.red;
 
-  if (devotee.ageGroup != "") {
-    if (devotee.ageGroup == "Child") return Colors.green;
+  if (devotee?.ageGroup != "") {
+    if (devotee?.ageGroup == "Child") return Colors.green;
 
-    if (devotee.ageGroup == "Adult") {
-      if (devotee.gender == "Male") {
+    if (devotee?.ageGroup == "Adult") {
+      if (devotee?.gender == "Male") {
         return Colors.blue;
       }
-      if (devotee.gender == "Female") {
+      if (devotee?.gender == "Female") {
         return Colors.pink;
       }
     }
 
-    if (devotee.ageGroup == "Elder") return Colors.purple;
+    if (devotee?.ageGroup == "Elder") return Colors.purple;
   }
 
-  if (devotee.dob?.isNotEmpty == true && devotee.dob != null) {
-    int age = calculateAge(DateTime.parse(devotee.dob.toString()));
+  if (devotee?.dob?.isNotEmpty == true && devotee?.dob != null) {
+    int age = calculateAge(DateTime.parse(devotee?.dob ?? ''));
     if (age <= teenAgeLimit) return Colors.green;
     if (age >= seniorCitizenAgeLimit) return Colors.purple;
   }
 
-  if (devotee.gender == "Male") return Colors.blue;
-  if (devotee.gender == "Female") return Colors.pink;
+  if (devotee?.gender == "Male") return Colors.blue;
+  if (devotee?.gender == "Female") return Colors.pink;
 
   return Colors.blue;
 }

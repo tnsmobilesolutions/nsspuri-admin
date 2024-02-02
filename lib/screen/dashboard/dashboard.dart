@@ -11,6 +11,7 @@ import 'package:sdp/screen/appBar/action_widget.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
 import 'package:sdp/screen/appBar/leadingImage.dart';
 import 'package:sdp/screen/appBar/responsive_action_widget.dart';
+import 'package:sdp/screen/dashboard/change_time.dart';
 import 'package:sdp/screen/dashboard/dashboardBody.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
@@ -174,17 +175,32 @@ class _DashboardPageState extends State<DashboardPage> {
                         break;
                       case MenuOption.settings:
                         await fetchDelegatesByMe();
-                        if (context.mounted) {
-                          //TODO
-                          // Navigator.push(context, MaterialPageRoute(
-                          //   builder: (context) {
-                          //     return DevoteeListPage(
-                          //       pageFrom: "Dashboard",
-                          //       status: "allDevotee",
-                          //       devoteeList: allDevoteesCreatedByMe,
-                          //     );
-                          //   },
-                          // ));
+                        if (context.mounted &&
+                            NetworkHelper().currentDevotee?.role ==
+                                "SuperAdmin") {
+                          showDialog<void>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                  title: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text('Change Timing'),
+                                      IconButton(
+                                          color: Colors.deepOrange,
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          icon: const Icon(
+                                            Icons.close,
+                                            color: Colors.deepOrange,
+                                          ))
+                                    ],
+                                  ),
+                                  content: UpdateTime());
+                            },
+                          );
                         }
                         break;
                       case MenuOption.logout:
@@ -382,17 +398,30 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
                 break;
               case MenuOption.settings:
                 await fetchDelegatesByMe();
-                if (context.mounted) {
-                  //TODO
-                  // Navigator.push(context, MaterialPageRoute(
-                  //   builder: (context) {
-                  //     return DevoteeListPage(
-                  //       pageFrom: "Dashboard",
-                  //       status: "allDevotee",
-                  //       devoteeList: allDevoteesCreatedByMe,
-                  //     );
-                  //   },
-                  // ));
+                if (context.mounted &&
+                    NetworkHelper().currentDevotee?.role == "SuperAdmin") {
+                  showDialog<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('Change Timing'),
+                              IconButton(
+                                  color: Colors.deepOrange,
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  icon: const Icon(
+                                    Icons.close,
+                                    color: Colors.deepOrange,
+                                  ))
+                            ],
+                          ),
+                          content: const UpdateTime());
+                    },
+                  );
                 }
                 break;
               case MenuOption.logout:
