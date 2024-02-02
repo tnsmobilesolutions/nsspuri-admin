@@ -423,7 +423,12 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                     color: Colors.deepOrange,
                     onPressed: NetworkHelper().currentDevotee?.role ==
                                 "Approver" &&
-                            allDevotees[index].status == "paid"
+                            (allDevotees[index].status == "paid" ||
+                                allDevotees[index].status == "printed" ||
+                                allDevotees[index].status == "withdrawn" ||
+                                allDevotees[index].status == "lost" ||
+                                allDevotees[index].status == "reissued" ||
+                                allDevotees[index].status == "blacklisted")
                         ? null
                         : () {
                             showDialog<void>(
@@ -482,9 +487,16 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                       Icons.edit,
                       color: ((NetworkHelper().currentDevotee?.role ==
                                       "Approver" &&
-                                  allDevotees[index].status == "paid" ||
+                                  (allDevotees[index].status == "paid" ||
+                                      allDevotees[index].status == "printed" ||
+                                      allDevotees[index].status ==
+                                          "withdrawn" ||
+                                      allDevotees[index].status == "lost" ||
+                                      allDevotees[index].status == "reissued" ||
+                                      allDevotees[index].status ==
+                                          "blacklisted")) ||
                               (NetworkHelper().getCurrentDevotee?.role ==
-                                  "Viewer")))
+                                  "Viewer"))
                           ? const Color.fromARGB(255, 206, 206, 206)
                           : Colors.deepOrange,
                     ),
