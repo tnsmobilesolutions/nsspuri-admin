@@ -63,6 +63,9 @@ class _CreatedByMeState extends State<CreatedByMe> {
                   pageFrom: "Dashboard",
                   status: "allDevotee",
                   devoteeList: allDevoteesCreatedByMe,
+                  // currentPage: 1,
+                  // dataCount: allDevoteesCreatedByMe.length,
+                  // totalPages: 1,
                 );
               },
             ));

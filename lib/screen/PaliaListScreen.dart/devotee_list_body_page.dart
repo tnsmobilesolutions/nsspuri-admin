@@ -21,16 +21,19 @@ import 'package:sdp/utilities/network_helper.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 class DevoteeListBodyPage extends StatefulWidget {
-  DevoteeListBodyPage(
-      {Key? key,
-      required this.status,
-      this.advanceStatus,
-      this.pageFrom,
-      this.devoteeList,
-      this.showClearButton,
-      this.searchValue,
-      this.searchBy})
-      : super(key: key);
+  DevoteeListBodyPage({
+    Key? key,
+    required this.status,
+    this.advanceStatus,
+    this.pageFrom,
+    this.devoteeList,
+    this.showClearButton,
+    this.searchValue,
+    this.searchBy,
+    this.currentPage,
+    this.dataCount,
+    this.totalPages,
+  }) : super(key: key);
 
   String? advanceStatus;
   List<DevoteeModel>? devoteeList;
@@ -39,6 +42,7 @@ class DevoteeListBodyPage extends StatefulWidget {
   String? searchValue;
   bool? showClearButton;
   String status;
+  int? totalPages, dataCount, currentPage;
 
   @override
   State<DevoteeListBodyPage> createState() => _DevoteeListBodyPageState();
@@ -72,7 +76,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
 
   List<bool> selectedList = [];
   bool showMenu = false;
-  int totalPages = 0, dataCount = 0, currentPage = 1, totalDevoteeCount = 0;
+  int totalPages = 0, dataCount = 0, currentPage = 1;
   String? userRole;
 
   late AnimateIconController _controller;
@@ -82,9 +86,19 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
     super.initState();
     _controller = AnimateIconController();
 
-    widget.devoteeList != null
-        ? allDevotees = widget.devoteeList!
-        : fetchAllDevotee(currentPage);
+    if (widget.devoteeList != null) {
+      setState(() {
+        isLoading = true;
+        allDevotees = widget.devoteeList!;
+        totalPages = widget.totalPages ?? 1;
+        dataCount = widget.dataCount ?? 0;
+        currentPage = widget.currentPage ?? 1;
+        isLoading = false;
+      });
+    } else {
+      fetchAllDevotee(currentPage);
+    }
+
     setState(() {
       userRole = NetworkHelper().currentDevotee?.role;
       selectedList =
@@ -124,12 +138,17 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         allDevotee = await GetDevoteeAPI()
             .searchDevotee(widget.status, "status", pageValue, dataLimit);
       }
-    } else if (widget.pageFrom == "Search") {
+    } else {
       allDevotee = await GetDevoteeAPI().advanceSearchDevotee(
         widget.searchValue.toString(),
         widget.searchBy.toString(),
+        pageValue,
+        dataLimit,
+        status: widget.advanceStatus,
       );
     }
+
+    //  if (widget.pageFrom == "Search")
 
     if (allDevotee != null) {
       allDevotees.clear();
@@ -140,6 +159,9 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         totalPages = allDevotee?["totalPages"];
         dataCount = allDevotee?["count"];
         currentPage = allDevotee?["currentPage"];
+        print("count: $dataCount");
+        print("totalPages: $totalPages");
+        print("currentPage: $currentPage");
       });
     } else {
       print("Error fetching data");
@@ -190,42 +212,12 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
     return "";
   }
 
-  Future<void> pageNavigator(int pageValue) async {
-    setState(() {
-      isLoading = true;
-    });
-
-    Map<String, dynamic>? allDevotee;
-
-    if (widget.status == "allDevotee" && widget.pageFrom == "Dashboard") {
-      allDevotee = await GetDevoteeAPI().allDevotee(pageValue, dataLimit);
-    } else if (widget.status != "allDevotee" &&
-        widget.pageFrom == "Dashboard") {
-      allDevotee = await GetDevoteeAPI()
-          .searchDevotee(widget.status, "status", pageValue, dataLimit);
-    } else if (widget.pageFrom == "Search") {
-      allDevotee = await GetDevoteeAPI().advanceSearchDevotee(
-        widget.searchValue.toString(),
-        widget.searchBy.toString(),
-      );
-    }
-
-    if (allDevotee != null) {
-      setState(() {
-        allDevotees.clear();
-        for (int i = 0; i < allDevotee?["data"].length; i++) {
-          allDevotees.add(allDevotee?["data"][i]);
-        }
-        totalPages = allDevotee?["totalPages"];
-        dataCount = allDevotee?["count"];
-        currentPage = allDevotee?["currentPage"];
-      });
-    } else {
-      print("Error fetching data");
-    }
-    setState(() {
-      isLoading = false;
-    });
+  String getSLno(int index) {
+    List<int> slList = List.generate(
+      dataLimit,
+      (index) => (currentPage - 1) * dataLimit + index + 1,
+    );
+    return slList[index].toString();
   }
 
   Widget devoteeTable(BuildContext context) {
@@ -294,41 +286,41 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         (index) {
           return DataRow(
             cells: [
-              DataCell(Text("${index + 1}")),
-              const DataCell(SizedBox(
+              DataCell(Text(getSLno(index))),
+              // DataCell(Text("${index + 1}")),
+              DataCell(SizedBox(
                 height: 50,
                 width: 50,
-                child:
-                    //  allDevotees[index].profilePhotoUrl != null &&
-                    //         allDevotees[index].profilePhotoUrl!.isNotEmpty == true
-                    //     ? Image.network(
-                    //         allDevotees[index].profilePhotoUrl ?? '',
-                    //         height: 80,
-                    //         width: 80,
-                    //         loadingBuilder: (BuildContext context, Widget child,
-                    //             ImageChunkEvent? loadingProgress) {
-                    //           if (loadingProgress == null) {
-                    //             return child;
-                    //           } else {
-                    //             return Center(
-                    //               child: CircularProgressIndicator(
-                    //                 value: loadingProgress.expectedTotalBytes !=
-                    //                         null
-                    //                     ? loadingProgress.cumulativeBytesLoaded /
-                    //                         (loadingProgress.expectedTotalBytes ??
-                    //                             1)
-                    //                     : null,
-                    //               ),
-                    //             );
-                    //           }
-                    //         },
-                    //         errorBuilder: (BuildContext context, Object error,
-                    //             StackTrace? stackTrace) {
-                    //           return const Icon(Icons.error);
-                    //         },
-                    //       )
-                    //     :
-                    Image(image: AssetImage('assets/images/profile.jpeg')),
+                child: allDevotees[index].profilePhotoUrl != null &&
+                        allDevotees[index].profilePhotoUrl!.isNotEmpty == true
+                    ? Image.network(
+                        allDevotees[index].profilePhotoUrl ?? '',
+                        height: 80,
+                        width: 80,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          } else {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes !=
+                                        null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        (loadingProgress.expectedTotalBytes ??
+                                            1)
+                                    : null,
+                              ),
+                            );
+                          }
+                        },
+                        errorBuilder: (BuildContext context, Object error,
+                            StackTrace? stackTrace) {
+                          return const Icon(Icons.error);
+                        },
+                      )
+                    : const Image(
+                        image: AssetImage('assets/images/profile.jpeg')),
               )),
               DataCell(
                 Column(
@@ -599,7 +591,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                         onFieldSubmitted: (page) {
                           if (page != null &&
                               int.tryParse(page)! > 0 &&
-                              int.tryParse(page)! < totalPages) {
+                              int.tryParse(page)! <= totalPages) {
                             fetchAllDevotee(int.tryParse(page) ?? 1);
                           }
                         },

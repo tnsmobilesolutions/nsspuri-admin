@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/Login/EmailSignIn.dart';
+import 'package:sdp/constant/enums.dart';
 import 'package:sdp/firebase/firebase_auth_api.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
@@ -13,14 +14,6 @@ import 'package:sdp/screen/appBar/leadingImage.dart';
 import 'package:sdp/screen/appBar/responsive_action_widget.dart';
 import 'package:sdp/screen/dashboard/dashboardBody.dart';
 import 'package:sdp/utilities/network_helper.dart';
-
-enum MenuOption {
-  home,
-  createdByMe,
-  create,
-  settings,
-  logout,
-}
 
 extension MenuOptionExtension on MenuOption {
   String get value {
@@ -93,7 +86,7 @@ class _DashboardPageState extends State<DashboardPage> {
         resizeToAvoidBottomInset: false,
         appBar: PreferredSize(
           preferredSize:
-              Size.fromHeight(Responsive.isMobile(context) ? 150 : 80),
+              Size.fromHeight(Responsive.isMobile(context) ? 150 : 70),
           child: Responsive(
             desktop: AppBar(
               toolbarHeight: 80,
@@ -238,7 +231,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         children: [
                           Icon(
                             _getIconForMenuOption(option),
-                            color: Colors.blue,
+                            color: Colors.deepOrange,
                             size: 20,
                           ),
                           const SizedBox(width: 10),
@@ -381,7 +374,7 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
                 );
                 break;
               case MenuOption.settings:
-                await fetchDelegatesByMe();
+                //await fetchDelegatesByMe();
                 if (context.mounted) {
                   //TODO
                   // Navigator.push(context, MaterialPageRoute(
@@ -445,7 +438,7 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
                 children: [
                   Icon(
                     _getIconForMenuOption(option),
-                    color: Colors.blue,
+                    color: Colors.deepOrange,
                     size: 20,
                   ),
                   const SizedBox(width: 10),

@@ -11,6 +11,7 @@ import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/API/post_devotee.dart';
 import 'package:sdp/API/put_devotee.dart';
+import 'package:sdp/constant/pagination_value.dart';
 import 'package:sdp/constant/sangha_list.dart';
 import 'package:sdp/model/address_model.dart';
 import 'package:sdp/model/devotee_model.dart';
@@ -199,6 +200,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'reissued',
     "blacklisted"
   ];
+  int totalPages = 0, dataCount = 0, currentPage = 1;
 
   @override
   void dispose() {
@@ -585,6 +587,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
           allDevotee = await GetDevoteeAPI().advanceSearchDevotee(
             widget.searchValue ?? selectedStatus,
             widget.searchBy ?? "status",
+            1,
+            dataLimit,
             status: widget.advanceStatus ?? "",
           );
         }
@@ -620,6 +624,9 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     for (int i = 0; i < allDevotee?["data"].length; i++) {
       allDevotees.add(allDevotee?["data"][i]);
     }
+    totalPages = allDevotee?["totalPages"];
+    dataCount = allDevotee?["count"];
+    currentPage = allDevotee?["currentPage"];
     if (context.mounted) {
       Navigator.push(
         context,
@@ -631,6 +638,9 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
             searchValue: widget.searchValue,
             searchBy: widget.searchBy,
             showClearButton: widget.showClearButton,
+            // currentPage: currentPage,
+            // dataCount: dataCount,
+            // totalPages: totalPages,
           ),
         ),
       );

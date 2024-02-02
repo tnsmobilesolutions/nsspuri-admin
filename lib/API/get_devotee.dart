@@ -145,7 +145,7 @@ class GetDevoteeAPI extends DioFuctionAPI {
   }
 
   Future<Map<String, dynamic>> advanceSearchDevotee(
-      String query, String searchBy,
+      String query, String searchBy, int page, int limit,
       {String? status}) async {
     Future<String> customEncodeComponent(String query) async {
       return query.replaceAll('+', '%2B').replaceAll('-', '%2D');
@@ -153,31 +153,103 @@ class GetDevoteeAPI extends DioFuctionAPI {
 
     try {
       List<DevoteeModel> devotees = [];
-// Encoding the query string
       String encodedQuery = await customEncodeComponent(query);
       print("encodedQuery----- $encodedQuery");
       final Map<String, dynamic> response;
       if (status == null) {
-        response =
-            await getAPI("devotee/advance-search?$searchBy=$encodedQuery");
-        print("API URL = devotee/advance-search?$searchBy=$encodedQuery");
+        response = await getAPI(
+            "devotee/advance-search?$searchBy=$encodedQuery&page=$page&limit=$limit");
+        //print("API URL = devotee/advance-search?$searchBy=$encodedQuery");
       } else {
         response = await getAPI(
-            "devotee/advance-search?$searchBy=$encodedQuery&advanceStatus=$status");
-        print(
-            "API URL = devotee/advance-search?$searchBy=$encodedQuery&advanceStatus=$status");
+            "devotee/advance-search?$searchBy=$encodedQuery&advanceStatus=$status&page=$page&limit=$limit");
+        // print(
+        //     "API URL = devotee/advance-search?$searchBy=$encodedQuery&advanceStatus=$status");
       }
 
       final devoteelist = response["data"]["searchDevotee"];
       devoteelist.forEach((devotee) {
         devotees.add(DevoteeModel.fromMap(devotee));
       });
-      return {"statusCode": 200, "data": devotees};
+      final count = response["data"]["count"];
+      final totalPages = response["data"]["totalPages"];
+      final currentPage = response["data"]["page"];
+      // print("count: $count");
+      // print("totalPages: $totalPages");
+      // print("currentPage: $currentPage");
+      return {
+        "statusCode": 200,
+        "data": devotees,
+        "count": count,
+        "totalPages": totalPages,
+        "currentPage": currentPage,
+      };
     } catch (e) {
       print(e);
-      return {"statusCode": 500, "data": null};
+      return {
+        "statusCode": 500,
+        "data": null,
+        "count": 0,
+        "totalPages": 0,
+        "currentPage": 1,
+      };
     }
   }
+  // Future<Map<String, dynamic>> advanceSearchDevotee(
+  //   String query,
+  //   String searchBy,
+  //   int page,
+  //   int limit, {
+  //   String? status,
+  // }) async {
+  //   Future<String> customEncodeComponent(String query) async {
+  //     return query.replaceAll('+', '%2B').replaceAll('-', '%2D');
+  //   }
+
+  //   Map<String, dynamic> handleResponse(Map<String, dynamic> response) {
+  //     List<DevoteeModel> devotees = [];
+  //     final devoteeList = response["data"]["searchDevotee"];
+  //     devoteeList.forEach((devotee) {
+  //       devotees.add(DevoteeModel.fromMap(devotee));
+  //     });
+  //     final count = response["data"]["count"];
+  //     final totalPages = response["data"]["totalPages"];
+  //     final currentPage = response["data"]["page"];
+
+  //     return {
+  //       "statusCode": 200,
+  //       "data": devotees,
+  //       "count": count,
+  //       "totalPages": totalPages,
+  //       "currentPage": currentPage,
+  //     };
+  //   }
+
+  //   try {
+  //     String encodedQuery = await customEncodeComponent(query);
+  //     String apiUrl = "devotee/advance-search?$searchBy=$encodedQuery";
+
+  //     if (status != null) {
+  //       apiUrl += "&advanceStatus=$status";
+  //     }
+
+  //     apiUrl += "&page=$page&limit=$limit";
+
+  //     print("API URL = $apiUrl");
+
+  //     final Map<String, dynamic> response = await getAPI(apiUrl);
+  //     return handleResponse(response);
+  //   } catch (e) {
+  //     print(e);
+  //     return {
+  //       "statusCode": 500,
+  //       "data": null,
+  //       "count": 0,
+  //       "totalPages": 0,
+  //       "currentPage": 1,
+  //     };
+  //   }
+  // }
 
   Future<Map<String, dynamic>?> fetchAllSangha() async {
     try {

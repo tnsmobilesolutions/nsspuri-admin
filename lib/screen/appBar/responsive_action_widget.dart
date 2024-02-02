@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:sdp/API/get_devotee.dart';
+import 'package:sdp/constant/pagination_value.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
 import 'package:sdp/screen/appBar/goto_home_button.dart';
@@ -54,6 +55,7 @@ class _ResponsiveAppbarActionButtonWidgetState
   ];
 
   String? userRole;
+  int totalPages = 0, dataCount = 0, currentPage = 1;
 
   @override
   void initState() {
@@ -127,11 +129,14 @@ class _ResponsiveAppbarActionButtonWidgetState
           });
           devoteeList.clear();
           await GetDevoteeAPI()
-              .advanceSearchDevotee(
-                  widget.searchValue.toString(), widget.searchBy.toString(),
+              .advanceSearchDevotee(widget.searchValue.toString(),
+                  widget.searchBy.toString(), 1, dataLimit,
                   status: selectedStatus)
-              .then((value) {
-            devoteeList.addAll(value["data"]);
+              .then((response) {
+            devoteeList.addAll(response["data"]);
+            totalPages = response["totalPages"];
+            dataCount = response["count"];
+            currentPage = response["currentPage"];
           });
           if (context.mounted) {
             Navigator.push(context, MaterialPageRoute(
@@ -144,6 +149,9 @@ class _ResponsiveAppbarActionButtonWidgetState
                   searchValue: widget.searchValue.toString(),
                   searchBy: widget.searchBy,
                   showClearButton: widget.showClearButton,
+                  //       currentPage: currentPage,
+                  // dataCount: dataCount,
+                  // totalPages: totalPages,
                 );
               },
             ));

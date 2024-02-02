@@ -35,6 +35,14 @@ class PaginationRow extends StatelessWidget {
     );
   }
 
+  String getDataCount() {
+    if (dataCount < dataLimit || currentPage == totalPages) {
+      return "$dataCount";
+    } else {
+      return '${dataLimit * currentPage}';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -45,9 +53,7 @@ class PaginationRow extends StatelessWidget {
             : Row(
                 children: [
                   Text(
-                    dataCount < 10
-                        ? "$dataCount"
-                        : '${dataLimit * currentPage}',
+                    getDataCount(),
                     style: const TextStyle(
                       color: Colors.deepOrange,
                       fontWeight: FontWeight.bold,
@@ -96,10 +102,10 @@ class PaginationRow extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(20),
           child: SizedBox(
-            //height: 50,
             width: 100,
             child: TextFormField(
               controller: pageController,
+              style: const TextStyle(fontSize: 13),
               decoration: fieldDecoration(context),
               keyboardType: TextInputType.number,
               inputFormatters: [

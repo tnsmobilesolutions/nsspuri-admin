@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:sdp/API/get_devotee.dart';
+import 'package:sdp/constant/pagination_value.dart';
 import 'package:sdp/constant/sangha_list.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
@@ -47,6 +48,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
     "mobileNumber",
     "bloodGroup"
   ];
+  int totalPages = 0, dataCount = 0, currentPage = 1;
   List<String?> searchSangha = [];
   bool showClearButton = false;
   String? trackSearchType;
@@ -141,8 +143,11 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                               await GetDevoteeAPI()
                                   .searchDevotee(sdpSearchController.text,
                                       "devoteeName", 1, 10)
-                                  .then((value) {
-                                devoteeList.addAll(value["data"]);
+                                  .then((response) {
+                                devoteeList.addAll(response["data"]);
+                                totalPages = response["totalPages"];
+                                dataCount = response["count"];
+                                currentPage = response["currentPage"];
                               });
                               Navigator.push(context, MaterialPageRoute(
                                 builder: (context) {
@@ -152,6 +157,9 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                                     devoteeList: devoteeList,
                                     searchValue: sdpSearchController.text,
                                     showClearButton: devoteeList.isNotEmpty,
+                                    currentPage: currentPage,
+                                    dataCount: dataCount,
+                                    totalPages: totalPages,
                                   );
                                 },
                               ));
@@ -163,6 +171,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                         ? (value) async {
                             showDialog(
                               context: context,
+                              barrierDismissible: false,
                               builder: (BuildContext context) {
                                 return const Center(
                                   child: CircularProgressIndicator(),
@@ -170,13 +179,19 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                               },
                             );
                             List<DevoteeModel> devoteeList = [];
+
                             await GetDevoteeAPI()
                                 .advanceSearchDevotee(
                               sdpSearchController.text,
                               _selectedSearchType.toString(),
+                              1,
+                              dataLimit,
                             )
-                                .then((value) {
-                              devoteeList.addAll(value["data"]);
+                                .then((response) {
+                              devoteeList.addAll(response["data"]);
+                              totalPages = response["totalPages"];
+                              dataCount = response["count"];
+                              currentPage = response["currentPage"];
                             });
                             setState(() {
                               showClearButton = !showClearButton;
@@ -194,8 +209,10 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                                   searchValue: sdpSearchController.text,
                                   searchBy: _selectedSearchType,
                                   advanceStatus: widget.searchStatus,
-                                  showClearButton:
-                                      showClearButton, // devoteeList.isNotEmpty,
+                                  showClearButton: showClearButton,
+                                  currentPage: currentPage,
+                                  dataCount: dataCount,
+                                  totalPages: totalPages,
                                 );
                               },
                             ));
@@ -220,9 +237,14 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                                     .advanceSearchDevotee(
                                   sdpSearchController.text,
                                   _selectedSearchType.toString(),
+                                  1,
+                                  dataLimit,
                                 )
-                                    .then((value) {
-                                  devoteeList.addAll(value["data"]);
+                                    .then((response) {
+                                  devoteeList.addAll(response["data"]);
+                                  totalPages = response["totalPages"];
+                                  dataCount = response["count"];
+                                  currentPage = response["currentPage"];
                                 });
                                 Navigator.pop(context);
                                 Navigator.push(context, MaterialPageRoute(
@@ -234,6 +256,9 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                                       searchValue: sdpSearchController.text,
                                       searchBy: _selectedSearchType,
                                       showClearButton: devoteeList.isNotEmpty,
+                                      currentPage: currentPage,
+                                      dataCount: dataCount,
+                                      totalPages: totalPages,
                                     );
                                   },
                                 ));
@@ -313,9 +338,14 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                             .advanceSearchDevotee(
                           sangha,
                           _selectedSearchType.toString(),
+                          1,
+                          dataLimit,
                         )
-                            .then((value) {
-                          devoteeList.addAll(value["data"]);
+                            .then((response) {
+                          devoteeList.addAll(response["data"]);
+                          totalPages = response["totalPages"];
+                          dataCount = response["count"];
+                          currentPage = response["currentPage"];
                         });
                         setState(() {
                           showClearButton = !showClearButton;
@@ -330,8 +360,10 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                               devoteeList: devoteeList,
                               searchValue: sangha,
                               searchBy: _selectedSearchType,
-                              showClearButton:
-                                  showClearButton, // devoteeList.isNotEmpty,
+                              showClearButton: showClearButton,
+                              currentPage: currentPage,
+                              dataCount: dataCount,
+                              totalPages: totalPages,
                             );
                           },
                         ));
