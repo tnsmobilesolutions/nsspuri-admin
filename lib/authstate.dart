@@ -31,15 +31,15 @@ class _AuthStateState extends State<AuthState> {
         } else {
           String uid = FirebaseAuth.instance.currentUser?.uid ?? "";
           if (uid.isNotEmpty && currentDevoteeSnapshot.hasData) {
-            print("API Response: ${currentDevoteeSnapshot.data}");
+            //  print("API Response: ${currentDevoteeSnapshot.data}");
 
             final DevoteeModel currentDevotee =
                 currentDevoteeSnapshot.data?["data"] ?? DevoteeModel();
 
-            print(
-                "Current Devotee Data: ${currentDevoteeSnapshot.data?["data"]}");
+            // print(
+            //     "Current Devotee Data: ${currentDevoteeSnapshot.data?["data"]}");
 
-            print("authstate-------$currentDevotee");
+            //   print("authstate-------$currentDevotee");
             if (currentDevotee.devoteeId != null &&
                 currentDevotee.devoteeId != "") {
               NetworkHelper().setCurrentDevotee = currentDevotee;

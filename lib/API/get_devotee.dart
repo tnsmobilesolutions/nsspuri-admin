@@ -20,10 +20,31 @@ class GetDevoteeAPI extends DioFuctionAPI {
     }
   }
 
+  Future<Map<String, dynamic>> prasadCountBySelectdate(String date) async {
+    try {
+      final response = await getAPI("prasadCountByselectdate?date=$date");
+      print("count in api - ${response["data"]}");
+      return {"statusCode": 200, "data": response["data"]};
+    } catch (e) {
+      print(e);
+      return {"statusCode": 500, "data": null};
+    }
+  }
+
+  Future<Map<String, dynamic>?> viewerDashboard() async {
+    try {
+      final response = await getAPI("prasadTakenCount");
+      return {"statusCode": 200, "data": response["data"]};
+    } catch (e) {
+      print(e);
+      return {"statusCode": 500, "data": null};
+    }
+  }
+
   Future<Map<String, dynamic>?> currentDevotee() async {
     try {
       final response = await getAPI("devotee/currentUser");
-      print("response of currentuser -- $response");
+      // print("response of currentuser -- $response");
 
       DevoteeModel devotee =
           DevoteeModel.fromMap(response["data"]["singleDevotee"][0]);
