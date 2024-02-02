@@ -34,37 +34,51 @@ class _CreatedByMeState extends State<CreatedByMe> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        OutlinedButton(
-          style: OutlinedButton.styleFrom(
-            side: const BorderSide(
-              width: 1.0,
-              color: Colors.white,
-            ),
-            foregroundColor: Colors.white,
+    return Row(children: [
+      OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          side: const BorderSide(
+            width: 1.0,
+            color: Colors.white,
           ),
-          onPressed: () async {
-            await fetchDelegatesByMe();
-            if (context.mounted) {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) {
-                  return DevoteeListPage(
-                    pageFrom: "Dashboard",
-                    status: "allDevotee",
-                    devoteeList: allDevoteesCreatedByMe,
-                  );
-                },
-              ));
-            }
-          },
-          child: const Text(
-            'Created By Me',
-            style: TextStyle(color: Colors.white),
-          ),
+          foregroundColor: Colors.white,
         ),
-        const SizedBox(width: 10),
-      ],
-    );
+        onPressed: () async {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
+          );
+
+          await fetchDelegatesByMe();
+
+          if (context.mounted) {
+            Navigator.pop(context);
+            Navigator.push(context, MaterialPageRoute(
+              builder: (context) {
+                return DevoteeListPage(
+                  pageFrom: "Dashboard",
+                  status: "allDevotee",
+                  devoteeList: allDevoteesCreatedByMe,
+                  // currentPage: 1,
+                  // dataCount: allDevoteesCreatedByMe.length,
+                  // totalPages: 1,
+                );
+              },
+            ));
+          }
+        },
+        child: const Text(
+          'Created By Me',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+      const SizedBox(width: 10),
+    ]
+        //foregroundColor: Colors.white,
+        );
   }
 }

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/Login/EmailSignIn.dart';
+import 'package:sdp/constant/enums.dart';
 import 'package:sdp/firebase/firebase_auth_api.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
@@ -11,15 +12,9 @@ import 'package:sdp/screen/appBar/action_widget.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
 import 'package:sdp/screen/appBar/leadingImage.dart';
 import 'package:sdp/screen/appBar/responsive_action_widget.dart';
+import 'package:sdp/screen/dashboard/change_time.dart';
 import 'package:sdp/screen/dashboard/dashboardBody.dart';
 import 'package:sdp/utilities/network_helper.dart';
-
-enum MenuOption {
-  home,
-  createdByMe,
-  create,
-  logout,
-}
 
 extension MenuOptionExtension on MenuOption {
   String get value {
@@ -30,15 +25,60 @@ extension MenuOptionExtension on MenuOption {
         return 'Created By Me';
       case MenuOption.create:
         return 'Create Delegate';
+      case MenuOption.settings:
+        return 'Settings';
       case MenuOption.logout:
         return 'Logout';
     }
   }
 }
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
   DashboardPage({super.key});
+
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
   List<String>? selectedPalia;
+
+  IconData _getIconForMenuOption(MenuOption option) {
+    switch (option) {
+      case MenuOption.home:
+        return Icons.home;
+      case MenuOption.createdByMe:
+        return Icons.card_membership_rounded;
+      case MenuOption.create:
+        return Icons.card_membership_rounded;
+      case MenuOption.settings:
+        return Icons.settings;
+      case MenuOption.logout:
+        return Icons.logout_rounded;
+    }
+  }
+
+  MenuOption? selectedMenu;
+
+  MenuOption option = MenuOption.create;
+
+  List<DevoteeModel> allDevoteesCreatedByMe = [];
+
+  Future<void> fetchDelegatesByMe() async {
+    var currentUser = NetworkHelper().currentDevotee;
+    var allDevotees = await GetDevoteeAPI()
+        .devoteeListBycreatedById(currentUser?.createdById.toString() ?? "");
+    if (allDevotees != null) {
+      print("all devotee by me length: ${allDevotees["data"].length}");
+      setState(() {
+        for (int i = 0; i < allDevotees["data"].length; i++) {
+          allDevoteesCreatedByMe.add(allDevotees["data"][i]);
+        }
+      });
+    } else {
+      print("No delegates by me !");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,18 +87,181 @@ class DashboardPage extends StatelessWidget {
         resizeToAvoidBottomInset: false,
         appBar: PreferredSize(
           preferredSize:
-              Size.fromHeight(Responsive.isMobile(context) ? 150 : 80),
+              Size.fromHeight(Responsive.isMobile(context) ? 150 : 70),
           child: Responsive(
             desktop: AppBar(
               toolbarHeight: 80,
               automaticallyImplyLeading: false,
               centerTitle: false,
               title: const TitleAppBar(),
+              flexibleSpace: Padding(
+                padding: const EdgeInsets.only(right: 50),
+                child: Center(
+                  child: AppbarActionButtonWidget(
+                    pageFrom: "Dashboard",
+                  ),
+                ),
+              ),
               actions: [
-                AppbarActionButtonWidget(
-                  pageFrom: "Dashboard",
-                )
+                PopupMenuButton<MenuOption>(
+                  icon: const Icon(
+                    Icons.more_vert,
+                    color: Colors.white,
+                  ),
+                  onSelected: (MenuOption value) async {
+                    switch (value) {
+                      case MenuOption.home:
+                        if (NetworkHelper().currentDevotee?.role != "User") {
+                          // change to hide home menu later for userdashboard
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DashboardPage()),
+                          );
+                        }
+
+                        break;
+                      case MenuOption.createdByMe:
+                        await fetchDelegatesByMe();
+                        if (context.mounted) {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) {
+                              return DevoteeListPage(
+                                pageFrom: "Dashboard",
+                                status: "allDevotee",
+                                devoteeList: allDevoteesCreatedByMe,
+                              );
+                            },
+                          ));
+                        }
+                        break;
+                      case MenuOption.create:
+                        // ignore: use_build_context_synchronously
+                        showDialog<void>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text('Create Delegate'),
+                                    IconButton(
+                                        color: Colors.deepOrange,
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        icon: const Icon(
+                                          Icons.close,
+                                          color: Colors.deepOrange,
+                                        ))
+                                  ],
+                                ),
+                                content: AddPageDilouge(
+                                  title: "addDevotee",
+                                  devoteeId: "",
+                                  role: NetworkHelper().currentDevotee?.role,
+                                  //onUpdateDevotee: (allDevotees) {},
+                                ));
+                          },
+                        );
+                        break;
+                      case MenuOption.settings:
+                        if (context.mounted &&
+                            NetworkHelper().currentDevotee?.role ==
+                                "SuperAdmin") {
+                          showDialog<void>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                  title: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text('Change Timing'),
+                                      IconButton(
+                                          color: Colors.deepOrange,
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          icon: const Icon(
+                                            Icons.close,
+                                            color: Colors.deepOrange,
+                                          ))
+                                    ],
+                                  ),
+                                  content: UpdateTime());
+                            },
+                          );
+                        }
+                        break;
+                      case MenuOption.logout:
+                        showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Thank You'),
+                                IconButton(
+                                    color: const Color(0XFF3f51b5),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    icon: const Icon(Icons.close))
+                              ],
+                            ),
+                            content: const Text('Do You Want to Logout?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.pop(context, 'Cancel'),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  FirebaseAuthentication().signOut();
+                                  //Networkhelper().setCurrentDevotee = DevoteeModel();
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) {
+                                      return const EmailSignIn();
+                                    },
+                                  ));
+                                  // Navigator.popUntil(context, (route) => route.isFirst);
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        );
+                        break;
+                    }
+                  },
+                  itemBuilder: (BuildContext context) =>
+                      MenuOption.values.map((MenuOption option) {
+                    return PopupMenuItem<MenuOption>(
+                      value: option,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(
+                            _getIconForMenuOption(option),
+                            color: Colors.deepOrange,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(option.value),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
               ],
+              // actions: [
+              //   AppbarActionButtonWidget(
+              //     pageFrom: "Dashboard",
+              //   )
+              // ],
             ),
             tablet: ResponsiveAppBar(),
             mobile: ResponsiveAppBar(),
@@ -185,6 +388,33 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
                   },
                 );
                 break;
+              case MenuOption.settings:
+                if (context.mounted &&
+                    NetworkHelper().currentDevotee?.role == "SuperAdmin") {
+                  showDialog<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('Change Timing'),
+                              IconButton(
+                                  color: Colors.deepOrange,
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  icon: const Icon(
+                                    Icons.close,
+                                    color: Colors.deepOrange,
+                                  ))
+                            ],
+                          ),
+                          content: const UpdateTime());
+                    },
+                  );
+                }
+                break;
               case MenuOption.logout:
                 showDialog<String>(
                   context: context,
@@ -235,7 +465,7 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
                 children: [
                   Icon(
                     _getIconForMenuOption(option),
-                    color: Colors.blue,
+                    color: Colors.deepOrange,
                     size: 20,
                   ),
                   const SizedBox(width: 10),
@@ -268,6 +498,8 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
         return Icons.card_membership_rounded;
       case MenuOption.create:
         return Icons.card_membership_rounded;
+      case MenuOption.settings:
+        return Icons.settings;
       case MenuOption.logout:
         return Icons.logout_rounded;
     }

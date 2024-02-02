@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-String baseUrl = "https://api.nsspuri.org/";
-// String baseUrl = "http://34.136.15.208:4400/";
+String baseUrl = RemoteConfigHelper().getapiBaseURL;
+// String baseUrl = "https://staging-api.nsspuri.org/";
+// String baseUrl = "http://127.0.0.1:4400/";
 
 abstract class DioFuctionAPI {
   final dio = Dio();
@@ -32,10 +34,9 @@ abstract class DioFuctionAPI {
       return {"statusCode": 500, "error": e};
     }
   }
+
   Future<Map<String, dynamic>> getSanghaAPI(String url) async {
     try {
-
-
       final response = await dio.get(
         baseUrl + url,
       );
@@ -50,7 +51,6 @@ abstract class DioFuctionAPI {
       return {"statusCode": 500, "error": e};
     }
   }
-
 
   //GET
 

@@ -37,22 +37,22 @@ class TitleAppBar extends StatelessWidget {
                 width:
                     Responsive.isLargeMobile(context) ? 300 : screenWidth / 7,
                 child: Text(
-                  "${NetworkHelper().getCurrentDevotee?.name}",
-                  style: const TextStyle(color: Colors.white, fontSize: 18),
-                  softWrap: true,
-                  overflow: TextOverflow.clip,
-                ),
-              ),
-              SizedBox(
-                width:
-                    Responsive.isLargeMobile(context) ? 300 : screenWidth / 7,
-                child: Text(
-                  "${NetworkHelper().getCurrentDevotee?.role}",
+                  "${NetworkHelper().getCurrentDevotee?.name} (${NetworkHelper().getCurrentDevotee?.role})",
                   style: const TextStyle(color: Colors.white, fontSize: 15),
                   softWrap: true,
                   overflow: TextOverflow.clip,
                 ),
               ),
+              // SizedBox(
+              //   width:
+              //       Responsive.isLargeMobile(context) ? 300 : screenWidth / 7,
+              //   child: Text(
+              //     "${NetworkHelper().getCurrentDevotee?.role}",
+              //     style: const TextStyle(color: Colors.white, fontSize: 15),
+              //     softWrap: true,
+              //     overflow: TextOverflow.clip,
+              //   ),
+              // ),
             ],
           ),
         ],
@@ -86,7 +86,7 @@ class TitleAppBarMobile extends StatelessWidget {
                 overflow: TextOverflow.clip,
               ),
               Text(
-                "${NetworkHelper().getCurrentDevotee?.name}",
+                "${NetworkHelper().getCurrentDevotee?.name})",
                 style: const TextStyle(color: Colors.white, fontSize: 14),
                 softWrap: true,
                 overflow: TextOverflow.clip,
