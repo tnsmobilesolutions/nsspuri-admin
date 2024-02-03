@@ -1,16 +1,14 @@
 // ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:material_color_generator/material_color_generator.dart';
 import 'package:sdp/authstate.dart';
-import 'package:sdp/utilities/network_helper.dart';
+import 'package:sdp/firebase/firebase_remote_config.dart';
 
 Future<void> main() async {
   // await initializeDateFormatting('en', '');
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  // await fetchCurrentuser();
   await Firebase.initializeApp(
     options: FirebaseOptions(
       apiKey: "AIzaSyA1tSAISbgSLqVdLRvfLh-9bB58DgYg1lI",
@@ -22,7 +20,7 @@ Future<void> main() async {
       measurementId: "G-V1HVLL1401",
     ),
   );
-
+  await fetchRemoteConfigData();
   runApp(MyApp());
 }
 
