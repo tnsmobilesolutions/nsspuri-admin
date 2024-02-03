@@ -32,25 +32,25 @@ class _UpdateTimeState extends State<UpdateTime> {
     // if (responseData != null) showTiming();
   }
 
-  Future<void> _selectTime(
-    BuildContext context,
-    TextEditingController controller,
-  ) async {
-    TimeOfDay? selectedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
+  // Future<void> _selectTime(
+  //   BuildContext context,
+  //   TextEditingController controller,
+  // ) async {
+  //   TimeOfDay? selectedTime = await showTimePicker(
+  //     context: context,
+  //     initialTime: TimeOfDay.now(),
+  //   );
 
-    if (selectedTime != null) {
-      String formattedTime = DateFormat('hh:mm a').format(
-        DateTime(2022, 1, 1, selectedTime.hour, selectedTime.minute),
-      );
+  //   if (selectedTime != null) {
+  //     String formattedTime = DateFormat('HH:mm').format(
+  //       DateTime(2022, 1, 1, selectedTime.hour, selectedTime.minute),
+  //     );
 
-      setState(() {
-        controller.text = formattedTime;
-      });
-    }
-  }
+  //     setState(() {
+  //       controller.text = formattedTime;
+  //     });
+  //   }
+  // }
 
   timingData() async {
     try {
@@ -77,7 +77,7 @@ class _UpdateTimeState extends State<UpdateTime> {
         ratraStartTime.text = responseData?["ratraStartTime"] ?? "";
         ratraEndTime.text = responseData?["ratraEndTime"] ?? "";
       });
-      print("balya : ${balyaStartTime.text}");
+      //print("balya : ${balyaStartTime.text}");
     }
   }
 
@@ -100,9 +100,9 @@ class _UpdateTimeState extends State<UpdateTime> {
                   TextFormField(
                     keyboardType: TextInputType.datetime,
                     controller: balyaStartTime,
-                    onTap: () {
-                      _selectTime(context, balyaStartTime);
-                    },
+                    // onTap: () {
+                    //   _selectTime(context, balyaStartTime);
+                    // },
                     validator: (value) {
                       RegExp timeRegex = RegExp(r'^([01]\d|2[0-3]):([0-5]\d)$');
 
@@ -138,9 +138,6 @@ class _UpdateTimeState extends State<UpdateTime> {
                     keyboardType: TextInputType.datetime,
                     controller: balyaEndTime,
                     onSaved: (newValue) => balyaEndTime,
-                    onTap: () {
-                      _selectTime(context, balyaEndTime);
-                    },
                     validator: (value) {
                       RegExp timeRegex = RegExp(r'^([01]\d|2[0-3]):([0-5]\d)$');
 
@@ -174,9 +171,6 @@ class _UpdateTimeState extends State<UpdateTime> {
                     keyboardType: TextInputType.datetime,
                     controller: madhyanStartTime,
                     onSaved: (newValue) => madhyanStartTime,
-                    onTap: () {
-                      _selectTime(context, madhyanStartTime);
-                    },
                     validator: (value) {
                       RegExp timeRegex = RegExp(r'^([01]\d|2[0-3]):([0-5]\d)$');
 
@@ -210,9 +204,6 @@ class _UpdateTimeState extends State<UpdateTime> {
                     keyboardType: TextInputType.datetime,
                     controller: madhyanEndTime,
                     onSaved: (newValue) => madhyanEndTime,
-                    onTap: () {
-                      _selectTime(context, madhyanEndTime);
-                    },
                     validator: (value) {
                       RegExp timeRegex = RegExp(r'^([01]\d|2[0-3]):([0-5]\d)$');
 
@@ -246,9 +237,6 @@ class _UpdateTimeState extends State<UpdateTime> {
                     keyboardType: TextInputType.datetime,
                     controller: ratraStartTime,
                     onSaved: (newValue) => ratraStartTime,
-                    onTap: () {
-                      _selectTime(context, ratraStartTime);
-                    },
                     validator: (value) {
                       RegExp timeRegex = RegExp(r'^([01]\d|2[0-3]):([0-5]\d)$');
 
@@ -282,9 +270,6 @@ class _UpdateTimeState extends State<UpdateTime> {
                     keyboardType: TextInputType.datetime,
                     controller: ratraEndTime,
                     onSaved: (newValue) => ratraEndTime,
-                    onTap: () {
-                      _selectTime(context, ratraEndTime);
-                    },
                     validator: (value) {
                       RegExp timeRegex = RegExp(r'^([01]\d|2[0-3]):([0-5]\d)$');
 
