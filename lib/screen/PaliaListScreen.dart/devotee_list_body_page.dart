@@ -1,22 +1,23 @@
 // ignore_for_file: file_names, depend_on_referenced_packages, must_be_immutable, iterable_contains_unrelated_type, avoid_print
+import 'dart:async';
+import 'dart:typed_data';
+import 'dart:html' as html;
 
+import 'package:archive/archive.dart';
 import 'package:animate_icons/animate_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
-
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/constant/pagination_value.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/export_to_excel.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/pagination_row.dart';
-
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
 import 'package:sdp/screen/viewDevotee/preview_delegate.dart';
 import 'package:sdp/screen/viewDevotee/viewDevotee.dart';
 import 'package:sdp/utilities/network_helper.dart';
-
 
 class DevoteeListBodyPage extends StatefulWidget {
   DevoteeListBodyPage({
@@ -56,7 +57,8 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
   bool isAscending = false;
   bool isChecked = false;
   bool isLoading = true;
-  bool isSelected = false;
+  bool isSelected = true;
+  double downloadProgress = 0.0;
   List<String> monthNames = [
     'Jan',
     'Feb',
@@ -92,16 +94,16 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         dataCount = widget.dataCount ?? 0;
         currentPage = widget.currentPage ?? 1;
         isLoading = false;
+        userRole = NetworkHelper().currentDevotee?.role;
+        selectedList =
+            List<bool>.generate(allDevotees.length, (int index) => false);
       });
     } else {
       fetchAllDevotee(currentPage);
+      setState(() {
+        userRole = NetworkHelper().currentDevotee?.role;
+      });
     }
-
-    setState(() {
-      userRole = NetworkHelper().currentDevotee?.role;
-      selectedList =
-          List<bool>.generate(allDevotees.length, (int index) => false);
-    });
   }
 
   // @override
@@ -109,6 +111,17 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
   //   _controller.dispose();
   //   super.dispose();
   // }
+
+  void downloadImage(String imageUrl) {
+    final html.AnchorElement anchor = html.AnchorElement(href: imageUrl)
+      ..target = 'image_download'
+      ..download = 'image.jpg';
+
+    // Triggering the download
+    html.document.body?.append(anchor);
+    anchor.click();
+    anchor.remove();
+  }
 
   String formatDate(String inputDate) {
     if (inputDate.isNotEmpty) {
@@ -157,9 +170,11 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         totalPages = allDevotee?["totalPages"];
         dataCount = allDevotee?["count"];
         currentPage = allDevotee?["currentPage"];
-        print("count: $dataCount");
-        print("totalPages: $totalPages");
-        print("currentPage: $currentPage");
+        selectedList =
+            List<bool>.generate(allDevotees.length, (int index) => false);
+        // print("count: $dataCount");
+        // print("totalPages: $totalPages");
+        // print("currentPage: $currentPage");
       });
     } else {
       print("Error fetching data");
@@ -221,7 +236,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
   Widget devoteeTable(BuildContext context) {
     return DataTable(
       showBottomBorder: true,
-      showCheckboxColumn: true,
+      showCheckboxColumn: isChecked == true ? true : false,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
@@ -233,6 +248,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
       columns: [
         dataColumn(context, 'Sl. No.'),
         dataColumn(context, 'Profile Image'),
+        // dataColumn(context, 'Download'),
         DataColumn(
           label: Row(
             children: [
@@ -283,6 +299,29 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         allDevotees.length,
         (index) {
           return DataRow(
+            selected: selectedList[index],
+            onSelectChanged: (bool? value) {
+              setState(() {
+                selectedList[index] = value!;
+                if (value) {
+                  if (selectedDevotees.length < 4) {
+                    selectedDevotees.add(allDevotees[index]);
+                    print("selected : $selectedDevotees");
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      elevation: 6,
+                      behavior: SnackBarBehavior.floating,
+                      content: Text(
+                        'You can only select up to 4 devotees !',
+                      ),
+                    ));
+                    selectedList[index] = false;
+                  }
+                } else {
+                  selectedDevotees.remove(allDevotees[index]);
+                }
+              });
+            },
             cells: [
               DataCell(Text(getSLno(index))),
               // DataCell(Text("${index + 1}")),
@@ -320,6 +359,33 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                     : const Image(
                         image: AssetImage('assets/images/profile.jpeg')),
               )),
+              // DataCell(
+              //   OutlinedButton(
+              //     style: OutlinedButton.styleFrom(
+              //         side: const BorderSide(
+              //             width: 1.5, color: Colors.deepOrange),
+              //         foregroundColor: Colors.black),
+              //     onPressed: () {
+              //       downloadImage(
+              //           allDevotees[index].profilePhotoUrl.toString());
+              //       // showDialog(
+              //       //     context: context,
+              //       //     builder: (context) {
+              //       //       return LinearProgressIndicator(
+              //       //         value: downloadProgress,
+              //       //         valueColor: const AlwaysStoppedAnimation<Color>(
+              //       //             Colors.deepOrange),
+              //       //         minHeight: 10.0,
+              //       //       );
+              //       //     });
+              //     },
+              //     child: const Icon(
+              //       Icons.download_rounded,
+              //       color: Colors.deepOrange,
+              //     ),
+              //   ),
+              // ),
+
               DataCell(
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -533,18 +599,47 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(
-                                      width: 1.5, color: Colors.deepOrange),
-                                  foregroundColor: Colors.black),
-                              onPressed:
-                                  (NetworkHelper().getCurrentDevotee?.role !=
-                                          "Viewer")
-                                      ? () {}
-                                      : null,
-                              child: const Text('Print'),
-                            ),
+                            isSelected == true
+                                ? OutlinedButton(
+                                    style: OutlinedButton.styleFrom(
+                                        side: const BorderSide(
+                                            width: 1.5,
+                                            color: Colors.deepOrange),
+                                        foregroundColor: Colors.black),
+                                    onPressed: (NetworkHelper()
+                                                .getCurrentDevotee
+                                                ?.role !=
+                                            "Viewer")
+                                        ? () {
+                                            setState(() {
+                                              isChecked = true;
+                                              isSelected = false;
+                                            });
+                                          }
+                                        : null,
+                                    child: const Text('Select'),
+                                  )
+                                : OutlinedButton(
+                                    style: OutlinedButton.styleFrom(
+                                        side: const BorderSide(
+                                            width: 1.5,
+                                            color: Colors.deepOrange),
+                                        foregroundColor: Colors.black),
+                                    onPressed: (NetworkHelper()
+                                                .getCurrentDevotee
+                                                ?.role !=
+                                            "Viewer")
+                                        ? () {
+                                            //downloadImages(selectedDevotees);
+                                            //            Navigator.push(
+                                            //   context,
+                                            //   MaterialPageRoute(
+                                            //       builder: (context) => PrintingDocsPage()),
+                                            // );
+                                          }
+                                        : null,
+                                    child: const Text('Print'),
+                                  ),
                             const SizedBox(width: 12),
                             OutlinedButton(
                               style: OutlinedButton.styleFrom(

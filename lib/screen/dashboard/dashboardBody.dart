@@ -35,11 +35,13 @@ class _DashboardBodyState extends State<DashboardBody> {
   List<DashboardStatusModel> emptyTitleData = [];
   List<DashboardStatusModel> data = [];
   bool isLoading = true;
-
+  String? prasadTiming;
+  Map<String, dynamic>? responseData;
   @override
   void initState() {
     super.initState();
     adminData();
+    timingData();
   }
 
   Future<void> _selectToday(
@@ -159,7 +161,7 @@ class _DashboardBodyState extends State<DashboardBody> {
       for (int i = 0; i < responseData.length; i++) {
         data.add(DashboardStatusModel.fromMap(responseData[i]));
       }
-      print("response data : ${data[9].title}");
+
       for (var dashboardData in data) {
         if (dashboardData.title == "") {
           emptyTitleData.add(dashboardData);
@@ -182,37 +184,15 @@ class _DashboardBodyState extends State<DashboardBody> {
     }
   }
 
-  // viewerAdminData() async {
-  //   Map<String, dynamic>? viewerResponse =
-  //       await GetDevoteeAPI().viewerDashboard();
-
-  //   // print("view data : $viewerResponse");
-  //   setState(() {
-  //     isLoading = true;
-
-  //     final viewerresponseData = viewerResponse?["data"] as List<dynamic>;
-
-  //     for (int i = 0; i < viewerresponseData.length; i++) {
-  //       data.add(DashboardStatusModel.fromMap(viewerresponseData[i]));
-  //     }
-
-  //     for (var item in data) {
-  //       DashboardStatusModel dashboarddata = item;
-
-  //       if (dashboarddata.title == "") {
-  //         emptyTitleData.add(dashboarddata);
-  //         print("empty : $emptyTitleData");
-  //       } else if (dashboarddata.title == todayDate) {
-  //         prasadCountData1.add(dashboarddata);
-  //       } else if (dashboarddata.title == yesterdayDate) {
-  //         prasadCountData2.add(dashboarddata);
-  //       } else if (dashboarddata.title == dayBeforeYesterdayDate) {
-  //         prasadCountData3.add(dashboarddata);
-  //       }
-  //     }
-  //     isLoading = false;
-  //   });
-  // }
+  timingData() async {
+    try {
+      Map<String, dynamic>? response = await GetDevoteeAPI().updateTiming();
+      responseData = response["data"];
+    } catch (error) {
+      // Handle errors
+      print("Error fetching data: $error");
+    } finally {}
+  }
 
   selectDateCount(String date) async {
     List<DashboardStatusModel> data = [];
@@ -474,6 +454,16 @@ class _DashboardBodyState extends State<DashboardBody> {
                               ),
                               onPressed: () async {
                                 UpadateTimeModel updateDate = UpadateTimeModel(
+                                  balyaStartTime:
+                                      responseData?["balyaStartTime"],
+                                  balyaEndTime: responseData?["balyaEndTime"],
+                                  madhyanaStartTime:
+                                      responseData?["madhyanaStartTime"],
+                                  madhyanaEndTime:
+                                      responseData?["madhyanaEndTime"],
+                                  ratraStartTime:
+                                      responseData?["ratraStartTime"],
+                                  ratraEndTime: responseData?["ratraEndTime"],
                                   prasadFirstDate: selectedDate1 != null
                                       ? DateFormat('yyyy-MM-dd')
                                           .format(selectedDate1 as DateTime)
@@ -488,7 +478,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                                       : prasadCountData3[0].title,
                                 );
 
-                                print("query : $updateDate");
+                                //print("query : $updateDate");
 
                                 await PutDevoteeAPI().updateTiming(updateDate);
 
