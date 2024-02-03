@@ -1,1 +1,1 @@
-int dataLimit = 10;
+int dataLimit = 20;

@@ -6,12 +6,21 @@ import 'package:sdp/model/devotee_model.dart';
 class NetworkHelper {
   static final NetworkHelper _networkHelper = NetworkHelper._internal();
   DevoteeModel? currentDevotee;
+  bool? isAscending;
   DevoteeModel? get getCurrentDevotee {
     return currentDevotee;
   }
 
   set setCurrentDevotee(DevoteeModel currentdevotee) {
     currentDevotee = currentdevotee;
+  }
+
+  bool? get ascending {
+    return isAscending;
+  }
+
+  set setAscending(bool isOrderAscending) {
+    isAscending = isOrderAscending;
   }
 
   factory NetworkHelper() {
@@ -22,9 +31,9 @@ class NetworkHelper {
 
 fetchCurrentuser() async {
   try {
-    Map<String, dynamic>? currentDevoteedata = await GetDevoteeAPI().currentDevotee();
+    Map<String, dynamic>? currentDevoteedata =
+        await GetDevoteeAPI().currentDevotee();
     NetworkHelper().setCurrentDevotee = currentDevoteedata?["data"];
-    
   } catch (e) {
     print('fetching currentDevotee error : $e');
   }

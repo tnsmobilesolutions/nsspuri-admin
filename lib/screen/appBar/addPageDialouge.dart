@@ -1,4 +1,5 @@
 // ignore_for_file: file_names, must_be_immutable, avoid_print
+import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -1735,9 +1736,11 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                         DevoteeModel updateDevotee =
                             buildDevoteeModel(profileURL);
 
+                        //print("encoded devotee: ${jsonEncode(updateDevotee)}");
+
                         Map<String, dynamic> response =
                             await submitDevoteeData(updateDevotee);
-
+                        //print("response devotee: $response");
                         handleDevoteeSubmissionResponse(response);
                       } catch (e) {
                         handleException(e);

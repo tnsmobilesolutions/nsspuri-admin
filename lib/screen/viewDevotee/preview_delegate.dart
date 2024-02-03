@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_flip_card/controllers/flip_card_controllers.dart';
 import 'package:flutter_flip_card/flipcard/flip_card.dart';
 import 'package:flutter_flip_card/modal/flip_side.dart';
+import 'package:image_downloader_web/image_downloader_web.dart';
 import 'dart:typed_data';
 // import 'dart:convert' show base64Encode;
 import 'dart:html' as html;

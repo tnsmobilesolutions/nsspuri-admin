@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:animate_icons/animate_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:image_downloader_web/image_downloader_web.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:pdf/pdf.dart';
@@ -84,6 +85,8 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
   @override
   void initState() {
     super.initState();
+    // isAscending = NetworkHelper().ascending ?? false;
+
     _controller = AnimateIconController();
 
     if (widget.devoteeList != null) {
@@ -156,6 +159,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         for (int i = 0; i < allDevotee?["data"].length; i++) {
           allDevotees.add(allDevotee?["data"][i]);
         }
+        _sortList(isAscending);
         totalPages = allDevotee?["totalPages"];
         dataCount = allDevotee?["count"];
         currentPage = allDevotee?["currentPage"];
@@ -258,11 +262,13 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                 size: 20.0,
                 onStartIconPress: () {
                   isAscending = !isAscending;
+                  NetworkHelper().setAscending = isAscending;
                   _sortList(isAscending);
                   return true;
                 },
                 onEndIconPress: () {
                   isAscending = !isAscending;
+                  NetworkHelper().setAscending = isAscending;
                   _sortList(isAscending);
                   return true;
                 },
@@ -322,6 +328,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                     : const Image(
                         image: AssetImage('assets/images/profile.jpeg')),
               )),
+
               DataCell(
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
