@@ -1,11 +1,14 @@
-// ignore_for_file: file_names, use_build_context_synchronously
+// ignore_for_file: file_names, use_build_context_synchronously, avoid_print
 
 import 'package:authentication/EmailLogin/authentication_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/firebase/firebase_auth_api.dart';
-
+import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
+import 'package:sdp/screen/user/userDashboard.dart';
+import 'package:sdp/utilities/network_helper.dart';
+import 'package:sdp/screen/user/user_signup.dart';
 
 class EmailSignIn extends StatefulWidget {
   const EmailSignIn({super.key});
@@ -16,12 +19,44 @@ class EmailSignIn extends StatefulWidget {
 
 class _EmailSignInState extends State<EmailSignIn> {
   final TextEditingController phoneController = TextEditingController();
+  bool obscureText = true;
+  InputDecoration authFieldDecor(String hintText, [Widget? suffixIcon]) {
+    return InputDecoration(
+      hintText: hintText,
+      errorStyle: const TextStyle(color: Colors.deepOrange),
+      hintStyle: const TextStyle(
+          color: Color.fromARGB(255, 173, 173, 245),
+          fontWeight: FontWeight.normal),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      suffixIcon: suffixIcon ?? const SizedBox(),
+      errorMaxLines: 3,
+      focusedErrorBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: Colors.deepOrange),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: Colors.black45),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: Colors.deepOrange),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: Colors.black45),
+        borderRadius: BorderRadius.circular(10),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.white,
+        backgroundColor: const Color.fromARGB(255, 242, 247, 254),
         body: Center(
           child: Padding(
               padding: const EdgeInsets.all(20),
@@ -29,53 +64,150 @@ class _EmailSignInState extends State<EmailSignIn> {
                 shouldEmailAuthentication: true,
                 imageWidth: 150,
                 imageHeight: 150,
-                cardWidth: 245,
-                cardHeight: 280,
+                cardWidth: 400,
+                cardHeight: 400,
+                cardElevation: 20,
                 loginImage: const AssetImage('assets/images/login.png'),
                 title: const Text(
-                  'Sammilani Delegate Admin',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  'Sammilani Online Delegate System',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54,
+                  ),
                 ),
                 onEmailLoginPressed: (userEmail, userPassword) async {
-                  String? uid = await FirebaseAuthentication()
-                      .signinWithFirebase(userEmail, userPassword);
+                  try {
+                    // Show circular progress indicator while loading
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                    );
 
-                  if (uid != null) {
-                    GetDevoteeAPI().loginDevotee(uid);
+                    String? uid =
+                        await FirebaseAuthentication().signinWithFirebase(
+                      userEmail.toString().trim(),
+                      userPassword.toString().trim(),
+                    );
 
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DashboardPage(),
+                    if (uid != null) {
+                      final response = await GetDevoteeAPI().loginDevotee(uid);
+                      DevoteeModel resDevoteeData = response["data"];
+
+                      NetworkHelper().setCurrentDevotee = resDevoteeData;
+                      // await Future.delayed(Duration(seconds: 2));
+                      if (response["statusCode"] == 200 &&
+                          (resDevoteeData.role == "Admin" ||
+                              resDevoteeData.role == "SuperAdmin" ||
+                              resDevoteeData.role == "Approver" ||
+                              resDevoteeData.role == "Viewer")) {
+                        Navigator.pop(context);
+                        // Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DashboardPage(),
+                          ),
+                        );
+                      } else if (response["statusCode"] == 200 &&
+                          resDevoteeData.role == "User") {
+                        Navigator.of(context).pop();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UserDashboard(
+                              devoteeId: resDevoteeData.devoteeId.toString(),
+                            ),
+                          ),
+                        );
+                      } else {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          elevation: 6,
+                          behavior: SnackBarBehavior.floating,
+                          content: Text(
+                            'You are not an Admin',
+                          ),
                         ));
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      elevation: 6,
-                      behavior: SnackBarBehavior.floating,
-                      content: Text(
-                        'Please Check your Email/Password',
-                      ),
-                    ));
+                      }
+                    } else {
+                      Navigator.pop(
+                          context); // Close the circular progress indicator
+
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        elevation: 6,
+                        behavior: SnackBarBehavior.floating,
+                        content: Text(
+                          'Please Check your Email/Password',
+                        ),
+                      ));
+                    }
+                  } catch (e) {
+                    Navigator.pop(
+                        context); // Close the circular progress indicator
+                    Navigator.pop(context);
+                    print(e.toString());
                   }
                 },
+                obscureText: obscureText,
                 phoneAuthentication: false,
-                isSignUpVisible: false,
-                buttonColor: const Color(0xFFeb1589),
+                isSignUpVisible: true,
+                textForSignup: "Don't have a Delegate !",
+                signupOnpressedonLoginButton: () {
+                  showDialog<String>(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('Create Delegate'),
+                              IconButton(
+                                  color: Colors.deepOrange,
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  icon: const Icon(
+                                    Icons.close,
+                                    color: Colors.deepOrange,
+                                  ))
+                            ],
+                          ),
+                          content: UserSignUpDelegate(
+                            title: "addDevotee",
+                            devoteeId: "",
+                          )));
+                },
+                buttonColor: Colors.deepOrange,
                 loginButonTextColor: Colors.white,
-
-                // titleTextColor: Colors.white,
-                loginPageTextStyle: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
-                ),
                 isImageVisible: true,
-                textFieldBorderColor: Colors.white,
-                //  Color(0xFFeb1589),
                 cardColor: const Color.fromARGB(255, 253, 253, 253),
                 textfieldHintColor: Colors.white,
-                // emailHintTextStyle: const TextStyle(color: Colors.white),
-                // passwordHintTextStyle: const TextStyle(color: Colors.white),
+                emailFieldDecoration: authFieldDecor("Email"),
+                passwordFieldDecoration: authFieldDecor(
+                  "Password",
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        obscureText = !obscureText;
+                      });
+                    },
+                    icon: Icon(
+                      obscureText
+                          ? Icons.visibility_off_rounded
+                          : Icons.visibility,
+                      color: obscureText
+                          ? const Color.fromARGB(255, 249, 170, 147)
+                          : Colors.deepOrange,
+                    ),
+                  ),
+                ),
               )),
         ),
       ),

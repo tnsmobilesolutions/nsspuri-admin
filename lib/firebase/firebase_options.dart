@@ -47,29 +47,29 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDlUZaghUvp0OSayMgnYisIoSlAzKUBSAQ',
-    appId: '1:29623966317:web:cc9354992e7cda94667d64',
-    messagingSenderId: '29623966317',
-    projectId: 'nsspuridelegate',
-    authDomain: 'nsspuridelegate.firebaseapp.com',
-    storageBucket: 'nsspuridelegate.appspot.com',
-    measurementId: 'G-N6D6GGLWZG',
-  );
+      apiKey: "AIzaSyA1tSAISbgSLqVdLRvfLh-9bB58DgYg1lI",
+      authDomain: "nsspuridelegate-dev.firebaseapp.com",
+      projectId: "nsspuridelegate-dev",
+      storageBucket: "nsspuridelegate-dev.appspot.com",
+      messagingSenderId: "222780364320",
+      appId: "1:222780364320:web:de84ea401fff9310ac0e45",
+      measurementId: "G-V1HVLL1401");
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAj1S-MDZQIHnkt9sCDX5rhHaJEYrdk7qI',
-    appId: '1:29623966317:android:b7a0038aadff4e4d667d64',
-    messagingSenderId: '29623966317',
-    projectId: 'nsspuridelegate',
-    storageBucket: 'nsspuridelegate.appspot.com',
-  );
+      apiKey: "AIzaSyA1tSAISbgSLqVdLRvfLh-9bB58DgYg1lI",
+      authDomain: "nsspuridelegate-dev.firebaseapp.com",
+      projectId: "nsspuridelegate-dev",
+      storageBucket: "nsspuridelegate-dev.appspot.com",
+      messagingSenderId: "222780364320",
+      appId: "1:222780364320:web:de84ea401fff9310ac0e45",
+      measurementId: "G-V1HVLL1401");
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCnt6vD1k3Qh51wElUMZT46DS67E-XcELg',
-    appId: '1:29623966317:ios:51e22916ad239651667d64',
-    messagingSenderId: '29623966317',
-    projectId: 'nsspuridelegate',
-    storageBucket: 'nsspuridelegate.appspot.com',
-    iosBundleId: 'com.example.sammilaniDelegate',
-  );
+      apiKey: "AIzaSyA1tSAISbgSLqVdLRvfLh-9bB58DgYg1lI",
+      authDomain: "nsspuridelegate-dev.firebaseapp.com",
+      projectId: "nsspuridelegate-dev",
+      storageBucket: "nsspuridelegate-dev.appspot.com",
+      messagingSenderId: "222780364320",
+      appId: "1:222780364320:web:de84ea401fff9310ac0e45",
+      measurementId: "G-V1HVLL1401");
 }

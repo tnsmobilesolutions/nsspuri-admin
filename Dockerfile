@@ -10,6 +10,8 @@ RUN flutter pub get
 COPY . /app/
 # Build the Flutter web app
 RUN flutter build web --web-renderer html --release
+# RUN flutter build web --web-renderer canvaskit --release
+
 # Use the Nginx image as the final base image
 FROM nginx:latest
 # Copy the built Flutter web app from the 'flutter_builder' stage to Nginx's HTML directory

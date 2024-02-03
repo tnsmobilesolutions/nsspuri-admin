@@ -23,7 +23,15 @@ class GotoHomeButton extends StatelessWidget {
           },
         ));
       },
-      child: const Text('Home'),
+      child: const Text(
+        'Home',
+        style: TextStyle(color: Colors.white, fontSize: 12),
+      ),
     );
   }
 }
+ // Navigator.push(context, MaterialPageRoute(
+        //   builder: (context) {
+        //     return DashboardPage();
+        //   },
+        // ));

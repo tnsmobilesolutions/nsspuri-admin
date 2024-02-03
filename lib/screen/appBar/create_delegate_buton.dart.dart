@@ -2,9 +2,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
+import 'package:sdp/utilities/network_helper.dart';
 
-class AddPaliaButton extends StatelessWidget {
-  AddPaliaButton({super.key});
+class CreateDelegateButton extends StatelessWidget {
+  CreateDelegateButton({
+    super.key,
+    this.role,
+    this.pageFrom,
+  });
+  String? pageFrom;
+  String? role;
   // final _formKey = GlobalKey<FormState>();
   final paliaNameController = TextEditingController();
   final paliDateController = TextEditingController();
@@ -32,25 +39,32 @@ class AddPaliaButton extends StatelessWidget {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Create delegate'),
-                  IconButton(
-                      color: const Color(0XFF3f51b5),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: const Icon(Icons.close))
-                ],
-              ),
-              content: AddPageDilouge(),
-            );
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Create Delegate'),
+                    IconButton(
+                        color: Colors.deepOrange,
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.deepOrange,
+                        ))
+                  ],
+                ),
+                content: AddPageDilouge(
+                  title: "addDevotee",
+                  devoteeId: "",
+                  pageFrom: pageFrom,
+                  role: role,
+                ));
           },
         );
       }),
       child: const Text(
-        'Add Palia',
+        'Create Delegate',
         style: TextStyle(color: Colors.white),
       ),
     );
