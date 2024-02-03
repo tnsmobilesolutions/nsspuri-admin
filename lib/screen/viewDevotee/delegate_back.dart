@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:page_indicator/page_indicator.dart';
-import 'package:sdp/screen/viewDevotee/constants.dart';
 
-// ignore: must_be_immutable
 class CardFlip extends StatefulWidget {
   CardFlip({super.key, required this.color});
   Color color;
