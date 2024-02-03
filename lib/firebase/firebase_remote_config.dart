@@ -20,7 +20,7 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 // }
 
 class RemoteConfigHelper {
-  static final RemoteConfigHelper _networkHelper =
+  static final RemoteConfigHelper _remoteConfigHelper =
       RemoteConfigHelper._internal();
 
   bool shouldShowMandatoryUpgradePrompt = false;
@@ -132,6 +132,7 @@ class RemoteConfigHelper {
   set setapiBaseURL(String baseURL) {
     apiBaseURL = baseURL;
   }
+
   double scanner_auto_close_duration = 5;
   double get getscanner_auto_close_duration {
     return scanner_auto_close_duration;
@@ -146,8 +147,17 @@ class RemoteConfigHelper {
     closeDration = duration;
   }
 
+  int devoteeCount = 10;
+  set dataCountPerPage(int count) {
+    devoteeCount = count;
+  }
+
+  int get getDataCountPerPage {
+    return devoteeCount;
+  }
+
   factory RemoteConfigHelper() {
-    return _networkHelper;
+    return _remoteConfigHelper;
   }
   RemoteConfigHelper._internal();
 }
@@ -168,6 +178,9 @@ fetchRemoteConfigData() async {
 
     RemoteConfigHelper().setScannerCloseDuration =
         remoteConfig.getInt('scanner_auto_close_duration');
+
+    RemoteConfigHelper().dataCountPerPage =
+        remoteConfig.getInt('data_count_per_page');
 
     RemoteConfigHelper().setPaymentMessage =
         remoteConfig.getString('paymentMessage');
@@ -191,9 +204,8 @@ fetchRemoteConfigData() async {
         remoteConfig.getString('helpContactNo');
 
     RemoteConfigHelper().setapiBaseURL = remoteConfig.getString('apiBaseURL');
-    RemoteConfigHelper().scanner_auto_close_duration = remoteConfig.getDouble('scanner_auto_close_duration');
-
-
+    RemoteConfigHelper().scanner_auto_close_duration =
+        remoteConfig.getDouble('scanner_auto_close_duration');
   } catch (e) {
     print('remote config error : $e');
   }

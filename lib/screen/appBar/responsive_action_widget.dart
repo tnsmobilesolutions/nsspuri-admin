@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/constant/pagination_value.dart';
+import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
 import 'package:sdp/screen/appBar/goto_home_button.dart';
@@ -56,10 +57,12 @@ class _ResponsiveAppbarActionButtonWidgetState
 
   String? userRole;
   int totalPages = 0, dataCount = 0, currentPage = 1;
+  late int dataCountPerPage;
 
   @override
   void initState() {
     super.initState();
+    dataCountPerPage = RemoteConfigHelper().getDataCountPerPage;
     setState(() {
       if (widget.advanceStatus != null) {
         selectedStatus = widget.advanceStatus ?? "dataSubmitted";
@@ -130,7 +133,7 @@ class _ResponsiveAppbarActionButtonWidgetState
           devoteeList.clear();
           await GetDevoteeAPI()
               .advanceSearchDevotee(widget.searchValue.toString(),
-                  widget.searchBy.toString(), 1, dataLimit,
+                  widget.searchBy.toString(), 1, dataCountPerPage,
                   status: selectedStatus)
               .then((response) {
             devoteeList.addAll(response["data"]);

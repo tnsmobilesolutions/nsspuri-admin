@@ -13,6 +13,7 @@ import 'package:sdp/API/post_devotee.dart';
 import 'package:sdp/API/put_devotee.dart';
 import 'package:sdp/constant/pagination_value.dart';
 import 'package:sdp/constant/sangha_list.dart';
+import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:sdp/model/address_model.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
@@ -209,9 +210,11 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     super.dispose();
   }
 
+  late int dataCountPerPage;
   @override
   void initState() {
     super.initState();
+    dataCountPerPage = RemoteConfigHelper().getDataCountPerPage;
     print("widget.devoteeId-----${widget.devoteeId}");
     if (widget.title == "edit") populateData();
     print("page from: ${widget.pageFrom}");
@@ -588,7 +591,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
             widget.searchValue ?? selectedStatus,
             widget.searchBy ?? "status",
             1,
-            dataLimit,
+            dataCountPerPage,
             status: widget.advanceStatus ?? "",
           );
         }
