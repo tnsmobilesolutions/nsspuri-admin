@@ -194,31 +194,6 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
     html.Url.revokeObjectUrl(url);
   }
 
-  // Future<void> _downloadImage() async {
-  //   setState(() {
-  //     downloading = true;
-  //   });
-
-  //   screenshotController
-  //       .capture(delay: Duration(milliseconds: 10))
-  //       .then((Uint8List? capturedImage) async {
-  //     // Download the image using image_downloader_web
-  //     await WebImageDownloader.downloadImageFromUInt8List(
-  //         uInt8List: capturedImage!,
-  //         name: 'captured_image',
-  //         imageType: ImageType.png,
-  //         imageQuality: 5);
-
-  //     setState(() {
-  //       downloading = false;
-  //     });
-  //   }).catchError((onError) {
-  //     print(onError);
-  //     setState(() {
-  //       downloading = false;
-  //     });
-  //   });
-  // }
 
   Widget buildSanghaText(String? sanghaName) {
     double fontSize = 17;

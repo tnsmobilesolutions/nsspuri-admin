@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/API/put_devotee.dart';
 import 'package:sdp/model/update_timing_model.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
@@ -24,6 +25,13 @@ class _UpdateTimeState extends State<UpdateTime> {
   final prasadcount2nd = TextEditingController();
   final prasadcount3rd = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  Map<String, dynamic>? responseData;
+  void initState() {
+    super.initState();
+    timingData();
+    // if (responseData != null) showTiming();
+  }
+
   Future<void> _selectTime(
     BuildContext context,
     TextEditingController controller,
@@ -41,6 +49,35 @@ class _UpdateTimeState extends State<UpdateTime> {
       setState(() {
         controller.text = formattedTime;
       });
+    }
+  }
+
+  timingData() async {
+    try {
+      // Call the first API
+      Map<String, dynamic>? timingResponse =
+          await GetDevoteeAPI().updateTiming();
+      responseData = timingResponse["data"];
+      showTiming();
+
+      // Call the second API
+    } catch (error) {
+      // Handle errors
+      print("Error fetching data: $error");
+    }
+  }
+
+  showTiming() {
+    if (responseData != null) {
+      setState(() {
+        balyaStartTime.text = responseData?["balyaStartTime"] ?? "";
+        balyaEndTime.text = responseData?["balyaEndTime"] ?? "";
+        madhyanStartTime.text = responseData?["madhyanaStartTime"] ?? "";
+        madhyanEndTime.text = responseData?["madhyanaEndTime"] ?? "";
+        ratraStartTime.text = responseData?["ratraStartTime"] ?? "";
+        ratraEndTime.text = responseData?["ratraEndTime"] ?? "";
+      });
+      print("balya : ${balyaStartTime.text}");
     }
   }
 
@@ -292,8 +329,11 @@ class _UpdateTimeState extends State<UpdateTime> {
                             madhyanaStartTime: madhyanStartTime.text,
                             madhyanaEndTime: madhyanEndTime.text,
                             ratraStartTime: ratraStartTime.text,
-                            ratraEndTime: ratraEndTime.text);
-                        // print("query : $updateDate");
+                            ratraEndTime: ratraEndTime.text,
+                            prasadFirstDate: responseData?["prasadFirstDate"],
+                            prasadSecondDate: responseData?["prasadSecondDate"],
+                            prasadThirdDate: responseData?["prasadThirdDate"]);
+                        print("query : $updateDate");
                         await PutDevoteeAPI().updateTiming(updateDate);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(

@@ -3,6 +3,7 @@
 import 'package:sdp/API/dio_fuction.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/model/sangha_model.dart';
+import 'package:sdp/model/update_timing_model.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
 class GetDevoteeAPI extends DioFuctionAPI {
@@ -52,6 +53,20 @@ class GetDevoteeAPI extends DioFuctionAPI {
     } catch (e) {
       print(e);
       return {"statusCode": 500, "data": null};
+    }
+  }
+
+  Future<Map<String, dynamic>> updateTiming() async {
+    // Dio dio = Dio();
+
+    try {
+      final response = await getAPI("prasadTimingSetting");
+      print("prasadTiming : $response");
+      return response;
+    } catch (e) {
+      print("Post Error....");
+      print(e);
+      return {"statusCode": 500, "error": e};
     }
   }
 
