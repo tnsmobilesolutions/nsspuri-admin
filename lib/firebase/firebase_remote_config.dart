@@ -147,8 +147,8 @@ class RemoteConfigHelper {
     closeDration = duration;
   }
 
-  int devoteeCount = 10;
-  set dataCountPerPage(int count) {
+  int devoteeCount = 20;
+  set setDataCountPerPage(int count) {
     devoteeCount = count;
   }
 
@@ -179,7 +179,7 @@ fetchRemoteConfigData() async {
     RemoteConfigHelper().setScannerCloseDuration =
         remoteConfig.getInt('scanner_auto_close_duration');
 
-    RemoteConfigHelper().dataCountPerPage =
+    RemoteConfigHelper().setDataCountPerPage =
         remoteConfig.getInt('data_count_per_page');
 
     RemoteConfigHelper().setPaymentMessage =

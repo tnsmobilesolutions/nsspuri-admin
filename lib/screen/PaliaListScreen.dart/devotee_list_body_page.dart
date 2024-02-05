@@ -81,14 +81,12 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
   String? userRole;
 
   late AnimateIconController _controller;
-  late int dataCountPerPage;
+  int dataCountPerPage = RemoteConfigHelper().getDataCountPerPage;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimateIconController();
-
-    dataCountPerPage = RemoteConfigHelper().getDataCountPerPage;
 
     if (widget.devoteeList != null) {
       setState(() {
