@@ -264,7 +264,7 @@ class _DownloadImagePageState extends State<DownloadImagePage> {
         child: GridView.builder(
           itemCount: widget.devoteeData?.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3, childAspectRatio: .8),
+              crossAxisCount: 7, childAspectRatio: .7),
           itemBuilder: (BuildContext context, int index) {
             return FlipCard(
               rotateSide: RotateSide.right,
@@ -276,8 +276,8 @@ class _DownloadImagePageState extends State<DownloadImagePage> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 5, right: 5),
                   child: Container(
-                    height: 1000,
-                    width: 410,
+                    height: 324,
+                    width: 198,
                     decoration: BoxDecoration(
                         color: Colors.white,
                         image: DecorationImage(
@@ -371,7 +371,7 @@ class _DownloadImagePageState extends State<DownloadImagePage> {
                                     children: [
                                       Positioned(
                                         child: CircleAvatar(
-                                          radius: 80,
+                                          radius: 40,
                                           backgroundColor: getColorByDevotee(
                                               widget.devoteeData?[index]),
                                           backgroundImage: widget

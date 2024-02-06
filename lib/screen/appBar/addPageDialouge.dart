@@ -177,7 +177,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'Approver',
     'PrasadScanner',
     "SecurityCheck",
-    "Viewer"
+    "Viewer",
+    "SecurityAndPrasadScan"
   ];
 
   TextEditingController sanghaController = TextEditingController();
@@ -198,7 +199,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'withdrawn',
     'lost',
     'reissued',
-    "blacklisted"
+    "blacklisted",
   ];
   int totalPages = 0, dataCount = 0, currentPage = 1;
 
@@ -267,6 +268,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
         await GetDevoteeAPI().devoteeDetailsById(widget.devoteeId);
     setState(() {
       selectedDevotee = devoteeData?["data"];
+      bool showPranamAmount = selectedDevotee?.paidAmount != null &&
+          (selectedDevotee?.paidAmount ?? 0) > 0 &&
+          (selectedDevotee?.status == "paid" ||
+              selectedDevotee?.status == "printed" ||
+              selectedDevotee?.status == "rejected" ||
+              selectedDevotee?.status == "lost" ||
+              selectedDevotee?.status == "blacklisted");
+
       if (devoteeData?["statusCode"] == 200) {
         if (selectedDevotee?.dob != null || selectedDevotee?.dob != "") {
           List<String> dateParts = selectedDevotee?.dob?.split('-') ?? [];
@@ -292,10 +301,11 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
             selectedDevotee?.dob != null || selectedDevotee?.dob != ""
                 ? formatDate(selectedDevotee?.dob ?? "")
                 : "";
-        shouldShowPranamiField = selectedDevotee?.status == "paid";
-        pranamiController.text = (selectedDevotee?.paidAmount != null
-            ? selectedDevotee?.paidAmount.toString()
-            : "")!;
+        shouldShowPranamiField = showPranamAmount;
+        pranamiController.text =
+            (showPranamAmount ? selectedDevotee?.paidAmount.toString() : "")
+                .toString();
+        print("selected devotee amount : ${selectedDevotee?.paidAmount}");
         remarksController.text = selectedDevotee?.remarks ?? "";
         addressLine1Controller.text =
             selectedDevotee?.address?.addressLine1 ?? "";
@@ -463,7 +473,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
       } else {
         return await PostDevoteeAPI().addRelativeDevotee(updateDevotee);
       }
-    } on Exception catch (e) {
+    } catch (e) {
       return {};
     }
   }
@@ -724,6 +734,33 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     }
   }
 
+  void onChangedStatus(status) {
+    setState(() {
+      selectedStatus = status!;
+
+      bool wasPaidOnce = selectedDevotee?.paidAmount != null &&
+          (selectedDevotee?.paidAmount ?? 0) > 0;
+
+      bool isStatusToDisplayPranami = [
+        'paid',
+        'printed',
+        'rejected',
+        'lost',
+        'blacklisted'
+      ].contains(selectedStatus);
+
+      shouldShowPranamiField = wasPaidOnce && isStatusToDisplayPranami;
+
+      if (shouldShowPranamiField ?? false) {
+        pranamiController.text = widget.title == "edit"
+            ? selectedDevotee?.paidAmount.toString() ?? "0"
+            : "400";
+      } else {
+        pranamiController.text = "0";
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Color getColor(Set<MaterialState> states) {
@@ -746,7 +783,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
           //color: Colors.white,
         ),
         height: 435,
-        width: 400,
+        width: 480,
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(0),
@@ -804,29 +841,45 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                             Expanded(
                               child: DropdownButton<String>(
                                 value: selectedStatus,
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    selectedStatus = newValue!;
-                                    shouldShowPranamiField = newValue == "paid";
-                                    if (shouldShowPranamiField ?? false) {
-                                      pranamiController.text = "400";
-                                    }
-                                    if (selectedStatus != "paid") {
-                                      pranamiController.text = "0";
-                                    }
-                                  });
-                                },
+                                // onChanged: (String? newValue) {
+                                //   if (widget.title == "edit" &&
+                                //       selectedDevotee?.paidAmount != null &&
+                                //       (double.tryParse(
+                                //                   pranamiController.text) ??
+                                //               0) >
+                                //           0) {
+                                //     setState(() {
+                                //       selectedStatus = newValue!;
+                                //       shouldShowPranamiField =
+                                //           newValue == "paid" ||
+                                //               newValue == "printed" ||
+                                //               newValue == "rejected" ||
+                                //               newValue == "lost" ||
+                                //               newValue == "blacklisted";
+                                //     });
+                                //   } else {
+                                //     setState(() {
+                                //       selectedStatus = newValue!;
+                                //       shouldShowPranamiField =
+                                //           newValue == "paid";
+                                //       if (shouldShowPranamiField ?? false) {
+                                //         pranamiController.text = "400";
+                                //       }
+                                //       if (selectedStatus != "paid") {
+                                //         pranamiController.text = "0";
+                                //       }
+                                //     });
+                                //   }
+                                // },
+                                onChanged: onChangedStatus,
                                 underline: Container(
                                   decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.grey), // Border color
-                                    borderRadius: BorderRadius.circular(
-                                        30.0), // Border radius
+                                    border: Border.all(color: Colors.grey),
+                                    borderRadius: BorderRadius.circular(40.0),
                                   ),
                                 ),
                                 elevation: 16,
-                                style: const TextStyle(
-                                    color: Colors.black), // Dropdown text color
+                                style: const TextStyle(color: Colors.black),
                                 items: NetworkHelper()
                                             .getCurrentDevotee
                                             ?.role ==
@@ -859,7 +912,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                             // const VerticalDivider(
                             //   thickness: 1
                             // ),
-                            //const SizedBox(width: 20),
+                            const SizedBox(width: 10),
                             (widget.title == "edit" &&
                                     NetworkHelper().getCurrentDevotee?.role ==
                                         "SuperAdmin")
