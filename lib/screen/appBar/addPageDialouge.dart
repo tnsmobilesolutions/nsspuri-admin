@@ -13,6 +13,7 @@ import 'package:sdp/API/post_devotee.dart';
 import 'package:sdp/API/put_devotee.dart';
 import 'package:sdp/constant/pagination_value.dart';
 import 'package:sdp/constant/sangha_list.dart';
+import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:sdp/model/address_model.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
@@ -199,7 +200,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'withdrawn',
     'lost',
     'reissued',
-    "blacklisted",
+    "blacklisted"
   ];
   int totalPages = 0, dataCount = 0, currentPage = 1;
 
@@ -210,9 +211,11 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     super.dispose();
   }
 
+  late int dataCountPerPage;
   @override
   void initState() {
     super.initState();
+    dataCountPerPage = RemoteConfigHelper().getDataCountPerPage;
     print("widget.devoteeId-----${widget.devoteeId}");
     if (widget.title == "edit") populateData();
     print("page from: ${widget.pageFrom}");
@@ -268,14 +271,6 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
         await GetDevoteeAPI().devoteeDetailsById(widget.devoteeId);
     setState(() {
       selectedDevotee = devoteeData?["data"];
-      bool showPranamAmount = selectedDevotee?.paidAmount != null &&
-          (selectedDevotee?.paidAmount ?? 0) > 0 &&
-          (selectedDevotee?.status == "paid" ||
-              selectedDevotee?.status == "printed" ||
-              selectedDevotee?.status == "rejected" ||
-              selectedDevotee?.status == "lost" ||
-              selectedDevotee?.status == "blacklisted");
-
       if (devoteeData?["statusCode"] == 200) {
         if (selectedDevotee?.dob != null || selectedDevotee?.dob != "") {
           List<String> dateParts = selectedDevotee?.dob?.split('-') ?? [];
@@ -301,11 +296,10 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
             selectedDevotee?.dob != null || selectedDevotee?.dob != ""
                 ? formatDate(selectedDevotee?.dob ?? "")
                 : "";
-        shouldShowPranamiField = showPranamAmount;
-        pranamiController.text =
-            (showPranamAmount ? selectedDevotee?.paidAmount.toString() : "")
-                .toString();
-        print("selected devotee amount : ${selectedDevotee?.paidAmount}");
+        shouldShowPranamiField = selectedDevotee?.status == "paid";
+        pranamiController.text = (selectedDevotee?.paidAmount != null
+            ? selectedDevotee?.paidAmount.toString()
+            : "")!;
         remarksController.text = selectedDevotee?.remarks ?? "";
         addressLine1Controller.text =
             selectedDevotee?.address?.addressLine1 ?? "";
@@ -473,7 +467,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
       } else {
         return await PostDevoteeAPI().addRelativeDevotee(updateDevotee);
       }
-    } catch (e) {
+    } on Exception catch (e) {
       return {};
     }
   }
@@ -598,7 +592,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
             widget.searchValue ?? selectedStatus,
             widget.searchBy ?? "status",
             1,
-            dataLimit,
+            dataCountPerPage,
             status: widget.advanceStatus ?? "",
           );
         }
@@ -734,33 +728,6 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     }
   }
 
-  void onChangedStatus(status) {
-    setState(() {
-      selectedStatus = status!;
-
-      bool wasPaidOnce = selectedDevotee?.paidAmount != null &&
-          (selectedDevotee?.paidAmount ?? 0) > 0;
-
-      bool isStatusToDisplayPranami = [
-        'paid',
-        'printed',
-        'rejected',
-        'lost',
-        'blacklisted'
-      ].contains(selectedStatus);
-
-      shouldShowPranamiField = wasPaidOnce && isStatusToDisplayPranami;
-
-      if (shouldShowPranamiField ?? false) {
-        pranamiController.text = widget.title == "edit"
-            ? selectedDevotee?.paidAmount.toString() ?? "0"
-            : "400";
-      } else {
-        pranamiController.text = "0";
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     Color getColor(Set<MaterialState> states) {
@@ -841,45 +808,29 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                             Expanded(
                               child: DropdownButton<String>(
                                 value: selectedStatus,
-                                // onChanged: (String? newValue) {
-                                //   if (widget.title == "edit" &&
-                                //       selectedDevotee?.paidAmount != null &&
-                                //       (double.tryParse(
-                                //                   pranamiController.text) ??
-                                //               0) >
-                                //           0) {
-                                //     setState(() {
-                                //       selectedStatus = newValue!;
-                                //       shouldShowPranamiField =
-                                //           newValue == "paid" ||
-                                //               newValue == "printed" ||
-                                //               newValue == "rejected" ||
-                                //               newValue == "lost" ||
-                                //               newValue == "blacklisted";
-                                //     });
-                                //   } else {
-                                //     setState(() {
-                                //       selectedStatus = newValue!;
-                                //       shouldShowPranamiField =
-                                //           newValue == "paid";
-                                //       if (shouldShowPranamiField ?? false) {
-                                //         pranamiController.text = "400";
-                                //       }
-                                //       if (selectedStatus != "paid") {
-                                //         pranamiController.text = "0";
-                                //       }
-                                //     });
-                                //   }
-                                // },
-                                onChanged: onChangedStatus,
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    selectedStatus = newValue!;
+                                    shouldShowPranamiField = newValue == "paid";
+                                    if (shouldShowPranamiField ?? false) {
+                                      pranamiController.text = "400";
+                                    }
+                                    if (selectedStatus != "paid") {
+                                      pranamiController.text = "0";
+                                    }
+                                  });
+                                },
                                 underline: Container(
                                   decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.grey),
-                                    borderRadius: BorderRadius.circular(40.0),
+                                    border: Border.all(
+                                        color: Colors.grey), // Border color
+                                    borderRadius: BorderRadius.circular(
+                                        30.0), // Border radius
                                   ),
                                 ),
                                 elevation: 16,
-                                style: const TextStyle(color: Colors.black),
+                                style: const TextStyle(
+                                    color: Colors.black), // Dropdown text color
                                 items: NetworkHelper()
                                             .getCurrentDevotee
                                             ?.role ==

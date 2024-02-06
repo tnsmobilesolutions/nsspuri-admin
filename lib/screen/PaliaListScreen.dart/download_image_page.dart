@@ -234,13 +234,13 @@ class _DownloadImagePageState extends State<DownloadImagePage> {
   }
 
   Text buildNameText(String? devoteeName) {
-    double fontSize = 27;
+    double fontSize = 17;
     if (devoteeName != null) {
       int nameLength = devoteeName.length;
       if (nameLength > 22) {
-        fontSize = 16;
+        fontSize = 10;
       } else {
-        fontSize = 27;
+        fontSize = 15;
       }
     }
     return Text(
