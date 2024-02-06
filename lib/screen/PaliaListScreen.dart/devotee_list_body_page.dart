@@ -13,6 +13,7 @@ import 'package:sdp/constant/pagination_value.dart';
 import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
+import 'package:sdp/screen/PaliaListScreen.dart/download_image_page.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/export_to_excel.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/pagination_row.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
@@ -307,7 +308,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
               setState(() {
                 selectedList[index] = value!;
                 if (value) {
-                  if (selectedDevotees.length < 4) {
+                  if (selectedDevotees.length < 7) {
                     selectedDevotees.add(allDevotees[index]);
                     print("selected : $selectedDevotees");
                   } else {
@@ -315,7 +316,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                       elevation: 6,
                       behavior: SnackBarBehavior.floating,
                       content: Text(
-                        'You can only select up to 4 devotees !',
+                        'You can only select up to 7 devotees !',
                       ),
                     ));
                     selectedList[index] = false;
@@ -606,12 +607,20 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                                                 ?.role !=
                                             "Viewer")
                                         ? () {
-                                            //downloadImages(selectedDevotees);
-                                            //            Navigator.push(
-                                            //   context,
-                                            //   MaterialPageRoute(
-                                            //       builder: (context) => PrintingDocsPage()),
-                                            // );
+                                            for (var i = 0;
+                                                i < selectedDevotees.length;
+                                                i++) {
+                                              // downloadImages(selectedDevotees);
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        DownloadImagePage(
+                                                          devoteeData:
+                                                              selectedDevotees,
+                                                        )),
+                                              );
+                                            }
                                           }
                                         : null,
                                     child: const Text('Print'),
