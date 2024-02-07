@@ -2,12 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sdp/constant/pagination_value.dart';
 
 class PaginationRow extends StatelessWidget {
   PaginationRow({
     super.key,
     required this.dataCount,
+    required this.dataLimit,
     required this.currentPage,
     required this.totalPages,
     required this.fetchAllDevotee,
@@ -16,6 +16,7 @@ class PaginationRow extends StatelessWidget {
 
   final int currentPage;
   final int dataCount;
+  final int dataLimit;
   final Function(int page) fetchAllDevotee;
   final Function(String? page) onFieldSubmitted;
   TextEditingController pageController = TextEditingController();

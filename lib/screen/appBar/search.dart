@@ -4,6 +4,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/constant/pagination_value.dart';
 import 'package:sdp/constant/sangha_list.dart';
+import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
@@ -54,9 +55,11 @@ class _SearchDevoteeState extends State<SearchDevotee> {
   String? trackSearchType;
   TextEditingController searchSanghaController = TextEditingController();
   final TextEditingController sdpSearchController = TextEditingController();
+  late int dataCountPerPage;
   @override
   void initState() {
     super.initState();
+    dataCountPerPage = RemoteConfigHelper().getDataCountPerPage;
     _selectedSearchType = widget.searchBy ?? "name";
     sdpSearchController.text = widget.searchValue ?? "";
   }
@@ -185,7 +188,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                               sdpSearchController.text,
                               _selectedSearchType.toString(),
                               1,
-                              dataLimit,
+                              dataCountPerPage,
                             )
                                 .then((response) {
                               devoteeList.addAll(response["data"]);
@@ -238,7 +241,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                                   sdpSearchController.text,
                                   _selectedSearchType.toString(),
                                   1,
-                                  dataLimit,
+                                  dataCountPerPage,
                                 )
                                     .then((response) {
                                   devoteeList.addAll(response["data"]);
@@ -339,7 +342,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                           sangha,
                           _selectedSearchType.toString(),
                           1,
-                          dataLimit,
+                          dataCountPerPage,
                         )
                             .then((response) {
                           devoteeList.addAll(response["data"]);
