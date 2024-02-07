@@ -279,8 +279,8 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                 color: const Color.fromARGB(255, 233, 233, 233),
                               ),
                               borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(15),
-                                  topRight: Radius.circular(15))),
+                                  topLeft: Radius.circular(32),
+                                  topRight: Radius.circular(32))),
                           child: Padding(
                             padding: const EdgeInsets.all(.0),
                             child: Column(
@@ -293,7 +293,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                   height: 10,
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 4),
+                                  padding: const EdgeInsets.only(left:30),
                                   child: Row(
                                     children: [
                                       Expanded(
@@ -450,66 +450,71 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                 Expanded(
                                   flex: 5,
                                   child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                 
                                     children: [
+                                        SizedBox(width: 25,),
                                       Flexible(
                                         flex: 2,
                                         child: Padding(
                                           padding:
                                               const EdgeInsets.only(left: 10),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Expanded(
+                                          child: Container(
+                                          
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                SizedBox(height: 8,),
+                                                Expanded(
+                                                    flex: 2,
+                                                    child: buildSanghaText(widget
+                                                        .devoteeDetails.sangha)),
+                                                widget.devoteeDetails.sangha !=
+                                                            null &&
+                                                        widget.devoteeDetails
+                                                                .sangha!.length >
+                                                            18
+                                                    ? const SizedBox(height: 20)
+                                                    : const SizedBox(height: 10),
+                                                Expanded(
+                                                  flex: 5,
+                                                  child: widget.devoteeDetails
+                                                              .devoteeCode !=
+                                                          null
+                                                      ? Text(
+                                                          _toPascalCase(widget
+                                                              .devoteeDetails
+                                                              .devoteeCode
+                                                              .toString()),
+                                                          style: const TextStyle(
+                                                            color:
+                                                                Colors.deepOrange,
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        )
+                                                      : const Text(""),
+                                                ),
+                                                const SizedBox(
+                                                  height: 20,
+                                                ),
+                                                Expanded(
                                                   flex: 2,
-                                                  child: buildSanghaText(widget
-                                                      .devoteeDetails.sangha)),
-                                              widget.devoteeDetails.sangha !=
-                                                          null &&
-                                                      widget.devoteeDetails
-                                                              .sangha!.length >
-                                                          18
-                                                  ? const SizedBox(height: 20)
-                                                  : const SizedBox(height: 10),
-                                              Expanded(
-                                                flex: 5,
-                                                child: widget.devoteeDetails
-                                                            .devoteeCode !=
-                                                        null
-                                                    ? Text(
-                                                        _toPascalCase(widget
-                                                            .devoteeDetails
-                                                            .devoteeCode
-                                                            .toString()),
-                                                        style: const TextStyle(
-                                                          color:
-                                                              Colors.deepOrange,
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      )
-                                                    : const Text(""),
-                                              ),
-                                              const SizedBox(
-                                                height: 20,
-                                              ),
-                                              Expanded(
-                                                flex: 2,
-                                                child: Container(),
-                                              ),
-                                            ],
+                                                  child: Container(),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
+                                      SizedBox(width: 45,),
                                       Flexible(
                                         flex: 3,
                                         child: Container(
                                           padding: const EdgeInsets.all(0),
-                                          height: 168,
-                                          width: 168,
+                                          height: 169,
+                                          width: 169,
                                           child: SfBarcodeGenerator(
                                             value: widget
                                                 .devoteeDetails.devoteeCode
