@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_flip_card/controllers/flip_card_controllers.dart';
 import 'package:flutter_flip_card/flipcard/flip_card.dart';
 import 'package:flutter_flip_card/modal/flip_side.dart';
+import 'package:sdp/constant/print_image.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'dart:html' as html;
 import 'dart:ui' as ui;
@@ -531,7 +532,8 @@ class _DownloadImagePageState extends State<DownloadImagePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _downloadWidget();
+          //   DisplayPdf(context);
+          //_downloadWidget();
         },
         child: Icon(Icons.download),
       ),

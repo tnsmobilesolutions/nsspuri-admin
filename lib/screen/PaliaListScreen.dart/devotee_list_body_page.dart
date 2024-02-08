@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/constant/pagination_value.dart';
+import 'package:sdp/constant/printing_cards.dart';
 import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
@@ -607,20 +608,8 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                                                 ?.role !=
                                             "Viewer")
                                         ? () {
-                                            for (var i = 0;
-                                                i < selectedDevotees.length;
-                                                i++) {
-                                              // downloadImages(selectedDevotees);
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        DownloadImagePage(
-                                                          devoteeData:
-                                                              selectedDevotees,
-                                                        )),
-                                              );
-                                            }
+                                            DisplayPdf.delegatePDF(
+                                                selectedDevotees, context);
                                           }
                                         : null,
                                     child: const Text('Print'),
