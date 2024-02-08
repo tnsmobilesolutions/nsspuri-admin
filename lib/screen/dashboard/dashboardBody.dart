@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/API/put_devotee.dart';
+import 'package:sdp/constant/print_image.dart';
 import 'package:sdp/model/dashboard_card_model.dart';
 import 'package:sdp/model/update_timing_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
@@ -367,9 +368,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                           ),
                         ],
                       ),
-                      const Divider(
-                        thickness: 3,
-                      ),
+                      const Divider(thickness: 1),
                       Expanded(
                           child: ListView.builder(
                         scrollDirection: Axis.horizontal,
@@ -420,9 +419,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                           ),
                         ],
                       ),
-                      const Divider(
-                        thickness: 3,
-                      ),
+                      const Divider(thickness: 1),
                       Expanded(
                           child: ListView.builder(
                         scrollDirection: Axis.horizontal,
@@ -504,6 +501,13 @@ class _DashboardBodyState extends State<DashboardBody> {
                 ),
               ),
             ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          //   DisplayPdf(context);
+          //_downloadWidget();
+        },
+        child: Icon(Icons.download),
+      ),
     );
   }
 }

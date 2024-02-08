@@ -73,6 +73,7 @@ dependencies:
   image_downloader_web: ^2.0.4
   screenshot: ^2.1.0
   firebase_remote_config: ^4.3.8
+  http: ^1.2.0
 
 dev_dependencies:
   flutter_test:
