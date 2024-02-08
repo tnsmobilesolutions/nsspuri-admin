@@ -530,13 +530,13 @@ class _DownloadImagePageState extends State<DownloadImagePage> {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          //   DisplayPdf(context);
-          //_downloadWidget();
-        },
-        child: Icon(Icons.download),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     //   DisplayPdf(context);
+      //     //_downloadWidget();
+      //   },
+      //   child: Icon(Icons.download),
+      // ),
     );
   }
 }

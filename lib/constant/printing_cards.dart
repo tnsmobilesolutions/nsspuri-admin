@@ -50,7 +50,7 @@ class DisplayPdf {
 
     final img1 = await rootBundle.load('assets/images/bhai.png');
     final img2 = await rootBundle.load('assets/images/maa.png');
-    final img3 = await rootBundle.load('assets/images/organiser.png');
+    final img3 = await rootBundle.load('assets/images/organizer.png');
     final img4 = await rootBundle.load('assets/images/child.png');
     final img5 = await rootBundle.load('assets/images/guest.png');
     final img6 = await rootBundle.load('assets/images/old.png');

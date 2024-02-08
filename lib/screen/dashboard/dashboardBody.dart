@@ -501,13 +501,6 @@ class _DashboardBodyState extends State<DashboardBody> {
                 ),
               ),
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          //   DisplayPdf(context);
-          //_downloadWidget();
-        },
-        child: Icon(Icons.download),
-      ),
     );
   }
 }
