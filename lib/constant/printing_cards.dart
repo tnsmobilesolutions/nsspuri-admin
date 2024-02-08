@@ -37,7 +37,9 @@ class DisplayPdf {
       List<Uint8List> imageBytesList = [];
       for (DevoteeModel devotee in selectedDevotees) {
         final response =
-            await http.get(Uri.parse(devotee.profilePhotoUrl ?? ""));
+            await http.get(Uri.parse(devotee.profilePhotoUrl ?? ""), headers: {
+          'Access-Control-Allow-Origin': '*',
+        });
         if (response.statusCode == 200) {
           imageBytesList.add(response.bodyBytes);
         } else {
@@ -277,7 +279,7 @@ class DisplayPdf {
                 width: 50, // Adjust the width as needed
                 height: 50, // Adjust the height as needed
                 child: pw.ClipRRect(
-                    child: pw.Image(pw.MemoryImage(networkImages[1]))),
+                    child: pw.Image(pw.MemoryImage(networkImages[0]))),
               ),
             ),
 
