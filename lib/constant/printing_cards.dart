@@ -54,6 +54,8 @@ class DisplayPdf {
     final img4 = await rootBundle.load('assets/images/child.png');
     final img5 = await rootBundle.load('assets/images/guest.png');
     final img6 = await rootBundle.load('assets/images/old.png');
+    final img7 = await rootBundle.load('assets/images/blood.png');
+
     // final img6 = await rootBundle.load('assets/images/del_bg_old.png');
 
     final imageBytes1 = img1.buffer.asUint8List();
@@ -62,6 +64,7 @@ class DisplayPdf {
     final imageBytes4 = img4.buffer.asUint8List();
     final imageBytes5 = img5.buffer.asUint8List();
     final imageBytes6 = img6.buffer.asUint8List();
+    final imageBytes7 = img7.buffer.asUint8List();
 
     pw.Image bhaiCardColor = pw.Image(pw.MemoryImage(imageBytes1));
     pw.Image maaCardColor = pw.Image(pw.MemoryImage(imageBytes2));
@@ -69,6 +72,7 @@ class DisplayPdf {
     pw.Image childCardColor = pw.Image(pw.MemoryImage(imageBytes4));
     pw.Image guestCardColor = pw.Image(pw.MemoryImage(imageBytes5));
     pw.Image oldCardColor = pw.Image(pw.MemoryImage(imageBytes6));
+    pw.Image blood = pw.Image(pw.MemoryImage(imageBytes7));
 
     // final img3 = await rootBundle.load('assets/images/Subtract.png');
     // final imageBytes3 = img3.buffer.asUint8List();
@@ -184,17 +188,17 @@ class DisplayPdf {
       List<Uint8List> qrCodes = [];
       for (DevoteeModel devotee in selectedDevotees) {
         Uint8List capturedImage = await screenshotController.captureFromWidget(
-          Container(
-            child: SfBarcodeGenerator(
-              value: "${devotee.devoteeCode}",
-              symbology: QRCode(),
-            ),
+          SfBarcodeGenerator(
+            value: "${devotee.devoteeCode}",
+            symbology: QRCode(),
           ),
         );
         qrCodes.add(capturedImage);
       }
       return qrCodes;
     }
+
+    final image = await imageFromAssetBundle('assets/images/blood.png');
 
     pw.Widget buildCard(
         pw.Context context, DevoteeModel cardData, Uint8List qrCode) {
@@ -221,7 +225,11 @@ class DisplayPdf {
                               ? oldCardColor
                               : bhaiCardColor,
             ),
-
+            pw.Positioned(
+              top: 10,
+              left: 10,
+              child: blood,
+            ),
             cardData.gender == "Female"
                 ? pw.Positioned(
                     top: 165,
@@ -262,16 +270,16 @@ class DisplayPdf {
                             ),
                           ),
 
-            // pw.Positioned(
-            //   top: 155,
-            //   left: 30,
-            //   child: pw.Container(
-            //     width: 50, // Adjust the width as needed
-            //     height: 50, // Adjust the height as needed
-            //     child: pw.ClipRRect(
-            //         child: pw.Image(pw.MemoryImage(networkImages[1]))),
-            //   ),
-            // ),
+            pw.Positioned(
+              top: 155,
+              left: 30,
+              child: pw.Container(
+                width: 50, // Adjust the width as needed
+                height: 50, // Adjust the height as needed
+                child: pw.ClipRRect(
+                    child: pw.Image(pw.MemoryImage(networkImages[1]))),
+              ),
+            ),
 
             cardData.gender == "Male"
                 ? pw.Positioned(
@@ -311,11 +319,11 @@ class DisplayPdf {
 
             pw.SizedBox(height: 20),
             pw.Positioned(
-              top: 260,
-              left: 90,
+              top: 230,
+              left: 60,
               child: pw.SizedBox(
-                height: 100,
-                width: 100,
+                height: 1700,
+                width: 170,
                 child: pw.Image(pw.MemoryImage(qrCode)),
               ),
             ),
