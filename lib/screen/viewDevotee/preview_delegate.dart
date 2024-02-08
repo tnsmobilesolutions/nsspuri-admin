@@ -750,7 +750,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
     double fontSize = 10;
     if (sanghaName != null) {
       int nameLength = sanghaName.length;
-      if (nameLength > 14) {
+      if (nameLength > 10) {
         fontSize = 8;
       }
     }
@@ -1024,42 +1024,34 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Expanded(
-                                                  flex: 2,
-                                                  child: buildSanghaText(widget
-                                                      .devoteeDetails.sangha)),
+                                              buildSanghaText(
+                                                  widget.devoteeDetails.sangha),
                                               widget.devoteeDetails.sangha !=
                                                           null &&
                                                       widget.devoteeDetails
                                                               .sangha!.length >
-                                                          18
-                                                  ? const SizedBox(height: 20)
-                                                  : const SizedBox(height: 10),
-                                              Expanded(
-                                                flex: 5,
-                                                child: widget.devoteeDetails
-                                                            .devoteeCode !=
-                                                        null
-                                                    ? Text(
-                                                        _toPascalCase(widget
-                                                            .devoteeDetails
-                                                            .devoteeCode
-                                                            .toString()),
-                                                        style: const TextStyle(
-                                                          color:
-                                                              Colors.deepOrange,
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      )
-                                                    : const Text(""),
-                                              ),
+                                                          15
+                                                  ? const SizedBox(height: 4)
+                                                  : const SizedBox(height: 20),
+                                              widget.devoteeDetails
+                                                          .devoteeCode !=
+                                                      null
+                                                  ? Text(
+                                                      _toPascalCase(widget
+                                                          .devoteeDetails
+                                                          .devoteeCode
+                                                          .toString()),
+                                                      style: const TextStyle(
+                                                        color:
+                                                            Colors.deepOrange,
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    )
+                                                  : const Text(""),
                                               const SizedBox(height: 13),
-                                              Expanded(
-                                                flex: 2,
-                                                child: Container(),
-                                              ),
+                                              Container(),
                                             ],
                                           ),
                                         ),
