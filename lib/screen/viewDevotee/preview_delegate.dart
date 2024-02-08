@@ -1,7 +1,5 @@
 // preview delegate size is reduced for print
 
-
-
 // ignore_for_file: library_private_types_in_public_api
 
 // import 'package:flutter/material.dart';
@@ -749,12 +747,10 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
   }
 
   Widget buildSanghaText(String? sanghaName) {
-    double fontSize = 8;
+    double fontSize = 10;
     if (sanghaName != null) {
       int nameLength = sanghaName.length;
-      if (nameLength > 8) {
-        fontSize = 6;
-      } else {
+      if (nameLength > 14) {
         fontSize = 8;
       }
     }
@@ -769,36 +765,30 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
       ),
     );
   }
-  // Widget buildSanghaText(String? sanghaName) {
-  //   double fontSize = 17;
-  //   if (sanghaName != null) {
-  //     int nameLength = sanghaName.length;
-  //     if (nameLength > 16) {
-  //       fontSize = 13;
-  //     } else {
-  //       fontSize = 17;
-  //     }
+
+  // Text buildNameText(String? devoteeName) {
+  //   double fontSize = 14;
+  //   if (devoteeName != null) {
+  //     int nameLength = devoteeName.length;
+  //     // if (nameLength > 14) {
+  //     //   fontSize = 10;
+  //     // }
   //   }
   //   return Text(
-  //     //"123456789012345678901234567890",
-  //     _toPascalCase(sanghaName ?? ''),
-  //     // overflow: TextOverflow.clip,
+  //     _toPascalCase(devoteeName ?? ''),
   //     style: TextStyle(
-  //       color: Colors.black,
+  //       color: Colors.deepOrange,
   //       fontSize: fontSize,
   //       fontWeight: FontWeight.bold,
   //     ),
   //   );
   // }
-
   Text buildNameText(String? devoteeName) {
-    double fontSize = 12;
+    double fontSize = 14;
     if (devoteeName != null) {
       int nameLength = devoteeName.length;
-      if (nameLength > 12) {
-        fontSize = 8;
-      } else {
-        fontSize = 14;
+      if (nameLength > 22) {
+        fontSize = 12;
       }
     }
     return Text(
@@ -810,25 +800,6 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
       ),
     );
   }
-  // Text buildNameText(String? devoteeName) {
-  //   double fontSize = 27;
-  //   if (devoteeName != null) {
-  //     int nameLength = devoteeName.length;
-  //     if (nameLength > 22) {
-  //       fontSize = 16;
-  //     } else {
-  //       fontSize = 27;
-  //     }
-  //   }
-  //   return Text(
-  //     _toPascalCase(devoteeName ?? ''),
-  //     style: TextStyle(
-  //       color: Colors.deepOrange,
-  //       fontSize: fontSize,
-  //       fontWeight: FontWeight.bold,
-  //     ),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -859,11 +830,11 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                           height: 338, // 324,
                           width: 207, // 198,
                           decoration: BoxDecoration(
-                              color: Colors.white,
-                              image: DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: getCardImage(devotees)),
-                           ),
+                            color: Colors.white,
+                            image: DecorationImage(
+                                fit: BoxFit.fill,
+                                image: getCardImage(devotees)),
+                          ),
                           child: Padding(
                             padding: const EdgeInsets.all(.0),
                             child: Column(
@@ -879,8 +850,9 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                   padding: const EdgeInsets.only(left: 4),
                                   child: Row(
                                     children: [
-                                                                            SizedBox(width: 10,),
-
+                                      SizedBox(
+                                        width: 10,
+                                      ),
                                       Expanded(
                                         child: Container(
                                           child: widget.devoteeDetails
@@ -938,7 +910,9 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                           // Return an empty Container if the condition is false
                                         ),
                                       ),
-                                      SizedBox(width: 4,),
+                                      SizedBox(
+                                        width: 4,
+                                      ),
                                       Expanded(
                                         flex: 3,
                                         child: Stack(
@@ -1030,18 +1004,17 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                   height: 4,
                                 ),
                                 Expanded(
-                                    flex: 1,
-                                    child: buildNameText(
-                                        widget.devoteeDetails.name),),
-                                
+                                  flex: 1,
+                                  child:
+                                      buildNameText(widget.devoteeDetails.name),
+                                ),
                                 Expanded(
                                   flex: 6,
                                   child: Row(
-                                                                   
                                     children: [
-                                         const SizedBox(
-                                  height: 6,
-                                ),
+                                      const SizedBox(
+                                        height: 6,
+                                      ),
                                       Flexible(
                                         flex: 2,
                                         child: Padding(
@@ -1075,16 +1048,14 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                                         style: const TextStyle(
                                                           color:
                                                               Colors.deepOrange,
-                                                          fontSize: 9, // 18,
+                                                          fontSize: 12,
                                                           fontWeight:
                                                               FontWeight.bold,
                                                         ),
                                                       )
                                                     : const Text(""),
                                               ),
-                                              const SizedBox(
-                                                height: 13,
-                                              ),
+                                              const SizedBox(height: 13),
                                               Expanded(
                                                 flex: 2,
                                                 child: Container(),
@@ -1093,7 +1064,6 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                           ),
                                         ),
                                       ),
-                                     
                                       Flexible(
                                         flex: 3,
                                         child: Container(
@@ -1109,12 +1079,15 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                           ),
                                         ),
                                       ),
-                                       SizedBox(width: 11,),
-                                         
+                                      SizedBox(
+                                        width: 11,
+                                      ),
                                     ],
                                   ),
                                 ),
-                              SizedBox(height: 7.5,),
+                                SizedBox(
+                                  height: 7.5,
+                                ),
                               ],
                             ),
                           ),
