@@ -26,16 +26,7 @@ class _PrintingDocsPageState extends State<PrintingDocsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(
-      //     'Print your Invoice',
-      //     style: Theme.of(context).textTheme.headlineLarge,
-      //   ),
-      //   centerTitle: false,
-      //   leading: BackArrowButton.backArrowIcon(context, () {
-      //     Navigator.pop(context);
-      //   }),
-      // ),
+
       body: Center(
         child: PdfPreview(
           dpi: 300,
