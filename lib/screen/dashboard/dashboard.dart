@@ -1,10 +1,11 @@
-// ignore_for_file: must_be_immutable, avoid_print
+// ignore_for_file: must_be_immutable, avoid_print, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/Login/EmailSignIn.dart';
 import 'package:sdp/constant/enums.dart';
 import 'package:sdp/firebase/firebase_auth_api.dart';
+import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
@@ -42,6 +43,7 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   List<String>? selectedPalia;
+  bool isLoadingDelegatesByMe = true;
 
   IconData _getIconForMenuOption(MenuOption option) {
     switch (option) {
@@ -59,25 +61,33 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   MenuOption? selectedMenu;
-
   MenuOption option = MenuOption.create;
-
   List<DevoteeModel> allDevoteesCreatedByMe = [];
+  int totalPages = 0, dataCount = 0, currentPage = 1;
 
   Future<void> fetchDelegatesByMe() async {
     var currentUser = NetworkHelper().currentDevotee;
-    var allDevotees = await GetDevoteeAPI()
-        .devoteeListBycreatedById(currentUser?.createdById.toString() ?? "");
+    var allDevotees = await GetDevoteeAPI().devoteeListBycreatedById(
+      currentUser?.createdById.toString() ?? "",
+      1,
+      RemoteConfigHelper().getDataCountPerPage,
+    );
     if (allDevotees != null) {
-      print("all devotee by me length: ${allDevotees["data"].length}");
       setState(() {
         for (int i = 0; i < allDevotees["data"].length; i++) {
           allDevoteesCreatedByMe.add(allDevotees["data"][i]);
         }
+        totalPages = allDevotees["totalPages"];
+        dataCount = allDevotees["count"];
+        currentPage = allDevotees["currentPage"];
       });
+      print("created by me: ${allDevoteesCreatedByMe.length}");
     } else {
       print("No delegates by me !");
     }
+    setState(() {
+      isLoadingDelegatesByMe = false;
+    });
   }
 
   @override
@@ -112,7 +122,6 @@ class _DashboardPageState extends State<DashboardPage> {
                     switch (value) {
                       case MenuOption.home:
                         if (NetworkHelper().currentDevotee?.role != "User") {
-                          // change to hide home menu later for userdashboard
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -123,20 +132,22 @@ class _DashboardPageState extends State<DashboardPage> {
                         break;
                       case MenuOption.createdByMe:
                         await fetchDelegatesByMe();
-                        if (context.mounted) {
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) {
-                              return DevoteeListPage(
-                                pageFrom: "Dashboard",
-                                status: "allDevotee",
-                                devoteeList: allDevoteesCreatedByMe,
-                              );
-                            },
-                          ));
-                        }
+                        isLoadingDelegatesByMe
+                            ? const Center(child: CircularProgressIndicator())
+                            : Navigator.push(context, MaterialPageRoute(
+                                builder: (context) {
+                                  return DevoteeListPage(
+                                    pageFrom: "Dashboard",
+                                    status: "allDevotee",
+                                    devoteeList: allDevoteesCreatedByMe,
+                                    totalPages: totalPages,
+                                    currentPage: currentPage,
+                                    dataCount: dataCount,
+                                  );
+                                },
+                              ));
                         break;
                       case MenuOption.create:
-                        // ignore: use_build_context_synchronously
                         showDialog<void>(
                           context: context,
                           builder: (BuildContext context) {
@@ -174,23 +185,24 @@ class _DashboardPageState extends State<DashboardPage> {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                  title: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text('Change Timing'),
-                                      IconButton(
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text('Change Timing'),
+                                    IconButton(
+                                        color: Colors.deepOrange,
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        icon: const Icon(
+                                          Icons.close,
                                           color: Colors.deepOrange,
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          icon: const Icon(
-                                            Icons.close,
-                                            color: Colors.deepOrange,
-                                          ))
-                                    ],
-                                  ),
-                                  content: UpdateTime());
+                                        ))
+                                  ],
+                                ),
+                                content: const UpdateTime(),
+                              );
                             },
                           );
                         }
@@ -303,14 +315,19 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
 
   Future<void> fetchDelegatesByMe() async {
     var currentUser = NetworkHelper().currentDevotee;
-    var allDevotees = await GetDevoteeAPI()
-        .devoteeListBycreatedById(currentUser?.createdById.toString() ?? "");
+    var allDevotees = await GetDevoteeAPI().devoteeListBycreatedById(
+      currentUser?.createdById.toString() ?? "",
+      1,
+      RemoteConfigHelper().getDataCountPerPage,
+    );
     if (allDevotees != null) {
       print("all devotee by me length: ${allDevotees["data"].length}");
       setState(() {
-        for (int i = 0; i < allDevotees["data"].length; i++) {
-          allDevoteesCreatedByMe.add(allDevotees["data"][i]);
-        }
+        allDevoteesCreatedByMe = allDevotees["data"];
+        print("all devotees by me: ${allDevoteesCreatedByMe.length}");
+        // for (int i = 0; i < allDevotees["data"].length; i++) {
+        //   allDevoteesCreatedByMe.add(allDevotees["data"][i]);
+        // }
       });
     } else {
       print("No delegates by me !");
@@ -359,7 +376,6 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
                 }
                 break;
               case MenuOption.create:
-                // ignore: use_build_context_synchronously
                 showDialog<void>(
                   context: context,
                   builder: (BuildContext context) {

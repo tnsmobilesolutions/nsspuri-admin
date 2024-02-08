@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sdp/API/get_devotee.dart';
+import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/appBar/create_delegate_buton.dart.dart';
@@ -42,9 +43,9 @@ class _UserDashboardState extends State<UserDashboard> {
                     padding: const EdgeInsets.all(18.0),
                     child: CreateDelegateButton(role: "User"),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: const LogoutButton(),
+                  const Padding(
+                    padding: EdgeInsets.all(18.0),
+                    child: LogoutButton(),
                   )
                 ]),
             tablet: ResponsiveAppBar(role: "User"),
@@ -52,11 +53,15 @@ class _UserDashboardState extends State<UserDashboard> {
           ),
         ),
         body: FutureBuilder(
-          future: GetDevoteeAPI().devoteeListBycreatedById(widget.devoteeId),
+          future: GetDevoteeAPI().devoteeListBycreatedById(
+            widget.devoteeId,
+            1,
+            RemoteConfigHelper().getDataCountPerPage,
+          ),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if ((snapshot.connectionState == ConnectionState.waiting) ||
                 snapshot.hasError) {
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(),
               );
             } else {

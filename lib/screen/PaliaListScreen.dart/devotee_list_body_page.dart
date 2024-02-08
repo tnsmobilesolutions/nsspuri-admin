@@ -1,21 +1,16 @@
 // ignore_for_file: file_names, depend_on_referenced_packages, must_be_immutable, iterable_contains_unrelated_type, avoid_print
-import 'dart:async';
-import 'dart:typed_data';
 import 'dart:html' as html;
-
-import 'package:archive/archive.dart';
 import 'package:animate_icons/animate_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:ionicons/ionicons.dart';
 import 'package:sdp/API/get_devotee.dart';
-import 'package:sdp/constant/pagination_value.dart';
 import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/download_image_page.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/export_to_excel.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/pagination_row.dart';
+import 'package:sdp/screen/PaliaListScreen.dart/shimmer.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
 import 'package:sdp/screen/viewDevotee/preview_delegate.dart';
 import 'package:sdp/screen/viewDevotee/viewDevotee.dart';
@@ -32,11 +27,13 @@ class DevoteeListBodyPage extends StatefulWidget {
     this.searchValue,
     this.searchBy,
     this.currentPage,
+    this.createdByMe,
     this.dataCount,
     this.totalPages,
   }) : super(key: key);
 
   String? advanceStatus;
+  bool? createdByMe;
   List<DevoteeModel>? devoteeList;
   String? pageFrom;
   String? searchBy;
@@ -56,7 +53,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
   bool checkedValue = false;
   Map<String, dynamic> data = {};
   bool editpaliDate = false;
-  bool isAscending = false;
+  bool isAscending = true;
   bool isChecked = false;
   bool isLoading = true;
   bool isSelected = true;
@@ -81,14 +78,11 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
   int totalPages = 0, dataCount = 0, currentPage = 1;
   String? userRole;
 
-  late AnimateIconController _controller;
   int dataCountPerPage = RemoteConfigHelper().getDataCountPerPage;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimateIconController();
-
     if (widget.devoteeList != null) {
       setState(() {
         isLoading = true;
@@ -107,20 +101,22 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         userRole = NetworkHelper().currentDevotee?.role;
       });
     }
+    // fetchAllDevotee(currentPage);
+    // if (widget.createdByMe != null && widget.createdByMe == true) {
+    //   fetchDelegatesByMe();
+    // } else {
+    //   fetchAllDevotee(currentPage);
+    //   setState(() {
+    //     userRole = NetworkHelper().currentDevotee?.role;
+    //   });
+    // }
   }
-
-  // @override
-  // void dispose() {
-  //   _controller.dispose();
-  //   super.dispose();
-  // }
 
   void downloadImage(String imageUrl) {
     final html.AnchorElement anchor = html.AnchorElement(href: imageUrl)
       ..target = 'image_download'
       ..download = 'image.jpg';
 
-    // Triggering the download
     html.document.body?.append(anchor);
     anchor.click();
     anchor.remove();
@@ -141,8 +137,35 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
     return "";
   }
 
-  void fetchAllDevotee(int pageValue) async {
+  Future<void> fetchDelegatesByMe(int page) async {
     setState(() => isLoading = true);
+    var currentUser = NetworkHelper().currentDevotee;
+    Map<String, dynamic>? allDevotee;
+
+    allDevotee = await GetDevoteeAPI().devoteeListBycreatedById(
+        currentUser?.createdById.toString() ?? "", page, dataCountPerPage);
+    if (allDevotee != null) {
+      print("created by me: ${allDevotee.length}");
+      allDevotees.clear();
+      setState(() {
+        for (int i = 0; i < allDevotee?["data"].length; i++) {
+          allDevotees.add(allDevotee?["data"][i]);
+        }
+        totalPages = allDevotee?["totalPages"];
+        dataCount = allDevotee?["count"];
+        currentPage = allDevotee?["currentPage"];
+        selectedList =
+            List<bool>.generate(allDevotees.length, (int index) => false);
+      });
+    } else {
+      print("Error in fetching created by me !");
+    }
+    setState(() => isLoading = false);
+  }
+
+  Future<void> fetchAllDevotee(int pageValue) async {
+    setState(() => isLoading = true);
+
     Map<String, dynamic>? allDevotee;
 
     if (widget.pageFrom == "Dashboard") {
@@ -151,7 +174,12 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
             await GetDevoteeAPI().allDevotee(pageValue, dataCountPerPage);
       } else {
         allDevotee = await GetDevoteeAPI().searchDevotee(
-            widget.status, "status", pageValue, dataCountPerPage);
+          widget.status,
+          "status",
+          pageValue,
+          dataCountPerPage,
+          isAscending: NetworkHelper().getNameAscending,
+        );
       }
     } else {
       allDevotee = await GetDevoteeAPI().advanceSearchDevotee(
@@ -160,6 +188,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         pageValue,
         dataCountPerPage,
         status: widget.advanceStatus,
+        isAscending: NetworkHelper().getNameAscending,
       );
     }
 
@@ -183,6 +212,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
     } else {
       print("Error fetching data");
     }
+
     setState(() => isLoading = false);
   }
 
@@ -252,7 +282,6 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
       columns: [
         dataColumn(context, 'Sl. No.'),
         dataColumn(context, 'Profile Image'),
-        // dataColumn(context, 'Download'),
         DataColumn(
           label: Row(
             children: [
@@ -266,25 +295,42 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                       ),
                     ),
               ),
-              AnimateIcons(
-                startIcon: Ionicons.arrow_up,
-                endIcon: Ionicons.arrow_down,
-                startIconColor: Colors.deepOrange,
-                endIconColor: Colors.deepOrange,
-                controller: _controller,
-                duration: const Duration(milliseconds: 800),
-                size: 20.0,
-                onStartIconPress: () {
-                  isAscending = !isAscending;
-                  _sortList(isAscending);
-                  return true;
+              IconButton(
+                onPressed: () async {
+                  setState(() {
+                    isAscending = !isAscending;
+                    NetworkHelper().setNameAscending = isAscending;
+                  });
+                  await fetchAllDevotee(currentPage);
                 },
-                onEndIconPress: () {
-                  isAscending = !isAscending;
-                  _sortList(isAscending);
-                  return true;
-                },
+                icon: Icon(
+                  NetworkHelper().getNameAscending
+                      ? Icons.arrow_downward_rounded
+                      : Icons.arrow_upward_rounded,
+                  color: Colors.deepOrange,
+                ),
               ),
+              // AnimateIcons(
+              //   startIcon: Ionicons.arrow_up,
+              //   endIcon: Ionicons.arrow_down,
+              //   startIconColor: Colors.deepOrange,
+              //   endIconColor: Colors.deepOrange,
+              //   controller: _controller,
+              //   duration: const Duration(milliseconds: 800),
+              //   size: 20.0,
+              //   onStartIconPress: () {
+              //     isAscending = !isAscending;
+              //     NetworkHelper().setNameAscending = isAscending;
+              //     //_sortList(isAscending);
+              //     return true;
+              //   },
+              //   onEndIconPress: () {
+              //     isAscending = !isAscending;
+              //     NetworkHelper().setNameAscending = isAscending;
+              //     // _sortList(isAscending);
+              //     return true;
+              //   },
+              // ),
             ],
           ),
         ),
@@ -332,35 +378,37 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
               DataCell(SizedBox(
                 height: 50,
                 width: 50,
-                child: allDevotees[index].profilePhotoUrl != null &&
-                        allDevotees[index].profilePhotoUrl!.isNotEmpty == true
-                    ? Image.network(
-                        allDevotees[index].profilePhotoUrl ?? '',
-                        height: 80,
-                        width: 80,
-                        loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent? loadingProgress) {
-                          if (loadingProgress == null) {
-                            return child;
-                          } else {
-                            return Center(
-                              child: CircularProgressIndicator(
-                                value: loadingProgress.expectedTotalBytes !=
-                                        null
-                                    ? loadingProgress.cumulativeBytesLoaded /
-                                        (loadingProgress.expectedTotalBytes ??
-                                            1)
-                                    : null,
-                              ),
-                            );
-                          }
-                        },
-                        errorBuilder: (BuildContext context, Object error,
-                            StackTrace? stackTrace) {
-                          return const Icon(Icons.error);
-                        },
-                      )
-                    : const Image(
+                child:
+                    //  allDevotees[index].profilePhotoUrl != null &&
+                    //         allDevotees[index].profilePhotoUrl!.isNotEmpty == true
+                    //     ? Image.network(
+                    //         allDevotees[index].profilePhotoUrl ?? '',
+                    //         height: 80,
+                    //         width: 80,
+                    //         loadingBuilder: (BuildContext context, Widget child,
+                    //             ImageChunkEvent? loadingProgress) {
+                    //           if (loadingProgress == null) {
+                    //             return child;
+                    //           } else {
+                    //             return Center(
+                    //               child: CircularProgressIndicator(
+                    //                 value: loadingProgress.expectedTotalBytes !=
+                    //                         null
+                    //                     ? loadingProgress.cumulativeBytesLoaded /
+                    //                         (loadingProgress.expectedTotalBytes ??
+                    //                             1)
+                    //                     : null,
+                    //               ),
+                    //             );
+                    //           }
+                    //         },
+                    //         errorBuilder: (BuildContext context, Object error,
+                    //             StackTrace? stackTrace) {
+                    //           return const Icon(Icons.error);
+                    //         },
+                    //       )
+                    //     :
+                    const Image(
                         image: AssetImage('assets/images/profile.jpeg')),
               )),
               DataCell(
@@ -565,7 +613,8 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const AnimatedShimmerWidget()
+          //const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -678,12 +727,22 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                         dataLimit: dataCountPerPage,
                         currentPage: currentPage,
                         totalPages: totalPages,
-                        fetchAllDevotee: fetchAllDevotee,
+                        fetchAllDevotee: (page) {
+                          if (widget.devoteeList != null) {
+                            fetchDelegatesByMe(page);
+                          } else {
+                            fetchAllDevotee(page);
+                          }
+                        },
                         onFieldSubmitted: (page) {
                           if (page != null &&
                               int.tryParse(page)! > 0 &&
                               int.tryParse(page)! <= totalPages) {
-                            fetchAllDevotee(int.tryParse(page) ?? 1);
+                            if (widget.devoteeList != null) {
+                              fetchDelegatesByMe(int.tryParse(page) ?? 1);
+                            } else {
+                              fetchAllDevotee(int.tryParse(page) ?? 1);
+                            }
                           }
                         },
                       ),

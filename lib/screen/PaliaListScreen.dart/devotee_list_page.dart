@@ -5,12 +5,14 @@ import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/Login/EmailSignIn.dart';
 import 'package:sdp/constant/enums.dart';
 import 'package:sdp/firebase/firebase_auth_api.dart';
+import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/appBar/action_widget.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
 import 'package:sdp/screen/appBar/leadingImage.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_body_page.dart';
+import 'package:sdp/screen/dashboard/change_time.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
@@ -46,17 +48,23 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
   List<DevoteeModel> allDevoteesCreatedByMe = [];
   MenuOption option = MenuOption.create;
   MenuOption? selectedMenu;
+  int totalPages = 0, dataCount = 0, currentPage = 1;
 
   Future<void> fetchDelegatesByMe() async {
     var currentUser = NetworkHelper().currentDevotee;
-    var allDevotees = await GetDevoteeAPI()
-        .devoteeListBycreatedById(currentUser?.createdById.toString() ?? "");
+    var allDevotees = await GetDevoteeAPI().devoteeListBycreatedById(
+      currentUser?.createdById.toString() ?? "",
+      1,
+      RemoteConfigHelper().getDataCountPerPage,
+    );
     if (allDevotees != null) {
-      print("all devotee by me length: ${allDevotees["data"].length}");
       setState(() {
         for (int i = 0; i < allDevotees["data"].length; i++) {
           allDevoteesCreatedByMe.add(allDevotees["data"][i]);
         }
+        totalPages = allDevotees["totalPages"];
+        dataCount = allDevotees["count"];
+        currentPage = allDevotees["currentPage"];
       });
     } else {
       print("No delegates by me !");
@@ -92,14 +100,6 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
               automaticallyImplyLeading: false,
               centerTitle: false,
               title: const TitleAppBar(),
-              // actions: [
-              //   AppbarActionButtonWidget(
-              //     searchBy: searchBy,
-              //     searchValue: searchValue,
-              //     showClearButton: showClearButton,
-              //     advanceStatus: advanceStatus,
-              //   ),
-              // ],
               flexibleSpace: Padding(
                 padding: const EdgeInsets.only(right: 50),
                 child: Center(
@@ -109,6 +109,7 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
                     searchValue: widget.searchValue,
                     showClearButton: widget.showClearButton,
                     advanceStatus: widget.advanceStatus,
+                    pageNumber: widget.currentPage,
                   ),
                 ),
               ),
@@ -140,6 +141,9 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
                                 pageFrom: "Dashboard",
                                 status: "allDevotee",
                                 devoteeList: allDevoteesCreatedByMe,
+                                totalPages: totalPages,
+                                currentPage: currentPage,
+                                dataCount: dataCount,
                               );
                             },
                           ));
@@ -177,18 +181,33 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
                         );
                         break;
                       case MenuOption.settings:
-                        await fetchDelegatesByMe();
-                        if (context.mounted) {
-                          //TODO
-                          // Navigator.push(context, MaterialPageRoute(
-                          //   builder: (context) {
-                          //     return DevoteeListPage(
-                          //       pageFrom: "Dashboard",
-                          //       status: "allDevotee",
-                          //       devoteeList: allDevoteesCreatedByMe,
-                          //     );
-                          //   },
-                          // ));
+                        if (context.mounted &&
+                            NetworkHelper().currentDevotee?.role ==
+                                "SuperAdmin") {
+                          showDialog<void>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text('Change Timing'),
+                                    IconButton(
+                                        color: Colors.deepOrange,
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        icon: const Icon(
+                                          Icons.close,
+                                          color: Colors.deepOrange,
+                                        ))
+                                  ],
+                                ),
+                                content: const UpdateTime(),
+                              );
+                            },
+                          );
                         }
                         break;
                       case MenuOption.logout:
@@ -265,6 +284,7 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
                   searchValue: widget.searchValue,
                   showClearButton: widget.showClearButton,
                   advanceStatus: widget.advanceStatus,
+                  pageNumber: widget.currentPage,
                 ),
               ],
             ),
@@ -288,6 +308,8 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
             currentPage: widget.currentPage,
             dataCount: widget.dataCount,
             totalPages: widget.totalPages,
+
+            //createdByMe: true,
           ),
         ),
       ),
