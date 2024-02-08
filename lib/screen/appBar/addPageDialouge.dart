@@ -178,7 +178,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'Approver',
     'PrasadScanner',
     "SecurityCheck",
-    "Viewer"
+    "Viewer",
+    "SecurityAndPrasadScan"
   ];
 
   TextEditingController sanghaController = TextEditingController();
@@ -749,7 +750,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
           //color: Colors.white,
         ),
         height: 435,
-        width: 400,
+        width: 480,
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(0),
@@ -862,7 +863,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                             // const VerticalDivider(
                             //   thickness: 1
                             // ),
-                            //const SizedBox(width: 20),
+                            const SizedBox(width: 10),
                             (widget.title == "edit" &&
                                     NetworkHelper().getCurrentDevotee?.role ==
                                         "SuperAdmin")
