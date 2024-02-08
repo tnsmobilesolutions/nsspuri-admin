@@ -638,7 +638,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
       return const AssetImage('assets/images/old.png');
     }
     if (devotee.isOrganizer == true) {
-      return const AssetImage('assets/images/organiser.png');
+      return const AssetImage('assets/images/organizer.png');
     }
 
     if (devotee.ageGroup != "") {
@@ -863,18 +863,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                               image: DecorationImage(
                                   fit: BoxFit.fill,
                                   image: getCardImage(devotees)),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Color.fromARGB(255, 194, 202, 218),
-                                ),
-                              ],
-                              border: Border.all(
-                                width: 3,
-                                color: const Color.fromARGB(255, 233, 233, 233),
-                              ),
-                              borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(15),
-                                  topRight: Radius.circular(15))),
+                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(.0),
                             child: Column(
@@ -1044,9 +1033,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                     flex: 1,
                                     child: buildNameText(
                                         widget.devoteeDetails.name),),
-                                          const SizedBox(
-                                  height:4,
-                                ),
+                                
                                 Expanded(
                                   flex: 6,
                                   child: Row(
@@ -1059,7 +1046,7 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                         flex: 2,
                                         child: Padding(
                                           padding:
-                                              const EdgeInsets.only(left: 15),
+                                              const EdgeInsets.only(left: 18),
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -1123,10 +1110,11 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                         ),
                                       ),
                                        SizedBox(width: 11,),
+                                         
                                     ],
                                   ),
                                 ),
-                              SizedBox(height: 5,),
+                              SizedBox(height: 7.5,),
                               ],
                             ),
                           ),
