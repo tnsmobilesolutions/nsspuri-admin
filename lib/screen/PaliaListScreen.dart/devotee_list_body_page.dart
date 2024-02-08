@@ -304,29 +304,29 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
         allDevotees.length,
         (index) {
           return DataRow(
-            selected: selectedList[index],
-            onSelectChanged: (bool? value) {
-              setState(() {
-                selectedList[index] = value!;
-                if (value) {
-                  if (selectedDevotees.length < 7) {
-                    selectedDevotees.add(allDevotees[index]);
-                    print("selected : $selectedDevotees");
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      elevation: 6,
-                      behavior: SnackBarBehavior.floating,
-                      content: Text(
-                        'You can only select up to 7 devotees !',
-                      ),
-                    ));
-                    selectedList[index] = false;
-                  }
-                } else {
-                  selectedDevotees.remove(allDevotees[index]);
-                }
-              });
-            },
+            // selected: selectedList[index],
+            // onSelectChanged: (bool? value) {
+            //   setState(() {
+            //     selectedList[index] = value!;
+            //     if (value) {
+            //       if (selectedDevotees.length < 7) {
+            //         selectedDevotees.add(allDevotees[index]);
+            //         print("selected : $selectedDevotees");
+            //       } else {
+            //         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            //           elevation: 6,
+            //           behavior: SnackBarBehavior.floating,
+            //           content: Text(
+            //             'You can only select up to 7 devotees !',
+            //           ),
+            //         ));
+            //         selectedList[index] = false;
+            //       }
+            //     } else {
+            //       selectedDevotees.remove(allDevotees[index]);
+            //     }
+            //   });
+            // },
             cells: [
               DataCell(Text(getSLno(index))),
               // DataCell(Text("${index + 1}")),
@@ -577,44 +577,44 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            isSelected == true
-                                ? OutlinedButton(
-                                    style: OutlinedButton.styleFrom(
-                                        side: const BorderSide(
-                                            width: 1.5,
-                                            color: Colors.deepOrange),
-                                        foregroundColor: Colors.black),
-                                    onPressed: (NetworkHelper()
-                                                .getCurrentDevotee
-                                                ?.role !=
-                                            "Viewer")
-                                        ? () {
-                                            setState(() {
-                                              isChecked = true;
-                                              isSelected = false;
-                                            });
-                                          }
-                                        : null,
-                                    child: const Text('Select'),
-                                  )
-                                : OutlinedButton(
-                                    style: OutlinedButton.styleFrom(
-                                        side: const BorderSide(
-                                            width: 1.5,
-                                            color: Colors.deepOrange),
-                                        foregroundColor: Colors.black),
-                                    onPressed: (NetworkHelper()
-                                                .getCurrentDevotee
-                                                ?.role !=
-                                            "Viewer")
-                                        ? () {
-                                            DisplayPdf.delegatePDF(
-                                                selectedDevotees, context);
-                                          }
-                                        : null,
-                                    child: const Text('Print'),
-                                  ),
-                            const SizedBox(width: 12),
+                            // isSelected == true
+                            //     ? OutlinedButton(
+                            //         style: OutlinedButton.styleFrom(
+                            //             side: const BorderSide(
+                            //                 width: 1.5,
+                            //                 color: Colors.deepOrange),
+                            //             foregroundColor: Colors.black),
+                            //         onPressed: (NetworkHelper()
+                            //                     .getCurrentDevotee
+                            //                     ?.role !=
+                            //                 "Viewer")
+                            //             ? () {
+                            //                 setState(() {
+                            //                   isChecked = true;
+                            //                   isSelected = false;
+                            //                 });
+                            //               }
+                            //             : null,
+                            //         child: const Text('Select'),
+                            //       )
+                            //     : OutlinedButton(
+                            //         style: OutlinedButton.styleFrom(
+                            //             side: const BorderSide(
+                            //                 width: 1.5,
+                            //                 color: Colors.deepOrange),
+                            //             foregroundColor: Colors.black),
+                            //         onPressed: (NetworkHelper()
+                            //                     .getCurrentDevotee
+                            //                     ?.role !=
+                            //                 "Viewer")
+                            //             ? () {
+                            //                 DisplayPdf.delegatePDF(
+                            //                     selectedDevotees, context);
+                            //               }
+                            //             : null,
+                            //         child: const Text('Print'),
+                            //       ),
+                            // const SizedBox(width: 12),
                             OutlinedButton(
                               style: OutlinedButton.styleFrom(
                                   side: const BorderSide(
