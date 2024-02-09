@@ -103,7 +103,11 @@ class _DashboardPageState extends State<DashboardPage> {
               toolbarHeight: 80,
               automaticallyImplyLeading: false,
               centerTitle: false,
-              title: const TitleAppBar(),
+              title: const Responsive(
+                desktop: TitleAppBar(),
+                tablet: TitleAppBar(),
+                mobile: TitleAppBarMobile(),
+              ),
               flexibleSpace: Padding(
                 padding: const EdgeInsets.only(right: 50),
                 child: Center(
