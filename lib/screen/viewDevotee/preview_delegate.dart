@@ -751,7 +751,8 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
     if (sanghaName != null) {
       int nameLength = sanghaName.length;
       if (nameLength > 10) {
-        fontSize = 8;
+        fontSize =
+            8; //todo - fontSize should be 7 and sangha name should be fetched from remote config
       }
       if (sanghaName == "Paralakhemundi") {
         fontSize = 6;
