@@ -565,6 +565,7 @@ import 'dart:html' as html;
 import 'dart:ui' as ui;
 
 import 'package:screenshot/screenshot.dart';
+import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/viewDevotee/constants.dart';
 import 'package:sdp/screen/viewDevotee/delegate_back.dart';
@@ -572,10 +573,10 @@ import 'package:sdp/utilities/network_helper.dart';
 import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 
 class PreviewDelegateTab extends StatefulWidget {
-  final DevoteeModel devoteeDetails;
-
   const PreviewDelegateTab({Key? key, required this.devoteeDetails})
       : super(key: key);
+
+  final DevoteeModel devoteeDetails;
 
   @override
   _PreviewDelegateTabState createState() => _PreviewDelegateTabState();
@@ -585,23 +586,8 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
   final con = FlipCardController();
   bool? downloading;
   ScreenshotController screenshotController = ScreenshotController();
+
   final GlobalKey _globalKey = GlobalKey();
-
-  String _toPascalCase(String input) {
-    if (input.isEmpty) {
-      return input;
-    }
-
-    final words = input.split(' ');
-    final camelCaseWords = words.map((word) {
-      if (word.isEmpty) {
-        return '';
-      }
-      return word[0].toUpperCase() + word.substring(1).toLowerCase();
-    });
-
-    return camelCaseWords.join(' ');
-  }
 
   Expanded headingText(String text) {
     return Expanded(
@@ -678,6 +664,99 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
     return const AssetImage('assets/images/bhai.png');
   }
 
+  Widget buildSanghaText(String? sanghaName) {
+    double fontSize = 10;
+
+    Map<String, dynamic> allSanghas = RemoteConfigHelper().getSanghaList;
+
+    List<String> sanghaName6FontSize =
+        allSanghas["sangha_names_of_6_font_size"];
+    List<String> sanghaName7FontSize =
+        allSanghas["sangha_names_of_7_font_size"];
+    List<String> sanghaName8FontSize =
+        allSanghas["sangha_names_of_8_font_size"];
+
+    if (sanghaName != null) {
+      int nameLength = sanghaName.length;
+      if (nameLength > 10) {
+        fontSize = 9;
+      }
+
+      if (sanghaName6FontSize.contains(sanghaName)) {
+        fontSize = 6;
+      } else if (sanghaName7FontSize.contains(sanghaName)) {
+        fontSize = 7;
+      } else if (sanghaName8FontSize.contains(sanghaName)) {
+        fontSize = 8;
+      }
+
+      // if (sanghaName == "Paralakhemundi") {
+      //   fontSize = 6;
+      // }
+    }
+    return Text(
+      //"123456789012345678901234567890",
+      _toPascalCase(sanghaName ?? ''),
+      // overflow: TextOverflow.clip,
+      style: TextStyle(
+        color: Colors.black,
+        fontSize: fontSize,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  // Text buildNameText(String? devoteeName) {
+  //   double fontSize = 14;
+  //   if (devoteeName != null) {
+  //     int nameLength = devoteeName.length;
+  //     // if (nameLength > 14) {
+  //     //   fontSize = 10;
+  //     // }
+  //   }
+  //   return Text(
+  //     _toPascalCase(devoteeName ?? ''),
+  //     style: TextStyle(
+  //       color: Colors.deepOrange,
+  //       fontSize: fontSize,
+  //       fontWeight: FontWeight.bold,
+  //     ),
+  //   );
+  // }
+  Text buildNameText(String? devoteeName) {
+    double fontSize = 14;
+    if (devoteeName != null) {
+      int nameLength = devoteeName.length;
+      if (nameLength > 22) {
+        fontSize = 12;
+      }
+    }
+    return Text(
+      _toPascalCase(devoteeName ?? ''),
+      style: TextStyle(
+        color: Colors.deepOrange,
+        fontSize: fontSize,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  String _toPascalCase(String input) {
+    if (input.isEmpty) {
+      return input;
+    }
+
+    final words = input.split(' ');
+    final camelCaseWords = words.map((word) {
+      if (word.isEmpty) {
+        return '';
+      }
+      return word[0].toUpperCase() + word.substring(1).toLowerCase();
+    });
+
+    return camelCaseWords.join(' ');
+  }
+
   AssetImage _getFemaleImage(int age) {
     if (age < 18) {
       return const AssetImage('assets/images/girl.png');
@@ -744,64 +823,6 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
       ..click();
 
     html.Url.revokeObjectUrl(url);
-  }
-
-  Widget buildSanghaText(String? sanghaName) {
-    double fontSize = 10;
-    if (sanghaName != null) {
-      int nameLength = sanghaName.length;
-      if (nameLength > 10) {
-        fontSize = 8;
-      }
-      if (sanghaName == "Paralakhemundi") {
-        fontSize = 6;
-      }
-    }
-    return Text(
-      //"123456789012345678901234567890",
-      _toPascalCase(sanghaName ?? ''),
-      // overflow: TextOverflow.clip,
-      style: TextStyle(
-        color: Colors.black,
-        fontSize: fontSize,
-        fontWeight: FontWeight.bold,
-      ),
-    );
-  }
-
-  // Text buildNameText(String? devoteeName) {
-  //   double fontSize = 14;
-  //   if (devoteeName != null) {
-  //     int nameLength = devoteeName.length;
-  //     // if (nameLength > 14) {
-  //     //   fontSize = 10;
-  //     // }
-  //   }
-  //   return Text(
-  //     _toPascalCase(devoteeName ?? ''),
-  //     style: TextStyle(
-  //       color: Colors.deepOrange,
-  //       fontSize: fontSize,
-  //       fontWeight: FontWeight.bold,
-  //     ),
-  //   );
-  // }
-  Text buildNameText(String? devoteeName) {
-    double fontSize = 14;
-    if (devoteeName != null) {
-      int nameLength = devoteeName.length;
-      if (nameLength > 22) {
-        fontSize = 12;
-      }
-    }
-    return Text(
-      _toPascalCase(devoteeName ?? ''),
-      style: TextStyle(
-        color: Colors.deepOrange,
-        fontSize: fontSize,
-        fontWeight: FontWeight.bold,
-      ),
-    );
   }
 
   @override
