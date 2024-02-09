@@ -670,11 +670,19 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
     Map<String, dynamic> allSanghas = RemoteConfigHelper().getSanghaList;
 
     List<String> sanghaName6FontSize =
-        allSanghas["sangha_names_of_6_font_size"];
+        (allSanghas['sangha_names_of_6_font_size'] as List)
+            .map((item) => item as String)
+            .toList();
+
     List<String> sanghaName7FontSize =
-        allSanghas["sangha_names_of_7_font_size"];
+        (allSanghas['sangha_names_of_7_font_size'] as List)
+            .map((item) => item as String)
+            .toList();
+
     List<String> sanghaName8FontSize =
-        allSanghas["sangha_names_of_8_font_size"];
+        (allSanghas['sangha_names_of_8_font_size'] as List)
+            .map((item) => item as String)
+            .toList();
 
     if (sanghaName != null) {
       int nameLength = sanghaName.length;
