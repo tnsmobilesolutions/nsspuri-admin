@@ -1,7 +1,5 @@
 // preview delegate size is reduced for print
 
-
-
 // ignore_for_file: library_private_types_in_public_api
 
 // import 'package:flutter/material.dart';
@@ -567,6 +565,7 @@ import 'dart:html' as html;
 import 'dart:ui' as ui;
 
 import 'package:screenshot/screenshot.dart';
+import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/viewDevotee/constants.dart';
 import 'package:sdp/screen/viewDevotee/delegate_back.dart';
@@ -574,10 +573,10 @@ import 'package:sdp/utilities/network_helper.dart';
 import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 
 class PreviewDelegateTab extends StatefulWidget {
-  final DevoteeModel devoteeDetails;
-
   const PreviewDelegateTab({Key? key, required this.devoteeDetails})
       : super(key: key);
+
+  final DevoteeModel devoteeDetails;
 
   @override
   _PreviewDelegateTabState createState() => _PreviewDelegateTabState();
@@ -587,23 +586,8 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
   final con = FlipCardController();
   bool? downloading;
   ScreenshotController screenshotController = ScreenshotController();
+
   final GlobalKey _globalKey = GlobalKey();
-
-  String _toPascalCase(String input) {
-    if (input.isEmpty) {
-      return input;
-    }
-
-    final words = input.split(' ');
-    final camelCaseWords = words.map((word) {
-      if (word.isEmpty) {
-        return '';
-      }
-      return word[0].toUpperCase() + word.substring(1).toLowerCase();
-    });
-
-    return camelCaseWords.join(' ');
-  }
 
   Expanded headingText(String text) {
     return Expanded(
@@ -680,6 +664,107 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
     return const AssetImage('assets/images/bhai.png');
   }
 
+  Widget buildSanghaText(String? sanghaName) {
+    double fontSize = 10;
+
+    Map<String, dynamic> allSanghas = RemoteConfigHelper().getSanghaList;
+
+    List<String> sanghaName6FontSize =
+        (allSanghas['sangha_names_of_6_font_size'] as List)
+            .map((item) => item as String)
+            .toList();
+
+    List<String> sanghaName7FontSize =
+        (allSanghas['sangha_names_of_7_font_size'] as List)
+            .map((item) => item as String)
+            .toList();
+
+    List<String> sanghaName8FontSize =
+        (allSanghas['sangha_names_of_8_font_size'] as List)
+            .map((item) => item as String)
+            .toList();
+
+    if (sanghaName != null) {
+      int nameLength = sanghaName.length;
+      if (nameLength > 10) {
+        fontSize = 9;
+      }
+
+      if (sanghaName6FontSize.contains(sanghaName)) {
+        fontSize = 6;
+      } else if (sanghaName7FontSize.contains(sanghaName)) {
+        fontSize = 7;
+      } else if (sanghaName8FontSize.contains(sanghaName)) {
+        fontSize = 8;
+      }
+
+      // if (sanghaName == "Paralakhemundi") {
+      //   fontSize = 6;
+      // }
+    }
+    return Text(
+      //"123456789012345678901234567890",
+      _toPascalCase(sanghaName ?? ''),
+      // overflow: TextOverflow.clip,
+      style: TextStyle(
+        color: Colors.black,
+        fontSize: fontSize,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  // Text buildNameText(String? devoteeName) {
+  //   double fontSize = 14;
+  //   if (devoteeName != null) {
+  //     int nameLength = devoteeName.length;
+  //     // if (nameLength > 14) {
+  //     //   fontSize = 10;
+  //     // }
+  //   }
+  //   return Text(
+  //     _toPascalCase(devoteeName ?? ''),
+  //     style: TextStyle(
+  //       color: Colors.deepOrange,
+  //       fontSize: fontSize,
+  //       fontWeight: FontWeight.bold,
+  //     ),
+  //   );
+  // }
+  Text buildNameText(String? devoteeName) {
+    double fontSize = 14;
+    if (devoteeName != null) {
+      int nameLength = devoteeName.length;
+      if (nameLength > 22) {
+        fontSize = 12;
+      }
+    }
+    return Text(
+      _toPascalCase(devoteeName ?? ''),
+      style: TextStyle(
+        color: Colors.deepOrange,
+        fontSize: fontSize,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  String _toPascalCase(String input) {
+    if (input.isEmpty) {
+      return input;
+    }
+
+    final words = input.split(' ');
+    final camelCaseWords = words.map((word) {
+      if (word.isEmpty) {
+        return '';
+      }
+      return word[0].toUpperCase() + word.substring(1).toLowerCase();
+    });
+
+    return camelCaseWords.join(' ');
+  }
+
   AssetImage _getFemaleImage(int age) {
     if (age < 18) {
       return const AssetImage('assets/images/girl.png');
@@ -748,88 +833,6 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
     html.Url.revokeObjectUrl(url);
   }
 
-  Widget buildSanghaText(String? sanghaName) {
-    double fontSize = 8;
-    if (sanghaName != null) {
-      int nameLength = sanghaName.length;
-      if (nameLength > 8) {
-        fontSize = 6;
-      } else {
-        fontSize = 8;
-      }
-    }
-    return Text(
-      //"123456789012345678901234567890",
-      _toPascalCase(sanghaName ?? ''),
-      // overflow: TextOverflow.clip,
-      style: TextStyle(
-        color: Colors.black,
-        fontSize: fontSize,
-        fontWeight: FontWeight.bold,
-      ),
-    );
-  }
-  // Widget buildSanghaText(String? sanghaName) {
-  //   double fontSize = 17;
-  //   if (sanghaName != null) {
-  //     int nameLength = sanghaName.length;
-  //     if (nameLength > 16) {
-  //       fontSize = 13;
-  //     } else {
-  //       fontSize = 17;
-  //     }
-  //   }
-  //   return Text(
-  //     //"123456789012345678901234567890",
-  //     _toPascalCase(sanghaName ?? ''),
-  //     // overflow: TextOverflow.clip,
-  //     style: TextStyle(
-  //       color: Colors.black,
-  //       fontSize: fontSize,
-  //       fontWeight: FontWeight.bold,
-  //     ),
-  //   );
-  // }
-
-  Text buildNameText(String? devoteeName) {
-    double fontSize = 12;
-    if (devoteeName != null) {
-      int nameLength = devoteeName.length;
-      if (nameLength > 12) {
-        fontSize = 8;
-      } else {
-        fontSize = 14;
-      }
-    }
-    return Text(
-      _toPascalCase(devoteeName ?? ''),
-      style: TextStyle(
-        color: Colors.deepOrange,
-        fontSize: fontSize,
-        fontWeight: FontWeight.bold,
-      ),
-    );
-  }
-  // Text buildNameText(String? devoteeName) {
-  //   double fontSize = 27;
-  //   if (devoteeName != null) {
-  //     int nameLength = devoteeName.length;
-  //     if (nameLength > 22) {
-  //       fontSize = 16;
-  //     } else {
-  //       fontSize = 27;
-  //     }
-  //   }
-  //   return Text(
-  //     _toPascalCase(devoteeName ?? ''),
-  //     style: TextStyle(
-  //       color: Colors.deepOrange,
-  //       fontSize: fontSize,
-  //       fontWeight: FontWeight.bold,
-  //     ),
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     final devotees = widget.devoteeDetails;
@@ -859,11 +862,11 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                           height: 338, // 324,
                           width: 207, // 198,
                           decoration: BoxDecoration(
-                              color: Colors.white,
-                              image: DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: getCardImage(devotees)),
-                           ),
+                            color: Colors.white,
+                            image: DecorationImage(
+                                fit: BoxFit.fill,
+                                image: getCardImage(devotees)),
+                          ),
                           child: Padding(
                             padding: const EdgeInsets.all(.0),
                             child: Column(
@@ -879,8 +882,9 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                   padding: const EdgeInsets.only(left: 4),
                                   child: Row(
                                     children: [
-                                                                            SizedBox(width: 10,),
-
+                                      SizedBox(
+                                        width: 10,
+                                      ),
                                       Expanded(
                                         child: Container(
                                           child: widget.devoteeDetails
@@ -938,7 +942,9 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                           // Return an empty Container if the condition is false
                                         ),
                                       ),
-                                      SizedBox(width: 4,),
+                                      SizedBox(
+                                        width: 4,
+                                      ),
                                       Expanded(
                                         flex: 3,
                                         child: Stack(
@@ -1030,18 +1036,17 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                   height: 4,
                                 ),
                                 Expanded(
-                                    flex: 1,
-                                    child: buildNameText(
-                                        widget.devoteeDetails.name),),
-                                
+                                  flex: 1,
+                                  child:
+                                      buildNameText(widget.devoteeDetails.name),
+                                ),
                                 Expanded(
                                   flex: 6,
                                   child: Row(
-                                                                   
                                     children: [
-                                         const SizedBox(
-                                  height: 6,
-                                ),
+                                      const SizedBox(
+                                        height: 6,
+                                      ),
                                       Flexible(
                                         flex: 2,
                                         child: Padding(
@@ -1051,49 +1056,38 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Expanded(
-                                                  flex: 2,
-                                                  child: buildSanghaText(widget
-                                                      .devoteeDetails.sangha)),
+                                              buildSanghaText(
+                                                  widget.devoteeDetails.sangha),
                                               widget.devoteeDetails.sangha !=
                                                           null &&
                                                       widget.devoteeDetails
                                                               .sangha!.length >
-                                                          18
-                                                  ? const SizedBox(height: 20)
-                                                  : const SizedBox(height: 10),
-                                              Expanded(
-                                                flex: 5,
-                                                child: widget.devoteeDetails
-                                                            .devoteeCode !=
-                                                        null
-                                                    ? Text(
-                                                        _toPascalCase(widget
-                                                            .devoteeDetails
-                                                            .devoteeCode
-                                                            .toString()),
-                                                        style: const TextStyle(
-                                                          color:
-                                                              Colors.deepOrange,
-                                                          fontSize: 9, // 18,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      )
-                                                    : const Text(""),
-                                              ),
-                                              const SizedBox(
-                                                height: 13,
-                                              ),
-                                              Expanded(
-                                                flex: 2,
-                                                child: Container(),
-                                              ),
+                                                          15
+                                                  ? const SizedBox(height: 4)
+                                                  : const SizedBox(height: 20),
+                                              widget.devoteeDetails
+                                                          .devoteeCode !=
+                                                      null
+                                                  ? Text(
+                                                      _toPascalCase(widget
+                                                          .devoteeDetails
+                                                          .devoteeCode
+                                                          .toString()),
+                                                      style: const TextStyle(
+                                                        color:
+                                                            Colors.deepOrange,
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    )
+                                                  : const Text(""),
+                                              const SizedBox(height: 13),
+                                              Container(),
                                             ],
                                           ),
                                         ),
                                       ),
-                                     
                                       Flexible(
                                         flex: 3,
                                         child: Container(
@@ -1109,12 +1103,15 @@ class _PreviewDelegateTabState extends State<PreviewDelegateTab> {
                                           ),
                                         ),
                                       ),
-                                       SizedBox(width: 11,),
-                                         
+                                      SizedBox(
+                                        width: 11,
+                                      ),
                                     ],
                                   ),
                                 ),
-                              SizedBox(height: 7.5,),
+                                SizedBox(
+                                  height: 7.5,
+                                ),
                               ],
                             ),
                           ),
