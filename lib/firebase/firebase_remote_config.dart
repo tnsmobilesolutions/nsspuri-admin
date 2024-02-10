@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 
 // class FirebaseRemoteConfigService {
@@ -20,10 +22,34 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 // }
 
 class RemoteConfigHelper {
-  static final RemoteConfigHelper _networkHelper =
+  factory RemoteConfigHelper() {
+    return _remoteConfigHelper;
+  }
+
+  RemoteConfigHelper._internal();
+
+  Map<String, dynamic> allSangha = {};
+  String apiBaseURL = "";
+  String bankAccountNo = "";
+  String bankIfscCode = "";
+  String bankName = "";
+  String branchName = "";
+  int closeDration = 5;
+  int devoteeCount = 20;
+  String helpContactNo = "";
+
+  String mandatoryUpgradeText = "";
+  String paymentContact = "";
+  String paymentMessage = "";
+  double scanner_auto_close_duration = 5;
+  bool shouldShowMandatoryUpgradePrompt = false;
+  String upiId = "";
+  //
+  String versionNumber = "";
+
+  static final RemoteConfigHelper _remoteConfigHelper =
       RemoteConfigHelper._internal();
 
-  bool shouldShowMandatoryUpgradePrompt = false;
   bool get getShowMandatoryUpgradePrompt {
     return shouldShowMandatoryUpgradePrompt;
   }
@@ -32,8 +58,6 @@ class RemoteConfigHelper {
     shouldShowMandatoryUpgradePrompt = upgradePrompt;
   }
 
-  //
-  String mandatoryUpgradeText = "";
   String get getMandatoryUpgradeText {
     return mandatoryUpgradeText;
   }
@@ -42,7 +66,6 @@ class RemoteConfigHelper {
     mandatoryUpgradeText = upgradeText;
   }
 
-  String paymentMessage = "";
   String get getPaymentMessage {
     return paymentMessage;
   }
@@ -51,7 +74,6 @@ class RemoteConfigHelper {
     paymentMessage = message;
   }
 
-  String upiId = "";
   String get getUpiId {
     return upiId;
   }
@@ -60,7 +82,6 @@ class RemoteConfigHelper {
     upiId = upiIdLink;
   }
 
-  String paymentContact = "";
   String get getPaymentContact {
     return paymentContact;
   }
@@ -69,7 +90,6 @@ class RemoteConfigHelper {
     paymentContact = contact;
   }
 
-  String bankName = "";
   String get getBankName {
     return bankName;
   }
@@ -78,7 +98,6 @@ class RemoteConfigHelper {
     bankName = name;
   }
 
-  String bankAccountNo = "";
   String get getBankAccountNo {
     return bankAccountNo;
   }
@@ -87,7 +106,6 @@ class RemoteConfigHelper {
     bankAccountNo = accountNo;
   }
 
-  String bankIfscCode = "";
   String get getBankIfscCode {
     return bankIfscCode;
   }
@@ -96,7 +114,6 @@ class RemoteConfigHelper {
     bankIfscCode = ifscCode;
   }
 
-  String branchName = "";
   String get getBranchName {
     return branchName;
   }
@@ -105,7 +122,6 @@ class RemoteConfigHelper {
     branchName = brName;
   }
 
-  String helpContactNo = "";
   String get gethelpContactNo {
     return helpContactNo;
   }
@@ -114,8 +130,6 @@ class RemoteConfigHelper {
     helpContactNo = contactNo;
   }
 
-  //
-  String versionNumber = "";
   String get getVersionNumber {
     return versionNumber;
   }
@@ -124,7 +138,6 @@ class RemoteConfigHelper {
     versionNumber = versionNumberr;
   }
 
-  String apiBaseURL = "";
   String get getapiBaseURL {
     return apiBaseURL;
   }
@@ -132,7 +145,7 @@ class RemoteConfigHelper {
   set setapiBaseURL(String baseURL) {
     apiBaseURL = baseURL;
   }
-  double scanner_auto_close_duration = 5;
+
   double get getscanner_auto_close_duration {
     return scanner_auto_close_duration;
   }
@@ -141,15 +154,25 @@ class RemoteConfigHelper {
     scanner_auto_close_duration = duration;
   }
 
-  int closeDration = 5;
   set setScannerCloseDuration(int duration) {
     closeDration = duration;
   }
 
-  factory RemoteConfigHelper() {
-    return _networkHelper;
+  set setDataCountPerPage(int count) {
+    devoteeCount = count;
   }
-  RemoteConfigHelper._internal();
+
+  int get getDataCountPerPage {
+    return devoteeCount;
+  }
+
+  set setSanghaList(Map<String, dynamic> sanghas) {
+    allSangha = sanghas;
+  }
+
+  Map<String, dynamic> get getSanghaList {
+    return allSangha;
+  }
 }
 
 fetchRemoteConfigData() async {
@@ -163,11 +186,19 @@ fetchRemoteConfigData() async {
     RemoteConfigHelper().setUpgradePrompt =
         remoteConfig.getBool('shouldShowMandatoryUpgradePrompt');
 
+    String sanghaNamesJsonString =
+        remoteConfig.getString('sangha_names_font_size');
+    Map<String, dynamic> sanghaNamesMap = json.decode(sanghaNamesJsonString);
+    RemoteConfigHelper().setSanghaList = sanghaNamesMap;
+
     RemoteConfigHelper().setUpgradeText =
         remoteConfig.getString('mandatoryUpgradeText');
 
     RemoteConfigHelper().setScannerCloseDuration =
         remoteConfig.getInt('scanner_auto_close_duration');
+
+    RemoteConfigHelper().setDataCountPerPage =
+        remoteConfig.getInt('data_count_per_page');
 
     RemoteConfigHelper().setPaymentMessage =
         remoteConfig.getString('paymentMessage');
@@ -191,9 +222,8 @@ fetchRemoteConfigData() async {
         remoteConfig.getString('helpContactNo');
 
     RemoteConfigHelper().setapiBaseURL = remoteConfig.getString('apiBaseURL');
-    RemoteConfigHelper().scanner_auto_close_duration = remoteConfig.getDouble('scanner_auto_close_duration');
-
-
+    RemoteConfigHelper().scanner_auto_close_duration =
+        remoteConfig.getDouble('scanner_auto_close_duration');
   } catch (e) {
     print('remote config error : $e');
   }

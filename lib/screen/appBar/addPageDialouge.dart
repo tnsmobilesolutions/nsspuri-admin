@@ -13,6 +13,7 @@ import 'package:sdp/API/post_devotee.dart';
 import 'package:sdp/API/put_devotee.dart';
 import 'package:sdp/constant/pagination_value.dart';
 import 'package:sdp/constant/sangha_list.dart';
+import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:sdp/model/address_model.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
@@ -115,7 +116,9 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
       DateFormat('dd-MMM-yyyy  hh:mm a').format(DateTime.now());
 
   List gender = ["Male", "Female"];
+  List paymentMode = ["Cash", "Online"];
   int genderIndex = 0;
+  int paymentModeIndex = 0;
   Map<String, dynamic>? image;
   String? imageName;
   String? imageUploadData;
@@ -177,7 +180,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'Approver',
     'PrasadScanner',
     "SecurityCheck",
-    "Viewer"
+    "Viewer",
+    "SecurityAndPrasadScan"
   ];
 
   TextEditingController sanghaController = TextEditingController();
@@ -209,9 +213,11 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     super.dispose();
   }
 
+  late int dataCountPerPage;
   @override
   void initState() {
     super.initState();
+    dataCountPerPage = RemoteConfigHelper().getDataCountPerPage;
     print("widget.devoteeId-----${widget.devoteeId}");
     if (widget.title == "edit") populateData();
     print("page from: ${widget.pageFrom}");
@@ -320,6 +326,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
         isGruhasanaApproved = selectedDevotee?.isGruhasanaApproved ?? false;
         bloodGroupController = selectedDevotee?.bloodGroup ?? "Don't know";
         genderIndex = selectedDevotee?.gender == "Male" ? 0 : 1;
+        paymentModeIndex = selectedDevotee?.paymentMode == "Online" ? 1 : 0;
         //ageController.text = selectedDevotee?.ageGroup?.toString() ?? "";
         ageGroupIndex = getAgeGroupIndex(selectedDevotee);
         if (selectedDevotee?.ageGroup?.isNotEmpty == true) {
@@ -429,6 +436,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
         remarks: remarksController.text,
         paidAmount: double.tryParse(pranamiController.text),
         gender: gender[genderIndex],
+        paymentMode: paymentMode[paymentModeIndex],
         profilePhotoUrl: profileURL,
         hasParichayaPatra: parichayaPatraValue,
         sangha: sanghaController.text,
@@ -588,7 +596,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
             widget.searchValue ?? selectedStatus,
             widget.searchBy ?? "status",
             1,
-            dataLimit,
+            dataCountPerPage,
             status: widget.advanceStatus ?? "",
           );
         }
@@ -746,7 +754,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
           //color: Colors.white,
         ),
         height: 435,
-        width: 400,
+        width: 480,
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(0),
@@ -859,7 +867,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                             // const VerticalDivider(
                             //   thickness: 1
                             // ),
-                            //const SizedBox(width: 20),
+                            const SizedBox(width: 10),
                             (widget.title == "edit" &&
                                     NetworkHelper().getCurrentDevotee?.role ==
                                         "SuperAdmin")
@@ -960,50 +968,67 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                       )
                     : const SizedBox(),
                 const SizedBox(height: 20),
-                // widget.title == "edit"
-                //     ? Padding(
-                //         padding: const EdgeInsets.all(8.0),
-                //         child: Row(
-                //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //           children: [
-                //             const Text('Gruhasana Approved'),
-                //             Checkbox(
-                //               checkColor: Colors.deepOrange,
-                //               fillColor:
-                //                   MaterialStateProperty.resolveWith(getColor),
-                //               value: isGruhasanaApproved,
-                //               onChanged: (bool? value) {
-                //                 setState(() {
-                //                   isGruhasanaApproved = value!;
-                //                 });
-                //               },
-                //             ),
-                //           ],
-                //         ),
-                //       )
-                //     : const SizedBox(),
-                // widget.title == "edit"
-                //     ? Padding(
-                //         padding: const EdgeInsets.all(8.0),
-                //         child: Row(
-                //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //           children: [
-                //             const Text('KYD Verified'),
-                //             Checkbox(
-                //               checkColor: Colors.deepOrange,
-                //               fillColor:
-                //                   MaterialStateProperty.resolveWith(getColor),
-                //               value: isKYDVerified,
-                //               onChanged: (bool? value) {
-                //                 setState(() {
-                //                   isKYDVerified = value!;
-                //                 });
-                //               },
-                //             ),
-                //           ],
-                //         ),
-                //       )
-                //     : const SizedBox(),
+                shouldShowPranamiField == true
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          const Text(
+                            'Payment Mode',
+                          ),
+                          Column(
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    flex: 1,
+                                    child: RadioListTile(
+                                      value: 0,
+                                      groupValue: paymentModeIndex,
+                                      title: const Text(
+                                        "Cash",
+                                      ),
+                                      onChanged: (newValue) => setState(() =>
+                                          paymentModeIndex = newValue ?? 0),
+                                      activeColor: RadioButtonColor,
+                                      // Set the unselected color to blue
+                                      selectedTileColor:
+                                          RadioButtonColor, // Set the selected color
+                                      selected: false,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: RadioListTile(
+                                      value: 1,
+                                      groupValue: paymentModeIndex,
+                                      title: const Text(
+                                        "Online",
+                                      ),
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          paymentModeIndex = newValue ?? 1;
+                                        });
+                                      },
+                                      activeColor: RadioButtonColor,
+                                      // Set the unselected color to blue
+                                      selectedTileColor:
+                                          RadioButtonColor, // Set the selected color
+                                      selected: false,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                    : SizedBox(
+                        height: 0,
+                        width: 0,
+                      ),
+                const SizedBox(height: 20),
+
                 (widget.title == "edit" && widget.role != "User")
                     ? Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -1088,32 +1113,6 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                   ),
                 ),
 
-                // Padding(
-                //   padding: const EdgeInsets.only(left: 20, right: 20),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     children: [
-                //       //SizedBox
-                //       const Text(
-                //         'Has Parichaya Patra?',
-                //       ), //Text
-                //       //SizedBox
-                //       /** Checkbox Widget **/
-                //       Transform.scale(
-                //         scale: 1.5,
-                //         child: Checkbox(
-                //           activeColor: Colors.deepOrange,
-                //           value: parichayaPatraValue,
-                //           onChanged: (bool? value) {
-                //             setState(() {
-                //               parichayaPatraValue = value;
-                //             });
-                //           },
-                //         ),
-                //       ), //Checkbox
-                //     ], //<Widget>[]
-                //   ),
-                // ),
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: nameController,

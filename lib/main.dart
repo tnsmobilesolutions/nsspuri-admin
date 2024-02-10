@@ -11,14 +11,13 @@ Future<void> main() async {
 
   await Firebase.initializeApp(
     options: FirebaseOptions(
-      apiKey: "AIzaSyA1tSAISbgSLqVdLRvfLh-9bB58DgYg1lI",
-      authDomain: "nsspuridelegate-dev.firebaseapp.com",
-      projectId: "nsspuridelegate-dev",
-      storageBucket: "nsspuridelegate-dev.appspot.com",
-      messagingSenderId: "222780364320",
-      appId: "1:222780364320:web:de84ea401fff9310ac0e45",
-      measurementId: "G-V1HVLL1401",
-    ),
+        apiKey: "AIzaSyDlUZaghUvp0OSayMgnYisIoSlAzKUBSAQ",
+        authDomain: "nsspuridelegate.firebaseapp.com",
+        projectId: "nsspuridelegate",
+        storageBucket: "nsspuridelegate.appspot.com",
+        messagingSenderId: "29623966317",
+        appId: "1:29623966317:web:cc9354992e7cda94667d64",
+        measurementId: "G-N6D6GGLWZG"),
   );
   await fetchRemoteConfigData();
   runApp(MyApp());

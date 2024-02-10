@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_flip_card/controllers/flip_card_controllers.dart';
 import 'package:flutter_flip_card/flipcard/flip_card.dart';
 import 'package:flutter_flip_card/modal/flip_side.dart';
+import 'package:sdp/constant/print_image.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'dart:html' as html;
 import 'dart:ui' as ui;
@@ -234,13 +235,13 @@ class _DownloadImagePageState extends State<DownloadImagePage> {
   }
 
   Text buildNameText(String? devoteeName) {
-    double fontSize = 27;
+    double fontSize = 17;
     if (devoteeName != null) {
       int nameLength = devoteeName.length;
       if (nameLength > 22) {
-        fontSize = 16;
+        fontSize = 10;
       } else {
-        fontSize = 27;
+        fontSize = 15;
       }
     }
     return Text(
@@ -264,7 +265,7 @@ class _DownloadImagePageState extends State<DownloadImagePage> {
         child: GridView.builder(
           itemCount: widget.devoteeData?.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3, childAspectRatio: .8),
+              crossAxisCount: 7, childAspectRatio: .7),
           itemBuilder: (BuildContext context, int index) {
             return FlipCard(
               rotateSide: RotateSide.right,
@@ -276,8 +277,8 @@ class _DownloadImagePageState extends State<DownloadImagePage> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 5, right: 5),
                   child: Container(
-                    height: 1000,
-                    width: 410,
+                    height: 324,
+                    width: 198,
                     decoration: BoxDecoration(
                         color: Colors.white,
                         image: DecorationImage(
@@ -371,7 +372,7 @@ class _DownloadImagePageState extends State<DownloadImagePage> {
                                     children: [
                                       Positioned(
                                         child: CircleAvatar(
-                                          radius: 80,
+                                          radius: 40,
                                           backgroundColor: getColorByDevotee(
                                               widget.devoteeData?[index]),
                                           backgroundImage: widget
@@ -529,12 +530,13 @@ class _DownloadImagePageState extends State<DownloadImagePage> {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _downloadWidget();
-        },
-        child: Icon(Icons.download),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     //   DisplayPdf(context);
+      //     //_downloadWidget();
+      //   },
+      //   child: Icon(Icons.download),
+      // ),
     );
   }
 }

@@ -10,8 +10,11 @@ import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/constant/pagination_value.dart';
+import 'package:sdp/constant/printing_cards.dart';
+import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
+import 'package:sdp/screen/PaliaListScreen.dart/download_image_page.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/export_to_excel.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/pagination_row.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
@@ -80,6 +83,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
   String? userRole;
 
   late AnimateIconController _controller;
+  int dataCountPerPage = RemoteConfigHelper().getDataCountPerPage;
 
   @override
   void initState() {
@@ -144,17 +148,18 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
 
     if (widget.pageFrom == "Dashboard") {
       if (widget.status == "allDevotee") {
-        allDevotee = await GetDevoteeAPI().allDevotee(pageValue, dataLimit);
+        allDevotee =
+            await GetDevoteeAPI().allDevotee(pageValue, dataCountPerPage);
       } else {
-        allDevotee = await GetDevoteeAPI()
-            .searchDevotee(widget.status, "status", pageValue, dataLimit);
+        allDevotee = await GetDevoteeAPI().searchDevotee(
+            widget.status, "status", pageValue, dataCountPerPage);
       }
     } else {
       allDevotee = await GetDevoteeAPI().advanceSearchDevotee(
         widget.searchValue.toString(),
         widget.searchBy.toString(),
         pageValue,
-        dataLimit,
+        dataCountPerPage,
         status: widget.advanceStatus,
       );
     }
@@ -227,8 +232,8 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
 
   String getSLno(int index) {
     List<int> slList = List.generate(
-      dataLimit,
-      (index) => (currentPage - 1) * dataLimit + index + 1,
+      dataCountPerPage,
+      (index) => (currentPage - 1) * dataCountPerPage + index + 1,
     );
     return slList[index].toString();
   }
@@ -304,7 +309,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
               setState(() {
                 selectedList[index] = value!;
                 if (value) {
-                  if (selectedDevotees.length < 4) {
+                  if (selectedDevotees.length < 7) {
                     selectedDevotees.add(allDevotees[index]);
                     print("selected : $selectedDevotees");
                   } else {
@@ -312,7 +317,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                       elevation: 6,
                       behavior: SnackBarBehavior.floating,
                       content: Text(
-                        'You can only select up to 4 devotees !',
+                        'You can only select up to 7 devotees !',
                       ),
                     ));
                     selectedList[index] = false;
@@ -359,33 +364,6 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                     : const Image(
                         image: AssetImage('assets/images/profile.jpeg')),
               )),
-              // DataCell(
-              //   OutlinedButton(
-              //     style: OutlinedButton.styleFrom(
-              //         side: const BorderSide(
-              //             width: 1.5, color: Colors.deepOrange),
-              //         foregroundColor: Colors.black),
-              //     onPressed: () {
-              //       downloadImage(
-              //           allDevotees[index].profilePhotoUrl.toString());
-              //       // showDialog(
-              //       //     context: context,
-              //       //     builder: (context) {
-              //       //       return LinearProgressIndicator(
-              //       //         value: downloadProgress,
-              //       //         valueColor: const AlwaysStoppedAnimation<Color>(
-              //       //             Colors.deepOrange),
-              //       //         minHeight: 10.0,
-              //       //       );
-              //       //     });
-              //     },
-              //     child: const Icon(
-              //       Icons.download_rounded,
-              //       color: Colors.deepOrange,
-              //     ),
-              //   ),
-              // ),
-
               DataCell(
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -630,12 +608,8 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                                                 ?.role !=
                                             "Viewer")
                                         ? () {
-                                            //downloadImages(selectedDevotees);
-                                            //            Navigator.push(
-                                            //   context,
-                                            //   MaterialPageRoute(
-                                            //       builder: (context) => PrintingDocsPage()),
-                                            // );
+                                            DisplayPdf.delegatePDF(
+                                                selectedDevotees, context);
                                           }
                                         : null,
                                     child: const Text('Print'),
@@ -690,6 +664,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                       ),
                       PaginationRow(
                         dataCount: dataCount,
+                        dataLimit: dataCountPerPage,
                         currentPage: currentPage,
                         totalPages: totalPages,
                         fetchAllDevotee: fetchAllDevotee,
