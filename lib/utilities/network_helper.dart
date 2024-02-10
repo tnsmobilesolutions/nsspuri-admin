@@ -5,8 +5,10 @@ import 'package:sdp/model/devotee_model.dart';
 
 class NetworkHelper {
   static final NetworkHelper _networkHelper = NetworkHelper._internal();
+
   DevoteeModel? currentDevotee;
-  int dataCount = 10;
+  bool isAscending = true;
+
   DevoteeModel? get getCurrentDevotee {
     return currentDevotee;
   }
@@ -15,12 +17,12 @@ class NetworkHelper {
     currentDevotee = currentdevotee;
   }
 
-  int? get dataCountPerPage {
-    return dataCount;
+  set setNameAscending(bool isNameAscending) {
+    isAscending = isNameAscending;
   }
 
-  set devoteeCountPerPage(int totalData) {
-    dataCount = totalData;
+  bool get getNameAscending {
+    return isAscending;
   }
 
   factory NetworkHelper() {

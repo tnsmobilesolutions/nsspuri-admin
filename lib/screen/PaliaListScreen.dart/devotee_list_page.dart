@@ -5,6 +5,7 @@ import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/Login/EmailSignIn.dart';
 import 'package:sdp/constant/enums.dart';
 import 'package:sdp/firebase/firebase_auth_api.dart';
+import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/appBar/action_widget.dart';
@@ -47,18 +48,27 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
   List<DevoteeModel> allDevoteesCreatedByMe = [];
   MenuOption option = MenuOption.create;
   MenuOption? selectedMenu;
+  int totalPages = 0, dataCount = 0, currentPage = 1;
+
+  int dataCountPerPage = RemoteConfigHelper().getDataCountPerPage;
 
   Future<void> fetchDelegatesByMe() async {
     var currentUser = NetworkHelper().currentDevotee;
-    var allDevotees = await GetDevoteeAPI()
-        .devoteeListBycreatedById(currentUser?.createdById.toString() ?? "");
+    var allDevotees = await GetDevoteeAPI().devoteeListBycreatedById(
+      currentUser?.createdById.toString() ?? "",
+      1,
+      RemoteConfigHelper().getDataCountPerPage,
+    );
     if (allDevotees != null) {
-      print("all devotee by me length: ${allDevotees["data"].length}");
       setState(() {
         for (int i = 0; i < allDevotees["data"].length; i++) {
           allDevoteesCreatedByMe.add(allDevotees["data"][i]);
         }
+        totalPages = allDevotees["totalPages"];
+        dataCount = allDevotees["count"];
+        currentPage = allDevotees["currentPage"];
       });
+      print("created by me: ${allDevoteesCreatedByMe.length}");
     } else {
       print("No delegates by me !");
     }
@@ -123,7 +133,6 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
                     switch (value) {
                       case MenuOption.home:
                         if (NetworkHelper().currentDevotee?.role != "User") {
-                          // change to hide home menu later for userdashboard
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -141,6 +150,9 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
                                 pageFrom: "Dashboard",
                                 status: "allDevotee",
                                 devoteeList: allDevoteesCreatedByMe,
+                                totalPages: totalPages,
+                                currentPage: currentPage,
+                                dataCount: dataCount,
                               );
                             },
                           ));

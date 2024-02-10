@@ -9,7 +9,7 @@ class TitleAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    //final screenWidth = MediaQuery.of(context).size.width;
     return SizedBox(
       child: Row(
         children: [
@@ -22,10 +22,10 @@ class TitleAppBar extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              SizedBox(
-                width:
-                    Responsive.isLargeMobile(context) ? 300 : screenWidth / 7,
-                child: const Text(
+              const SizedBox(
+                width: 300,
+                //Responsive.isLargeMobile(context) ? 300 : screenWidth / 7,
+                child: Text(
                   'Sammilani Delegate',
                   style: TextStyle(color: Colors.white),
                   softWrap: true,
@@ -34,8 +34,65 @@ class TitleAppBar extends StatelessWidget {
               ),
               //const SizedBox(height: 10),
               SizedBox(
-                width:
-                    Responsive.isLargeMobile(context) ? 300 : screenWidth / 7,
+                width: 300,
+                //Responsive.isLargeMobile(context) ? 300 : screenWidth / 7,
+                child: Text(
+                  "${NetworkHelper().getCurrentDevotee?.name} (${NetworkHelper().getCurrentDevotee?.role})",
+                  style: const TextStyle(color: Colors.white, fontSize: 15),
+                  softWrap: true,
+                  overflow: TextOverflow.clip,
+                ),
+              ),
+              // SizedBox(
+              //   width:
+              //       Responsive.isLargeMobile(context) ? 300 : screenWidth / 7,
+              //   child: Text(
+              //     "${NetworkHelper().getCurrentDevotee?.role}",
+              //     style: const TextStyle(color: Colors.white, fontSize: 15),
+              //     softWrap: true,
+              //     overflow: TextOverflow.clip,
+              //   ),
+              // ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class TitleAppBarTablet extends StatelessWidget {
+  const TitleAppBarTablet({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    //final screenWidth = MediaQuery.of(context).size.width;
+    return SizedBox(
+      child: Row(
+        children: [
+          const Image(
+              image: AssetImage('assets/images/login.png'),
+              fit: BoxFit.cover,
+              height: 60.00,
+              width: 60.00),
+          const SizedBox(width: 20),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              const SizedBox(
+                width: 300,
+                //Responsive.isLargeMobile(context) ? 300 : screenWidth / 7,
+                child: Text(
+                  'Sammilani Delegate',
+                  style: TextStyle(color: Colors.white),
+                  softWrap: true,
+                  overflow: TextOverflow.clip,
+                ),
+              ),
+              //const SizedBox(height: 10),
+              SizedBox(
+                width: 300,
+                //Responsive.isLargeMobile(context) ? 300 : screenWidth / 7,
                 child: Text(
                   "${NetworkHelper().getCurrentDevotee?.name} (${NetworkHelper().getCurrentDevotee?.role})",
                   style: const TextStyle(color: Colors.white, fontSize: 15),

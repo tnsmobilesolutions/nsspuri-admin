@@ -2,14 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:sdp/API/get_devotee.dart';
-import 'package:sdp/constant/pagination_value.dart';
 import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
-import 'package:sdp/screen/appBar/create_delegate_buton.dart.dart';
-import 'package:sdp/screen/appBar/created_by_me.dart';
-import 'package:sdp/screen/appBar/goto_home_button.dart';
-import 'package:sdp/screen/appBar/logoutButton.dart';
 import 'package:sdp/screen/appBar/search.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
@@ -21,6 +16,7 @@ class AppbarActionButtonWidget extends StatefulWidget {
     this.searchValue,
     this.advanceStatus,
     this.showClearButton,
+    this.pageNumber,
   });
 
   String? advanceStatus;
@@ -28,6 +24,7 @@ class AppbarActionButtonWidget extends StatefulWidget {
   String? pageFrom;
   String? searchValue;
   bool? showClearButton;
+  int? pageNumber;
 
   @override
   State<AppbarActionButtonWidget> createState() =>
@@ -35,15 +32,15 @@ class AppbarActionButtonWidget extends StatefulWidget {
 }
 
 class _AppbarActionButtonWidgetState extends State<AppbarActionButtonWidget> {
-  bool dataSubmitted = false,
-      paid = false,
-      rejected = false,
-      approved = false,
-      printed = false,
-      withdrawn = false,
-      lost = false,
-      reissued = false,
-      blackListed = false;
+  // bool dataSubmitted = false,
+  //     paid = false,
+  //     rejected = false,
+  //     approved = false,
+  //     printed = false,
+  //     withdrawn = false,
+  //     lost = false,
+  //     reissued = false,
+  //     blackListed = false;
 
   List<DevoteeModel> devoteeList = [];
   String? selectedStatus;
@@ -60,36 +57,6 @@ class _AppbarActionButtonWidgetState extends State<AppbarActionButtonWidget> {
   ];
   String? userRole;
   int totalPages = 0, dataCount = 0, currentPage = 1;
-
-  // List<String> statusOptionsUI = [
-  //   'Data Submitted',
-  //   'Paid',
-  //   'Rejected',
-  //   'Approved',
-  //   'Printed',
-  //   'Withdrawn',
-  //   'Lost',
-  //   'Reissued',
-  //   "Blacklisted"
-  // ];
-
-  // List<Map<String, dynamic>> statusList = [
-  //   {
-  //     "label": "Status",
-  //     "status": [
-  //       'dataSubmitted',
-  //       'paid',
-  //       'rejected',
-  //       'approved',
-  //       'printed',
-  //       'withdrawn',
-  //       'lost',
-  //       'reissued',
-  //       "blacklisted"
-  //     ]
-  //   },
-  // ];
-  // late final List data;
   late int dataCountPerPage;
   @override
   void initState() {
@@ -181,9 +148,14 @@ class _AppbarActionButtonWidgetState extends State<AppbarActionButtonWidget> {
             },
           );
           await GetDevoteeAPI()
-              .advanceSearchDevotee(widget.searchValue.toString(),
-                  widget.searchBy.toString(), 1, dataCountPerPage,
-                  status: selectedStatus)
+              .advanceSearchDevotee(
+            widget.searchValue.toString(),
+            widget.searchBy.toString(),
+            1,
+            dataCountPerPage,
+            status: selectedStatus,
+            isAscending: NetworkHelper().getNameAscending,
+          )
               .then((response) {
             devoteeList.addAll(response["data"]);
             totalPages = response["totalPages"];
@@ -215,9 +187,6 @@ class _AppbarActionButtonWidgetState extends State<AppbarActionButtonWidget> {
           return DropdownMenuEntry<String>(
             value: value,
             label: value,
-            // style: ButtonStyle(
-            //   textStyle: MaterialStateProperty.resolveWith((states) => TextStyle(fontSize: 15))
-            // )
           );
         }).toList(),
       ),
@@ -235,97 +204,17 @@ class _AppbarActionButtonWidgetState extends State<AppbarActionButtonWidget> {
           searchBy: widget.searchBy,
           searchStatus: selectedStatus,
           searchValue: widget.searchValue,
+          pageNumber: widget.pageNumber ?? 1,
           onFieldValueChanged: (isEmpty) {},
         ),
         widget.showClearButton == true
             ? advanceSearchDropdown(context)
             : const SizedBox(),
         SearchClearButton(widget: widget),
-        //const GotoHomeButton(),
-        // const CreatedByMe(),
-        // CreateDelegateButton(pageFrom: widget.pageFrom),
-        //const SizedBox(width: 5),
-        //const LogoutButton(),
-        // const SizedBox(width: 5),
       ],
     );
   }
 }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     if (Responsive.isDesktop(context)) {
-//       return Row(
-//         mainAxisAlignment: MainAxisAlignment.end,
-//         crossAxisAlignment: CrossAxisAlignment.center,
-//         children: [
-//           Column(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: [
-//               Padding(
-//                   padding: const EdgeInsets.all(10.0),
-//                   child: SearchDevotee(
-//                     status: "allDevotee",
-//                     searchBy: widget.searchBy,
-//                     searchStatus: selectedStatus,
-//                     searchValue: widget.searchValue,
-//                     onFieldValueChanged: (isEmpty) {},
-//                   )),
-//               widget.showClearButton == true
-//                   ? advanceSearchDropdown(context)
-//                   : const SizedBox(),
-//             ],
-//           ),
-//           SearchClearButton(widget: widget),
-//           Padding(
-//             padding: const EdgeInsets.all(10),
-//             child: Column(
-//               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//               crossAxisAlignment: CrossAxisAlignment.end,
-//               children: [
-//                 const GotoHomeButton(),
-//                 CreateDelegateButton(),
-//                 const LogoutButton(),
-//               ],
-//             ),
-//           ),
-//         ],
-//       );
-//     } else {
-//       return Column(
-//         crossAxisAlignment: CrossAxisAlignment.center,
-//         children: [
-//           Padding(
-//             padding: const EdgeInsets.all(10.0),
-//             child: SearchDevotee(
-//               status: "allDevotee",
-//               searchBy: widget.searchBy,
-//               searchValue: widget.searchValue,
-//               onFieldValueChanged: (isEmpty) {},
-//             ),
-//           ),
-//           Padding(
-//             padding: const EdgeInsets.only(right: 10),
-//             child: Row(
-//               mainAxisAlignment: MainAxisAlignment.start,
-//               children: [
-//                 const GotoHomeButton(),
-//                 const SizedBox(width: 10),
-//                 widget.showClearButton == true
-//                     ? advanceSearchDropdown(context)
-//                     : const SizedBox(),
-//                 const SizedBox(width: 10),
-//                 SearchClearButton(widget: widget),
-//                 CreateDelegateButton(),
-//                 const SizedBox(width: 10),
-//                 const LogoutButton(),
-//               ],
-//             ),
-//           ),
-//         ],
-//       );
-//     }
-//   }
 
 class SearchClearButton extends StatelessWidget {
   const SearchClearButton({
