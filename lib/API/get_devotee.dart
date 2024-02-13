@@ -94,10 +94,10 @@ class GetDevoteeAPI extends DioFuctionAPI {
       Map<String, dynamic> response;
       if (isAscending == true) {
         response = await getAPI(
-            "devoteeListBycreatedById/$createdById?page=$page&limit=$limit&&nameOrder=ascending");
+            "devoteeListBycreatedById/$createdById?page=$page&limit=$limit&name=ascending");
       } else if (isAscending == false) {
         response = await getAPI(
-            "devoteeListBycreatedById/$createdById?page=$page&limit=$limit&nameOrder=descending");
+            "devoteeListBycreatedById/$createdById?page=$page&limit=$limit&name=descending");
       } else {
         response = await getAPI(
             "devoteeListBycreatedById/$createdById?page=$page&limit=$limit");
@@ -134,10 +134,20 @@ class GetDevoteeAPI extends DioFuctionAPI {
     }
   }
 
-  Future<Map<String, dynamic>?> allDevotee(int page, int limit) async {
+  Future<Map<String, dynamic>?> allDevotee(int page, int limit,
+      {bool? isAscending}) async {
     try {
+      Map<String, dynamic> response;
       List<DevoteeModel> devotees = [];
-      final response = await getAPI("devotee?page=$page&limit=$limit");
+      if (isAscending == true) {
+        response =
+            await getAPI("devotee?page=$page&limit=$limit&name=ascending");
+      } else if (isAscending == false) {
+        response =
+            await getAPI("devotee?page=$page&limit=$limit&name=descending");
+      } else {
+        response = await getAPI("devotee?page=$page&limit=$limit");
+      }
       final devoteelist = response["data"]["allDevotee"];
       final count = response["data"]["count"];
       final totalPages = response["data"]["totalPages"];
@@ -190,10 +200,10 @@ class GetDevoteeAPI extends DioFuctionAPI {
       } else {
         if (isAscending == true) {
           response = await getAPI(
-              "devotee/search?status=$query&page=$page&limit=$limit&nameOrder=ascending");
+              "devotee/search?status=$query&page=$page&limit=$limit&name=ascending");
         } else if (isAscending == false) {
           response = await getAPI(
-              "devotee/search?status=$query&page=$page&limit=$limit&nameOrder=descending");
+              "devotee/search?status=$query&page=$page&limit=$limit&name=descending");
         } else {
           response = await getAPI(
               "devotee/search?status=$query&page=$page&limit=$limit");
