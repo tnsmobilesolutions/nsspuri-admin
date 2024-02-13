@@ -172,8 +172,11 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
 
     if (widget.pageFrom == "Dashboard") {
       if (widget.status == "allDevotee") {
-        allDevotee =
-            await GetDevoteeAPI().allDevotee(pageValue, dataCountPerPage);
+        allDevotee = await GetDevoteeAPI().allDevotee(
+          pageValue,
+          dataCountPerPage,
+          isAscending: NetworkHelper().getNameAscending,
+        );
       } else {
         allDevotee = await GetDevoteeAPI().searchDevotee(
           widget.status,
@@ -377,7 +380,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
             cells: [
               DataCell(Text(getSLno(index))),
               // DataCell(Text("${index + 1}")),
-              DataCell(SizedBox(
+              const DataCell(SizedBox(
                 height: 50,
                 width: 50,
                 child:
@@ -410,8 +413,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                     //         },
                     //       )
                     //     :
-                    const Image(
-                        image: AssetImage('assets/images/profile.jpeg')),
+                    Image(image: AssetImage('assets/images/profile.jpeg')),
               )),
               DataCell(
                 Column(
@@ -600,15 +602,66 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
     );
   }
 
-  void _sortList(bool isAscending) {
-    setState(() {
-      allDevotees.sort((a, b) {
-        final nameA = (a.name ?? '').toLowerCase();
-        final nameB = (b.name ?? '').toLowerCase();
-        return isAscending ? nameA.compareTo(nameB) : nameB.compareTo(nameA);
-      });
-    });
-  }
+  // void _sortList(bool isAscending) {
+  //   setState(() {
+  //     allDevotees.sort((a, b) {
+  //       final nameA = (a.name ?? '').toLowerCase();
+  //       final nameB = (b.name ?? '').toLowerCase();
+  //       return isAscending ? nameA.compareTo(nameB) : nameB.compareTo(nameA);
+  //     });
+  //   });
+  // }
+
+  // void _exportToExcelHandler() async {
+  //   showDialog(
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (BuildContext context) =>
+  //         const Center(child: CircularProgressIndicator()),
+  //   );
+
+  //   try {
+  //     List<DevoteeModel> devoteeList = [];
+
+  //     if (widget.createdByMe == true) {
+  //       var currentUser = NetworkHelper().currentDevotee;
+  //       final createdById = currentUser?.createdById.toString() ?? "";
+  //       final result = await GetDevoteeAPI().devoteeListBycreatedById(
+  //           createdById, 1, 10000,
+  //           isAscending: NetworkHelper().getNameAscending);
+  //       if (result != null && result.containsKey("data")) {
+  //         devoteeList.addAll(result["data"]);
+  //       }
+  //     } else if (widget.pageFrom == "Dashboard") {
+  //       final isAllDevotee = widget.status == "allDevotee";
+  //       final result = isAllDevotee
+  //           ? await GetDevoteeAPI().allDevotee(1, 10000,
+  //               isAscending: NetworkHelper().getNameAscending)
+  //           : await GetDevoteeAPI().searchDevotee(
+  //               widget.status, "status", 1, 10000,
+  //               isAscending: NetworkHelper().getNameAscending);
+  //       if (result != null && result.containsKey("data")) {
+  //         devoteeList.addAll(result["data"]);
+  //       }
+  //     } else {
+  //       final result = await GetDevoteeAPI().advanceSearchDevotee(
+  //           widget.searchValue.toString(), widget.searchBy.toString(), 1, 10000,
+  //           status: widget.advanceStatus,
+  //           isAscending: NetworkHelper().getNameAscending);
+  //       if (result.isNotEmpty && result.containsKey("data")) {
+  //         devoteeList.addAll(result["data"]);
+  //       }
+  //     }
+
+  //     if (context.mounted) {
+  //       Navigator.pop(context);
+  //     }
+  //     ExportToExcel().exportToExcel(devoteeList);
+  //   } catch (e) {
+  //     print("Error: $e");
+  //     // Handle error appropriately, like showing an error dialog
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -616,7 +669,6 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
       padding: const EdgeInsets.all(8.0),
       child: isLoading
           ? const AnimatedShimmerWidget()
-          //const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -728,7 +780,10 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                           if (page != null &&
                               int.tryParse(page)! > 0 &&
                               int.tryParse(page)! <= totalPages) {
-                            if (widget.devoteeList != null) {
+                            // if (widget.devoteeList != null) {
+                            //   fetchDelegatesByMe(int.tryParse(page) ?? 1);
+                            // } else {
+                            if (widget.createdByMe == true) {
                               fetchDelegatesByMe(int.tryParse(page) ?? 1);
                             } else {
                               fetchAllDevotee(int.tryParse(page) ?? 1);

@@ -58,6 +58,7 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
       currentUser?.createdById.toString() ?? "",
       1,
       RemoteConfigHelper().getDataCountPerPage,
+      isAscending: NetworkHelper().getNameAscending,
     );
     if (allDevotees != null) {
       setState(() {

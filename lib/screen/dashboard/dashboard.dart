@@ -42,7 +42,34 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+  List<DevoteeModel> allDevoteesCreatedByMe = [];
+  MenuOption option = MenuOption.create;
+  MenuOption? selectedMenu;
   List<String>? selectedPalia;
+  int totalPages = 0, dataCount = 0, currentPage = 1;
+
+  Future<void> fetchDelegatesByMe() async {
+    var currentUser = NetworkHelper().currentDevotee;
+    var allDevotees = await GetDevoteeAPI().devoteeListBycreatedById(
+      currentUser?.createdById.toString() ?? "",
+      1,
+      RemoteConfigHelper().getDataCountPerPage,
+      isAscending: NetworkHelper().getNameAscending,
+    );
+    if (allDevotees != null) {
+      setState(() {
+        for (int i = 0; i < allDevotees["data"].length; i++) {
+          allDevoteesCreatedByMe.add(allDevotees["data"][i]);
+        }
+        totalPages = allDevotees["totalPages"];
+        dataCount = allDevotees["count"];
+        currentPage = allDevotees["currentPage"];
+      });
+      print("created by me from dashboard: ${allDevoteesCreatedByMe.length}");
+    } else {
+      print("No delegates by me !");
+    }
+  }
 
   IconData _getIconForMenuOption(MenuOption option) {
     switch (option) {
@@ -56,33 +83,6 @@ class _DashboardPageState extends State<DashboardPage> {
         return Icons.settings;
       case MenuOption.logout:
         return Icons.logout_rounded;
-    }
-  }
-
-  MenuOption? selectedMenu;
-  MenuOption option = MenuOption.create;
-  List<DevoteeModel> allDevoteesCreatedByMe = [];
-  int totalPages = 0, dataCount = 0, currentPage = 1;
-
-  Future<void> fetchDelegatesByMe() async {
-    var currentUser = NetworkHelper().currentDevotee;
-    var allDevotees = await GetDevoteeAPI().devoteeListBycreatedById(
-      currentUser?.createdById.toString() ?? "",
-      1,
-      RemoteConfigHelper().getDataCountPerPage,
-    );
-    if (allDevotees != null) {
-      setState(() {
-        for (int i = 0; i < allDevotees["data"].length; i++) {
-          allDevoteesCreatedByMe.add(allDevotees["data"][i]);
-        }
-        totalPages = allDevotees["totalPages"];
-        dataCount = allDevotees["count"];
-        currentPage = allDevotees["currentPage"];
-      });
-      print("created by me: ${allDevoteesCreatedByMe.length}");
-    } else {
-      print("No delegates by me !");
     }
   }
 
@@ -267,11 +267,6 @@ class _DashboardPageState extends State<DashboardPage> {
                   }).toList(),
                 ),
               ],
-              // actions: [
-              //   AppbarActionButtonWidget(
-              //     pageFrom: "Dashboard",
-              //   )
-              // ],
             ),
             tablet: ResponsiveAppBar(),
             mobile: ResponsiveAppBar(),
@@ -294,10 +289,11 @@ class ResponsiveAppBar extends StatefulWidget {
       this.searchValue,
       this.role,
       this.showClearButton});
-  String? searchValue;
-  String? searchBy;
+
   String? advanceStatus;
   String? role;
+  String? searchBy;
+  String? searchValue;
   bool? showClearButton;
 
   @override
@@ -305,11 +301,10 @@ class ResponsiveAppBar extends StatefulWidget {
 }
 
 class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
-  MenuOption? selectedMenu;
-
-  MenuOption option = MenuOption.create;
-
   List<DevoteeModel> allDevoteesCreatedByMe = [];
+  MenuOption option = MenuOption.create;
+  MenuOption? selectedMenu;
+  int totalPages = 0, dataCount = 0, currentPage = 1;
 
   Future<void> fetchDelegatesByMe() async {
     var currentUser = NetworkHelper().currentDevotee;
@@ -317,18 +312,35 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
       currentUser?.createdById.toString() ?? "",
       1,
       RemoteConfigHelper().getDataCountPerPage,
+      isAscending: NetworkHelper().getNameAscending,
     );
     if (allDevotees != null) {
-      print("all devotee by me length: ${allDevotees["data"].length}");
       setState(() {
-        allDevoteesCreatedByMe = allDevotees["data"];
-        print("all devotees by me: ${allDevoteesCreatedByMe.length}");
-        // for (int i = 0; i < allDevotees["data"].length; i++) {
-        //   allDevoteesCreatedByMe.add(allDevotees["data"][i]);
-        // }
+        for (int i = 0; i < allDevotees["data"].length; i++) {
+          allDevoteesCreatedByMe.add(allDevotees["data"][i]);
+        }
+        totalPages = allDevotees["totalPages"];
+        dataCount = allDevotees["count"];
+        currentPage = allDevotees["currentPage"];
       });
+      print("created by me from dashboard: ${allDevoteesCreatedByMe.length}");
     } else {
       print("No delegates by me !");
+    }
+  }
+
+  IconData _getIconForMenuOption(MenuOption option) {
+    switch (option) {
+      case MenuOption.home:
+        return Icons.home;
+      case MenuOption.createdByMe:
+        return Icons.card_membership_rounded;
+      case MenuOption.create:
+        return Icons.card_membership_rounded;
+      case MenuOption.settings:
+        return Icons.settings;
+      case MenuOption.logout:
+        return Icons.logout_rounded;
     }
   }
 
@@ -361,17 +373,18 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
                 break;
               case MenuOption.createdByMe:
                 await fetchDelegatesByMe();
-                if (context.mounted) {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) {
-                      return DevoteeListPage(
-                        pageFrom: "Dashboard",
-                        status: "allDevotee",
-                        devoteeList: allDevoteesCreatedByMe,
-                      );
-                    },
-                  ));
-                }
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) {
+                    return DevoteeListPage(
+                      pageFrom: "Dashboard",
+                      status: "allDevotee",
+                      devoteeList: allDevoteesCreatedByMe,
+                      totalPages: totalPages,
+                      currentPage: currentPage,
+                      dataCount: dataCount,
+                    );
+                  },
+                ));
                 break;
               case MenuOption.create:
                 showDialog<void>(
@@ -503,70 +516,4 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
           : null,
     );
   }
-
-  IconData _getIconForMenuOption(MenuOption option) {
-    switch (option) {
-      case MenuOption.home:
-        return Icons.home;
-      case MenuOption.createdByMe:
-        return Icons.card_membership_rounded;
-      case MenuOption.create:
-        return Icons.card_membership_rounded;
-      case MenuOption.settings:
-        return Icons.settings;
-      case MenuOption.logout:
-        return Icons.logout_rounded;
-    }
-  }
 }
-
-// class AppDrawer extends StatelessWidget {
-//   const AppDrawer({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Drawer(
-//       child: ListView(
-//         padding: EdgeInsets.zero,
-//         children: <Widget>[
-//           const DrawerHeader(
-//             decoration: BoxDecoration(
-//               color: Colors.blue,
-//             ),
-//             child: Text(
-//               'App Drawer',
-//               style: TextStyle(
-//                 color: Colors.white,
-//                 fontSize: 24,
-//               ),
-//             ),
-//           ),
-//           ListTile(
-//             leading: const Icon(Icons.home),
-//             title: const Text('Home'),
-//             onTap: () {
-//               // Handle the Home option
-//               Navigator.pop(context); // Close the drawer
-//             },
-//           ),
-//           ListTile(
-//             leading: const Icon(Icons.settings),
-//             title: const Text('Create Delegate'),
-//             onTap: () {
-//               // Handle the Settings option
-//               Navigator.pop(context); // Close the drawer
-//             },
-//           ),
-//           ListTile(
-//             leading: const Icon(Icons.help),
-//             title: const Text('Logout'),
-//             onTap: () {
-//               // Handle the Help option
-//               Navigator.pop(context); // Close the drawer
-//             },
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
