@@ -39,13 +39,15 @@ class DisplayPdf {
       User? user = FirebaseAuth.instance.currentUser;
       final token = user?.getIdToken();
       for (DevoteeModel devotee in selectedDevotees) {
+        print("profilepicURL---------${devotee.profilePhotoUrl}");
         if (devotee.profilePhotoUrl == null || devotee.profilePhotoUrl == "") {}
         final response = await http.get(
           Uri.parse(devotee.profilePhotoUrl ??
               "https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTAxL3JtNjA5LXNvbGlkaWNvbi13LTAwMi1wLnBuZw.png"),
           headers: {
             'Authorization': 'Bearer $token',
-            'Origin': '*',
+            "Access-Control-Allow-Origin": 'https://devsda.nsspuri.org'
+              
           },
         );
         if (response.statusCode == 200) {
