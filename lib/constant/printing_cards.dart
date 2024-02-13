@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
@@ -35,11 +36,18 @@ class DisplayPdf {
 
     Future<List<Uint8List>> loadImageFromNetwork() async {
       List<Uint8List> imageBytesList = [];
+      User? user = FirebaseAuth.instance.currentUser;
+      final token = user?.getIdToken();
       for (DevoteeModel devotee in selectedDevotees) {
-        final response =
-            await http.get(Uri.parse(devotee.profilePhotoUrl ?? ""), headers: {
-          'Access-Control-Allow-Origin': '*',
-        });
+        if (devotee.profilePhotoUrl == null || devotee.profilePhotoUrl == "") {}
+        final response = await http.get(
+          Uri.parse(devotee.profilePhotoUrl ??
+              "https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTAxL3JtNjA5LXNvbGlkaWNvbi13LTAwMi1wLnBuZw.png"),
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Origin': '*',
+          },
+        );
         if (response.statusCode == 200) {
           imageBytesList.add(response.bodyBytes);
         } else {
