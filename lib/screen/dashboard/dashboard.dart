@@ -49,6 +49,8 @@ class _DashboardPageState extends State<DashboardPage> {
   int totalPages = 0, dataCount = 0, currentPage = 1;
 
   Future<void> fetchDelegatesByMe() async {
+    print("is ascending: ${NetworkHelper().getNameAscending}");
+    print("created by: ${NetworkHelper().currentDevotee}");
     var currentUser = NetworkHelper().currentDevotee;
     var allDevotees = await GetDevoteeAPI().devoteeListBycreatedById(
       currentUser?.createdById.toString() ?? "",

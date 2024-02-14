@@ -95,12 +95,18 @@ class GetDevoteeAPI extends DioFuctionAPI {
       if (isAscending == true) {
         response = await getAPI(
             "devoteeListBycreatedById/$createdById?page=$page&limit=$limit&name=ascending");
+        print(
+            "api end point (ascending): devoteeListBycreatedById/$createdById?page=$page&limit=$limit&name=ascending");
       } else if (isAscending == false) {
         response = await getAPI(
             "devoteeListBycreatedById/$createdById?page=$page&limit=$limit&name=descending");
+        print(
+            "api end point (descending): devoteeListBycreatedById/$createdById?page=$page&limit=$limit&name=descending");
       } else {
         response = await getAPI(
             "devoteeListBycreatedById/$createdById?page=$page&limit=$limit");
+        print(
+            "api end point (default): devoteeListBycreatedById/$createdById?page=$page&limit=$limit");
       }
 
       List<DevoteeModel> devotees = [];
