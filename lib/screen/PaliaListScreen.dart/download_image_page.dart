@@ -167,24 +167,24 @@ class _DownloadImagePageState extends State<DownloadImagePage> {
   //     anchor.remove();
   //   }
   // }
-  Future<void> _downloadWidget() async {
-    RenderRepaintBoundary boundary =
-        _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+  // Future<void> _downloadWidget() async {
+  //   RenderRepaintBoundary boundary =
+  //       _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
 
-    ui.Image image = await boundary.toImage(pixelRatio: 3.0);
-    ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    Uint8List pngBytes = byteData!.buffer.asUint8List();
+  //   ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+  //   ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+  //   Uint8List pngBytes = byteData!.buffer.asUint8List();
 
-    html.Blob blob = html.Blob([pngBytes]);
-    String url = html.Url.createObjectUrlFromBlob(blob);
+  //   html.Blob blob = html.Blob([pngBytes]);
+  //   String url = html.Url.createObjectUrlFromBlob(blob);
 
-    html.AnchorElement(href: url)
-      ..target = 'blank'
-      ..download = 'screenshot.png' // Specify the filename
-      ..click();
+  //   html.AnchorElement(href: url)
+  //     ..target = 'blank'
+  //     ..download = 'screenshot.png' // Specify the filename
+  //     ..click();
 
-    html.Url.revokeObjectUrl(url);
-  }
+  //   html.Url.revokeObjectUrl(url);
+  // }
 
   // Future<void> _downloadImage() async {
   //   setState(() {

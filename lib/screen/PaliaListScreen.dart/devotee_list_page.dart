@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, must_be_immutable, avoid_print
+// ignore_for_file: file_names, must_be_immutable, avoid_print, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:sdp/API/get_devotee.dart';
@@ -13,6 +13,7 @@ import 'package:sdp/screen/appBar/addPageDialouge.dart';
 import 'package:sdp/screen/appBar/leadingImage.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_body_page.dart';
 import 'package:sdp/screen/dashboard/change_time.dart';
+import 'package:sdp/screen/dashboard/coupon_timing.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
@@ -78,13 +79,15 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
   IconData _getIconForMenuOption(MenuOption option) {
     switch (option) {
       case MenuOption.home:
-        return Icons.home;
+        return Icons.home_outlined;
       case MenuOption.createdByMe:
         return Icons.card_membership_rounded;
+      case MenuOption.prasadCoupon:
+        return Icons.confirmation_num_outlined;
       case MenuOption.create:
         return Icons.card_membership_rounded;
       case MenuOption.settings:
-        return Icons.settings;
+        return Icons.settings_outlined;
       case MenuOption.logout:
         return Icons.logout_rounded;
     }
@@ -159,8 +162,36 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
                           ));
                         }
                         break;
+                      case MenuOption.prasadCoupon:
+                        if (context.mounted &&
+                            NetworkHelper().currentDevotee?.role ==
+                                "SuperAdmin") {
+                          showDialog<void>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                  title: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text('Change Timing'),
+                                      IconButton(
+                                          color: Colors.deepOrange,
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          icon: const Icon(
+                                            Icons.close,
+                                            color: Colors.deepOrange,
+                                          ))
+                                    ],
+                                  ),
+                                  content: CouponTiming());
+                            },
+                          );
+                        }
+                        break;
                       case MenuOption.create:
-                        // ignore: use_build_context_synchronously
                         showDialog<void>(
                           context: context,
                           builder: (BuildContext context) {

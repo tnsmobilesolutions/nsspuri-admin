@@ -1,3 +1,3 @@
 enum AgeGroup { child, adult, elder }
 
-enum MenuOption { home, createdByMe, create, settings, logout }
+enum MenuOption { home, createdByMe, prasadCoupon, create, settings, logout }

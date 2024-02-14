@@ -14,6 +14,7 @@ import 'package:sdp/screen/appBar/addPageDialouge.dart';
 import 'package:sdp/screen/appBar/leadingImage.dart';
 import 'package:sdp/screen/appBar/responsive_action_widget.dart';
 import 'package:sdp/screen/dashboard/change_time.dart';
+import 'package:sdp/screen/dashboard/coupon_timing.dart';
 import 'package:sdp/screen/dashboard/dashboardBody.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
@@ -24,6 +25,8 @@ extension MenuOptionExtension on MenuOption {
         return 'Home';
       case MenuOption.createdByMe:
         return 'Created By Me';
+      case MenuOption.prasadCoupon:
+        return 'Prasad Coupon';
       case MenuOption.create:
         return 'Create Delegate';
       case MenuOption.settings:
@@ -76,13 +79,15 @@ class _DashboardPageState extends State<DashboardPage> {
   IconData _getIconForMenuOption(MenuOption option) {
     switch (option) {
       case MenuOption.home:
-        return Icons.home;
+        return Icons.home_outlined;
       case MenuOption.createdByMe:
         return Icons.card_membership_rounded;
+      case MenuOption.prasadCoupon:
+        return Icons.confirmation_num_outlined;
       case MenuOption.create:
         return Icons.card_membership_rounded;
       case MenuOption.settings:
-        return Icons.settings;
+        return Icons.settings_outlined;
       case MenuOption.logout:
         return Icons.logout_rounded;
     }
@@ -146,6 +151,18 @@ class _DashboardPageState extends State<DashboardPage> {
                             );
                           },
                         ));
+                        break;
+                      case MenuOption.prasadCoupon:
+                        if (context.mounted &&
+                            NetworkHelper().currentDevotee?.role ==
+                                "SuperAdmin") {
+                          showDialog<void>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return const CouponTiming();
+                            },
+                          );
+                        }
                         break;
                       case MenuOption.create:
                         showDialog<void>(
@@ -334,13 +351,15 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
   IconData _getIconForMenuOption(MenuOption option) {
     switch (option) {
       case MenuOption.home:
-        return Icons.home;
+        return Icons.home_outlined;
       case MenuOption.createdByMe:
         return Icons.card_membership_rounded;
+      case MenuOption.prasadCoupon:
+        return Icons.confirmation_num_outlined;
       case MenuOption.create:
         return Icons.card_membership_rounded;
       case MenuOption.settings:
-        return Icons.settings;
+        return Icons.settings_outlined;
       case MenuOption.logout:
         return Icons.logout_rounded;
     }
@@ -374,6 +393,21 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
 
                 break;
               case MenuOption.createdByMe:
+                await fetchDelegatesByMe();
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) {
+                    return DevoteeListPage(
+                      pageFrom: "Dashboard",
+                      status: "allDevotee",
+                      devoteeList: allDevoteesCreatedByMe,
+                      totalPages: totalPages,
+                      currentPage: currentPage,
+                      dataCount: dataCount,
+                    );
+                  },
+                ));
+                break;
+              case MenuOption.prasadCoupon:
                 await fetchDelegatesByMe();
                 Navigator.push(context, MaterialPageRoute(
                   builder: (context) {
