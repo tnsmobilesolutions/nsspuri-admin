@@ -169,24 +169,9 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
                           showDialog<void>(
                             context: context,
                             builder: (BuildContext context) {
-                              return AlertDialog(
-                                  title: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text('Change Timing'),
-                                      IconButton(
-                                          color: Colors.deepOrange,
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          icon: const Icon(
-                                            Icons.close,
-                                            color: Colors.deepOrange,
-                                          ))
-                                    ],
-                                  ),
-                                  content: CouponTiming());
+                              return CouponTiming(
+                                fromDashboard: false,
+                              );
                             },
                           );
                         }

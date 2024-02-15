@@ -48,7 +48,7 @@ class _DashboardPageState extends State<DashboardPage> {
   List<DevoteeModel> allDevoteesCreatedByMe = [];
   MenuOption option = MenuOption.create;
   MenuOption? selectedMenu;
-  List<String>? selectedPalia;
+  List<String>? selectedPalia, selectedDates;
   int totalPages = 0, dataCount = 0, currentPage = 1;
 
   Future<void> fetchDelegatesByMe() async {
@@ -159,7 +159,10 @@ class _DashboardPageState extends State<DashboardPage> {
                           showDialog<void>(
                             context: context,
                             builder: (BuildContext context) {
-                              return const CouponTiming();
+                              return CouponTiming(
+                                fromDashboard: true,
+                                selectedDates: selectedDates,
+                              );
                             },
                           );
                         }
@@ -291,8 +294,14 @@ class _DashboardPageState extends State<DashboardPage> {
             mobile: ResponsiveAppBar(),
           ),
         ),
-        body: const SafeArea(
-          child: DashboardBody(),
+        body: SafeArea(
+          child: DashboardBody(
+            onTap: (dates) {
+              setState(() {
+                selectedDates = dates;
+              });
+            },
+          ),
         ),
         //drawer: const AppDrawer(),
       ),

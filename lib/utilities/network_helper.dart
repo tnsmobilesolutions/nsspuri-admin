@@ -8,6 +8,7 @@ class NetworkHelper {
 
   DevoteeModel? currentDevotee;
   bool isAscending = true;
+  List<String> selectedDates = [];
 
   DevoteeModel? get getCurrentDevotee {
     return currentDevotee;
@@ -23,6 +24,14 @@ class NetworkHelper {
 
   bool get getNameAscending {
     return isAscending;
+  }
+
+  set setSelectedPrasadDate(String date) {
+    selectedDates.add(date);
+  }
+
+  List<String> get getSelectedPrasadDate {
+    return selectedDates;
   }
 
   factory NetworkHelper() {

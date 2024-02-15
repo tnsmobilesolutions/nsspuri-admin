@@ -1,13 +1,22 @@
-// ignore_for_file: use_build_context_synchronously, avoid_print, library_private_types_in_public_api
+// ignore_for_file: use_build_context_synchronously, avoid_print, library_private_types_in_public_api, must_be_immutable
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:sdp/API/get_devotee.dart';
+import 'package:sdp/API/put_devotee.dart';
+import 'package:sdp/model/coupon_model.dart';
 import 'package:sdp/utilities/color_palette.dart';
+import 'package:sdp/utilities/network_helper.dart';
 
 class CouponTiming extends StatefulWidget {
-  const CouponTiming({Key? key}) : super(key: key);
+  CouponTiming({
+    Key? key,
+    this.selectedDates,
+    required this.fromDashboard,
+  }) : super(key: key);
+  List<String>? selectedDates;
+  bool fromDashboard;
 
   @override
   _CouponTimingState createState() => _CouponTimingState();
@@ -24,38 +33,24 @@ class _CouponTimingState extends State<CouponTiming> {
   final firstDayRatra = TextEditingController();
   final secondDayRatra = TextEditingController();
   final thirdDayRatra = TextEditingController();
-
+  List<String> allDates = [];
   final formKey = GlobalKey<FormState>();
   Map<String, dynamic>? responseData;
-
-  List<TextEditingController> balyaControllers = [],
-      madhyanhaControllers = [],
-      ratraControllers = [];
 
   @override
   void initState() {
     super.initState();
-    timingData();
-  }
-
-  timingData() async {
-    try {
-      // Call the first API
-      Map<String, dynamic>? timingResponse =
-          await GetDevoteeAPI().updateTiming();
-      responseData = timingResponse["data"];
-      // showTiming();
-
-      // Call the second API
-    } catch (error) {
-      // Handle errors
-      print("Error fetching data: $error");
-    }
+    setState(() {
+      if (widget.fromDashboard) {
+        allDates = widget.selectedDates ?? [];
+      } else {
+        allDates = NetworkHelper().getSelectedPrasadDate;
+      }
+    });
   }
 
   @override
   void dispose() {
-    // Clean up the controllers when the widget is disposed
     firstDayBalya.dispose();
     firstDayMadhyanha.dispose();
     firstDayRatra.dispose();
@@ -67,19 +62,6 @@ class _CouponTimingState extends State<CouponTiming> {
     thirdDayRatra.dispose();
     super.dispose();
   }
-
-  // showTiming() {
-  //   if (responseData != null) {
-  //     setState(() {
-  //       1stDayBalya.text = responseData?["1stDayBalya"] ?? "";
-  //       balyaEndTime.text = responseData?["balyaEndTime"] ?? "";
-  //       madhyanStartTime.text = responseData?["madhyanaStartTime"] ?? "";
-  //       madhyanEndTime.text = responseData?["madhyanaEndTime"] ?? "";
-  //       ratraStartTime.text = responseData?["ratraStartTime"] ?? "";
-  //       ratraEndTime.text = responseData?["ratraEndTime"] ?? "";
-  //     });
-  //   }
-  // }
 
   DataColumn dataColumn(BuildContext context, String header,
       [Function(int, bool)? onSort]) {
@@ -156,19 +138,19 @@ class _CouponTimingState extends State<CouponTiming> {
       ],
       rows: [
         DataRow(cells: [
-          const DataCell(Text("23/02/2024")),
+          DataCell(Text(allDates[0])),
           DataCell(formField(firstDayBalya)),
           DataCell(formField(firstDayMadhyanha)),
           DataCell(formField(firstDayRatra)),
         ]),
         DataRow(cells: [
-          const DataCell(Text("24/02/2024")),
+          DataCell(Text(allDates[1])),
           DataCell(formField(secondDayBalya)),
           DataCell(formField(secondDayMadhyanha)),
           DataCell(formField(secondDayRatra)),
         ]),
         DataRow(cells: [
-          const DataCell(Text("25/02/2024")),
+          DataCell(Text(allDates[2])),
           DataCell(formField(thirdDayBalya)),
           DataCell(formField(thirdDayMadhyanha)),
           DataCell(formField(thirdDayRatra)),
@@ -195,23 +177,23 @@ class _CouponTimingState extends State<CouponTiming> {
                 )),
           ],
         ),
-        content: Form(
-          key: formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "Coupon No.",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
+        content: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Coupon No.",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Form(
+                  key: formKey,
+                  child: SizedBox(
                     width: 200,
                     child: TextFormField(
                       keyboardType: TextInputType.datetime,
@@ -220,13 +202,13 @@ class _CouponTimingState extends State<CouponTiming> {
                         FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                       ],
                       validator: (value) {
-                        RegExp numberRegex = RegExp(r'^\d{7}$');
+                        //RegExp numberRegex = RegExp(r'^\d{7}$');
                         if (value?.isEmpty == true) {
                           return "Please enter coupon code !";
                         }
-                        if (!numberRegex.hasMatch(value.toString())) {
-                          return "Please enter a valid code!";
-                        }
+                        // if (!numberRegex.hasMatch(value.toString())) {
+                        //   return "Please enter a valid code!";
+                        // }
                         return null;
                       },
                       decoration: InputDecoration(
@@ -245,41 +227,46 @@ class _CouponTimingState extends State<CouponTiming> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  Container(
-                    width: 150,
-                    height: 40,
-                    margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(5)),
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.resolveWith((states) {
-                            if (states.contains(MaterialState.pressed)) {
-                              return ButtonColor;
-                            }
+                ),
+                const SizedBox(width: 10),
+                Container(
+                  width: 150,
+                  height: 40,
+                  margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(5)),
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith((states) {
+                          if (states.contains(MaterialState.pressed)) {
                             return ButtonColor;
-                          }),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5)))),
-                      onPressed: () {},
-                      child: const Text(
-                        "view",
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                        ),
+                          }
+                          return ButtonColor;
+                        }),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5)))),
+                    onPressed: () async {
+                      if (formKey.currentState?.validate() == true) {
+                        await GetDevoteeAPI().viewCoupon(
+                            int.tryParse(couponCodeController.text) ?? 0);
+                      }
+                    },
+                    child: const Text(
+                      "view",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
                       ),
                     ),
                   ),
-                ],
-              ),
-              couponTable(),
-            ],
-          ),
+                ),
+              ],
+            ),
+            couponTable(),
+          ],
         ),
         actions: [
           Center(
@@ -300,9 +287,48 @@ class _CouponTimingState extends State<CouponTiming> {
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5)))),
-                onPressed: () {
-                  String date = DateFormat("yyyy-MM-dd").format(DateTime.now()),
-                      time = DateFormat("HH:mm").format(DateTime.now());
+                onPressed: () async {
+                  if (formKey.currentState?.validate() == true) {
+                    List<CouponModel> couponList = [];
+                    for (int i = 0; i < allDates.length; i++) {
+                      int? balyaCount, madhyanaCount, ratraCount;
+                      switch (i) {
+                        case 0:
+                          balyaCount = int.tryParse(firstDayBalya.text);
+                          madhyanaCount = int.tryParse(firstDayMadhyanha.text);
+                          ratraCount = int.tryParse(firstDayRatra.text);
+                          break;
+                        case 1:
+                          balyaCount = int.tryParse(secondDayBalya.text);
+                          madhyanaCount = int.tryParse(secondDayMadhyanha.text);
+                          ratraCount = int.tryParse(secondDayRatra.text);
+                          break;
+                        case 2:
+                          balyaCount = int.tryParse(thirdDayBalya.text);
+                          madhyanaCount = int.tryParse(thirdDayMadhyanha.text);
+                          ratraCount = int.tryParse(thirdDayRatra.text);
+                          break;
+                        default:
+                          balyaCount = 0;
+                          break;
+                      }
+                      couponList.add(CouponModel(
+                        date: allDates[i],
+                        balyaCount: balyaCount ?? 0,
+                        madhyanaCount: madhyanaCount ?? 0,
+                        ratraCount: ratraCount ?? 0,
+                        balyaTiming: [],
+                        madhyanaTiming: [],
+                        ratraTiming: [],
+                      ));
+                    }
+
+                    await PutDevoteeAPI().createCoupon(couponList,
+                        int.tryParse(couponCodeController.text) ?? 0);
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("Coupon created successfully !")));
+                    Navigator.pop(context);
+                  }
                 },
                 child: const Text(
                   "Activate",
