@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
@@ -35,19 +36,33 @@ class DisplayPdf {
 
     Future<List<Uint8List>> loadImageFromNetwork() async {
       List<Uint8List> imageBytesList = [];
-      for (DevoteeModel devotee in selectedDevotees) {
-        final response =
-            await http.get(Uri.parse(devotee.profilePhotoUrl ?? ""), headers: {
-          'Access-Control-Allow-Origin': '*',
-        });
-        if (response.statusCode == 200) {
-          imageBytesList.add(response.bodyBytes);
-        } else {
-          print("Error loading image");
-          imageBytesList.add(Uint8List(0));
+      try {
+        User? user = FirebaseAuth.instance.currentUser;
+        final token = user?.getIdToken();
+        for (DevoteeModel devotee in selectedDevotees) {
+          print("profilepicURL---------${devotee.profilePhotoUrl}");
+          if (devotee.profilePhotoUrl == null ||
+              devotee.profilePhotoUrl == "") {}
+          final response = await http.get(
+            Uri.parse(
+                "https://firebasestorage.googleapis.com/v0/b/nsspuridelegate-dev.appspot.com/o/Amrutanshu%20%2FIMG-20231201-WA0003.jpg?alt=media&token=107febf2-26c7-458d-8ebc-fc78b1f82e3b"),
+            headers: {
+              'Authorization': 'Bearer $token',
+              "Access-Control-Allow-Origin": 'https://devsda.nsspuri.org'
+            },
+          );
+          if (response.statusCode == 200) {
+            imageBytesList.add(response.bodyBytes);
+          } else {
+            print("Error loading image");
+            imageBytesList.add(Uint8List(0));
+          }
         }
+        return imageBytesList;
+      } catch (e) {
+        print("error -----$e");
+        return imageBytesList;
       }
-      return imageBytesList;
     }
 
     final img1 = await rootBundle.load('assets/images/bhai.png');

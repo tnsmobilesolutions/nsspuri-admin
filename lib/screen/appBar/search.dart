@@ -2,13 +2,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:sdp/API/get_devotee.dart';
-import 'package:sdp/constant/pagination_value.dart';
 import 'package:sdp/constant/sangha_list.dart';
 import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
 import 'package:sdp/utilities/color_palette.dart';
+import 'package:sdp/utilities/network_helper.dart';
 
 class SearchDevotee extends StatefulWidget {
   SearchDevotee(
@@ -17,6 +17,7 @@ class SearchDevotee extends StatefulWidget {
       this.searchDasboardIndexNumber,
       this.searchBy,
       this.searchValue,
+      this.pageNumber,
       this.onFieldValueChanged,
       this.searchStatus,
       this.devoteeList,
@@ -26,6 +27,7 @@ class SearchDevotee extends StatefulWidget {
 
   int? searchDasboardIndexNumber = 0;
   int? dashboardindexNumber = 0;
+  int? pageNumber;
   String status;
   String? devoteeName;
   String? searchStatus;
@@ -55,11 +57,10 @@ class _SearchDevoteeState extends State<SearchDevotee> {
   String? trackSearchType;
   TextEditingController searchSanghaController = TextEditingController();
   final TextEditingController sdpSearchController = TextEditingController();
-  late int dataCountPerPage;
+  int dataCountPerPage = RemoteConfigHelper().getDataCountPerPage;
   @override
   void initState() {
     super.initState();
-    dataCountPerPage = RemoteConfigHelper().getDataCountPerPage;
     _selectedSearchType = widget.searchBy ?? "name";
     sdpSearchController.text = widget.searchValue ?? "";
   }
@@ -144,8 +145,13 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                           ? () async {
                               List<DevoteeModel> devoteeList = [];
                               await GetDevoteeAPI()
-                                  .searchDevotee(sdpSearchController.text,
-                                      "devoteeName", 1, 10)
+                                  .searchDevotee(
+                                sdpSearchController.text,
+                                "devoteeName",
+                                1,
+                                dataCountPerPage,
+                                isAscending: NetworkHelper().getNameAscending,
+                              )
                                   .then((response) {
                                 devoteeList.addAll(response["data"]);
                                 totalPages = response["totalPages"];
@@ -187,8 +193,9 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                                 .advanceSearchDevotee(
                               sdpSearchController.text,
                               _selectedSearchType.toString(),
-                              1,
+                              widget.pageNumber ?? 1,
                               dataCountPerPage,
+                              isAscending: NetworkHelper().getNameAscending,
                             )
                                 .then((response) {
                               devoteeList.addAll(response["data"]);
@@ -242,6 +249,7 @@ class _SearchDevoteeState extends State<SearchDevotee> {
                                   _selectedSearchType.toString(),
                                   1,
                                   dataCountPerPage,
+                                  isAscending: NetworkHelper().getNameAscending,
                                 )
                                     .then((response) {
                                   devoteeList.addAll(response["data"]);

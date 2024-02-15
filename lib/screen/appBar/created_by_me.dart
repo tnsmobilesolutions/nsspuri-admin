@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:sdp/API/get_devotee.dart';
+import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
 import 'package:sdp/utilities/network_helper.dart';
@@ -18,10 +19,13 @@ class _CreatedByMeState extends State<CreatedByMe> {
 
   Future<void> fetchDelegatesByMe() async {
     var currentUser = NetworkHelper().currentDevotee;
-    var allDevotees = await GetDevoteeAPI()
-        .devoteeListBycreatedById(currentUser?.devoteeId.toString() ?? "");
+    var allDevotees = await GetDevoteeAPI().devoteeListBycreatedById(
+      currentUser?.devoteeId.toString() ?? "",
+      1,
+      RemoteConfigHelper().getDataCountPerPage,
+    );
     if (allDevotees != null) {
-      print("all devotee by me length: ${allDevotees["data"].length}");
+      //print("all devotee by me length: ${allDevotees["data"].length}");
       setState(() {
         for (int i = 0; i < allDevotees["data"].length; i++) {
           allDevoteesCreatedByMe.add(allDevotees["data"][i]);

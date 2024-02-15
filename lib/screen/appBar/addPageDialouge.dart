@@ -180,6 +180,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'Approver',
     'PrasadScanner',
     "SecurityCheck",
+    "SecurityAndPrasadScan",
     "Viewer"
   ];
 
@@ -800,7 +801,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
           //color: Colors.white,
         ),
         height: 435,
-        width: 400,
+        width: 500,
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(0),
@@ -861,15 +862,12 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                 onChanged: onStatusChanged,
                                 underline: Container(
                                   decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.grey), // Border color
-                                    borderRadius: BorderRadius.circular(
-                                        30.0), // Border radius
+                                    border: Border.all(color: Colors.grey),
+                                    borderRadius: BorderRadius.circular(30.0),
                                   ),
                                 ),
                                 elevation: 16,
-                                style: const TextStyle(
-                                    color: Colors.black), // Dropdown text color
+                                style: const TextStyle(color: Colors.black),
                                 items: NetworkHelper()
                                             .getCurrentDevotee
                                             ?.role ==
@@ -928,17 +926,15 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                                       },
                                       underline: Container(
                                         decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color:
-                                                  Colors.grey), // Border color
-                                          borderRadius: BorderRadius.circular(
-                                              30.0), // Border radius
+                                          border:
+                                              Border.all(color: Colors.grey),
+                                          borderRadius:
+                                              BorderRadius.circular(30.0),
                                         ),
                                       ),
                                       elevation: 16,
-                                      style: const TextStyle(
-                                          color: Colors
-                                              .black), // Dropdown text color
+                                      style:
+                                          const TextStyle(color: Colors.black),
                                       items: roleList
                                           .map<DropdownMenuItem<String>>(
                                               (String value) {

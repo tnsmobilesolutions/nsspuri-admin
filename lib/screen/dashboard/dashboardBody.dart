@@ -12,7 +12,9 @@ import 'package:sdp/screen/dashboard/dashboard.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
 class DashboardBody extends StatefulWidget {
-  const DashboardBody({super.key});
+  const DashboardBody({super.key, this.onTap});
+
+  final void Function(List<String> dates)? onTap;
 
   @override
   State<DashboardBody> createState() => _DashboardBodyState();
@@ -66,6 +68,9 @@ class _DashboardBodyState extends State<DashboardBody> {
         setState(() {
           selectedDate1 = picked;
           ispressed = true;
+          NetworkHelper().setSelectedPrasadDate = DateFormat('yyyy-MM-dd')
+              .format(selectedDate1 as DateTime)
+              .toString();
         });
         await selectDateCount(
           DateFormat('yyyy-MM-dd').format(selectedDate1 as DateTime),
@@ -100,6 +105,9 @@ class _DashboardBodyState extends State<DashboardBody> {
         setState(() {
           selectedDate2 = picked;
           ispressed = true;
+          NetworkHelper().setSelectedPrasadDate = DateFormat('yyyy-MM-dd')
+              .format(selectedDate2 as DateTime)
+              .toString();
         });
         await selectDateCount(
           DateFormat('yyyy-MM-dd').format(selectedDate2 as DateTime),
@@ -133,6 +141,9 @@ class _DashboardBodyState extends State<DashboardBody> {
           picked != DateTime.parse(data[9].title ?? '')) {
         setState(() {
           selectedDate3 = picked;
+          NetworkHelper().setSelectedPrasadDate = DateFormat('yyyy-MM-dd')
+              .format(selectedDate3 as DateTime)
+              .toString();
           ispressed = true;
         });
         await selectDateCount(
@@ -168,15 +179,21 @@ class _DashboardBodyState extends State<DashboardBody> {
           emptyTitleData.add(dashboardData);
         } else if (dashboardData.title == data[9].title) {
           prasadCountData1.add(dashboardData);
-          print("prasadcountfor 1st : ${prasadCountData1[0].title}");
         } else if (dashboardData.title == data[10].title) {
           prasadCountData2.add(dashboardData);
         } else if (dashboardData.title == data[11].title) {
           prasadCountData3.add(dashboardData);
         }
       }
+      NetworkHelper().setSelectedPrasadDate =
+          prasadCountData1[0].title.toString();
+      NetworkHelper().setSelectedPrasadDate =
+          prasadCountData2[0].title.toString();
+      NetworkHelper().setSelectedPrasadDate =
+          prasadCountData3[0].title.toString();
+      print("network helper date: ${NetworkHelper().getSelectedPrasadDate}");
+      widget.onTap!(NetworkHelper().getSelectedPrasadDate);
     } catch (error) {
-      // Handle errors
       print("Error fetching data: $error");
     } finally {
       setState(() {

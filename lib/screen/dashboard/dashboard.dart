@@ -1,10 +1,11 @@
-// ignore_for_file: must_be_immutable, avoid_print
+// ignore_for_file: must_be_immutable, avoid_print, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/Login/EmailSignIn.dart';
 import 'package:sdp/constant/enums.dart';
 import 'package:sdp/firebase/firebase_auth_api.dart';
+import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
@@ -13,6 +14,7 @@ import 'package:sdp/screen/appBar/addPageDialouge.dart';
 import 'package:sdp/screen/appBar/leadingImage.dart';
 import 'package:sdp/screen/appBar/responsive_action_widget.dart';
 import 'package:sdp/screen/dashboard/change_time.dart';
+import 'package:sdp/screen/dashboard/coupon_timing.dart';
 import 'package:sdp/screen/dashboard/dashboardBody.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
@@ -23,6 +25,8 @@ extension MenuOptionExtension on MenuOption {
         return 'Home';
       case MenuOption.createdByMe:
         return 'Created By Me';
+      case MenuOption.prasadCoupon:
+        return 'Prasad Coupon';
       case MenuOption.create:
         return 'Create Delegate';
       case MenuOption.settings:
@@ -41,42 +45,51 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  List<String>? selectedPalia;
-
-  IconData _getIconForMenuOption(MenuOption option) {
-    switch (option) {
-      case MenuOption.home:
-        return Icons.home;
-      case MenuOption.createdByMe:
-        return Icons.card_membership_rounded;
-      case MenuOption.create:
-        return Icons.card_membership_rounded;
-      case MenuOption.settings:
-        return Icons.settings;
-      case MenuOption.logout:
-        return Icons.logout_rounded;
-    }
-  }
-
-  MenuOption? selectedMenu;
-
-  MenuOption option = MenuOption.create;
-
   List<DevoteeModel> allDevoteesCreatedByMe = [];
+  MenuOption option = MenuOption.create;
+  MenuOption? selectedMenu;
+  List<String>? selectedPalia, selectedDates;
+  int totalPages = 0, dataCount = 0, currentPage = 1;
 
   Future<void> fetchDelegatesByMe() async {
+    print("is ascending: ${NetworkHelper().getNameAscending}");
+    print("created by: ${NetworkHelper().currentDevotee}");
     var currentUser = NetworkHelper().currentDevotee;
-    var allDevotees = await GetDevoteeAPI()
-        .devoteeListBycreatedById(currentUser?.createdById.toString() ?? "");
+    var allDevotees = await GetDevoteeAPI().devoteeListBycreatedById(
+      currentUser?.createdById.toString() ?? "",
+      1,
+      RemoteConfigHelper().getDataCountPerPage,
+      isAscending: NetworkHelper().getNameAscending,
+    );
     if (allDevotees != null) {
-      print("all devotee by me length: ${allDevotees["data"].length}");
       setState(() {
         for (int i = 0; i < allDevotees["data"].length; i++) {
           allDevoteesCreatedByMe.add(allDevotees["data"][i]);
         }
+        totalPages = allDevotees["totalPages"];
+        dataCount = allDevotees["count"];
+        currentPage = allDevotees["currentPage"];
       });
+      print("created by me from dashboard: ${allDevoteesCreatedByMe.length}");
     } else {
       print("No delegates by me !");
+    }
+  }
+
+  IconData _getIconForMenuOption(MenuOption option) {
+    switch (option) {
+      case MenuOption.home:
+        return Icons.home_outlined;
+      case MenuOption.createdByMe:
+        return Icons.card_membership_rounded;
+      case MenuOption.prasadCoupon:
+        return Icons.confirmation_num_outlined;
+      case MenuOption.create:
+        return Icons.card_membership_rounded;
+      case MenuOption.settings:
+        return Icons.settings_outlined;
+      case MenuOption.logout:
+        return Icons.logout_rounded;
     }
   }
 
@@ -93,7 +106,11 @@ class _DashboardPageState extends State<DashboardPage> {
               toolbarHeight: 80,
               automaticallyImplyLeading: false,
               centerTitle: false,
-              title: const TitleAppBar(),
+              title: const Responsive(
+                desktop: TitleAppBar(),
+                tablet: TitleAppBar(),
+                mobile: TitleAppBarMobile(),
+              ),
               flexibleSpace: Padding(
                 padding: const EdgeInsets.only(right: 50),
                 child: Center(
@@ -112,7 +129,6 @@ class _DashboardPageState extends State<DashboardPage> {
                     switch (value) {
                       case MenuOption.home:
                         if (NetworkHelper().currentDevotee?.role != "User") {
-                          // change to hide home menu later for userdashboard
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -123,20 +139,35 @@ class _DashboardPageState extends State<DashboardPage> {
                         break;
                       case MenuOption.createdByMe:
                         await fetchDelegatesByMe();
-                        if (context.mounted) {
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) {
-                              return DevoteeListPage(
-                                pageFrom: "Dashboard",
-                                status: "allDevotee",
-                                devoteeList: allDevoteesCreatedByMe,
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return DevoteeListPage(
+                              pageFrom: "Dashboard",
+                              status: "allDevotee",
+                              devoteeList: allDevoteesCreatedByMe,
+                              totalPages: totalPages,
+                              currentPage: currentPage,
+                              dataCount: dataCount,
+                            );
+                          },
+                        ));
+                        break;
+                      case MenuOption.prasadCoupon:
+                        if (context.mounted &&
+                            NetworkHelper().currentDevotee?.role ==
+                                "SuperAdmin") {
+                          showDialog<void>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return CouponTiming(
+                                fromDashboard: true,
+                                selectedDates: selectedDates,
                               );
                             },
-                          ));
+                          );
                         }
                         break;
                       case MenuOption.create:
-                        // ignore: use_build_context_synchronously
                         showDialog<void>(
                           context: context,
                           builder: (BuildContext context) {
@@ -174,23 +205,24 @@ class _DashboardPageState extends State<DashboardPage> {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                  title: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text('Change Timing'),
-                                      IconButton(
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text('Change Timing'),
+                                    IconButton(
+                                        color: Colors.deepOrange,
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        icon: const Icon(
+                                          Icons.close,
                                           color: Colors.deepOrange,
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          icon: const Icon(
-                                            Icons.close,
-                                            color: Colors.deepOrange,
-                                          ))
-                                    ],
-                                  ),
-                                  content: UpdateTime());
+                                        ))
+                                  ],
+                                ),
+                                content: const UpdateTime(),
+                              );
                             },
                           );
                         }
@@ -257,18 +289,19 @@ class _DashboardPageState extends State<DashboardPage> {
                   }).toList(),
                 ),
               ],
-              // actions: [
-              //   AppbarActionButtonWidget(
-              //     pageFrom: "Dashboard",
-              //   )
-              // ],
             ),
             tablet: ResponsiveAppBar(),
             mobile: ResponsiveAppBar(),
           ),
         ),
-        body: const SafeArea(
-          child: DashboardBody(),
+        body: SafeArea(
+          child: DashboardBody(
+            onTap: (dates) {
+              setState(() {
+                selectedDates = dates;
+              });
+            },
+          ),
         ),
         //drawer: const AppDrawer(),
       ),
@@ -284,10 +317,11 @@ class ResponsiveAppBar extends StatefulWidget {
       this.searchValue,
       this.role,
       this.showClearButton});
-  String? searchValue;
-  String? searchBy;
+
   String? advanceStatus;
   String? role;
+  String? searchBy;
+  String? searchValue;
   bool? showClearButton;
 
   @override
@@ -295,25 +329,48 @@ class ResponsiveAppBar extends StatefulWidget {
 }
 
 class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
-  MenuOption? selectedMenu;
-
-  MenuOption option = MenuOption.create;
-
   List<DevoteeModel> allDevoteesCreatedByMe = [];
+  MenuOption option = MenuOption.create;
+  MenuOption? selectedMenu;
+  int totalPages = 0, dataCount = 0, currentPage = 1;
 
   Future<void> fetchDelegatesByMe() async {
     var currentUser = NetworkHelper().currentDevotee;
-    var allDevotees = await GetDevoteeAPI()
-        .devoteeListBycreatedById(currentUser?.createdById.toString() ?? "");
+    var allDevotees = await GetDevoteeAPI().devoteeListBycreatedById(
+      currentUser?.createdById.toString() ?? "",
+      1,
+      RemoteConfigHelper().getDataCountPerPage,
+      isAscending: NetworkHelper().getNameAscending,
+    );
     if (allDevotees != null) {
-      print("all devotee by me length: ${allDevotees["data"].length}");
       setState(() {
         for (int i = 0; i < allDevotees["data"].length; i++) {
           allDevoteesCreatedByMe.add(allDevotees["data"][i]);
         }
+        totalPages = allDevotees["totalPages"];
+        dataCount = allDevotees["count"];
+        currentPage = allDevotees["currentPage"];
       });
+      print("created by me from dashboard: ${allDevoteesCreatedByMe.length}");
     } else {
       print("No delegates by me !");
+    }
+  }
+
+  IconData _getIconForMenuOption(MenuOption option) {
+    switch (option) {
+      case MenuOption.home:
+        return Icons.home_outlined;
+      case MenuOption.createdByMe:
+        return Icons.card_membership_rounded;
+      case MenuOption.prasadCoupon:
+        return Icons.confirmation_num_outlined;
+      case MenuOption.create:
+        return Icons.card_membership_rounded;
+      case MenuOption.settings:
+        return Icons.settings_outlined;
+      case MenuOption.logout:
+        return Icons.logout_rounded;
     }
   }
 
@@ -346,20 +403,35 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
                 break;
               case MenuOption.createdByMe:
                 await fetchDelegatesByMe();
-                if (context.mounted) {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) {
-                      return DevoteeListPage(
-                        pageFrom: "Dashboard",
-                        status: "allDevotee",
-                        devoteeList: allDevoteesCreatedByMe,
-                      );
-                    },
-                  ));
-                }
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) {
+                    return DevoteeListPage(
+                      pageFrom: "Dashboard",
+                      status: "allDevotee",
+                      devoteeList: allDevoteesCreatedByMe,
+                      totalPages: totalPages,
+                      currentPage: currentPage,
+                      dataCount: dataCount,
+                    );
+                  },
+                ));
+                break;
+              case MenuOption.prasadCoupon:
+                await fetchDelegatesByMe();
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) {
+                    return DevoteeListPage(
+                      pageFrom: "Dashboard",
+                      status: "allDevotee",
+                      devoteeList: allDevoteesCreatedByMe,
+                      totalPages: totalPages,
+                      currentPage: currentPage,
+                      dataCount: dataCount,
+                    );
+                  },
+                ));
                 break;
               case MenuOption.create:
-                // ignore: use_build_context_synchronously
                 showDialog<void>(
                   context: context,
                   builder: (BuildContext context) {
@@ -489,70 +561,4 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
           : null,
     );
   }
-
-  IconData _getIconForMenuOption(MenuOption option) {
-    switch (option) {
-      case MenuOption.home:
-        return Icons.home;
-      case MenuOption.createdByMe:
-        return Icons.card_membership_rounded;
-      case MenuOption.create:
-        return Icons.card_membership_rounded;
-      case MenuOption.settings:
-        return Icons.settings;
-      case MenuOption.logout:
-        return Icons.logout_rounded;
-    }
-  }
 }
-
-// class AppDrawer extends StatelessWidget {
-//   const AppDrawer({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Drawer(
-//       child: ListView(
-//         padding: EdgeInsets.zero,
-//         children: <Widget>[
-//           const DrawerHeader(
-//             decoration: BoxDecoration(
-//               color: Colors.blue,
-//             ),
-//             child: Text(
-//               'App Drawer',
-//               style: TextStyle(
-//                 color: Colors.white,
-//                 fontSize: 24,
-//               ),
-//             ),
-//           ),
-//           ListTile(
-//             leading: const Icon(Icons.home),
-//             title: const Text('Home'),
-//             onTap: () {
-//               // Handle the Home option
-//               Navigator.pop(context); // Close the drawer
-//             },
-//           ),
-//           ListTile(
-//             leading: const Icon(Icons.settings),
-//             title: const Text('Create Delegate'),
-//             onTap: () {
-//               // Handle the Settings option
-//               Navigator.pop(context); // Close the drawer
-//             },
-//           ),
-//           ListTile(
-//             leading: const Icon(Icons.help),
-//             title: const Text('Logout'),
-//             onTap: () {
-//               // Handle the Help option
-//               Navigator.pop(context); // Close the drawer
-//             },
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }

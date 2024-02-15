@@ -85,27 +85,75 @@ class GetDevoteeAPI extends DioFuctionAPI {
   }
 
   Future<Map<String, dynamic>?> devoteeListBycreatedById(
-      String createdById) async {
+    String createdById,
+    int page,
+    int limit, {
+    bool? isAscending,
+  }) async {
     try {
-      final response = await getAPI("devoteeListBycreatedById/$createdById");
+      Map<String, dynamic> response;
+      if (isAscending == true) {
+        response = await getAPI(
+            "devoteeListBycreatedById/$createdById?page=$page&limit=$limit&name=ascending");
+        print(
+            "api end point (ascending): devoteeListBycreatedById/$createdById?page=$page&limit=$limit&name=ascending");
+      } else if (isAscending == false) {
+        response = await getAPI(
+            "devoteeListBycreatedById/$createdById?page=$page&limit=$limit&name=descending");
+        print(
+            "api end point (descending): devoteeListBycreatedById/$createdById?page=$page&limit=$limit&name=descending");
+      } else {
+        response = await getAPI(
+            "devoteeListBycreatedById/$createdById?page=$page&limit=$limit");
+        print(
+            "api end point (default): devoteeListBycreatedById/$createdById?page=$page&limit=$limit");
+      }
+
       List<DevoteeModel> devotees = [];
+
       final devoteelist = response["data"]["devoteeList"];
+
       devoteelist.forEach((devotee) {
         devotees.add(DevoteeModel.fromMap(devotee));
       });
-      // DevoteeModel devotee =
-      //     DevoteeModel.fromMap(response["data"]["devoteeList"][0]);
-      return {"statusCode": 200, "data": devotees};
+
+      final count = response["data"]["count"];
+      final totalPages = response["data"]["totalPages"];
+      final currentPage = response["data"]["page"];
+
+      return {
+        "statusCode": 200,
+        "data": devotees,
+        "count": count,
+        "totalPages": totalPages,
+        "currentPage": currentPage,
+      };
     } catch (e) {
       print(e);
-      return {"statusCode": 500, "data": null};
+      return {
+        "statusCode": 500,
+        "data": null,
+        "count": 0,
+        "totalPages": 0,
+        "currentPage": 1,
+      };
     }
   }
 
-  Future<Map<String, dynamic>?> allDevotee(int page, int limit) async {
+  Future<Map<String, dynamic>?> allDevotee(int page, int limit,
+      {bool? isAscending}) async {
     try {
+      Map<String, dynamic> response;
       List<DevoteeModel> devotees = [];
-      final response = await getAPI("devotee?page=$page&limit=$limit");
+      if (isAscending == true) {
+        response =
+            await getAPI("devotee?page=$page&limit=$limit&name=ascending");
+      } else if (isAscending == false) {
+        response =
+            await getAPI("devotee?page=$page&limit=$limit&name=descending");
+      } else {
+        response = await getAPI("devotee?page=$page&limit=$limit");
+      }
       final devoteelist = response["data"]["allDevotee"];
       final count = response["data"]["count"];
       final totalPages = response["data"]["totalPages"];
@@ -144,15 +192,28 @@ class GetDevoteeAPI extends DioFuctionAPI {
   }
 
   Future<Map<String, dynamic>> searchDevotee(
-      String query, String searchBy, int page, int limit) async {
+    String query,
+    String searchBy,
+    int page,
+    int limit, {
+    bool? isAscending,
+  }) async {
     try {
       Map<String, dynamic> response;
       List<DevoteeModel> devotees = [];
       if (searchBy == "devoteeName") {
         response = await getAPI("devotee/search?devoteeName=$query");
       } else {
-        response = await getAPI(
-            "devotee/search?status=$query&page=$page&limit=$limit");
+        if (isAscending == true) {
+          response = await getAPI(
+              "devotee/search?status=$query&page=$page&limit=$limit&name=ascending");
+        } else if (isAscending == false) {
+          response = await getAPI(
+              "devotee/search?status=$query&page=$page&limit=$limit&name=descending");
+        } else {
+          response = await getAPI(
+              "devotee/search?status=$query&page=$page&limit=$limit");
+        }
       }
       final devoteelist = response["data"]["searchDevotee"];
       devoteelist.forEach((devotee) {
@@ -181,8 +242,13 @@ class GetDevoteeAPI extends DioFuctionAPI {
   }
 
   Future<Map<String, dynamic>> advanceSearchDevotee(
-      String query, String searchBy, int page, int limit,
-      {String? status}) async {
+    String query,
+    String searchBy,
+    int page,
+    int limit, {
+    String? status,
+    bool? isAscending,
+  }) async {
     Future<String> customEncodeComponent(String query) async {
       return query.replaceAll('+', '%2B').replaceAll('-', '%2D');
     }
@@ -190,17 +256,29 @@ class GetDevoteeAPI extends DioFuctionAPI {
     try {
       List<DevoteeModel> devotees = [];
       String encodedQuery = await customEncodeComponent(query);
-      print("encodedQuery----- $encodedQuery");
       final Map<String, dynamic> response;
       if (status == null) {
-        response = await getAPI(
-            "devotee/advance-search?$searchBy=$encodedQuery&page=$page&limit=$limit");
-        //print("API URL = devotee/advance-search?$searchBy=$encodedQuery");
+        if (isAscending == true) {
+          response = await getAPI(
+              "devotee/advance-search?$searchBy=$encodedQuery&page=$page&limit=$limit&nameOrder=ascending");
+        } else if (isAscending == false) {
+          response = await getAPI(
+              "devotee/advance-search?$searchBy=$encodedQuery&page=$page&limit=$limit&nameOrder=descending");
+        } else {
+          response = await getAPI(
+              "devotee/advance-search?$searchBy=$encodedQuery&page=$page&limit=$limit");
+        }
       } else {
-        response = await getAPI(
-            "devotee/advance-search?$searchBy=$encodedQuery&advanceStatus=$status&page=$page&limit=$limit");
-        // print(
-        //     "API URL = devotee/advance-search?$searchBy=$encodedQuery&advanceStatus=$status");
+        if (isAscending == true) {
+          response = await getAPI(
+              "devotee/advance-search?$searchBy=$encodedQuery&advanceStatus=$status&page=$page&limit=$limit&nameOrder=ascending");
+        } else if (isAscending == false) {
+          response = await getAPI(
+              "devotee/advance-search?$searchBy=$encodedQuery&advanceStatus=$status&page=$page&limit=$limit&nameOrder=descending");
+        } else {
+          response = await getAPI(
+              "devotee/advance-search?$searchBy=$encodedQuery&advanceStatus=$status&page=$page&limit=$limit");
+        }
       }
 
       final devoteelist = response["data"]["searchDevotee"];
@@ -210,9 +288,6 @@ class GetDevoteeAPI extends DioFuctionAPI {
       final count = response["data"]["count"];
       final totalPages = response["data"]["totalPages"];
       final currentPage = response["data"]["page"];
-      // print("count: $count");
-      // print("totalPages: $totalPages");
-      // print("currentPage: $currentPage");
       return {
         "statusCode": 200,
         "data": devotees,
@@ -231,67 +306,23 @@ class GetDevoteeAPI extends DioFuctionAPI {
       };
     }
   }
-  // Future<Map<String, dynamic>> advanceSearchDevotee(
-  //   String query,
-  //   String searchBy,
-  //   int page,
-  //   int limit, {
-  //   String? status,
-  // }) async {
-  //   Future<String> customEncodeComponent(String query) async {
-  //     return query.replaceAll('+', '%2B').replaceAll('-', '%2D');
-  //   }
-
-  //   Map<String, dynamic> handleResponse(Map<String, dynamic> response) {
-  //     List<DevoteeModel> devotees = [];
-  //     final devoteeList = response["data"]["searchDevotee"];
-  //     devoteeList.forEach((devotee) {
-  //       devotees.add(DevoteeModel.fromMap(devotee));
-  //     });
-  //     final count = response["data"]["count"];
-  //     final totalPages = response["data"]["totalPages"];
-  //     final currentPage = response["data"]["page"];
-
-  //     return {
-  //       "statusCode": 200,
-  //       "data": devotees,
-  //       "count": count,
-  //       "totalPages": totalPages,
-  //       "currentPage": currentPage,
-  //     };
-  //   }
-
-  //   try {
-  //     String encodedQuery = await customEncodeComponent(query);
-  //     String apiUrl = "devotee/advance-search?$searchBy=$encodedQuery";
-
-  //     if (status != null) {
-  //       apiUrl += "&advanceStatus=$status";
-  //     }
-
-  //     apiUrl += "&page=$page&limit=$limit";
-
-  //     print("API URL = $apiUrl");
-
-  //     final Map<String, dynamic> response = await getAPI(apiUrl);
-  //     return handleResponse(response);
-  //   } catch (e) {
-  //     print(e);
-  //     return {
-  //       "statusCode": 500,
-  //       "data": null,
-  //       "count": 0,
-  //       "totalPages": 0,
-  //       "currentPage": 1,
-  //     };
-  //   }
-  // }
 
   Future<Map<String, dynamic>?> fetchAllSangha() async {
     try {
       final response = await getSanghaAPI("sangha");
       print('888888$response');
       return {"statusCode": 200, "data": response["data"]["allSangha"]};
+    } catch (e) {
+      print(e);
+      return {"statusCode": 500, "data": null};
+    }
+  }
+
+  Future<Map<String, dynamic>?> viewCoupon(int couponCode) async {
+    try {
+      final response = await getAPI("viewCoupon/$couponCode");
+      //print('888888$response');
+      return response;
     } catch (e) {
       print(e);
       return {"statusCode": 500, "data": null};

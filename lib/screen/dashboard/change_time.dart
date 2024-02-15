@@ -29,28 +29,7 @@ class _UpdateTimeState extends State<UpdateTime> {
   void initState() {
     super.initState();
     timingData();
-    // if (responseData != null) showTiming();
   }
-
-  // Future<void> _selectTime(
-  //   BuildContext context,
-  //   TextEditingController controller,
-  // ) async {
-  //   TimeOfDay? selectedTime = await showTimePicker(
-  //     context: context,
-  //     initialTime: TimeOfDay.now(),
-  //   );
-
-  //   if (selectedTime != null) {
-  //     String formattedTime = DateFormat('HH:mm').format(
-  //       DateTime(2022, 1, 1, selectedTime.hour, selectedTime.minute),
-  //     );
-
-  //     setState(() {
-  //       controller.text = formattedTime;
-  //     });
-  //   }
-  // }
 
   timingData() async {
     try {
@@ -77,7 +56,6 @@ class _UpdateTimeState extends State<UpdateTime> {
         ratraStartTime.text = responseData?["ratraStartTime"] ?? "";
         ratraEndTime.text = responseData?["ratraEndTime"] ?? "";
       });
-      //print("balya : ${balyaStartTime.text}");
     }
   }
 
