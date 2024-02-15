@@ -320,7 +320,7 @@ class GetDevoteeAPI extends DioFuctionAPI {
 
   Future<Map<String, dynamic>?> viewCoupon(int couponCode) async {
     try {
-      final response = await getSanghaAPI("viewCoupon/$couponCode");
+      final response = await getAPI("viewCoupon/$couponCode");
       //print('888888$response');
       return response;
     } catch (e) {

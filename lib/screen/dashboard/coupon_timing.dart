@@ -23,19 +23,28 @@ class CouponTiming extends StatefulWidget {
 }
 
 class _CouponTimingState extends State<CouponTiming> {
-  final couponCodeController = TextEditingController();
-  final firstDayBalya = TextEditingController();
-  final secondDayBalya = TextEditingController();
-  final thirdDayBalya = TextEditingController();
-  final firstDayMadhyanha = TextEditingController();
-  final secondDayMadhyanha = TextEditingController();
-  final thirdDayMadhyanha = TextEditingController();
-  final firstDayRatra = TextEditingController();
-  final secondDayRatra = TextEditingController();
-  final thirdDayRatra = TextEditingController();
+  TextEditingController couponCodeController = TextEditingController();
+  TextEditingController firstDayBalya = TextEditingController();
+  TextEditingController secondDayBalya = TextEditingController();
+  TextEditingController thirdDayBalya = TextEditingController();
+  TextEditingController firstDayMadhyanha = TextEditingController();
+  TextEditingController secondDayMadhyanha = TextEditingController();
+  TextEditingController thirdDayMadhyanha = TextEditingController();
+  TextEditingController firstDayRatra = TextEditingController();
+  TextEditingController secondDayRatra = TextEditingController();
+  TextEditingController thirdDayRatra = TextEditingController();
   List<String> allDates = [];
+  List<String> firstDayBalyaTiming = [],
+      firstDayMadhyanaTiming = [],
+      firstDayRatraTiming = [],
+      secondDayBalyaTiming = [],
+      secondDayMadhyanaTiming = [],
+      secondDayRatraTiming = [],
+      thirdDayBalyaTiming = [],
+      thirdDayMadhyanaTiming = [],
+      thirdDayRatraTiming = [];
   final formKey = GlobalKey<FormState>();
-  Map<String, dynamic>? responseData;
+  String buttonTitle = "Activate";
 
   @override
   void initState() {
@@ -117,6 +126,78 @@ class _CouponTimingState extends State<CouponTiming> {
         ),
       ),
     );
+  }
+
+  Future<void> fetchCouponData() async {
+    if (formKey.currentState?.validate() == true) {
+      showDialog(
+        context: context,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+
+      var response = await GetDevoteeAPI().viewCoupon(
+        int.tryParse(couponCodeController.text) ?? 0,
+      );
+
+      if (response?["data"]["existingCoupon"] != null) {
+        var data = response?["data"]["existingCoupon"];
+        setState(() {
+          List<CouponModel> allCoupons = [];
+          buttonTitle = "Update";
+          for (var coupon in data["couponPrasad"]) {
+            allCoupons.add(CouponModel.fromMap(coupon));
+          }
+          allDates.clear();
+          for (var coupon in allCoupons) {
+            allDates.add(coupon.date.toString());
+          }
+          firstDayBalya.text = allCoupons[0].balyaCount == 0
+              ? ""
+              : allCoupons[0].balyaCount.toString();
+          firstDayMadhyanha.text = allCoupons[0].madhyanaCount == 0
+              ? ""
+              : allCoupons[0].madhyanaCount.toString();
+          firstDayRatra.text = allCoupons[0].ratraCount == 0
+              ? ""
+              : allCoupons[0].ratraCount.toString();
+          secondDayBalya.text = allCoupons[1].balyaCount == 0
+              ? ""
+              : allCoupons[1].balyaCount.toString();
+          secondDayMadhyanha.text = allCoupons[1].madhyanaCount == 0
+              ? ""
+              : allCoupons[1].madhyanaCount.toString();
+          secondDayRatra.text = allCoupons[1].ratraCount == 0
+              ? ""
+              : allCoupons[1].ratraCount.toString();
+          thirdDayBalya.text = allCoupons[2].balyaCount == 0
+              ? ""
+              : allCoupons[2].balyaCount.toString();
+          thirdDayMadhyanha.text = allCoupons[2].madhyanaCount == 0
+              ? ""
+              : allCoupons[2].madhyanaCount.toString();
+          thirdDayRatra.text = allCoupons[2].ratraCount == 0
+              ? ""
+              : allCoupons[2].ratraCount.toString();
+          firstDayBalyaTiming = allCoupons[0].balyaTiming ?? [];
+          firstDayBalyaTiming = allCoupons[0].madhyanaTiming ?? [];
+          firstDayBalyaTiming = allCoupons[0].ratraTiming ?? [];
+          secondDayBalyaTiming = allCoupons[1].balyaTiming ?? [];
+          secondDayBalyaTiming = allCoupons[1].madhyanaTiming ?? [];
+          secondDayBalyaTiming = allCoupons[1].ratraTiming ?? [];
+          thirdDayBalyaTiming = allCoupons[2].balyaTiming ?? [];
+          thirdDayBalyaTiming = allCoupons[2].madhyanaTiming ?? [];
+          thirdDayBalyaTiming = allCoupons[2].ratraTiming ?? [];
+        });
+      } else {
+        setState(() {
+          buttonTitle = "Activate";
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("No active coupon found !")),
+        );
+      }
+      Navigator.pop(context);
+    }
   }
 
   Widget couponTable() {
@@ -201,6 +282,16 @@ class _CouponTimingState extends State<CouponTiming> {
                       inputFormatters: <TextInputFormatter>[
                         FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                       ],
+                      onChanged: (couponCode) {
+                        if (couponCode.isEmpty) {
+                          setState(() {
+                            buttonTitle = "Activate";
+                          });
+                        }
+                      },
+                      onFieldSubmitted: (value) async {
+                        await fetchCouponData();
+                      },
                       validator: (value) {
                         //RegExp numberRegex = RegExp(r'^\d{7}$');
                         if (value?.isEmpty == true) {
@@ -249,10 +340,7 @@ class _CouponTimingState extends State<CouponTiming> {
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5)))),
                     onPressed: () async {
-                      if (formKey.currentState?.validate() == true) {
-                        await GetDevoteeAPI().viewCoupon(
-                            int.tryParse(couponCodeController.text) ?? 0);
-                      }
+                      await fetchCouponData();
                     },
                     child: const Text(
                       "view",
@@ -289,50 +377,90 @@ class _CouponTimingState extends State<CouponTiming> {
                             borderRadius: BorderRadius.circular(5)))),
                 onPressed: () async {
                   if (formKey.currentState?.validate() == true) {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        });
                     List<CouponModel> couponList = [];
-                    for (int i = 0; i < allDates.length; i++) {
-                      int? balyaCount, madhyanaCount, ratraCount;
-                      switch (i) {
-                        case 0:
-                          balyaCount = int.tryParse(firstDayBalya.text);
-                          madhyanaCount = int.tryParse(firstDayMadhyanha.text);
-                          ratraCount = int.tryParse(firstDayRatra.text);
-                          break;
-                        case 1:
-                          balyaCount = int.tryParse(secondDayBalya.text);
-                          madhyanaCount = int.tryParse(secondDayMadhyanha.text);
-                          ratraCount = int.tryParse(secondDayRatra.text);
-                          break;
-                        case 2:
-                          balyaCount = int.tryParse(thirdDayBalya.text);
-                          madhyanaCount = int.tryParse(thirdDayMadhyanha.text);
-                          ratraCount = int.tryParse(thirdDayRatra.text);
-                          break;
-                        default:
-                          balyaCount = 0;
-                          break;
-                      }
-                      couponList.add(CouponModel(
-                        date: allDates[i],
-                        balyaCount: balyaCount ?? 0,
-                        madhyanaCount: madhyanaCount ?? 0,
-                        ratraCount: ratraCount ?? 0,
-                        balyaTiming: [],
-                        madhyanaTiming: [],
-                        ratraTiming: [],
-                      ));
-                    }
+                    // for (int i = 0; i < allDates.length; i++) {
+                    //   int? balyaCount, madhyanaCount, ratraCount;
+                    //   switch (i) {
+                    //     case 0:
+                    //       balyaCount = int.tryParse(firstDayBalya.text);
+                    //       madhyanaCount = int.tryParse(firstDayMadhyanha.text);
+                    //       ratraCount = int.tryParse(firstDayRatra.text);
+                    //       break;
+                    //     case 1:
+                    //       balyaCount = int.tryParse(secondDayBalya.text);
+                    //       madhyanaCount = int.tryParse(secondDayMadhyanha.text);
+                    //       ratraCount = int.tryParse(secondDayRatra.text);
+                    //       break;
+                    //     case 2:
+                    //       balyaCount = int.tryParse(thirdDayBalya.text);
+                    //       madhyanaCount = int.tryParse(thirdDayMadhyanha.text);
+                    //       ratraCount = int.tryParse(thirdDayRatra.text);
+                    //       break;
+                    //     default:
+                    //       balyaCount = 0;
+                    //       break;
+                    //   }
+                    //   couponList.add(CouponModel(
+                    //     date: allDates[i],
+                    //     balyaCount: balyaCount ?? 0,
+                    //     madhyanaCount: madhyanaCount ?? 0,
+                    //     ratraCount: ratraCount ?? 0,
+                    //     balyaTiming: [],
+                    //     madhyanaTiming: [],
+                    //     ratraTiming: [],
+                    //   ));
+                    // }
+
+                    couponList = [
+                      CouponModel(
+                        date: allDates[0],
+                        balyaCount: int.tryParse(firstDayBalya.text) ?? 0,
+                        madhyanaCount:
+                            int.tryParse(firstDayMadhyanha.text) ?? 0,
+                        ratraCount: int.tryParse(firstDayRatra.text) ?? 0,
+                        balyaTiming: firstDayBalyaTiming,
+                        madhyanaTiming: firstDayMadhyanaTiming,
+                        ratraTiming: firstDayRatraTiming,
+                      ),
+                      CouponModel(
+                        date: allDates[1],
+                        balyaCount: int.tryParse(secondDayBalya.text) ?? 0,
+                        madhyanaCount:
+                            int.tryParse(secondDayMadhyanha.text) ?? 0,
+                        ratraCount: int.tryParse(secondDayRatra.text) ?? 0,
+                        balyaTiming: secondDayBalyaTiming,
+                        madhyanaTiming: secondDayMadhyanaTiming,
+                        ratraTiming: secondDayRatraTiming,
+                      ),
+                      CouponModel(
+                        date: allDates[2],
+                        balyaCount: int.tryParse(thirdDayBalya.text) ?? 0,
+                        madhyanaCount:
+                            int.tryParse(thirdDayMadhyanha.text) ?? 0,
+                        ratraCount: int.tryParse(thirdDayRatra.text) ?? 0,
+                        balyaTiming: thirdDayBalyaTiming,
+                        madhyanaTiming: thirdDayMadhyanaTiming,
+                        ratraTiming: thirdDayRatraTiming,
+                      ),
+                    ];
 
                     await PutDevoteeAPI().createCoupon(couponList,
                         int.tryParse(couponCodeController.text) ?? 0);
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text("Coupon created successfully !")));
                     Navigator.pop(context);
+                    Navigator.pop(context);
                   }
                 },
-                child: const Text(
-                  "Activate",
-                  style: TextStyle(
+                child: Text(
+                  buttonTitle,
+                  style: const TextStyle(
                     fontSize: 20,
                     color: Colors.white,
                   ),

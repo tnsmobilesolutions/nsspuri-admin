@@ -39,19 +39,14 @@ class PutDevoteeAPI extends DioFuctionAPI {
 
   Future<Map<String, dynamic>> createCoupon(
       List<CouponModel> coupon, int couponCode) async {
-    List<Map<String, dynamic>> couponListToMap(List<CouponModel> coupons) {
-      return coupons.map((coupon) => coupon.toMap()).toList();
-    }
-
-    var encode = jsonEncode(couponListToMap(coupon));
-    var encodedData = {
+    var data = {
       "couponDevotee": true,
       "couponCode": couponCode,
-      "couponPrasad": encode,
+      "couponPrasad": coupon.map((coupon) => coupon.toMap()).toList(),
     };
-
+    var encodedData = jsonEncode(data);
     try {
-      //Map<String, dynamic> response = {};
+      // Map<String, dynamic> response = {};
       final response = await putAPI("createCoupon", encodedData);
       print("coupon encooded data - $encodedData");
       return response;
