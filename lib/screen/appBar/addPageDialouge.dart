@@ -87,6 +87,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
 
   TextEditingController cityController = TextEditingController();
   TextEditingController countryController = TextEditingController();
+  TextEditingController receivedByController = TextEditingController();
   String day = "", month = "", year = "";
   final decimalRegex = [
     FilteringTextInputFormatter.allow(RegExp(r'^[0-9]*\.?[0-9]*$')),
@@ -163,7 +164,9 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     }),
   ];
 
-  bool? parichayaPatraValue = false, shouldShowPranamiField = false;
+  bool? parichayaPatraValue = false,
+      shouldShowPranamiField = false,
+      shouldShowDeliveredField = false;
   XFile? pickImage;
   TextEditingController postalCodeController = TextEditingController();
   // TextEditingController ageController = TextEditingController();
@@ -182,7 +185,6 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     "SecurityCheck",
     "SecurityAndPrasadScan",
     "Viewer",
-    "Delivered"
   ];
 
   TextEditingController sanghaController = TextEditingController();
@@ -203,7 +205,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'withdrawn',
     'lost',
     'reissued',
-    "blacklisted"
+    "blacklisted",
+    "Delivered"
   ];
   int totalPages = 0, dataCount = 0, currentPage = 1;
 
@@ -275,18 +278,19 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     setState(() {
       selectedDevotee = devoteeData?["data"];
       if (selectedDevotee?.paidAmount != null) {
-        // if (selectedDevotee?.status == "paid" ||
-        //     selectedDevotee?.status == "printed" ||
-        //     selectedDevotee?.status == "withdrawn" ||
-        //     selectedDevotee?.status == "lost" ||
-        //     selectedDevotee?.status == "blacklisted") {
         shouldShowPranamiField = true;
-
         pranamiController.text = selectedDevotee?.paidAmount.toString() ?? "0";
-      } else {
-        shouldShowPranamiField = false;
-        pranamiController.text = "0";
       }
+      if (selectedDevotee?.status == "Delivered" ||
+          selectedDevotee?.receivedBy != null) {
+        shouldShowDeliveredField = true;
+        receivedByController.text = selectedDevotee?.receivedBy ?? "";
+      }
+      // else {
+      //   shouldShowPranamiField = false;
+      //   shouldShowDeliveredField = false;
+      //   pranamiController.text = "0";
+      // }
       if (devoteeData?["statusCode"] == 200) {
         if (selectedDevotee?.dob != null || selectedDevotee?.dob != "") {
           List<String> dateParts = selectedDevotee?.dob?.split('-') ?? [];
@@ -435,6 +439,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
   DevoteeModel buildDevoteeModel(String? profileURL) {
     String uniqueDevoteeId = const Uuid().v1();
     return DevoteeModel(
+        receivedBy: receivedByController.text,
         devoteeCode: selectedDevotee?.devoteeCode?.toInt() ?? 0,
         createdById: widget.title == "edit"
             ? selectedDevotee?.createdById
@@ -750,6 +755,10 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     setState(() {
       selectedStatus = status!;
       if (widget.title == "edit") {
+        if (status == "Delivered") {
+          shouldShowDeliveredField = true;
+          receivedByController.text = selectedDevotee?.name ?? "";
+        }
         if (selectedDevotee?.paidAmount != null && status == "dataSubmitted") {
           shouldShowPranamiField = true;
           pranamiController.text =
@@ -1000,6 +1009,33 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                       )
                     : const SizedBox(),
                 const SizedBox(height: 20),
+                shouldShowDeliveredField == true
+                    ? TextFormField(
+                        keyboardType: TextInputType.name,
+                        controller: receivedByController,
+                        onSaved: (newValue) => receivedByController,
+                        validator: (value) {
+                          if (shouldShowDeliveredField == true &&
+                              value?.isEmpty == true) {
+                            return "Please enter received By !";
+                          }
+
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          labelText: "Received By",
+                          labelStyle:
+                              TextStyle(color: Colors.grey[600], fontSize: 15),
+                          filled: true,
+                          floatingLabelBehavior: FloatingLabelBehavior.auto,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: const BorderSide(
+                                  width: 0, style: BorderStyle.solid)),
+                        ),
+                      )
+                    : const SizedBox(),
+                const SizedBox(height: 20),
                 shouldShowPranamiField == true
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1055,7 +1091,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                           ),
                         ],
                       )
-                    : SizedBox(
+                    : const SizedBox(
                         height: 0,
                         width: 0,
                       ),
