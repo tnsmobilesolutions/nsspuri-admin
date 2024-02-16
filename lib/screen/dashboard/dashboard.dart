@@ -153,9 +153,20 @@ class _DashboardPageState extends State<DashboardPage> {
                         ));
                         break;
                       case MenuOption.prasadCoupon:
-                        if (context.mounted &&
+                        bool showCoupon = NetworkHelper()
+                                    .currentDevotee
+                                    ?.role ==
+                                "PrasadScan" ||
                             NetworkHelper().currentDevotee?.role ==
-                                "SuperAdmin") {
+                                "SecurityScan" ||
+                            NetworkHelper().currentDevotee?.role ==
+                                "PrasadAndSecurityScan" ||
+                            NetworkHelper().currentDevotee?.role == "Admin" ||
+                            NetworkHelper().currentDevotee?.role ==
+                                "SuperAdmin";
+                        if (context.mounted &&
+                            showCoupon &&
+                            selectedDates != null) {
                           showDialog<void>(
                             context: context,
                             builder: (BuildContext context) {
@@ -278,11 +289,22 @@ class _DashboardPageState extends State<DashboardPage> {
                         children: [
                           Icon(
                             _getIconForMenuOption(option),
-                            color: Colors.deepOrange,
+                            color: option == MenuOption.prasadCoupon &&
+                                    selectedDates == null
+                                ? Colors.grey
+                                : Colors.deepOrange,
                             size: 20,
                           ),
                           const SizedBox(width: 10),
-                          Text(option.value),
+                          Text(
+                            option.value,
+                            style: TextStyle(
+                              color: option == MenuOption.prasadCoupon &&
+                                      selectedDates == null
+                                  ? Colors.grey
+                                  : Colors.black,
+                            ),
+                          ),
                         ],
                       ),
                     );

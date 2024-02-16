@@ -45,7 +45,7 @@ class _CouponTimingState extends State<CouponTiming> {
       thirdDayRatraTiming = [];
   final formKey = GlobalKey<FormState>();
   String buttonTitle = "Activate";
-
+  bool showErrorMessage = false;
   @override
   void initState() {
     super.initState();
@@ -147,37 +147,43 @@ class _CouponTimingState extends State<CouponTiming> {
           for (var coupon in data["couponPrasad"]) {
             allCoupons.add(CouponModel.fromMap(coupon));
           }
-          allDates.clear();
+          List<String> datesFromAPI = [];
           for (var coupon in allCoupons) {
-            allDates.add(coupon.date.toString());
+            datesFromAPI.add(coupon.date.toString());
           }
-          firstDayBalya.text = allCoupons[0].balyaCount == 0
-              ? ""
-              : allCoupons[0].balyaCount.toString();
-          firstDayMadhyanha.text = allCoupons[0].madhyanaCount == 0
-              ? ""
-              : allCoupons[0].madhyanaCount.toString();
-          firstDayRatra.text = allCoupons[0].ratraCount == 0
-              ? ""
-              : allCoupons[0].ratraCount.toString();
-          secondDayBalya.text = allCoupons[1].balyaCount == 0
-              ? ""
-              : allCoupons[1].balyaCount.toString();
-          secondDayMadhyanha.text = allCoupons[1].madhyanaCount == 0
-              ? ""
-              : allCoupons[1].madhyanaCount.toString();
-          secondDayRatra.text = allCoupons[1].ratraCount == 0
-              ? ""
-              : allCoupons[1].ratraCount.toString();
-          thirdDayBalya.text = allCoupons[2].balyaCount == 0
-              ? ""
-              : allCoupons[2].balyaCount.toString();
-          thirdDayMadhyanha.text = allCoupons[2].madhyanaCount == 0
-              ? ""
-              : allCoupons[2].madhyanaCount.toString();
-          thirdDayRatra.text = allCoupons[2].ratraCount == 0
-              ? ""
-              : allCoupons[2].ratraCount.toString();
+          if (datesFromAPI[0] == allDates[0]) {
+            firstDayBalya.text = allCoupons[0].balyaCount == 0
+                ? ""
+                : allCoupons[0].balyaCount.toString();
+            firstDayMadhyanha.text = allCoupons[0].madhyanaCount == 0
+                ? ""
+                : allCoupons[0].madhyanaCount.toString();
+            firstDayRatra.text = allCoupons[0].ratraCount == 0
+                ? ""
+                : allCoupons[0].ratraCount.toString();
+          }
+          if (datesFromAPI[1] == allDates[1]) {
+            secondDayBalya.text = allCoupons[1].balyaCount == 0
+                ? ""
+                : allCoupons[1].balyaCount.toString();
+            secondDayMadhyanha.text = allCoupons[1].madhyanaCount == 0
+                ? ""
+                : allCoupons[1].madhyanaCount.toString();
+            secondDayRatra.text = allCoupons[1].ratraCount == 0
+                ? ""
+                : allCoupons[1].ratraCount.toString();
+          }
+          if (datesFromAPI[2] == allDates[2]) {
+            thirdDayBalya.text = allCoupons[2].balyaCount == 0
+                ? ""
+                : allCoupons[2].balyaCount.toString();
+            thirdDayMadhyanha.text = allCoupons[2].madhyanaCount == 0
+                ? ""
+                : allCoupons[2].madhyanaCount.toString();
+            thirdDayRatra.text = allCoupons[2].ratraCount == 0
+                ? ""
+                : allCoupons[2].ratraCount.toString();
+          }
           firstDayBalyaTiming = allCoupons[0].balyaTiming ?? [];
           firstDayBalyaTiming = allCoupons[0].madhyanaTiming ?? [];
           firstDayBalyaTiming = allCoupons[0].ratraTiming ?? [];
@@ -191,10 +197,17 @@ class _CouponTimingState extends State<CouponTiming> {
       } else {
         setState(() {
           buttonTitle = "Activate";
+          showErrorMessage = true;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("No active coupon found !")),
-        );
+        Future.delayed(const Duration(seconds: 5), () {
+          setState(() {
+            showErrorMessage = false;
+          });
+        });
+
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(content: Text("No active coupon found !")),
+        // );
       }
       Navigator.pop(context);
     }
@@ -293,13 +306,9 @@ class _CouponTimingState extends State<CouponTiming> {
                         await fetchCouponData();
                       },
                       validator: (value) {
-                        //RegExp numberRegex = RegExp(r'^\d{7}$');
                         if (value?.isEmpty == true) {
                           return "Please enter coupon code !";
                         }
-                        // if (!numberRegex.hasMatch(value.toString())) {
-                        //   return "Please enter a valid code!";
-                        // }
                         return null;
                       },
                       decoration: InputDecoration(
@@ -353,6 +362,12 @@ class _CouponTimingState extends State<CouponTiming> {
                 ),
               ],
             ),
+            showErrorMessage
+                ? const Text(
+                    "No active coupon found !",
+                    style: TextStyle(color: Colors.deepOrange),
+                  )
+                : const SizedBox(),
             couponTable(),
           ],
         ),
@@ -384,38 +399,6 @@ class _CouponTimingState extends State<CouponTiming> {
                               child: CircularProgressIndicator());
                         });
                     List<CouponModel> couponList = [];
-                    // for (int i = 0; i < allDates.length; i++) {
-                    //   int? balyaCount, madhyanaCount, ratraCount;
-                    //   switch (i) {
-                    //     case 0:
-                    //       balyaCount = int.tryParse(firstDayBalya.text);
-                    //       madhyanaCount = int.tryParse(firstDayMadhyanha.text);
-                    //       ratraCount = int.tryParse(firstDayRatra.text);
-                    //       break;
-                    //     case 1:
-                    //       balyaCount = int.tryParse(secondDayBalya.text);
-                    //       madhyanaCount = int.tryParse(secondDayMadhyanha.text);
-                    //       ratraCount = int.tryParse(secondDayRatra.text);
-                    //       break;
-                    //     case 2:
-                    //       balyaCount = int.tryParse(thirdDayBalya.text);
-                    //       madhyanaCount = int.tryParse(thirdDayMadhyanha.text);
-                    //       ratraCount = int.tryParse(thirdDayRatra.text);
-                    //       break;
-                    //     default:
-                    //       balyaCount = 0;
-                    //       break;
-                    //   }
-                    //   couponList.add(CouponModel(
-                    //     date: allDates[i],
-                    //     balyaCount: balyaCount ?? 0,
-                    //     madhyanaCount: madhyanaCount ?? 0,
-                    //     ratraCount: ratraCount ?? 0,
-                    //     balyaTiming: [],
-                    //     madhyanaTiming: [],
-                    //     ratraTiming: [],
-                    //   ));
-                    // }
 
                     couponList = [
                       CouponModel(
