@@ -2,15 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/API/put_devotee.dart';
 import 'package:sdp/model/coupon_model.dart';
 import 'package:sdp/utilities/color_palette.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
-class CouponTiming extends StatefulWidget {
-  CouponTiming({
+class CreateCoupon extends StatefulWidget {
+  CreateCoupon({
     Key? key,
     this.selectedDates,
     required this.fromDashboard,
@@ -19,10 +18,10 @@ class CouponTiming extends StatefulWidget {
   bool fromDashboard;
 
   @override
-  _CouponTimingState createState() => _CouponTimingState();
+  _CreateCouponState createState() => _CreateCouponState();
 }
 
-class _CouponTimingState extends State<CouponTiming> {
+class _CreateCouponState extends State<CreateCoupon> {
   TextEditingController couponCodeController = TextEditingController();
   TextEditingController firstDayBalya = TextEditingController();
   TextEditingController secondDayBalya = TextEditingController();
@@ -257,30 +256,10 @@ class _CouponTimingState extends State<CouponTiming> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: AlertDialog(
-        icon: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            IconButton(
-                color: Colors.deepOrange,
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(
-                  Icons.close,
-                  color: Colors.deepOrange,
-                )),
-          ],
-        ),
         content: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Coupon No.",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -299,10 +278,20 @@ class _CouponTimingState extends State<CouponTiming> {
                         if (couponCode.isEmpty) {
                           setState(() {
                             buttonTitle = "Activate";
+                            showErrorMessage = false;
                           });
                         }
                       },
                       onFieldSubmitted: (value) async {
+                        firstDayBalya.clear();
+                        firstDayMadhyanha.clear();
+                        firstDayRatra.clear();
+                        secondDayBalya.clear();
+                        secondDayMadhyanha.clear();
+                        secondDayRatra.clear();
+                        thirdDayBalya.clear();
+                        thirdDayMadhyanha.clear();
+                        thirdDayRatra.clear();
                         await fetchCouponData();
                       },
                       validator: (value) {
@@ -349,6 +338,15 @@ class _CouponTimingState extends State<CouponTiming> {
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5)))),
                     onPressed: () async {
+                      firstDayBalya.clear();
+                      firstDayMadhyanha.clear();
+                      firstDayRatra.clear();
+                      secondDayBalya.clear();
+                      secondDayMadhyanha.clear();
+                      secondDayRatra.clear();
+                      thirdDayBalya.clear();
+                      thirdDayMadhyanha.clear();
+                      thirdDayRatra.clear();
                       await fetchCouponData();
                     },
                     child: const Text(
@@ -363,9 +361,14 @@ class _CouponTimingState extends State<CouponTiming> {
               ],
             ),
             showErrorMessage
-                ? const Text(
-                    "No active coupon found !",
-                    style: TextStyle(color: Colors.deepOrange),
+                ? const Row(
+                    children: [
+                      SizedBox(width: 20),
+                      Text(
+                        "No active coupon found !",
+                        style: TextStyle(color: Colors.deepOrange),
+                      ),
+                    ],
                   )
                 : const SizedBox(),
             couponTable(),

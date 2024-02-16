@@ -329,6 +329,16 @@ class GetDevoteeAPI extends DioFuctionAPI {
     }
   }
 
+  Future<Map<String, dynamic>?> viewAllCoupon() async {
+    try {
+      final response = await getAPI("viewAllCoupon");
+      return response;
+    } catch (e) {
+      print(e);
+      return {"statusCode": 500, "data": null};
+    }
+  }
+
   Future<List<SanghaModel>?> getAllSangha() async {
     List<SanghaModel>? sanghas = [];
     // WRITE THE CODE HERE TO FETCH ALL SANGHA AND RETURN THE LIST
