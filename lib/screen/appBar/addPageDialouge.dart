@@ -181,7 +181,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'PrasadScanner',
     "SecurityCheck",
     "SecurityAndPrasadScan",
-    "Viewer"
+    "Viewer",
+    "Delivered"
   ];
 
   TextEditingController sanghaController = TextEditingController();
