@@ -166,7 +166,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
 
   bool? parichayaPatraValue = false,
       shouldShowPranamiField = false,
-      shouldShowDeliveredField = false;
+      shouldShowdeliveredField = false;
   XFile? pickImage;
   TextEditingController postalCodeController = TextEditingController();
   // TextEditingController ageController = TextEditingController();
@@ -206,7 +206,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     'lost',
     'reissued',
     "blacklisted",
-    "Delivered"
+    "delivered"
   ];
   int totalPages = 0, dataCount = 0, currentPage = 1;
 
@@ -281,14 +281,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
         shouldShowPranamiField = true;
         pranamiController.text = selectedDevotee?.paidAmount.toString() ?? "0";
       }
-      if (selectedDevotee?.status == "Delivered" ||
+      if (selectedDevotee?.status == "delivered" ||
           selectedDevotee?.receivedBy != null) {
-        shouldShowDeliveredField = true;
+        shouldShowdeliveredField = true;
         receivedByController.text = selectedDevotee?.receivedBy ?? "";
       }
       // else {
       //   shouldShowPranamiField = false;
-      //   shouldShowDeliveredField = false;
+      //   shouldShowdeliveredField = false;
       //   pranamiController.text = "0";
       // }
       if (devoteeData?["statusCode"] == 200) {
@@ -755,8 +755,8 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
     setState(() {
       selectedStatus = status!;
       if (widget.title == "edit") {
-        if (status == "Delivered") {
-          shouldShowDeliveredField = true;
+        if (status == "delivered") {
+          shouldShowdeliveredField = true;
           receivedByController.text = selectedDevotee?.name ?? "";
         }
         if (selectedDevotee?.paidAmount != null && status == "dataSubmitted") {
@@ -1009,13 +1009,13 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                       )
                     : const SizedBox(),
                 const SizedBox(height: 20),
-                shouldShowDeliveredField == true
+                shouldShowdeliveredField == true
                     ? TextFormField(
                         keyboardType: TextInputType.name,
                         controller: receivedByController,
                         onSaved: (newValue) => receivedByController,
                         validator: (value) {
-                          if (shouldShowDeliveredField == true &&
+                          if (shouldShowdeliveredField == true &&
                               value?.isEmpty == true) {
                             return "Please enter received By !";
                           }
