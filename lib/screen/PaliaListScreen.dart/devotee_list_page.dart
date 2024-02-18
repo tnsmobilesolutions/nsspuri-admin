@@ -13,8 +13,9 @@ import 'package:sdp/screen/appBar/addPageDialouge.dart';
 import 'package:sdp/screen/appBar/leadingImage.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_body_page.dart';
 import 'package:sdp/screen/dashboard/change_time.dart';
-import 'package:sdp/screen/dashboard/coupon_timing.dart';
+import 'package:sdp/screen/dashboard/create_coupon.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
+import 'package:sdp/screen/dashboard/prasad_coupon.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
 class DevoteeListPage extends StatefulWidget {
@@ -162,17 +163,42 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
                           ));
                         }
                         break;
+
                       case MenuOption.prasadCoupon:
-                        if (context.mounted &&
+                        bool showCoupon = NetworkHelper()
+                                    .currentDevotee
+                                    ?.role ==
+                                "PrasadScan" ||
                             NetworkHelper().currentDevotee?.role ==
-                                "SuperAdmin") {
-                          showDialog<void>(
+                                "SecurityScan" ||
+                            NetworkHelper().currentDevotee?.role ==
+                                "PrasadAndSecurityScan" ||
+                            NetworkHelper().currentDevotee?.role == "Admin" ||
+                            NetworkHelper().currentDevotee?.role ==
+                                "SuperAdmin";
+                        if (context.mounted && showCoupon) {
+                          showDialog<String>(
                             context: context,
-                            builder: (BuildContext context) {
-                              return CouponTiming(
+                            builder: (BuildContext context) => AlertDialog(
+                              backgroundColor: Colors.white,
+                              icon: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  IconButton(
+                                      color: Colors.deepOrange,
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      icon: const Icon(
+                                        Icons.close,
+                                        color: Colors.deepOrange,
+                                      )),
+                                ],
+                              ),
+                              content: PrasadCoupon(
                                 fromDashboard: false,
-                              );
-                            },
+                              ),
+                            ),
                           );
                         }
                         break;

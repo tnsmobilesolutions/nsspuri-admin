@@ -14,8 +14,8 @@ import 'package:sdp/screen/appBar/addPageDialouge.dart';
 import 'package:sdp/screen/appBar/leadingImage.dart';
 import 'package:sdp/screen/appBar/responsive_action_widget.dart';
 import 'package:sdp/screen/dashboard/change_time.dart';
-import 'package:sdp/screen/dashboard/coupon_timing.dart';
 import 'package:sdp/screen/dashboard/dashboardBody.dart';
+import 'package:sdp/screen/dashboard/prasad_coupon.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
 extension MenuOptionExtension on MenuOption {
@@ -153,17 +153,43 @@ class _DashboardPageState extends State<DashboardPage> {
                         ));
                         break;
                       case MenuOption.prasadCoupon:
-                        if (context.mounted &&
+                        bool showCoupon = NetworkHelper()
+                                    .currentDevotee
+                                    ?.role ==
+                                "PrasadScan" ||
                             NetworkHelper().currentDevotee?.role ==
-                                "SuperAdmin") {
-                          showDialog<void>(
+                                "SecurityScan" ||
+                            NetworkHelper().currentDevotee?.role ==
+                                "PrasadAndSecurityScan" ||
+                            NetworkHelper().currentDevotee?.role == "Admin" ||
+                            NetworkHelper().currentDevotee?.role ==
+                                "SuperAdmin";
+                        if (context.mounted &&
+                            showCoupon &&
+                            selectedDates != null) {
+                          showDialog<String>(
                             context: context,
-                            builder: (BuildContext context) {
-                              return CouponTiming(
+                            builder: (BuildContext context) => AlertDialog(
+                              backgroundColor: Colors.white,
+                              icon: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  IconButton(
+                                      color: Colors.deepOrange,
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      icon: const Icon(
+                                        Icons.close,
+                                        color: Colors.deepOrange,
+                                      )),
+                                ],
+                              ),
+                              content: PrasadCoupon(
                                 fromDashboard: true,
                                 selectedDates: selectedDates,
-                              );
-                            },
+                              ),
+                            ),
                           );
                         }
                         break;
@@ -278,11 +304,22 @@ class _DashboardPageState extends State<DashboardPage> {
                         children: [
                           Icon(
                             _getIconForMenuOption(option),
-                            color: Colors.deepOrange,
+                            color: option == MenuOption.prasadCoupon &&
+                                    selectedDates == null
+                                ? Colors.grey
+                                : Colors.deepOrange,
                             size: 20,
                           ),
                           const SizedBox(width: 10),
-                          Text(option.value),
+                          Text(
+                            option.value,
+                            style: TextStyle(
+                              color: option == MenuOption.prasadCoupon &&
+                                      selectedDates == null
+                                  ? Colors.grey
+                                  : Colors.black,
+                            ),
+                          ),
                         ],
                       ),
                     );
