@@ -57,7 +57,7 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
   Future<void> fetchDelegatesByMe() async {
     var currentUser = NetworkHelper().currentDevotee;
     var allDevotees = await GetDevoteeAPI().devoteeListBycreatedById(
-      currentUser?.createdById.toString() ?? "",
+      currentUser?.devoteeId.toString() ?? "",
       1,
       RemoteConfigHelper().getDataCountPerPage,
       isAscending: NetworkHelper().getNameAscending,

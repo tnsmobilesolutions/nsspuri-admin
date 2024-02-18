@@ -56,7 +56,7 @@ class _DashboardPageState extends State<DashboardPage> {
     print("created by: ${NetworkHelper().currentDevotee}");
     var currentUser = NetworkHelper().currentDevotee;
     var allDevotees = await GetDevoteeAPI().devoteeListBycreatedById(
-      currentUser?.createdById.toString() ?? "",
+      currentUser?.devoteeId.toString() ?? "",
       1,
       RemoteConfigHelper().getDataCountPerPage,
       isAscending: NetworkHelper().getNameAscending,
@@ -374,7 +374,7 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
   Future<void> fetchDelegatesByMe() async {
     var currentUser = NetworkHelper().currentDevotee;
     var allDevotees = await GetDevoteeAPI().devoteeListBycreatedById(
-      currentUser?.createdById.toString() ?? "",
+      currentUser?.devoteeId.toString() ?? "",
       1,
       RemoteConfigHelper().getDataCountPerPage,
       isAscending: NetworkHelper().getNameAscending,

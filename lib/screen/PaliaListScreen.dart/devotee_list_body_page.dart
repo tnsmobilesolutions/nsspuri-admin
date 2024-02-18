@@ -145,7 +145,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
     Map<String, dynamic>? allDevotee;
 
     allDevotee = await GetDevoteeAPI().devoteeListBycreatedById(
-        currentUser?.createdById.toString() ?? "", page, dataCountPerPage);
+        currentUser?.devoteeId.toString() ?? "", page, dataCountPerPage);
     if (allDevotee != null) {
       print("created by me: ${allDevotee.length}");
       allDevotees.clear();
@@ -411,7 +411,8 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                           return const Icon(Icons.error);
                         },
                       )
-                    : Image(image: AssetImage('assets/images/profile.jpeg')),
+                    : const Image(
+                        image: AssetImage('assets/images/profile.jpeg')),
               )),
               DataCell(
                 Column(
@@ -768,7 +769,12 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                         currentPage: currentPage,
                         totalPages: totalPages,
                         fetchAllDevotee: (page) {
-                          if (widget.devoteeList != null) {
+                          // if (widget.devoteeList != null) {
+                          //   fetchDelegatesByMe(page);
+                          // } else {
+                          //   fetchAllDevotee(page);
+                          // }
+                          if (widget.createdByMe == true) {
                             fetchDelegatesByMe(page);
                           } else {
                             fetchAllDevotee(page);
