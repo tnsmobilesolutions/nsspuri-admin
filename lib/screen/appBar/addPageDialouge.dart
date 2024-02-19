@@ -282,7 +282,7 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
         pranamiController.text = selectedDevotee?.paidAmount.toString() ?? "0";
       }
       if (selectedDevotee?.status == "delivered" ||
-          selectedDevotee?.receivedBy != null) {
+          selectedDevotee?.receivedBy != null || selectedDevotee?.receivedBy != "") {
         shouldShowdeliveredField = true;
         receivedByController.text = selectedDevotee?.receivedBy ?? "";
       }
@@ -1014,14 +1014,14 @@ class _AddPageDilougeState extends State<AddPageDilouge> {
                         keyboardType: TextInputType.name,
                         controller: receivedByController,
                         onSaved: (newValue) => receivedByController,
-                        validator: (value) {
-                          if (shouldShowdeliveredField == true &&
-                              value?.isEmpty == true) {
-                            return "Please enter received By !";
-                          }
+                        // validator: (value) {
+                        //   if (shouldShowdeliveredField == true &&
+                        //       value?.isEmpty == true) {
+                        //     return "Please enter received By !";
+                        //   }
 
-                          return null;
-                        },
+                        //   return null;
+                        // },
                         decoration: InputDecoration(
                           labelText: "Received By",
                           labelStyle:
