@@ -234,6 +234,294 @@ class _DashboardBodyState extends State<DashboardBody> {
     });
   }
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     body: isLoading == true
+  //         ? const Center(
+  //             child: CircularProgressIndicator(
+  //               color: Colors.blue,
+  //             ),
+  //           )
+  //         : SingleChildScrollView(
+  //             scrollDirection: Axis.vertical,
+  //             child: Padding(
+  //               padding: const EdgeInsets.all(5.0),
+  //               child: SizedBox(
+  //                 height: MediaQuery.of(context).size.height,
+  //                 width: MediaQuery.of(context).size.width,
+  //                 child: Column(
+  //                   children: [
+  //                     Expanded(
+  //                         child: ListView.builder(
+  //                       scrollDirection: Axis.horizontal,
+  //                       itemCount: emptyTitleData.length,
+  //                       itemBuilder: (BuildContext context, int index) {
+  //                         return Padding(
+  //                             padding: const EdgeInsets.only(right: 8.0),
+  //                             child: InkWell(
+  //                               highlightColor:
+  //                                   const Color.fromARGB(255, 0, 0, 0),
+  //                               onTap:
+  //                                   (NetworkHelper().getCurrentDevotee?.role ==
+  //                                                   "Approver" &&
+  //                                               (index != 1) ||
+  //                                           NetworkHelper()
+  //                                                   .getCurrentDevotee
+  //                                                   ?.role ==
+  //                                               "Viewer")
+  //                                       ? null
+  //                                       : () {
+  //                                           Navigator.push(context,
+  //                                               MaterialPageRoute(
+  //                                             builder: (context) {
+  //                                               return DevoteeListPage(
+  //                                                 pageFrom: "Dashboard",
+  //                                                 status: emptyTitleData[index]
+  //                                                         .status ??
+  //                                                     "",
+  //                                               );
+  //                                             },
+  //                                           ));
+  //                                         },
+  //                               child: Card(
+  //                                   color: (NetworkHelper()
+  //                                                       .getCurrentDevotee
+  //                                                       ?.role ==
+  //                                                   "Approver" &&
+  //                                               (index != 1) ||
+  //                                           NetworkHelper()
+  //                                                   .getCurrentDevotee
+  //                                                   ?.role ==
+  //                                               "Viewer")
+  //                                       ? const Color.fromARGB(
+  //                                           255, 216, 216, 216)
+  //                                       : Colors.yellowAccent,
+  //                                   child: DashBoardData(
+  //                                       dashBoardDevoteeData:
+  //                                           emptyTitleData[index])),
+  //                             ));
+  //                       },
+  //                     )),
+  //                     Row(
+  //                       mainAxisAlignment: MainAxisAlignment.start,
+  //                       children: [
+  //                         NetworkHelper().getCurrentDevotee?.role ==
+  //                                 "SuperAdmin"
+  //                             ? ElevatedButton(
+  //                                 onPressed: () => _selectToday(context),
+  //                                 style: ElevatedButton.styleFrom(
+  //                                   backgroundColor:
+  //                                       Colors.yellowAccent, // Background color
+  //                                   foregroundColor: Colors.black, // Text color
+  //                                   shape: RoundedRectangleBorder(
+  //                                     borderRadius: BorderRadius.circular(10.0),
+  //                                   ),
+  //                                 ),
+  //                                 child: const Text(
+  //                                   "Select Date",
+  //                                   style:
+  //                                       TextStyle(fontWeight: FontWeight.bold),
+  //                                 ),
+  //                               )
+  //                             : const SizedBox(),
+  //                         const SizedBox(width: 10),
+  //                         Text(
+  //                           "${prasadCountData1[0].title}",
+  //                           style: const TextStyle(
+  //                               fontSize: 18,
+  //                               color: Colors.black,
+  //                               fontWeight: FontWeight.bold),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                     const Divider(thickness: 1),
+  //                     Expanded(
+  //                       child: ListView.builder(
+  //                         scrollDirection: Axis.horizontal,
+  //                         itemCount: prasadCountData1.length,
+  //                         itemBuilder: (BuildContext context, int index) {
+  //                           return Padding(
+  //                             padding: const EdgeInsets.all(
+  //                                 5.0), // Adjust spacing between items
+  //                             child: Card(
+  //                               color: Colors.yellowAccent,
+  //                               child: SizedBox(
+  //                                 height: 500,
+  //                                 width: 400,
+  //                                 child: DashBoardPrasadData(
+  //                                     dashBoardDevoteeData:
+  //                                         prasadCountData1[index]),
+  //                               ),
+  //                             ),
+  //                           );
+  //                         },
+  //                       ),
+  //                     ),
+  //                     Row(
+  //                       children: [
+  //                         NetworkHelper().getCurrentDevotee?.role ==
+  //                                 "SuperAdmin"
+  //                             ? ElevatedButton(
+  //                                 onPressed: () => _selectYesterday(context),
+  //                                 style: ElevatedButton.styleFrom(
+  //                                   backgroundColor:
+  //                                       Colors.yellowAccent, // Background color
+  //                                   foregroundColor: Colors.black, // Text color
+  //                                   shape: RoundedRectangleBorder(
+  //                                     borderRadius: BorderRadius.circular(10.0),
+  //                                   ),
+  //                                 ),
+  //                                 child: const Text(
+  //                                   "Select Date",
+  //                                   style:
+  //                                       TextStyle(fontWeight: FontWeight.bold),
+  //                                 ),
+  //                               )
+  //                             : const SizedBox(),
+  //                         const SizedBox(width: 10),
+  //                         Text(
+  //                           "${prasadCountData2[0].title}",
+  //                           style: const TextStyle(
+  //                               fontSize: 18, fontWeight: FontWeight.bold),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                     const Divider(thickness: 1),
+  //                     Expanded(
+  //                         child: ListView.builder(
+  //                       scrollDirection: Axis.horizontal,
+  //                       itemCount: prasadCountData2.length,
+  //                       itemBuilder: (BuildContext context, int index) {
+  //                         return Padding(
+  //                             padding: const EdgeInsets.only(
+  //                                 right: 8.0), // Adjust spacing between items
+  //                             child: InkWell(
+  //                               highlightColor:
+  //                                   const Color.fromARGB(255, 0, 0, 0),
+  //                               onTap: null,
+  //                               child: Card(
+  //                                   color: Colors.yellowAccent,
+  //                                   child: DashBoardPrasadData(
+  //                                       dashBoardDevoteeData:
+  //                                           prasadCountData2[index])),
+  //                             ));
+  //                       },
+  //                     )),
+  //                     Row(
+  //                       children: [
+  //                         NetworkHelper().getCurrentDevotee?.role ==
+  //                                 "SuperAdmin"
+  //                             ? ElevatedButton(
+  //                                 onPressed: () =>
+  //                                     _selectDayBeforeYesterday(context),
+  //                                 style: ElevatedButton.styleFrom(
+  //                                   backgroundColor:
+  //                                       Colors.yellowAccent, // Background color
+  //                                   foregroundColor: Colors.black, // Text color
+  //                                   shape: RoundedRectangleBorder(
+  //                                     borderRadius: BorderRadius.circular(10.0),
+  //                                   ),
+  //                                 ),
+  //                                 child: const Text(
+  //                                   "Select Date",
+  //                                   style:
+  //                                       TextStyle(fontWeight: FontWeight.bold),
+  //                                 ),
+  //                               )
+  //                             : const SizedBox(),
+  //                         const SizedBox(width: 10),
+  //                         Text(
+  //                           "${prasadCountData3[0].title}",
+  //                           style: const TextStyle(
+  //                               fontSize: 18, fontWeight: FontWeight.bold),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                     const Divider(thickness: 1),
+  //                     Expanded(
+  //                         child: ListView.builder(
+  //                       scrollDirection: Axis.horizontal,
+  //                       itemCount: prasadCountData3.length,
+  //                       itemBuilder: (BuildContext context, int index) {
+  //                         return Padding(
+  //                             padding: const EdgeInsets.only(
+  //                                 right: 8.0), // Adjust spacing between items
+  //                             child: InkWell(
+  //                               highlightColor:
+  //                                   const Color.fromARGB(255, 0, 0, 0),
+  //                               onTap: null,
+  //                               child: Card(
+  //                                   color: Colors.yellowAccent,
+  //                                   child: DashBoardPrasadData(
+  //                                       dashBoardDevoteeData:
+  //                                           prasadCountData3[index])),
+  //                             ));
+  //                       },
+  //                     )),
+  //                     ispressed == true
+  //                         ? ElevatedButton(
+  //                             style: ElevatedButton.styleFrom(
+  //                               backgroundColor: Colors.deepOrange,
+  //                               foregroundColor: Colors.white,
+  //                               shape: RoundedRectangleBorder(
+  //                                 borderRadius: BorderRadius.circular(10.0),
+  //                               ),
+  //                             ),
+  //                             onPressed: () async {
+  //                               UpadateTimeModel updateDate = UpadateTimeModel(
+  //                                 balyaStartTime:
+  //                                     responseData?["balyaStartTime"],
+  //                                 balyaEndTime: responseData?["balyaEndTime"],
+  //                                 madhyanaStartTime:
+  //                                     responseData?["madhyanaStartTime"],
+  //                                 madhyanaEndTime:
+  //                                     responseData?["madhyanaEndTime"],
+  //                                 ratraStartTime:
+  //                                     responseData?["ratraStartTime"],
+  //                                 ratraEndTime: responseData?["ratraEndTime"],
+  //                                 prasadFirstDate: selectedDate1 != null
+  //                                     ? DateFormat('yyyy-MM-dd')
+  //                                         .format(selectedDate1 as DateTime)
+  //                                     : prasadCountData1[0].title,
+  //                                 prasadSecondDate: selectedDate2 != null
+  //                                     ? DateFormat('yyyy-MM-dd')
+  //                                         .format(selectedDate2 as DateTime)
+  //                                     : prasadCountData2[0].title,
+  //                                 prasadThirdDate: selectedDate3 != null
+  //                                     ? DateFormat('yyyy-MM-dd')
+  //                                         .format(selectedDate3 as DateTime)
+  //                                     : prasadCountData3[0].title,
+  //                               );
+
+  //                               //print("query : $updateDate");
+
+  //                               await PutDevoteeAPI().updateTiming(updateDate);
+
+  //                               ScaffoldMessenger.of(context).showSnackBar(
+  //                                 const SnackBar(
+  //                                   content:
+  //                                       Text('Date selected successfully!'),
+  //                                   duration: Duration(seconds: 2),
+  //                                 ),
+  //                               );
+
+  //                               Navigator.push(
+  //                                 context,
+  //                                 MaterialPageRoute(
+  //                                     builder: (context) => DashboardPage()),
+  //                               );
+  //                             },
+  //                             child: const Text("Confirm"),
+  //                           )
+  //                         : const SizedBox()
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //   );
+  // }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -247,13 +535,11 @@ class _DashboardBodyState extends State<DashboardBody> {
               scrollDirection: Axis.vertical,
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  child: Column(
-                    children: [
-                      Expanded(
-                          child: ListView.builder(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 250,
+                      child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: emptyTitleData.length,
                         itemBuilder: (BuildContext context, int index) {
@@ -302,92 +588,92 @@ class _DashboardBodyState extends State<DashboardBody> {
                                             emptyTitleData[index])),
                               ));
                         },
-                      )),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          NetworkHelper().getCurrentDevotee?.role ==
-                                  "SuperAdmin"
-                              ? ElevatedButton(
-                                  onPressed: () => _selectToday(context),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Colors.yellowAccent, // Background color
-                                    foregroundColor: Colors.black, // Text color
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                  ),
-                                  child: const Text(
-                                    "Select Date",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                )
-                              : const SizedBox(),
-                          const SizedBox(width: 10),
-                          Text(
-                            "${prasadCountData1[0].title}",
-                            style: const TextStyle(
-                                fontSize: 18,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
                       ),
-                      const Divider(thickness: 1),
-                      Expanded(
-                          child: ListView.builder(
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        NetworkHelper().getCurrentDevotee?.role == "SuperAdmin"
+                            ? ElevatedButton(
+                                onPressed: () => _selectToday(context),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Colors.yellowAccent, // Background color
+                                  foregroundColor: Colors.black, // Text color
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                ),
+                                child: const Text(
+                                  "Select Date",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              )
+                            : const SizedBox(),
+                        const SizedBox(width: 10),
+                        Text(
+                          "${prasadCountData1[0].title}",
+                          style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    const Divider(thickness: 1),
+                    SizedBox(
+                      height: 250,
+                      child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: prasadCountData1.length,
                         itemBuilder: (BuildContext context, int index) {
                           return Padding(
-                              padding: const EdgeInsets.all(
-                                  5.0), // Adjust spacing between items
-                              child: InkWell(
-                                highlightColor:
-                                    const Color.fromARGB(255, 0, 0, 0),
-                                onTap: null,
-                                child: Card(
-                                    color: Colors.yellowAccent,
-                                    child: DashBoardData(
-                                        dashBoardDevoteeData:
-                                            prasadCountData1[index])),
-                              ));
+                            padding: const EdgeInsets.all(
+                                5.0), // Adjust spacing between items
+                            child: Card(
+                              color: Colors.yellowAccent,
+                              child: SizedBox(
+                                width: 230,
+                                child: DashBoardPrasadData(
+                                    dashBoardDevoteeData:
+                                        prasadCountData1[index]),
+                              ),
+                            ),
+                          );
                         },
-                      )),
-                      Row(
-                        children: [
-                          NetworkHelper().getCurrentDevotee?.role ==
-                                  "SuperAdmin"
-                              ? ElevatedButton(
-                                  onPressed: () => _selectYesterday(context),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Colors.yellowAccent, // Background color
-                                    foregroundColor: Colors.black, // Text color
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                  ),
-                                  child: const Text(
-                                    "Select Date",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                )
-                              : const SizedBox(),
-                          const SizedBox(width: 10),
-                          Text(
-                            "${prasadCountData2[0].title}",
-                            style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                        ],
                       ),
-                      const Divider(thickness: 1),
-                      Expanded(
-                          child: ListView.builder(
+                    ),
+                    Row(
+                      children: [
+                        NetworkHelper().getCurrentDevotee?.role == "SuperAdmin"
+                            ? ElevatedButton(
+                                onPressed: () => _selectYesterday(context),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Colors.yellowAccent, // Background color
+                                  foregroundColor: Colors.black, // Text color
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                ),
+                                child: const Text(
+                                  "Select Date",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              )
+                            : const SizedBox(),
+                        const SizedBox(width: 10),
+                        Text(
+                          "${prasadCountData2[0].title}",
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    const Divider(thickness: 1),
+                    SizedBox(
+                      height: 250,
+                      child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: prasadCountData2.length,
                         itemBuilder: (BuildContext context, int index) {
@@ -400,45 +686,48 @@ class _DashboardBodyState extends State<DashboardBody> {
                                 onTap: null,
                                 child: Card(
                                     color: Colors.yellowAccent,
-                                    child: DashBoardData(
-                                        dashBoardDevoteeData:
-                                            prasadCountData2[index])),
+                                    child: SizedBox(
+                                      width: 230,
+                                      child: DashBoardPrasadData(
+                                          dashBoardDevoteeData:
+                                              prasadCountData2[index]),
+                                    )),
                               ));
                         },
-                      )),
-                      Row(
-                        children: [
-                          NetworkHelper().getCurrentDevotee?.role ==
-                                  "SuperAdmin"
-                              ? ElevatedButton(
-                                  onPressed: () =>
-                                      _selectDayBeforeYesterday(context),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Colors.yellowAccent, // Background color
-                                    foregroundColor: Colors.black, // Text color
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                  ),
-                                  child: const Text(
-                                    "Select Date",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                )
-                              : const SizedBox(),
-                          const SizedBox(width: 10),
-                          Text(
-                            "${prasadCountData3[0].title}",
-                            style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                        ],
                       ),
-                      const Divider(thickness: 1),
-                      Expanded(
-                          child: ListView.builder(
+                    ),
+                    Row(
+                      children: [
+                        NetworkHelper().getCurrentDevotee?.role == "SuperAdmin"
+                            ? ElevatedButton(
+                                onPressed: () =>
+                                    _selectDayBeforeYesterday(context),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Colors.yellowAccent, // Background color
+                                  foregroundColor: Colors.black, // Text color
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                ),
+                                child: const Text(
+                                  "Select Date",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              )
+                            : const SizedBox(),
+                        const SizedBox(width: 10),
+                        Text(
+                          "${prasadCountData3[0].title}",
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    const Divider(thickness: 1),
+                    SizedBox(
+                      height: 250,
+                      child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: prasadCountData3.length,
                         itemBuilder: (BuildContext context, int index) {
@@ -451,70 +740,70 @@ class _DashboardBodyState extends State<DashboardBody> {
                                 onTap: null,
                                 child: Card(
                                     color: Colors.yellowAccent,
-                                    child: DashBoardData(
-                                        dashBoardDevoteeData:
-                                            prasadCountData3[index])),
+                                    child: SizedBox(
+                                      width: 230,
+                                      child: DashBoardPrasadData(
+                                          dashBoardDevoteeData:
+                                              prasadCountData3[index]),
+                                    )),
                               ));
                         },
-                      )),
-                      ispressed == true
-                          ? ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.deepOrange,
-                                foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
+                      ),
+                    ),
+                    ispressed == true
+                        ? ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.deepOrange,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
                               ),
-                              onPressed: () async {
-                                UpadateTimeModel updateDate = UpadateTimeModel(
-                                  balyaStartTime:
-                                      responseData?["balyaStartTime"],
-                                  balyaEndTime: responseData?["balyaEndTime"],
-                                  madhyanaStartTime:
-                                      responseData?["madhyanaStartTime"],
-                                  madhyanaEndTime:
-                                      responseData?["madhyanaEndTime"],
-                                  ratraStartTime:
-                                      responseData?["ratraStartTime"],
-                                  ratraEndTime: responseData?["ratraEndTime"],
-                                  prasadFirstDate: selectedDate1 != null
-                                      ? DateFormat('yyyy-MM-dd')
-                                          .format(selectedDate1 as DateTime)
-                                      : prasadCountData1[0].title,
-                                  prasadSecondDate: selectedDate2 != null
-                                      ? DateFormat('yyyy-MM-dd')
-                                          .format(selectedDate2 as DateTime)
-                                      : prasadCountData2[0].title,
-                                  prasadThirdDate: selectedDate3 != null
-                                      ? DateFormat('yyyy-MM-dd')
-                                          .format(selectedDate3 as DateTime)
-                                      : prasadCountData3[0].title,
-                                );
+                            ),
+                            onPressed: () async {
+                              UpadateTimeModel updateDate = UpadateTimeModel(
+                                balyaStartTime: responseData?["balyaStartTime"],
+                                balyaEndTime: responseData?["balyaEndTime"],
+                                madhyanaStartTime:
+                                    responseData?["madhyanaStartTime"],
+                                madhyanaEndTime:
+                                    responseData?["madhyanaEndTime"],
+                                ratraStartTime: responseData?["ratraStartTime"],
+                                ratraEndTime: responseData?["ratraEndTime"],
+                                prasadFirstDate: selectedDate1 != null
+                                    ? DateFormat('yyyy-MM-dd')
+                                        .format(selectedDate1 as DateTime)
+                                    : prasadCountData1[0].title,
+                                prasadSecondDate: selectedDate2 != null
+                                    ? DateFormat('yyyy-MM-dd')
+                                        .format(selectedDate2 as DateTime)
+                                    : prasadCountData2[0].title,
+                                prasadThirdDate: selectedDate3 != null
+                                    ? DateFormat('yyyy-MM-dd')
+                                        .format(selectedDate3 as DateTime)
+                                    : prasadCountData3[0].title,
+                              );
 
-                                //print("query : $updateDate");
+                              //print("query : $updateDate");
 
-                                await PutDevoteeAPI().updateTiming(updateDate);
+                              await PutDevoteeAPI().updateTiming(updateDate);
 
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content:
-                                        Text('Date selected successfully!'),
-                                    duration: Duration(seconds: 2),
-                                  ),
-                                );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Date selected successfully!'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
 
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => DashboardPage()),
-                                );
-                              },
-                              child: const Text("Confirm"),
-                            )
-                          : const SizedBox()
-                    ],
-                  ),
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => DashboardPage()),
+                              );
+                            },
+                            child: const Text("Confirm"),
+                          )
+                        : const SizedBox()
+                  ],
                 ),
               ),
             ),
@@ -542,8 +831,74 @@ class DashBoardData extends StatelessWidget {
           ),
           Text(
             dashBoardDevoteeData.count.toString(),
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           )
+        ],
+      ),
+    );
+  }
+}
+
+class DashBoardPrasadData extends StatelessWidget {
+  DashBoardPrasadData({super.key, required this.dashBoardDevoteeData});
+
+  DashboardStatusModel dashBoardDevoteeData;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          const SizedBox(width: 50),
+          Text(
+            "${dashBoardDevoteeData.message}   (${dashBoardDevoteeData.translate})",
+            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          ),
+          //
+          Text(
+            dashBoardDevoteeData.count.toString(),
+            style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          ),
+          const Text(
+            "------------------------------------------",
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                children: [
+                  const Text(
+                    "Online",
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
+                  //
+                  Text(
+                    "${dashBoardDevoteeData.online}",
+                    style: const TextStyle(
+                        fontSize: 30, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 20),
+              Column(
+                children: [
+                  const Text(
+                    "Offline",
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
+                  //
+                  Text(
+                    "${dashBoardDevoteeData.offline}",
+                    style: const TextStyle(
+                        fontSize: 30, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              )
+            ],
+          ),
+          const SizedBox(width: 50),
         ],
       ),
     );
