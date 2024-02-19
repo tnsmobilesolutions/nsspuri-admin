@@ -862,7 +862,7 @@ class DashBoardPrasadData extends StatelessWidget {
             style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
           const Text(
-            "------------------------------------------",
+            "------------------------",
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
