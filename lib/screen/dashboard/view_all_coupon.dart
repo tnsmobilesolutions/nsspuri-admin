@@ -82,10 +82,18 @@ class _ViewAllCouponState extends State<ViewAllCoupon> {
                           padding: const EdgeInsets.all(10),
                           child: ListTile(
                             title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text("${allCoupons[index]["couponCode"]}"),
-                                Text("${allCoupons[index]["createdBy"] ?? ""}")
+                                SizedBox(
+                                  width: 160,
+                                ),
+                                Text("${allCoupons[index]["amount"] ?? ""}"),
+                                SizedBox(
+                                  width: 160,
+                                ),
+                                Text(
+                                    "${allCoupons[index]["couponCreatedDate"] ?? ""}")
                               ],
                             ),
                           ),
