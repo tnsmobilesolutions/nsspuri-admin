@@ -73,23 +73,77 @@ class _ViewAllCouponState extends State<ViewAllCoupon> {
                   child: CircularProgressIndicator(),
                 )
               : allCoupons.isNotEmpty
-                  ? DataTable(
-                      columns: [
-                        DataColumn(label: Text('Coupon Code')),
-                        DataColumn(label: Text("Amount(₹)")),
-                        DataColumn(label: Text('Created Date')),
+                  ? Column(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                  child: Text(
+                                "Coupon Code",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )),
+                              SizedBox(
+                                width: 160,
+                              ),
+                              Expanded(
+                                  child: Text("Amount",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold))),
+                              SizedBox(
+                                width: 160,
+                              ),
+                              Expanded(
+                                child: Text("Created Date",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                              )
+                            ],
+                          ),
+                        ),
+                        const Divider(thickness: 3),
+                        ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: allCoupons.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: ListTile(
+                                title: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                            child: Text(
+                                                "${allCoupons[index]["couponCode"]}")),
+                                        const SizedBox(
+                                          width: 160,
+                                        ),
+                                        Expanded(
+                                            child: Text(
+                                                "Rs.${allCoupons[index]["amount"] ?? "0"}")),
+                                        const SizedBox(
+                                          width: 160,
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                              "${allCoupons[index]["couponCreatedDate"] ?? ""}"),
+                                        )
+                                      ],
+                                    ),
+                                    const Divider(thickness: 1),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       ],
-                      rows: allCoupons.map((coupon) {
-                        return DataRow(cells: [
-                          DataCell(Text(coupon["couponCode"].toString())),
-                          DataCell(Text(coupon["amount"] != null
-                              ? coupon["amount"].toString()
-                              : "")),
-                          DataCell(Text(coupon["couponCreatedDate"] != null
-                              ? coupon["couponCreatedDate"].toString()
-                              : "")),
-                        ]);
-                      }).toList(),
                     )
                   : const SizedBox(),
         ],
