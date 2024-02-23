@@ -3,21 +3,33 @@ import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/utilities/color_palette.dart';
 
 class ViewAllCoupon extends StatefulWidget {
-  const ViewAllCoupon({super.key});
+  const ViewAllCoupon({Key? key}) : super(key: key);
 
   @override
   State<ViewAllCoupon> createState() => _ViewAllCouponState();
 }
 
 class _ViewAllCouponState extends State<ViewAllCoupon> {
-  List<dynamic> allCoupons = [];
+  List<Map<String, dynamic>> allCoupons = [];
   bool isLoading = false;
 
   Future<void> fetchAllCoupons() async {
+    setState(() {
+      isLoading = true;
+    });
+
     var response = await GetDevoteeAPI().viewAllCoupon();
+
+    print("all coupon response: $response");
+
     if (response?["statusCode"] == 200) {
       setState(() {
-        allCoupons = response?["data"];
+        allCoupons = List<Map<String, dynamic>>.from(response?["data"]);
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        isLoading = false;
       });
     }
   }
@@ -36,26 +48,19 @@ class _ViewAllCouponState extends State<ViewAllCoupon> {
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
             child: ElevatedButton(
               style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith((states) {
-                    if (states.contains(MaterialState.pressed)) {
-                      return ButtonColor;
-                    }
+                backgroundColor: MaterialStateProperty.resolveWith((states) {
+                  if (states.contains(MaterialState.pressed)) {
                     return ButtonColor;
-                  }),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5)))),
-              onPressed: () async {
-                setState(() {
-                  isLoading = true;
-                });
-                await fetchAllCoupons();
-                setState(() {
-                  isLoading = false;
-                });
-              },
+                  }
+                  return ButtonColor;
+                }),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5))),
+              ),
+              onPressed: isLoading ? null : fetchAllCoupons,
               child: const Text(
-                "view all",
+                "View All",
                 style: TextStyle(
                   fontSize: 20,
                   color: Colors.white,
@@ -76,11 +81,26 @@ class _ViewAllCouponState extends State<ViewAllCoupon> {
                         return Padding(
                           padding: const EdgeInsets.all(10),
                           child: ListTile(
-                            title: Text("${allCoupons[index]}"),
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text("${allCoupons[index]["couponCode"]}"),
+                                SizedBox(
+                                  width: 160,
+                                ),
+                                Text("${allCoupons[index]["amount"] ?? ""}"),
+                                SizedBox(
+                                  width: 160,
+                                ),
+                                Text(
+                                    "${allCoupons[index]["couponCreatedDate"] ?? ""}")
+                              ],
+                            ),
                           ),
                         );
-                      })
-                  : const SizedBox()
+                      },
+                    )
+                  : const SizedBox(),
         ],
       ),
     );
