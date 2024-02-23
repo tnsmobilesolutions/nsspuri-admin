@@ -42,7 +42,7 @@ class _ViewAllCouponState extends State<ViewAllCoupon> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            width: 150,
+            width: 190,
             height: 40,
             margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
@@ -73,32 +73,23 @@ class _ViewAllCouponState extends State<ViewAllCoupon> {
                   child: CircularProgressIndicator(),
                 )
               : allCoupons.isNotEmpty
-                  ? ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: allCoupons.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: ListTile(
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text("${allCoupons[index]["couponCode"]}"),
-                                SizedBox(
-                                  width: 160,
-                                ),
-                                Text("${allCoupons[index]["amount"] ?? ""}"),
-                                SizedBox(
-                                  width: 160,
-                                ),
-                                Text(
-                                    "${allCoupons[index]["couponCreatedDate"] ?? ""}")
-                              ],
-                            ),
-                          ),
-                        );
-                      },
+                  ? DataTable(
+                      columns: [
+                        DataColumn(label: Text('Coupon Code')),
+                        DataColumn(label: Text("Amount(₹)")),
+                        DataColumn(label: Text('Created Date')),
+                      ],
+                      rows: allCoupons.map((coupon) {
+                        return DataRow(cells: [
+                          DataCell(Text(coupon["couponCode"].toString())),
+                          DataCell(Text(coupon["amount"] != null
+                              ? coupon["amount"].toString()
+                              : "")),
+                          DataCell(Text(coupon["couponCreatedDate"] != null
+                              ? coupon["couponCreatedDate"].toString()
+                              : "")),
+                        ]);
+                      }).toList(),
                     )
                   : const SizedBox(),
         ],
