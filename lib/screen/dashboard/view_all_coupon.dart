@@ -73,32 +73,77 @@ class _ViewAllCouponState extends State<ViewAllCoupon> {
                   child: CircularProgressIndicator(),
                 )
               : allCoupons.isNotEmpty
-                  ? ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: allCoupons.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: ListTile(
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text("${allCoupons[index]["couponCode"]}"),
-                                SizedBox(
-                                  width: 160,
-                                ),
-                                Text("${allCoupons[index]["amount"] ?? ""}"),
-                                SizedBox(
-                                  width: 160,
-                                ),
-                                Text(
-                                    "${allCoupons[index]["couponCreatedDate"] ?? ""}")
-                              ],
-                            ),
+                  ? Column(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                  child: Text(
+                                "Coupon Code",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )),
+                              SizedBox(
+                                width: 160,
+                              ),
+                              Expanded(
+                                  child: Text("Amount",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold))),
+                              SizedBox(
+                                width: 160,
+                              ),
+                              Expanded(
+                                child: Text("Created Date",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                              )
+                            ],
                           ),
-                        );
-                      },
+                        ),
+                        const Divider(thickness: 3),
+                        ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: allCoupons.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: ListTile(
+                                title: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                            child: Text(
+                                                "${allCoupons[index]["couponCode"]}")),
+                                        const SizedBox(
+                                          width: 160,
+                                        ),
+                                        Expanded(
+                                            child: Text(
+                                                "Rs.${allCoupons[index]["amount"] ?? "0"}")),
+                                        const SizedBox(
+                                          width: 160,
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                              "${allCoupons[index]["couponCreatedDate"] ?? ""}"),
+                                        )
+                                      ],
+                                    ),
+                                    const Divider(thickness: 1),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     )
                   : const SizedBox(),
         ],
