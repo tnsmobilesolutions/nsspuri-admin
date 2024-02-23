@@ -82,7 +82,9 @@ class _ViewAllCouponState extends State<ViewAllCoupon> {
                       rows: allCoupons.map((coupon) {
                         return DataRow(cells: [
                           DataCell(Text(coupon["couponCode"].toString())),
-                          DataCell(Text(coupon["amount"].toString())),
+                          DataCell(Text(coupon["amount"] != null
+                              ? coupon["amount"].toString()
+                              : "")),
                           DataCell(Text(coupon["couponCreatedDate"] != null
                               ? coupon["couponCreatedDate"].toString()
                               : "")),
