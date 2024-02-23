@@ -73,7 +73,6 @@ class _ViewAllCouponState extends State<ViewAllCoupon> {
                   child: CircularProgressIndicator(),
                 )
               : allCoupons.isNotEmpty
-<<<<<<< HEAD
                   ? DataTable(
                       columns: [
                         DataColumn(label: Text('Coupon Code')),
@@ -89,79 +88,6 @@ class _ViewAllCouponState extends State<ViewAllCoupon> {
                               : "")),
                         ]);
                       }).toList(),
-=======
-                  ? Column(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                  child: Text(
-                                "Coupon Code",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              )),
-                              SizedBox(
-                                width: 160,
-                              ),
-                              Expanded(
-                                  child: Text("Amount",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold))),
-                              SizedBox(
-                                width: 160,
-                              ),
-                              Expanded(
-                                child: Text("Created Date",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                              )
-                            ],
-                          ),
-                        ),
-                        const Divider(thickness: 3),
-                        ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: allCoupons.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: ListTile(
-                                title: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                            child: Text(
-                                                "${allCoupons[index]["couponCode"]}")),
-                                        const SizedBox(
-                                          width: 160,
-                                        ),
-                                        Expanded(
-                                            child: Text(
-                                                "Rs.${allCoupons[index]["amount"] ?? "0"}")),
-                                        const SizedBox(
-                                          width: 160,
-                                        ),
-                                        Expanded(
-                                          child: Text(
-                                              "${allCoupons[index]["couponCreatedDate"] ?? ""}"),
-                                        )
-                                      ],
-                                    ),
-                                    const Divider(thickness: 1),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
->>>>>>> 4e62efb1c45088deff343f8ab953a08aef40a8d2
                     )
                   : const SizedBox(),
         ],
