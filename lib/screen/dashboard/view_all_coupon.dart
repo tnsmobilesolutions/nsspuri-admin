@@ -56,40 +56,45 @@ class _ViewAllCouponState extends State<ViewAllCoupon> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  width: 190,
-                  height: 40,
-                  margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(5)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.resolveWith((states) {
-                            if (states.contains(MaterialState.pressed)) {
-                              return ButtonColor;
-                            }
-                            return ButtonColor;
-                          }),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 190,
+                      height: 40,
+                      margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
+                      decoration:
+                          BoxDecoration(borderRadius: BorderRadius.circular(5)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.resolveWith((states) {
+                                if (states.contains(MaterialState.pressed)) {
+                                  return ButtonColor;
+                                }
+                                return ButtonColor;
+                              }),
+                              shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(5))),
-                        ),
-                        onPressed: isLoading ? null : fetchAllCoupons,
-                        child: const Text(
-                          "View All",
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
+                            ),
+                            onPressed: isLoading ? null : fetchAllCoupons,
+                            child: const Text(
+                              "View All",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 isLoading
                     ? const Center(
