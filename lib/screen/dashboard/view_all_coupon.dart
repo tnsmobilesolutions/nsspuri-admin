@@ -238,44 +238,109 @@ class _ViewAllCouponState extends State<ViewAllCoupon> {
                           child: ListTile(
                             title: Column(
                               children: [
-                                // Text("${allCoupons[index]}"),
-                                DataTable(
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
+                                Text("${allCoupons[index]}"),
+                                Row(
+                                  children: [
+                                    Text('Balya'),
+                                    SizedBox(
+                                      height: 50,
+                                      width: 50,
+                                      child: TextFormField(
+                                           decoration: InputDecoration(
+          //labelText: "Coupon Code",
+          //labelStyle: TextStyle(color: Colors.grey[600], fontSize: 15),
+          filled: true,
+          //floatingLabelBehavior: FloatingLabelBehavior.auto,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(
+              width: 0,
+              style: BorderStyle.solid,
+            ),
+          ),
         ),
-      ),
-      dividerThickness: 0.1,
-      columnSpacing: 50,
-      dataRowMaxHeight: 80,
-      columns: [
-        dataColumn(context, "Date"),
-        dataColumn(context, "Balya"),
-        dataColumn(context, "Madhyanha"),
-        dataColumn(context, "Ratra"),
-      ],
-      rows: [
-        DataRow(cells: [
-          DataCell(Text(allDates[0])),
-          DataCell(formField(firstDayBalya)),
-          DataCell(formField(firstDayMadhyanha)),
-          DataCell(formField(firstDayRatra)),
-        ]),
-        DataRow(cells: [
-          DataCell(Text(allDates[1])),
-          DataCell(formField(secondDayBalya)),
-          DataCell(formField(secondDayMadhyanha)),
-          DataCell(formField(secondDayRatra)),
-        ]),
-        DataRow(cells: [
-          DataCell(Text(allDates[2])),
-          DataCell(formField(thirdDayBalya)),
-          DataCell(formField(thirdDayMadhyanha)),
-          DataCell(formField(thirdDayRatra)),
-        ]),
-      ],
-    )
+                                      ),
+                                    ),
+                                     Text('Madhyahna'),
+                                    SizedBox(
+                                      height: 50,
+                                      width: 50,
+                                      child: TextFormField(
+                                           decoration: InputDecoration(
+          //labelText: "Coupon Code",
+          //labelStyle: TextStyle(color: Colors.grey[600], fontSize: 15),
+          filled: true,
+          //floatingLabelBehavior: FloatingLabelBehavior.auto,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(
+              width: 0,
+              style: BorderStyle.solid,
+            ),
+          ),
+        ),
+                                      ),
+                                    ),
+                                     Text('Ratra'),
+                                    SizedBox(
+                                      height: 50,
+                                      width: 50,
+                                      child: TextFormField(
+                                           decoration: InputDecoration(
+          //labelText: "Coupon Code",
+          //labelStyle: TextStyle(color: Colors.grey[600], fontSize: 15),
+          filled: true,
+          //floatingLabelBehavior: FloatingLabelBehavior.auto,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(
+              width: 0,
+              style: BorderStyle.solid,
+            ),
+          ),
+        ),
+                                      ),
+                                    ),
+
+                                  ],
+                                )
+    //                             DataTable(
+    //   decoration: const BoxDecoration(
+    //     borderRadius: BorderRadius.only(
+    //       topLeft: Radius.circular(20),
+    //       topRight: Radius.circular(20),
+    //     ),
+    //   ),
+    //   dividerThickness: 0.1,
+    //   columnSpacing: 50,
+    //   dataRowMaxHeight: 80,
+    //   columns: [
+    //     dataColumn(context, "Date"),
+    //     dataColumn(context, "Balya"),
+    //     dataColumn(context, "Madhyanha"),
+    //     dataColumn(context, "Ratra"),
+    //   ],
+    //   rows: [
+    //     DataRow(cells: [
+    //       DataCell(Text(allDates[0])),
+    //       DataCell(formField(firstDayBalya)),
+    //       DataCell(formField(firstDayMadhyanha)),
+    //       DataCell(formField(firstDayRatra)),
+    //     ]),
+    //     DataRow(cells: [
+    //       DataCell(Text(allDates[1])),
+    //       DataCell(formField(secondDayBalya)),
+    //       DataCell(formField(secondDayMadhyanha)),
+    //       DataCell(formField(secondDayRatra)),
+    //     ]),
+    //     DataRow(cells: [
+    //       DataCell(Text(allDates[2])),
+    //       DataCell(formField(thirdDayBalya)),
+    //       DataCell(formField(thirdDayMadhyanha)),
+    //       DataCell(formField(thirdDayRatra)),
+    //     ]),
+    //   ],
+    // )
                               ],
                             ),
                           ),
