@@ -147,22 +147,112 @@ class _ViewAllCouponState extends State<ViewAllCoupon> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
                                             children: [
-                                              Expanded(
-                                                  child: Text(
-                                                      "${allCoupons[index]["couponCode"]}")),
+                                              Text(
+                                                  "${allCoupons[index]["couponCode"]}"),
                                               const SizedBox(
                                                 width: 160,
                                               ),
-                                              Expanded(
-                                                  child: Text(
-                                                      "Rs.${allCoupons[index]["amount"] ?? "0"}")),
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                      "Rs.${allCoupons[index]["amount"] ?? "0"}"),
+                                                  Row(
+                                                    children: [
+                                                      Text('B'),
+                                                      SizedBox(
+                                                        height: 30,
+                                                        width: 60,
+                                                        child: TextFormField(
+                                                          decoration:
+                                                              InputDecoration(
+                                                            //labelText: "Coupon Code",
+                                                            //labelStyle: TextStyle(color: Colors.grey[600], fontSize: 15),
+                                                            filled: true,
+                                                            //floatingLabelBehavior: FloatingLabelBehavior.auto,
+                                                            border:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          4.0),
+                                                              borderSide:
+                                                                  const BorderSide(
+                                                                width: 0,
+                                                                style:
+                                                                    BorderStyle
+                                                                        .solid,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Text('M'),
+                                                      SizedBox(
+                                                        height: 30,
+                                                        width: 60,
+                                                        child: TextFormField(
+                                                          decoration:
+                                                              InputDecoration(
+                                                            //labelText: "Coupon Code",
+                                                            //labelStyle: TextStyle(color: Colors.grey[600], fontSize: 15),
+                                                            filled: true,
+                                                            //floatingLabelBehavior: FloatingLabelBehavior.auto,
+                                                            border:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          4.0),
+                                                              borderSide:
+                                                                  const BorderSide(
+                                                                width: 0,
+                                                                style:
+                                                                    BorderStyle
+                                                                        .solid,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Text('R'),
+                                                      SizedBox(
+                                                        height: 30,
+                                                        width: 60,
+                                                        child: TextFormField(
+                                                          decoration:
+                                                              InputDecoration(
+                                                            //labelText: "Coupon Code",
+                                                            //labelStyle: TextStyle(color: Colors.grey[600], fontSize: 15),
+                                                            filled: true,
+                                                            //floatingLabelBehavior: FloatingLabelBehavior.auto,
+                                                            border:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          4.0),
+                                                              borderSide:
+                                                                  const BorderSide(
+                                                                width: 0,
+                                                                style:
+                                                                    BorderStyle
+                                                                        .solid,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
                                               const SizedBox(
                                                 width: 160,
                                               ),
-                                              Expanded(
-                                                child: Text(
-                                                    "${allCoupons[index]["couponCreatedDate"] ?? ""}"),
-                                              )
+                                              Text(
+                                                  "${allCoupons[index]["couponCreatedDate"] ?? ""}")
                                             ],
                                           ),
                                           const Divider(thickness: 1),
