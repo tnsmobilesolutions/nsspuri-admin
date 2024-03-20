@@ -15,6 +15,7 @@ import 'package:sdp/screen/appBar/leadingImage.dart';
 import 'package:sdp/screen/appBar/responsive_action_widget.dart';
 import 'package:sdp/screen/dashboard/change_time.dart';
 import 'package:sdp/screen/dashboard/dashboardBody.dart';
+import 'package:sdp/screen/dashboard/delegate_report.dart';
 import 'package:sdp/screen/dashboard/prasad_coupon.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
@@ -29,6 +30,8 @@ extension MenuOptionExtension on MenuOption {
         return 'Prasad Coupon';
       case MenuOption.create:
         return 'Create Delegate';
+      case MenuOption.delegateReport:
+        return 'Delegate Report';
       case MenuOption.settings:
         return 'Settings';
       case MenuOption.logout:
@@ -88,6 +91,8 @@ class _DashboardPageState extends State<DashboardPage> {
         return Icons.confirmation_num_outlined;
       case MenuOption.create:
         return Icons.card_membership_rounded;
+      case MenuOption.delegateReport:
+        return Icons.report_off_rounded;
       case MenuOption.settings:
         return Icons.settings_outlined;
       case MenuOption.logout:
@@ -222,6 +227,14 @@ class _DashboardPageState extends State<DashboardPage> {
                                   role: NetworkHelper().currentDevotee?.role,
                                   //onUpdateDevotee: (allDevotees) {},
                                 ));
+                          },
+                        );
+                        break;
+                      case MenuOption.delegateReport:
+                        showDialog<void>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return DelegateReportScreen();
                           },
                         );
                         break;
@@ -406,6 +419,8 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
         return Icons.confirmation_num_outlined;
       case MenuOption.create:
         return Icons.card_membership_rounded;
+      case MenuOption.delegateReport:
+        return Icons.report_off_outlined;
       case MenuOption.settings:
         return Icons.settings_outlined;
       case MenuOption.logout:
@@ -496,6 +511,14 @@ class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
                           role: widget.role,
                           //onUpdateDevotee: (allDevotees) {},
                         ));
+                  },
+                );
+                break;
+              case MenuOption.delegateReport:
+                showDialog<void>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return DelegateReportScreen();
                   },
                 );
                 break;

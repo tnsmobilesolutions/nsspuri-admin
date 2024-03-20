@@ -75,6 +75,7 @@ dependencies:
   firebase_remote_config: ^4.3.8
   http: ^1.1.0
   animated_shimmer: ^1.0.0
+  fl_chart: ^0.66.2
 
 dev_dependencies:
   flutter_test:
