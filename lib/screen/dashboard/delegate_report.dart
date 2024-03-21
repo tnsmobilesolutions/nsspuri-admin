@@ -1,77 +1,108 @@
-import 'package:flutter/material.dart';
-import 'dart:math';
-
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
+import 'package:sdp/model/devotee_model.dart';
+import 'package:sdp/screen/dashboard/appcolors.dart';
+import 'package:sdp/screen/dashboard/bargraph.dart';
+import 'package:sdp/screen/dashboard/bargraph_2.dart';
+import 'package:sdp/screen/dashboard/report_table.dart';
 
-// Define data structure for a bar group
-class DataItem {
-  final String yearName;
-  final double y1;
-  final double y2;
-
-  DataItem({required this.yearName, required this.y1, required this.y2});
-}
-
-class DelegateReportScreen extends StatelessWidget {
-  DelegateReportScreen({Key? key}) : super(key: key);
-
-  // Generate dummy data to feed the chart
-  final List<DataItem> _myData = [
-    DataItem(
-      yearName: '73rd Sammilani',
-      y1: Random().nextInt(20) + Random().nextDouble(),
-      y2: Random().nextInt(20) + Random().nextDouble(),
-    ),
-    DataItem(
-      yearName: '74th Sammilani',
-      y1: Random().nextInt(20) + Random().nextDouble(),
-      y2: Random().nextInt(20) + Random().nextDouble(),
-    ),
-  ];
+class DelegateReportScreen extends StatefulWidget {
+  DelegateReportScreen({super.key});
 
   @override
+  State<StatefulWidget> createState() => DelegateReportScreenState();
+}
+
+class DelegateReportScreenState extends State<DelegateReportScreen> {
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Delegate Report',
-          style: TextStyle(color: Colors.white),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'Delegate Report',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(30),
-        child: BarChart(
-          BarChartData(
-            borderData: FlBorderData(
-              border: const Border(
-                top: BorderSide.none,
-                right: BorderSide.none,
-                left: BorderSide(width: 1),
-                bottom: BorderSide(width: 1),
+        body: Column(
+          children: [
+            TabBar(
+              tabs: [
+                Tab(text: 'In Table view'),
+                Tab(text: 'In Graph Visualisation'),
+              ],
+            ),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  // Contents of Tab 1
+                  Center(
+                    child: ReportTable(),
+                  ),
+                  // Contents of Tab 2
+                  SingleChildScrollView(
+                    child: Center(
+                      child: Column(
+                        children: [
+                          // Expanded(child: Bargraph2()),
+                          // Expanded(child: Bargraph()),
+                          Container(
+                            height: 700,
+                            width: 800,
+                            child: Expanded(child: Bargraph2()),
+                          ),
+
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              SizedBox(
+                                width: 38,
+                              ),
+                              Text(
+                                'Online Delegate Pranami',
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 22),
+                              ),
+                              SizedBox(
+                                width: 38,
+                              ),
+                              Container(
+                                height: 50,
+                                width: 50,
+                                color: Color.fromARGB(255, 198, 9, 211),
+                              ),
+                              SizedBox(
+                                width: 38,
+                              ),
+                              Text(
+                                'Cash Delegate Pranami',
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 22),
+                              ),
+                              SizedBox(
+                                width: 38,
+                              ),
+                              Container(
+                                height: 50,
+                                width: 50,
+                                color: Color.fromARGB(255, 239, 88, 98),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            height: 700,
+                            width: 800,
+                            child: Expanded(child: Bargraph()),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            groupsSpace: 10,
-            barGroups: _myData.map((yearData) {
-              return BarChartGroupData(
-                x: 73,
-                barsSpace: 4,
-                barRods: [
-                  BarChartRodData(
-                      fromY: yearData.y1,
-                      color: Colors.blue,
-                      width: 70,
-                      toY: 10000.00,
-                      borderRadius: BorderRadius.zero),
-                  BarChartRodData(
-                      fromY: yearData.y2,
-                      color: Colors.green,
-                      width: 70,
-                      toY: 10000.00,
-                      borderRadius: BorderRadius.zero),
-                ],
-              );
-            }).toList(),
-          ),
+          ],
         ),
       ),
     );
