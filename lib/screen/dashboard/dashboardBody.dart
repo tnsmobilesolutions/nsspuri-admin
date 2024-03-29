@@ -100,7 +100,10 @@ class _DashboardBodyState extends State<DashboardBody> {
                           : () {
                               Navigator.push(context, MaterialPageRoute(
                                 builder: (context) {
-                                  return PuneSammilaniDashboard();
+                                  return PuriEventScreen(
+                                    pageFrom: "Dashboard",
+                                    status: '',
+                                  );
                                 },
                               ));
                             },
