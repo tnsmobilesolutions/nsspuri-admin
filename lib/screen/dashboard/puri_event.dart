@@ -19,8 +19,8 @@ import 'package:sdp/screen/viewDevotee/viewDevotee.dart';
 import 'package:sdp/utilities/network_helper.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
-class DevoteeListBodyPage extends StatefulWidget {
-  DevoteeListBodyPage({
+class PuriEventScreen extends StatefulWidget {
+  PuriEventScreen({
     Key? key,
     required this.status,
     this.advanceStatus,
@@ -46,10 +46,10 @@ class DevoteeListBodyPage extends StatefulWidget {
   int? totalPages, dataCount, currentPage;
 
   @override
-  State<DevoteeListBodyPage> createState() => _DevoteeListBodyPageState();
+  State<PuriEventScreen> createState() => _PuriEventScreenState();
 }
 
-class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
+class _PuriEventScreenState extends State<PuriEventScreen>
     with TickerProviderStateMixin {
   bool? allCheck;
   List<DevoteeModel> allDevotees = [], selectedDevotees = [];
@@ -765,6 +765,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                       : const SizedBox(),
                   Column(
                     children: [
+                      Text('List of Devotees Coming For 14th Event'),
                       Row(
                         children: [
                           Expanded(
