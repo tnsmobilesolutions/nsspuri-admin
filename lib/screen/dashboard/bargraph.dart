@@ -74,7 +74,7 @@ class BargraphState extends State<Bargraph> {
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
-                        reservedSize: 28,
+                        reservedSize: 20,
                         getTitlesWidget: bottomTitles,
                       ),
                     ),
