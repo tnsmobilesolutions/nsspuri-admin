@@ -76,6 +76,7 @@ dependencies:
   http: ^1.1.0
   animated_shimmer: ^1.0.0
   fl_chart: ^0.66.2
+  toggle_switch: ^2.3.0
 
 dev_dependencies:
   flutter_test:
