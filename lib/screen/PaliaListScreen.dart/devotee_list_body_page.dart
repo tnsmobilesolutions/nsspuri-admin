@@ -349,6 +349,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
           dataColumn(context, 'Print'),
         if (NetworkHelper().getCurrentDevotee?.role != "Viewer")
           dataColumn(context, 'Edit'),
+        dataColumn(context, '14th Event Info'),
       ],
       rows: List.generate(
         allDevotees.length,
@@ -594,6 +595,51 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                     ),
                   ),
                 ),
+              DataCell(IconButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text("Confirmation"),
+                        content: Text("Are you coming to 14th Event?"),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              // Close the dialog and do nothing
+                              Navigator.of(context).pop();
+                            },
+                            // onPressed: () {
+                            //   // Close the dialog and proceed
+                            //   Navigator.of(context).pop();
+                            //   // Navigate to the PreviewDelegateTab
+                            //   Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(builder: (context) {
+                            //       return PreviewDelegateTab(
+                            //           devoteeDetails: allDevotees[index]);
+                            //     }),
+                            //   );
+                            // },
+                            child: Text("Yes"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              // Close the dialog and do nothing
+                              Navigator.of(context).pop();
+                            },
+                            child: Text("No"),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+                icon: const Icon(
+                  Icons.arrow_drop_down,
+                  color: Colors.deepOrange,
+                ),
+              ))
             ],
           );
         },
