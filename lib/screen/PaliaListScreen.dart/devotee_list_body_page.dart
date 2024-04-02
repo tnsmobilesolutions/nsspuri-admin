@@ -353,7 +353,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
           dataColumn(context, 'Print'),
         if (NetworkHelper().getCurrentDevotee?.role != "Viewer")
           dataColumn(context, 'Edit'),
-        dataColumn(context, 'Coming to 14th Event?'),
+        dataColumn(context, 'Coming to 14th Apr?'),
       ],
       rows: List.generate(
         allDevotees.length,

@@ -8,6 +8,7 @@ import 'package:sdp/constant/print_image.dart';
 import 'package:sdp/model/dashboard_card_model.dart';
 import 'package:sdp/model/update_timing_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
+import 'package:sdp/screen/dashboard/attendee_table.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
 import 'package:sdp/screen/dashboard/pune_sammilani.dart';
 import 'package:sdp/screen/dashboard/puri_event.dart';
@@ -100,17 +101,22 @@ class _DashboardBodyState extends State<DashboardBody> {
                           : () {
                               Navigator.push(context, MaterialPageRoute(
                                 builder: (context) {
-                                  return PuriEventScreen(
-                                    pageFrom: "Dashboard",
-                                    status: '',
-                                  );
+                                  return AttendeeTableScreen(
+                                      // event: ,
+                                      // devotee: ,
+                                      );
+                                  // PuriEventScreen(
+                                  //   pageFrom: "Dashboard",
+                                  //   status: '',
+                                  // );
                                 },
                               ));
                             },
                       child: Center(
                         child: Center(
                           child: Text(
-                            'Puri Event',
+                            'Centenary Celebration At Puri On 14th April',
+                            textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 35, fontWeight: FontWeight.bold),
                           ),
