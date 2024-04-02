@@ -98,13 +98,50 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen>
               ],
               rows: List<DataRow>.generate(allEvents.length, (index) {
                 EventModel eventData = EventModel.fromMap(allEvents[index]);
+                print('event data ------$eventData');
                 return DataRow(cells: [
                   DataCell(Text('$_counter')), // Display serial number
-                  DataCell(Text('Image')),
+                  DataCell(SizedBox(
+                    height: 50,
+                    width: 50,
+                    child: eventData.devotee?.profilePhotoUrl != null &&
+                            eventData.devotee?.profilePhotoUrl!.isNotEmpty ==
+                                true
+                        ? Image.network(
+                            eventData.devotee?.profilePhotoUrl ?? '',
+                            height: 80,
+                            width: 80,
+                            loadingBuilder: (BuildContext context, Widget child,
+                                ImageChunkEvent? loadingProgress) {
+                              if (loadingProgress == null) {
+                                return child;
+                              } else {
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                    value: loadingProgress.expectedTotalBytes !=
+                                            null
+                                        ? loadingProgress
+                                                .cumulativeBytesLoaded /
+                                            (loadingProgress
+                                                    .expectedTotalBytes ??
+                                                1)
+                                        : null,
+                                  ),
+                                );
+                              }
+                            },
+                            errorBuilder: (BuildContext context, Object error,
+                                StackTrace? stackTrace) {
+                              return const Icon(Icons.error);
+                            },
+                          )
+                        : const Image(
+                            image: AssetImage('assets/images/profile.jpeg')),
+                  )),
                   DataCell(Text('${eventData.devotee?.name}')),
-                  DataCell(Text('Event ID')),
-                  DataCell(Text('Devotee Code')),
-                  DataCell(Text('Sangha')),
+                  DataCell(Text('${eventData.eventId}')),
+                  DataCell(Text('${eventData.devoteeCode}')),
+                  DataCell(Text('${eventData.devotee?.sangha}')),
                   DataCell(ToggleSwitch(
                     minWidth: 90.0,
                     initialLabelIndex:
@@ -113,6 +150,7 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen>
                     activeFgColor: Colors.white,
                     inactiveBgColor: Colors.white,
                     inactiveFgColor: Colors.grey,
+                    borderColor: [Colors.grey],
                     borderWidth: 1,
                     totalSwitches: 2,
                     labels: ['Yes', 'No'],
@@ -132,6 +170,7 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen>
                           eventName: 'Puri',
                           eventAttendance: true,
                         );
+                        print('true');
                         await EventsAPI().addEvent(eventReqData);
 
                         // Navigator.of(context).pop();
@@ -146,6 +185,8 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen>
                           eventName: 'Puri',
                           eventAttendance: false,
                         );
+                        print('false');
+
                         await EventsAPI().addEvent(eventReqData);
 
                         // Navigator.of(context).pop();
