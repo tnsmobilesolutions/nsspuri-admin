@@ -16,6 +16,10 @@ import 'package:sdp/screen/PaliaListScreen.dart/export_to_excel.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/pagination_row.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/shimmer.dart';
 import 'package:sdp/screen/appBar/addPageDialouge.dart';
+import 'package:sdp/screen/appBar/create_delegate_buton.dart.dart';
+import 'package:sdp/screen/appBar/leadingImage.dart';
+import 'package:sdp/screen/appBar/logoutButton.dart';
+import 'package:sdp/screen/dashboard/dashboard.dart';
 import 'package:sdp/screen/viewDevotee/preview_delegate.dart';
 import 'package:sdp/screen/viewDevotee/viewDevotee.dart';
 import 'package:sdp/utilities/network_helper.dart';
@@ -601,46 +605,48 @@ class _PuriEventScreenState extends State<PuriEventScreen>
                 ),
               DataCell(ToggleSwitch(
                 minWidth: 90.0,
-                initialLabelIndex: 1,
+                initialLabelIndex:
+                    allDevotees[index].eventAttendance == true ? 0 : 1,
                 cornerRadius: 20.0,
                 activeFgColor: Colors.white,
-                inactiveBgColor: Colors.grey,
-                inactiveFgColor: Colors.white,
+                inactiveBgColor: Colors.white,
+                inactiveFgColor: Colors.grey,
+                borderWidth: 1,
                 totalSwitches: 2,
                 labels: ['Yes', 'No'],
                 activeBgColors: [
                   [Colors.blue],
-                  [Colors.pink]
+                  [Colors.blue]
                 ],
-                onToggle: (indexx) async{
-                  if(indexx ==1){
-                      EventModel eventData = EventModel(
-                          devoteeCode: allDevotees[index].devoteeCode,
-                          devoteeId: allDevotees[index].devoteeId,
-                          eventAntendeeId: Uuid().v4(),
-                          inDate: '2023-04-14',
-                          outDate: '2023-04-14',
-                          eventId: '1',
-                          eventName: 'Puri',
-                          eventAttendance: true,
-                        );
-                        await EventsAPI().addEvent(eventData);
+                onToggle: (indexx) async {
+                  if (indexx == 1) {
+                    EventModel eventData = EventModel(
+                      devoteeCode: allDevotees[index].devoteeCode,
+                      devoteeId: allDevotees[index].devoteeId,
+                      eventAntendeeId: Uuid().v4(),
+                      inDate: '2023-04-14',
+                      outDate: '2023-04-14',
+                      eventId: '1',
+                      eventName: 'Puri',
+                      eventAttendance: true,
+                    );
+                    await EventsAPI().addEvent(eventData);
 
-                        Navigator.of(context).pop();
-                  }else {
-                        EventModel eventData = EventModel(
-                          devoteeCode: allDevotees[index].devoteeCode,
-                          devoteeId: allDevotees[index].devoteeId,
-                          eventAntendeeId: Uuid().v4(),
-                          inDate: '2023-04-14',
-                          outDate: '2023-04-14',
-                          eventId: '1',
-                          eventName: 'Puri',
-                          eventAttendance: false,
-                        );
-                        await EventsAPI().addEvent(eventData);
+                    Navigator.of(context).pop();
+                  } else {
+                    EventModel eventData = EventModel(
+                      devoteeCode: allDevotees[index].devoteeCode,
+                      devoteeId: allDevotees[index].devoteeId,
+                      eventAntendeeId: Uuid().v4(),
+                      inDate: '2023-04-14',
+                      outDate: '2023-04-14',
+                      eventId: '1',
+                      eventName: 'Puri',
+                      eventAttendance: false,
+                    );
+                    await EventsAPI().addEvent(eventData);
 
-                        Navigator.of(context).pop();
+                    Navigator.of(context).pop();
                   }
                   print('switched to: $index');
                 },
@@ -715,143 +721,168 @@ class _PuriEventScreenState extends State<PuriEventScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: isLoading
-          ? const AnimatedShimmerWidget()
-          : SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  userRole == "SuperAdmin" ||
-                          userRole == "Admin" ||
-                          userRole == "Approver"
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(Responsive.isMobile(context) ? 150 : 80),
+        child: Responsive(
+          desktop: AppBar(
+              toolbarHeight: 80,
+              automaticallyImplyLeading: false,
+              centerTitle: false,
+              title: const TitleAppBar(),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: CreateDelegateButton(role: "User"),
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(18.0),
+                  child: LogoutButton(),
+                )
+              ]),
+          tablet: ResponsiveAppBar(role: "User"),
+          mobile: ResponsiveAppBar(role: "User"),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: isLoading
+            ? const AnimatedShimmerWidget()
+            : SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    userRole == "SuperAdmin" ||
+                            userRole == "Admin" ||
+                            userRole == "Approver"
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              isSelected == true
+                                  ? OutlinedButton(
+                                      style: OutlinedButton.styleFrom(
+                                          side: const BorderSide(
+                                              width: 1.5,
+                                              color: Colors.deepOrange),
+                                          foregroundColor: Colors.black),
+                                      onPressed: (NetworkHelper()
+                                                  .getCurrentDevotee
+                                                  ?.role !=
+                                              "Viewer")
+                                          ? () {
+                                              setState(() {
+                                                isChecked = true;
+                                                isSelected = false;
+                                              });
+                                            }
+                                          : null,
+                                      child: const Text('Select'),
+                                    )
+                                  : OutlinedButton(
+                                      style: OutlinedButton.styleFrom(
+                                          side: const BorderSide(
+                                              width: 1.5,
+                                              color: Colors.deepOrange),
+                                          foregroundColor: Colors.black),
+                                      onPressed: (NetworkHelper()
+                                                  .getCurrentDevotee
+                                                  ?.role !=
+                                              "Viewer")
+                                          ? () {
+                                              DisplayPdf.delegatePDF(
+                                                  selectedDevotees, context);
+                                            }
+                                          : null,
+                                      child: const Text('Print'),
+                                    ),
+                              const SizedBox(width: 12),
+                              OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                    side: const BorderSide(
+                                        width: 1.5, color: Colors.deepOrange),
+                                    foregroundColor: Colors.black),
+                                onPressed:
+                                    (NetworkHelper().getCurrentDevotee?.role !=
+                                            "Viewer")
+                                        ? () {
+                                            ExportToExcel()
+                                                .exportToExcel(allDevotees);
+                                          }
+                                        : null,
+                                child: const Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text('Export'),
+                                    Icon(
+                                      Icons.upload_rounded,
+                                      color: Colors.deepOrange,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                        : const SizedBox(),
+                    Column(
+                      children: [
+                        Text('List of Devotees Coming For 14th Event'),
+                        Row(
                           children: [
-                            isSelected == true
-                                ? OutlinedButton(
-                                    style: OutlinedButton.styleFrom(
-                                        side: const BorderSide(
-                                            width: 1.5,
-                                            color: Colors.deepOrange),
-                                        foregroundColor: Colors.black),
-                                    onPressed: (NetworkHelper()
-                                                .getCurrentDevotee
-                                                ?.role !=
-                                            "Viewer")
-                                        ? () {
-                                            setState(() {
-                                              isChecked = true;
-                                              isSelected = false;
-                                            });
-                                          }
-                                        : null,
-                                    child: const Text('Select'),
-                                  )
-                                : OutlinedButton(
-                                    style: OutlinedButton.styleFrom(
-                                        side: const BorderSide(
-                                            width: 1.5,
-                                            color: Colors.deepOrange),
-                                        foregroundColor: Colors.black),
-                                    onPressed: (NetworkHelper()
-                                                .getCurrentDevotee
-                                                ?.role !=
-                                            "Viewer")
-                                        ? () {
-                                            DisplayPdf.delegatePDF(
-                                                selectedDevotees, context);
-                                          }
-                                        : null,
-                                    child: const Text('Print'),
-                                  ),
-                            const SizedBox(width: 12),
-                            OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(
-                                      width: 1.5, color: Colors.deepOrange),
-                                  foregroundColor: Colors.black),
-                              onPressed:
-                                  (NetworkHelper().getCurrentDevotee?.role !=
-                                          "Viewer")
-                                      ? () {
-                                          ExportToExcel()
-                                              .exportToExcel(allDevotees);
-                                        }
-                                      : null,
-                              child: const Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text('Export'),
-                                  Icon(
-                                    Icons.upload_rounded,
-                                    color: Colors.deepOrange,
-                                  )
-                                ],
+                            Expanded(
+                              child: Responsive(
+                                desktop: devoteeTable(context),
+                                tablet: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: devoteeTable(context),
+                                ),
+                                mobile: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: devoteeTable(context),
+                                ),
                               ),
                             ),
                           ],
-                        )
-                      : const SizedBox(),
-                  Column(
-                    children: [
-                      Text('List of Devotees Coming For 14th Event'),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Responsive(
-                              desktop: devoteeTable(context),
-                              tablet: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: devoteeTable(context),
-                              ),
-                              mobile: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: devoteeTable(context),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      PaginationRow(
-                        dataCount: dataCount,
-                        dataLimit: dataCountPerPage,
-                        currentPage: currentPage,
-                        totalPages: totalPages,
-                        fetchAllDevotee: (page) {
-                          // if (widget.devoteeList != null) {
-                          //   fetchDelegatesByMe(page);
-                          // } else {
-                          //   fetchAllDevotee(page);
-                          // }
-                          if (widget.createdByMe == true) {
-                            fetchDelegatesByMe(page);
-                          } else {
-                            fetchAllDevotee(page);
-                          }
-                        },
-                        onFieldSubmitted: (page) {
-                          if (page != null &&
-                              int.tryParse(page)! > 0 &&
-                              int.tryParse(page)! <= totalPages) {
+                        ),
+                        PaginationRow(
+                          dataCount: dataCount,
+                          dataLimit: dataCountPerPage,
+                          currentPage: currentPage,
+                          totalPages: totalPages,
+                          fetchAllDevotee: (page) {
                             // if (widget.devoteeList != null) {
-                            //   fetchDelegatesByMe(int.tryParse(page) ?? 1);
+                            //   fetchDelegatesByMe(page);
                             // } else {
+                            //   fetchAllDevotee(page);
+                            // }
                             if (widget.createdByMe == true) {
-                              fetchDelegatesByMe(int.tryParse(page) ?? 1);
+                              fetchDelegatesByMe(page);
                             } else {
-                              fetchAllDevotee(int.tryParse(page) ?? 1);
+                              fetchAllDevotee(page);
                             }
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ],
+                          },
+                          onFieldSubmitted: (page) {
+                            if (page != null &&
+                                int.tryParse(page)! > 0 &&
+                                int.tryParse(page)! <= totalPages) {
+                              // if (widget.devoteeList != null) {
+                              //   fetchDelegatesByMe(int.tryParse(page) ?? 1);
+                              // } else {
+                              if (widget.createdByMe == true) {
+                                fetchDelegatesByMe(int.tryParse(page) ?? 1);
+                              } else {
+                                fetchAllDevotee(int.tryParse(page) ?? 1);
+                              }
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
+      ),
     );
   }
 }

@@ -7,7 +7,11 @@ import 'package:sdp/API/put_devotee.dart';
 import 'package:sdp/constant/print_image.dart';
 import 'package:sdp/model/dashboard_card_model.dart';
 import 'package:sdp/model/update_timing_model.dart';
+import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
+import 'package:sdp/screen/appBar/create_delegate_buton.dart.dart';
+import 'package:sdp/screen/appBar/leadingImage.dart';
+import 'package:sdp/screen/appBar/logoutButton.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
@@ -525,6 +529,29 @@ class _PuneSammilaniDashboardState extends State<PuneSammilaniDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(Responsive.isMobile(context) ? 150 : 80),
+        child: Responsive(
+          desktop: AppBar(
+              toolbarHeight: 80,
+              automaticallyImplyLeading: false,
+              centerTitle: false,
+              title: const TitleAppBar(),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: CreateDelegateButton(role: "User"),
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(18.0),
+                  child: LogoutButton(),
+                )
+              ]),
+          tablet: ResponsiveAppBar(role: "User"),
+          mobile: ResponsiveAppBar(role: "User"),
+        ),
+      ),
       body: isLoading == true
           ? const Center(
               child: CircularProgressIndicator(

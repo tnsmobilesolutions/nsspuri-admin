@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:sdp/model/devotee_model.dart';
+
 class EventModel {
   String? eventAntendeeId;
- bool? eventAttendance;
+  bool? eventAttendance;
   String? eventId;
   String? eventName;
   String? devoteeId;
@@ -12,6 +14,7 @@ class EventModel {
   String? remark;
   String? createdAt;
   String? updatedAt;
+  DevoteeModel? devotee;
   EventModel({
     this.eventAntendeeId,
     this.eventAttendance,
@@ -24,6 +27,7 @@ class EventModel {
     this.remark,
     this.createdAt,
     this.updatedAt,
+    this.devotee,
   });
 
   EventModel copyWith({
@@ -38,6 +42,7 @@ class EventModel {
     String? remark,
     String? createdAt,
     String? updatedAt,
+    DevoteeModel? devotee,
   }) {
     return EventModel(
       eventAntendeeId: eventAntendeeId ?? this.eventAntendeeId,
@@ -51,46 +56,50 @@ class EventModel {
       remark: remark ?? this.remark,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      devotee: devotee ?? this.devotee,
     );
   }
 
   Map<String, dynamic> toMap() {
     final result = <String, dynamic>{};
-  
-    if(eventAntendeeId != null){
+
+    if (eventAntendeeId != null) {
       result.addAll({'eventAntendeeId': eventAntendeeId});
     }
-    if(eventAttendance != null){
+    if (eventAttendance != null) {
       result.addAll({'eventAttendance': eventAttendance});
     }
-    if(eventId != null){
+    if (eventId != null) {
       result.addAll({'eventId': eventId});
     }
-    if(eventName != null){
+    if (eventName != null) {
       result.addAll({'eventName': eventName});
     }
-    if(devoteeId != null){
+    if (devoteeId != null) {
       result.addAll({'devoteeId': devoteeId});
     }
-    if(devoteeCode != null){
+    if (devoteeCode != null) {
       result.addAll({'devoteeCode': devoteeCode});
     }
-    if(inDate != null){
+    if (inDate != null) {
       result.addAll({'inDate': inDate});
     }
-    if(outDate != null){
+    if (outDate != null) {
       result.addAll({'outDate': outDate});
     }
-    if(remark != null){
+    if (remark != null) {
       result.addAll({'remark': remark});
     }
-    if(createdAt != null){
+    if (createdAt != null) {
       result.addAll({'createdAt': createdAt});
     }
-    if(updatedAt != null){
+    if (updatedAt != null) {
       result.addAll({'updatedAt': updatedAt});
     }
-  
+    if (devotee != null) {
+      result.addAll({'devotee': devotee!.toMap()});
+    }
+
     return result;
   }
 
@@ -107,48 +116,53 @@ class EventModel {
       remark: map['remark'],
       createdAt: map['createdAt'],
       updatedAt: map['updatedAt'],
+      devotee:
+          map['devotee'] != null ? DevoteeModel.fromMap(map['devotee']) : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory EventModel.fromJson(String source) => EventModel.fromMap(json.decode(source));
+  factory EventModel.fromJson(String source) =>
+      EventModel.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'EventModel(eventAntendeeId: $eventAntendeeId, eventAttendance: $eventAttendance, eventId: $eventId, eventName: $eventName, devoteeId: $devoteeId, devoteeCode: $devoteeCode, inDate: $inDate, outDate: $outDate, remark: $remark, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'EventModel(eventAntendeeId: $eventAntendeeId, eventAttendance: $eventAttendance, eventId: $eventId, eventName: $eventName, devoteeId: $devoteeId, devoteeCode: $devoteeCode, inDate: $inDate, outDate: $outDate, remark: $remark, createdAt: $createdAt, updatedAt: $updatedAt, devotee: $devotee)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
+
     return other is EventModel &&
-      other.eventAntendeeId == eventAntendeeId &&
-      other.eventAttendance == eventAttendance &&
-      other.eventId == eventId &&
-      other.eventName == eventName &&
-      other.devoteeId == devoteeId &&
-      other.devoteeCode == devoteeCode &&
-      other.inDate == inDate &&
-      other.outDate == outDate &&
-      other.remark == remark &&
-      other.createdAt == createdAt &&
-      other.updatedAt == updatedAt;
+        other.eventAntendeeId == eventAntendeeId &&
+        other.eventAttendance == eventAttendance &&
+        other.eventId == eventId &&
+        other.eventName == eventName &&
+        other.devoteeId == devoteeId &&
+        other.devoteeCode == devoteeCode &&
+        other.inDate == inDate &&
+        other.outDate == outDate &&
+        other.remark == remark &&
+        other.createdAt == createdAt &&
+        other.updatedAt == updatedAt &&
+        other.devotee == devotee;
   }
 
   @override
   int get hashCode {
     return eventAntendeeId.hashCode ^
-      eventAttendance.hashCode ^
-      eventId.hashCode ^
-      eventName.hashCode ^
-      devoteeId.hashCode ^
-      devoteeCode.hashCode ^
-      inDate.hashCode ^
-      outDate.hashCode ^
-      remark.hashCode ^
-      createdAt.hashCode ^
-      updatedAt.hashCode;
+        eventAttendance.hashCode ^
+        eventId.hashCode ^
+        eventName.hashCode ^
+        devoteeId.hashCode ^
+        devoteeCode.hashCode ^
+        inDate.hashCode ^
+        outDate.hashCode ^
+        remark.hashCode ^
+        createdAt.hashCode ^
+        updatedAt.hashCode ^
+        devotee.hashCode;
   }
 }
