@@ -3,11 +3,13 @@ import 'dart:html' as html;
 import 'package:animate_icons/animate_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:sdp/API/events.dart';
 import 'package:sdp/API/get_devotee.dart';
 import 'package:sdp/constant/pagination_value.dart';
 import 'package:sdp/constant/printing_cards.dart';
 import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:sdp/model/devotee_model.dart';
+import 'package:sdp/model/event_model.dart';
 import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/download_image_page.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/export_to_excel.dart';
@@ -18,6 +20,7 @@ import 'package:sdp/screen/viewDevotee/preview_delegate.dart';
 import 'package:sdp/screen/viewDevotee/viewDevotee.dart';
 import 'package:sdp/utilities/network_helper.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:uuid/uuid.dart';
 
 class DevoteeListBodyPage extends StatefulWidget {
   DevoteeListBodyPage({
@@ -609,7 +612,36 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                   [Colors.blue],
                   [Colors.pink]
                 ],
-                onToggle: (index) {
+                onToggle: (indexx) async {
+                  if (indexx == 1) {
+                    EventModel eventData = EventModel(
+                      devoteeCode: allDevotees[index].devoteeCode,
+                      devoteeId: allDevotees[index].devoteeId,
+                      eventAntendeeId: Uuid().v4(),
+                      inDate: '2023-04-14',
+                      outDate: '2023-04-14',
+                      eventId: '1',
+                      eventName: 'Puri',
+                      eventAttendance: true,
+                    );
+                    await EventsAPI().addEvent(eventData);
+
+                    Navigator.of(context).pop();
+                  } else {
+                    EventModel eventData = EventModel(
+                      devoteeCode: allDevotees[index].devoteeCode,
+                      devoteeId: allDevotees[index].devoteeId,
+                      eventAntendeeId: Uuid().v4(),
+                      inDate: '2023-04-14',
+                      outDate: '2023-04-14',
+                      eventId: '1',
+                      eventName: 'Puri',
+                      eventAttendance: false,
+                    );
+                    await EventsAPI().addEvent(eventData);
+
+                    Navigator.of(context).pop();
+                  }
                   print('switched to: $index');
                 },
               ))
