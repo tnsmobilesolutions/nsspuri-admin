@@ -37,8 +37,9 @@ class RemoteConfigHelper {
   int closeDration = 5;
   int devoteeCount = 20;
   String helpContactNo = "";
-
+  //
   String mandatoryUpgradeText = "";
+
   String paymentContact = "";
   String paymentMessage = "";
   double scanner_auto_close_duration = 5;

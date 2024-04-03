@@ -87,6 +87,8 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
         return Icons.confirmation_num_outlined;
       case MenuOption.create:
         return Icons.card_membership_rounded;
+      case MenuOption.delegateReport:
+        return Icons.report_off_rounded;
       case MenuOption.settings:
         return Icons.settings_outlined;
       case MenuOption.logout:
@@ -212,6 +214,36 @@ class _DevoteeListPageState extends State<DevoteeListPage> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     const Text('Create Delegate'),
+                                    IconButton(
+                                        color: Colors.deepOrange,
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        icon: const Icon(
+                                          Icons.close,
+                                          color: Colors.deepOrange,
+                                        ))
+                                  ],
+                                ),
+                                content: AddPageDilouge(
+                                  title: "addDevotee",
+                                  devoteeId: "",
+                                  role: NetworkHelper().currentDevotee?.role,
+                                  //onUpdateDevotee: (allDevotees) {},
+                                ));
+                          },
+                        );
+                        break;
+                      case MenuOption.delegateReport:
+                        showDialog<void>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text('Delegate Report'),
                                     IconButton(
                                         color: Colors.deepOrange,
                                         onPressed: () {
