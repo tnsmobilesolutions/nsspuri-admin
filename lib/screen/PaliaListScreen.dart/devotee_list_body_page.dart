@@ -601,23 +601,25 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                 ),
               DataCell(ToggleSwitch(
                 minWidth: 90.0,
-                initialLabelIndex: 1,
+                initialLabelIndex:
+                    allDevotees[index].eventAttendance == true ? 0 : 1,
                 cornerRadius: 20.0,
                 activeFgColor: Colors.white,
-                inactiveBgColor: Colors.grey,
-                inactiveFgColor: Colors.white,
+                inactiveBgColor: Colors.white,
+                inactiveFgColor: Colors.grey,
+                borderColor: [Colors.grey],
                 totalSwitches: 2,
-                labels: ['Yes', 'No'],
-                activeBgColors: [
+                labels: const ['Yes', 'No'],
+                activeBgColors: const [
                   [Colors.blue],
-                  [Colors.pink]
+                  [Colors.blue]
                 ],
                 onToggle: (indexx) async {
-                  if (indexx == 1) {
+                  if (indexx == 0) {
                     EventModel eventData = EventModel(
                       devoteeCode: allDevotees[index].devoteeCode,
                       devoteeId: allDevotees[index].devoteeId,
-                      eventAntendeeId: Uuid().v4(),
+                      eventAntendeeId: const Uuid().v4(),
                       inDate: '2023-04-14',
                       outDate: '2023-04-14',
                       eventId: '1',
@@ -626,12 +628,12 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                     );
                     await EventsAPI().addEvent(eventData);
 
-                    Navigator.of(context).pop();
+                    // Navigator.of(context).pop();
                   } else {
                     EventModel eventData = EventModel(
                       devoteeCode: allDevotees[index].devoteeCode,
                       devoteeId: allDevotees[index].devoteeId,
-                      eventAntendeeId: Uuid().v4(),
+                      eventAntendeeId: const Uuid().v4(),
                       inDate: '2023-04-14',
                       outDate: '2023-04-14',
                       eventId: '1',
@@ -640,7 +642,7 @@ class _DevoteeListBodyPageState extends State<DevoteeListBodyPage>
                     );
                     await EventsAPI().addEvent(eventData);
 
-                    Navigator.of(context).pop();
+                    // Navigator.of(context).pop();
                   }
                   print('switched to: $index');
                 },

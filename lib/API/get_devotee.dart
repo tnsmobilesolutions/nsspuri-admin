@@ -260,7 +260,7 @@ class GetDevoteeAPI extends DioFuctionAPI {
       if (status == null) {
         if (isAscending == true) {
           response = await getAPI(
-              "devotee/advance-search?$searchBy=$encodedQuery&page=$page&limit=$limit&nameOrder=ascending");
+              "devotee/advance-search?$searchBy=$encodedQuery&page=$page&limit=$limit&nameOrder=ascending&eventId=1");
         } else if (isAscending == false) {
           response = await getAPI(
               "devotee/advance-search?$searchBy=$encodedQuery&page=$page&limit=$limit&nameOrder=descending");
