@@ -5,8 +5,6 @@ import 'package:sdp/authstate.dart';
 import 'package:sdp/firebase/firebase_remote_config.dart';
 
 Future<void> main() async {
-  // await initializeDateFormatting('en', '');
-
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(

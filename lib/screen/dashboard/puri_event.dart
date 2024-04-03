@@ -631,8 +631,8 @@ class _PuriEventScreenState extends State<PuriEventScreen>
                       eventAttendance: true,
                     );
                     await EventsAPI().addEvent(eventData);
-
-                    Navigator.of(context).pop();
+                    setState(() {});
+                    // Navigator.of(context).pop();
                   } else {
                     EventModel eventData = EventModel(
                       devoteeCode: allDevotees[index].devoteeCode,
@@ -645,8 +645,8 @@ class _PuriEventScreenState extends State<PuriEventScreen>
                       eventAttendance: false,
                     );
                     await EventsAPI().addEvent(eventData);
-
-                    Navigator.of(context).pop();
+                    setState(() {});
+                    // Navigator.of(context).pop();
                   }
                   print('switched to: $index');
                 },
