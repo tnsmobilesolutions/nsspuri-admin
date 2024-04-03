@@ -1,9 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/screen/dashboard/appcolors.dart';
-import 'package:sdp/screen/dashboard/bargraph.dart';
-import 'package:sdp/screen/dashboard/report_table.dart';
+
 
 class Bargraph2 extends StatefulWidget {
   Bargraph2({super.key});

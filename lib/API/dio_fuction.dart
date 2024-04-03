@@ -3,7 +3,7 @@ import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // String baseUrl = RemoteConfigHelper().getapiBaseURL;
-String baseUrl = "api.nsspuri.org/";
+String baseUrl = "https://api.nsspuri.org/";
 // String baseUrl = "http://localhost:4400/";
 // String baseUrl = "http://127.0.0.1:4400/";
 

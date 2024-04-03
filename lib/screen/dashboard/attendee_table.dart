@@ -3,8 +3,8 @@ import 'package:sdp/API/events.dart';
 import 'package:sdp/model/event_model.dart';
 import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
-
 import 'package:toggle_switch/toggle_switch.dart';
+
 import 'package:uuid/uuid.dart';
 
 class AttendeeTableScreen extends StatefulWidget {
@@ -145,11 +145,11 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen>
                     activeFgColor: Colors.white,
                     inactiveBgColor: Colors.white,
                     inactiveFgColor: Colors.grey,
-                    borderColor: [Colors.grey],
+                    borderColor: const [Colors.grey],
                     borderWidth: 1,
                     totalSwitches: 2,
-                    labels: ['Yes', 'No'],
-                    activeBgColors: [
+                    labels: const ['Yes', 'No'],
+                    activeBgColors: const [
                       [Colors.blue],
                       [Colors.blue]
                     ],
@@ -158,7 +158,7 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen>
                         EventModel eventReqData = EventModel(
                           devoteeCode: eventData.devoteeCode,
                           devoteeId: eventData.devoteeId,
-                          eventAntendeeId: Uuid().v4(),
+                          eventAntendeeId: const Uuid().v4(),
                           inDate: '2023-04-14',
                           outDate: '2023-04-14',
                           eventId: '1',
@@ -176,7 +176,7 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen>
                         EventModel eventReqData = EventModel(
                           devoteeCode: eventData.devoteeCode,
                           devoteeId: eventData.devoteeId,
-                          eventAntendeeId: Uuid().v4(),
+                          eventAntendeeId: const Uuid().v4(),
                           inDate: '2023-04-14',
                           outDate: '2023-04-14',
                           eventId: '1',
