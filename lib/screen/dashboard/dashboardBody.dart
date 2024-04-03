@@ -44,136 +44,152 @@ class _DashboardBodyState extends State<DashboardBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 400,
-                    width: 400,
-                    color: Colors.yellow,
-                    child: InkWell(
-                      highlightColor: const Color.fromARGB(255, 0, 0, 0),
-                      onTap: (NetworkHelper().getCurrentDevotee?.role ==
-                                  "Approver" &&
-                              NetworkHelper().getCurrentDevotee?.role ==
-                                  "Viewer")
-                          ? null
-                          : () {
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) {
-                                  return PuneSammilaniDashboard();
-                                },
-                              ));
-                            },
-                      child: Center(
+    return PopScope(
+      onPopInvoked: (canPop) async => false,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) {
+                    return const DashboardBody();
+                  },
+                ));
+              },
+              icon: const Icon(
+                Icons.arrow_back_rounded,
+              )),
+        ),
+        body: Center(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 400,
+                      width: 400,
+                      color: Colors.yellow,
+                      child: InkWell(
+                        highlightColor: const Color.fromARGB(255, 0, 0, 0),
+                        onTap: (NetworkHelper().getCurrentDevotee?.role ==
+                                    "Approver" &&
+                                NetworkHelper().getCurrentDevotee?.role ==
+                                    "Viewer")
+                            ? null
+                            : () {
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) {
+                                    return PuneSammilaniDashboard();
+                                  },
+                                ));
+                              },
                         child: Center(
-                          child: Text(
-                            'Pune Sammilani Details',
-                            style: TextStyle(
-                                fontSize: 35, fontWeight: FontWeight.bold),
+                          child: Center(
+                            child: Text(
+                              'Pune Sammilani Details',
+                              style: TextStyle(
+                                  fontSize: 35, fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 12,
-                ),
-                Expanded(
-                  child: Container(
-                    height: 400,
-                    width: 400,
-                    color: Colors.yellow,
-                    child: InkWell(
-                      highlightColor: const Color.fromARGB(255, 0, 0, 0),
-                      onTap: (NetworkHelper().getCurrentDevotee?.role ==
-                                  "Approver" &&
-                              NetworkHelper().getCurrentDevotee?.role ==
-                                  "Viewer")
-                          ? null
-                          : () {
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) {
-                                  return AttendeeTableScreen(
-                                      // event: ,
-                                      // devotee: ,
-                                      );
-                                  // PuriEventScreen(
-                                  //   pageFrom: "Dashboard",
-                                  //   status: '',
-                                  // );
-                                },
-                              ));
-                            },
-                      child: Center(
+                  SizedBox(
+                    width: 12,
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: 400,
+                      width: 400,
+                      color: Colors.yellow,
+                      child: InkWell(
+                        highlightColor: const Color.fromARGB(255, 0, 0, 0),
+                        onTap: (NetworkHelper().getCurrentDevotee?.role ==
+                                    "Approver" &&
+                                NetworkHelper().getCurrentDevotee?.role ==
+                                    "Viewer")
+                            ? null
+                            : () {
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) {
+                                    return AttendeeTableScreen(
+                                        // event: ,
+                                        // devotee: ,
+                                        );
+                                    // PuriEventScreen(
+                                    //   pageFrom: "Dashboard",
+                                    //   status: '',
+                                    // );
+                                  },
+                                ));
+                              },
                         child: Center(
-                          child: Text(
-                            'Centenary Celebration At Puri On 14th April',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 35, fontWeight: FontWeight.bold),
+                          child: Center(
+                            child: Text(
+                              'Centenary Celebration At Puri On 14th April',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 35, fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
                       ),
                     ),
+                    //  SizedBox(
+                    //   height: 250,
+                    //   child: ListView.builder(
+                    //     scrollDirection: Axis.horizontal,
+                    //     itemCount: emptyTitleData.length,
+                    //     itemBuilder: (BuildContext context, int index) {
+                    //       return Padding(
+                    //           padding: const EdgeInsets.only(right: 8.0),
+                    //           child: InkWell(
+                    //             highlightColor:
+                    //                 const Color.fromARGB(255, 0, 0, 0),
+                    //             onTap: (NetworkHelper().getCurrentDevotee?.role ==
+                    //                             "Approver" &&
+                    //                         (index != 1) ||
+                    //                     NetworkHelper().getCurrentDevotee?.role ==
+                    //                         "Viewer")
+                    //                 ? null
+                    //                 : () {
+                    //                     Navigator.push(context, MaterialPageRoute(
+                    //                       builder: (context) {
+                    //                         return PuriEventScreen(
+                    //                           pageFrom: "Dashboard",
+                    //                           status:
+                    //                               emptyTitleData[index].status ??
+                    //                                   "",
+                    //                         );
+                    //                       },
+                    //                     ));
+                    //                   },
+                    //             child: Card(
+                    //                 color: (NetworkHelper()
+                    //                                     .getCurrentDevotee
+                    //                                     ?.role ==
+                    //                                 "Approver" &&
+                    //                             (index != 1) ||
+                    //                         NetworkHelper()
+                    //                                 .getCurrentDevotee
+                    //                                 ?.role ==
+                    //                             "Viewer")
+                    //                     ? const Color.fromARGB(255, 216, 216, 216)
+                    //                     : Colors.yellowAccent,
+                    //                 child: DashBoardData(
+                    //                     dashBoardDevoteeData:
+                    //                         emptyTitleData[index])),
+                    //           ));
+                    //     },
+                    //   ),
+                    // ),
                   ),
-                  //  SizedBox(
-                  //   height: 250,
-                  //   child: ListView.builder(
-                  //     scrollDirection: Axis.horizontal,
-                  //     itemCount: emptyTitleData.length,
-                  //     itemBuilder: (BuildContext context, int index) {
-                  //       return Padding(
-                  //           padding: const EdgeInsets.only(right: 8.0),
-                  //           child: InkWell(
-                  //             highlightColor:
-                  //                 const Color.fromARGB(255, 0, 0, 0),
-                  //             onTap: (NetworkHelper().getCurrentDevotee?.role ==
-                  //                             "Approver" &&
-                  //                         (index != 1) ||
-                  //                     NetworkHelper().getCurrentDevotee?.role ==
-                  //                         "Viewer")
-                  //                 ? null
-                  //                 : () {
-                  //                     Navigator.push(context, MaterialPageRoute(
-                  //                       builder: (context) {
-                  //                         return PuriEventScreen(
-                  //                           pageFrom: "Dashboard",
-                  //                           status:
-                  //                               emptyTitleData[index].status ??
-                  //                                   "",
-                  //                         );
-                  //                       },
-                  //                     ));
-                  //                   },
-                  //             child: Card(
-                  //                 color: (NetworkHelper()
-                  //                                     .getCurrentDevotee
-                  //                                     ?.role ==
-                  //                                 "Approver" &&
-                  //                             (index != 1) ||
-                  //                         NetworkHelper()
-                  //                                 .getCurrentDevotee
-                  //                                 ?.role ==
-                  //                             "Viewer")
-                  //                     ? const Color.fromARGB(255, 216, 216, 216)
-                  //                     : Colors.yellowAccent,
-                  //                 child: DashBoardData(
-                  //                     dashBoardDevoteeData:
-                  //                         emptyTitleData[index])),
-                  //           ));
-                  //     },
-                  //   ),
-                  // ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

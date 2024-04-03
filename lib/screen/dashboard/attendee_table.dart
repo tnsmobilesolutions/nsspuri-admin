@@ -159,7 +159,7 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen>
                       [Colors.blue]
                     ],
                     onToggle: (indexx) async {
-                      if (indexx == 1) {
+                      if (indexx == 0) {
                         EventModel eventReqData = EventModel(
                           devoteeCode: eventData.devoteeCode,
                           devoteeId: eventData.devoteeId,
@@ -172,6 +172,18 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen>
                         );
                         print('true');
                         await EventsAPI().addEvent(eventReqData);
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return AttendeeTableScreen(
+                                // event: ,
+                                // devotee: ,
+                                );
+                            // PuriEventScreen(
+                            //   pageFrom: "Dashboard",
+                            //   status: '',
+                            // );
+                          },
+                        ));
 
                         // Navigator.of(context).pop();
                       } else {
@@ -188,6 +200,18 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen>
                         print('false');
 
                         await EventsAPI().addEvent(eventReqData);
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return AttendeeTableScreen(
+                                // event: ,
+                                // devotee: ,
+                                );
+                            // PuriEventScreen(
+                            //   pageFrom: "Dashboard",
+                            //   status: '',
+                            // );
+                          },
+                        ));
 
                         // Navigator.of(context).pop();
                       }
