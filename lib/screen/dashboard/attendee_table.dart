@@ -1,14 +1,9 @@
-// ignore_for_file: file_names, depend_on_referenced_packages, must_be_immutable, iterable_contains_unrelated_type, avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:sdp/API/events.dart';
-import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/model/event_model.dart';
 import 'package:sdp/responsive.dart';
-import 'package:sdp/screen/appBar/create_delegate_buton.dart.dart';
-import 'package:sdp/screen/appBar/leadingImage.dart';
-import 'package:sdp/screen/appBar/logoutButton.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
+
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:uuid/uuid.dart';
 
@@ -174,18 +169,9 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen>
                         await EventsAPI().addEvent(eventReqData);
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) {
-                            return AttendeeTableScreen(
-                                // event: ,
-                                // devotee: ,
-                                );
-                            // PuriEventScreen(
-                            //   pageFrom: "Dashboard",
-                            //   status: '',
-                            // );
+                            return AttendeeTableScreen();
                           },
                         ));
-
-                        // Navigator.of(context).pop();
                       } else {
                         EventModel eventReqData = EventModel(
                           devoteeCode: eventData.devoteeCode,
@@ -198,22 +184,12 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen>
                           eventAttendance: false,
                         );
                         print('false');
-
                         await EventsAPI().addEvent(eventReqData);
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) {
-                            return AttendeeTableScreen(
-                                // event: ,
-                                // devotee: ,
-                                );
-                            // PuriEventScreen(
-                            //   pageFrom: "Dashboard",
-                            //   status: '',
-                            // );
+                            return AttendeeTableScreen();
                           },
                         ));
-
-                        // Navigator.of(context).pop();
                       }
                       print('switched to: $index');
                     },
@@ -228,30 +204,45 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Responsive(
-                    desktop: devoteeTable(context),
-                    tablet: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: devoteeTable(context),
-                    ),
-                    mobile: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: devoteeTable(context),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Attendee List'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(
+              builder: (context) {
+                return DashboardPage();
+              },
+            ));
+          },
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Responsive(
+                      desktop: devoteeTable(context),
+                      tablet: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: devoteeTable(context),
+                      ),
+                      mobile: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: devoteeTable(context),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
