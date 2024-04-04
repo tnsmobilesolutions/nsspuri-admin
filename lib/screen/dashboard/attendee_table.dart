@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sdp/API/events.dart';
+import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:sdp/model/event_model.dart';
 import 'package:sdp/responsive.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
@@ -26,7 +27,15 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen>
   bool showMenu = false;
   bool isLoading = true;
 
-  List<bool> selectedList = [];
+  int totalPages = 0, dataCount = 0, currentPage = 1;
+  int dataCountPerPage = RemoteConfigHelper().getDataCountPerPage;
+  String getSLno(int index) {
+    List<int> slList = List.generate(
+      dataCountPerPage,
+      (index) => (currentPage - 1) * dataCountPerPage + index + 1,
+    );
+    return slList[index].toString();
+  }
 
   Expanded headingText(String text) {
     return Expanded(
@@ -95,7 +104,7 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen>
                 EventModel eventData = EventModel.fromMap(allEvents[index]);
                 print('event data ------$eventData');
                 return DataRow(cells: [
-                  DataCell(Text('$_counter')), // Display serial number
+                  DataCell(Text(getSLno(index))), // Display serial number
                   DataCell(SizedBox(
                     height: 50,
                     width: 50,
