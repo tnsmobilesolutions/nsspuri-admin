@@ -102,6 +102,20 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    fetchAttendee();
+  }
+
+  void fetchAttendee() async {
+    Map<String, dynamic>? apiResult = await GetDevoteeAPI().searchAttendees(
+      eventId: "1",
+      searchBy: "name",
+      searchKeyword: "amrutanshu",
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SelectionArea(
       child: Scaffold(
@@ -349,7 +363,7 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen> {
         ),
         body: Column(
           children: [
-            Text(
+            const Text(
               'List of Devotees Coming to Centenary Event',
               style: TextStyle(fontSize: 28),
             ),

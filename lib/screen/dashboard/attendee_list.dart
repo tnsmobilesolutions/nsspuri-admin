@@ -37,6 +37,17 @@ class _AttendeeListPageState extends State<AttendeeListPage>
     return slList[index].toString();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    fetchAttendee();
+  }
+
+  void fetchAttendee() async {
+    Map<String, dynamic>? apiResult = await EventsAPI().getAllEvent('1');
+    print("response: ***$apiResult");
+  }
+
   Expanded headingText(String text) {
     return Expanded(
       child: Text(
@@ -84,7 +95,7 @@ class _AttendeeListPageState extends State<AttendeeListPage>
             child: CircularProgressIndicator(),
           );
         } else {
-          final allEvents = snapshot.data?['data'];
+          final allEvents = snapshot.data?['data']["data"];
           print('data------${snapshot.data}');
           // Replace the following DataTable with your own data
           return DataTable(
