@@ -1,259 +1,628 @@
-import 'package:flutter/material.dart';
-import 'package:sdp/API/events.dart';
-import 'package:sdp/firebase/firebase_remote_config.dart';
-import 'package:sdp/model/event_model.dart';
-import 'package:sdp/responsive.dart';
-import 'package:sdp/screen/dashboard/dashboard.dart';
+// ignore_for_file: must_be_immutable, avoid_print, use_build_context_synchronously
 
-import 'package:toggle_switch/toggle_switch.dart';
-import 'package:uuid/uuid.dart';
+import 'package:flutter/material.dart';
+import 'package:sdp/API/get_devotee.dart';
+import 'package:sdp/Login/EmailSignIn.dart';
+import 'package:sdp/constant/enums.dart';
+import 'package:sdp/firebase/firebase_auth_api.dart';
+import 'package:sdp/firebase/firebase_remote_config.dart';
+import 'package:sdp/model/devotee_model.dart';
+import 'package:sdp/responsive.dart';
+import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
+import 'package:sdp/screen/appBar/action_widget.dart';
+import 'package:sdp/screen/appBar/addPageDialouge.dart';
+import 'package:sdp/screen/appBar/leadingImage.dart';
+import 'package:sdp/screen/appBar/responsive_action_widget.dart';
+import 'package:sdp/screen/dashboard/attendee_list.dart';
+import 'package:sdp/screen/dashboard/change_time.dart';
+import 'package:sdp/screen/dashboard/dashboardBody.dart';
+import 'package:sdp/screen/dashboard/delegate_report.dart';
+import 'package:sdp/screen/dashboard/prasad_coupon.dart';
+import 'package:sdp/utilities/network_helper.dart';
+
+extension MenuOptionExtension on MenuOption {
+  String get value {
+    switch (this) {
+      case MenuOption.home:
+        return 'Home';
+      case MenuOption.createdByMe:
+        return 'Created By Me';
+      case MenuOption.prasadCoupon:
+        return 'Prasad Coupon';
+      case MenuOption.create:
+        return 'Create Delegate';
+      case MenuOption.delegateReport:
+        return 'Delegate Report';
+      case MenuOption.settings:
+        return 'Settings';
+      case MenuOption.logout:
+        return 'Logout';
+    }
+  }
+}
 
 class AttendeeTableScreen extends StatefulWidget {
-  AttendeeTableScreen({
-    Key? key,
-    // required this.event, required this.devotee
-  }) : super(key: key);
-// EventModel event;
-//     DevoteeModel devotee;
+  AttendeeTableScreen({super.key});
 
   @override
   State<AttendeeTableScreen> createState() => _AttendeeTableScreenState();
 }
 
-class _AttendeeTableScreenState extends State<AttendeeTableScreen>
-    with TickerProviderStateMixin {
-  bool editpaliDate = false;
-  bool isAscending = false;
-  bool showMenu = false;
-  bool isLoading = true;
-
+class _AttendeeTableScreenState extends State<AttendeeTableScreen> {
+  List<DevoteeModel> allDevoteesCreatedByMe = [];
+  MenuOption option = MenuOption.create;
+  MenuOption? selectedMenu;
+  List<String>? selectedPalia, selectedDates;
   int totalPages = 0, dataCount = 0, currentPage = 1;
-  int dataCountPerPage = RemoteConfigHelper().getDataCountPerPage;
-  String getSLno(int index) {
-    List<int> slList = List.generate(
-      dataCountPerPage,
-      (index) => (currentPage - 1) * dataCountPerPage + index + 1,
+
+  Future<void> fetchDelegatesByMe() async {
+    // print("is ascending: ${NetworkHelper().getNameAscending}");
+    // print("created by: ${NetworkHelper().currentDevotee}");
+    var currentUser = NetworkHelper().currentDevotee;
+    var allDevotees = await GetDevoteeAPI().devoteeListBycreatedById(
+      currentUser?.devoteeId.toString() ?? "",
+      1,
+      RemoteConfigHelper().getDataCountPerPage,
+      isAscending: NetworkHelper().getNameAscending,
     );
-    return slList[index].toString();
-  }
-
-  Expanded headingText(String text) {
-    return Expanded(
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-        style: const TextStyle(
-            fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
-      ),
-    );
-  }
-  //  String getSLno(int index) {
-  //   List<int> slList = List.generate(
-  //     dataCountPerPage,
-  //     (index) => (currentPage - 1) * dataCountPerPage + index + 1,
-  //   );
-  //   return slList[index].toString();
-  // }
-
-  DataColumn dataColumn(BuildContext context, String header,
-      [Function(int, bool)? onSort]) {
-    return DataColumn(
-        onSort: onSort,
-        label: Flexible(
-          flex: 1,
-          child: Text(
-            header,
-            softWrap: true,
-            style: Theme.of(context).textTheme.titleMedium?.merge(
-                  const TextStyle(
-                    color: Colors.blue,
-                    fontSize: 18,
-                  ),
-                ),
-          ),
-        ));
-  }
-
-  int _counter = 1;
-  Widget devoteeTable(BuildContext context) {
-    return FutureBuilder(
-      future: EventsAPI().getAllEvent('1'),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else {
-          final allEvents = snapshot.data?['data'];
-          print('data------${snapshot.data}');
-          // Replace the following DataTable with your own data
-          return DataTable(
-              showBottomBorder: true,
-              columnSpacing: 30,
-              dataRowMaxHeight: 80,
-              columns: [
-                dataColumn(context, 'Sl. No'),
-                dataColumn(context, 'Image'),
-                dataColumn(context, 'Name'),
-                dataColumn(context, 'Event ID'),
-                dataColumn(context, 'Devotee Code'),
-                dataColumn(context, 'Sangha'),
-                dataColumn(context, 'Are you Coming to 14th Apr?'),
-              ],
-              rows: List<DataRow>.generate(allEvents.length, (index) {
-                EventModel eventData = EventModel.fromMap(allEvents[index]);
-                print('event data ------$eventData');
-                return DataRow(cells: [
-                  DataCell(Text(getSLno(index))), // Display serial number
-                  DataCell(SizedBox(
-                    height: 50,
-                    width: 50,
-                    child: eventData.devotee?.profilePhotoUrl != null &&
-                            eventData.devotee?.profilePhotoUrl!.isNotEmpty ==
-                                true
-                        ? Image.network(
-                            eventData.devotee?.profilePhotoUrl ?? '',
-                            height: 80,
-                            width: 80,
-                            loadingBuilder: (BuildContext context, Widget child,
-                                ImageChunkEvent? loadingProgress) {
-                              if (loadingProgress == null) {
-                                return child;
-                              } else {
-                                return Center(
-                                  child: CircularProgressIndicator(
-                                    value: loadingProgress.expectedTotalBytes !=
-                                            null
-                                        ? loadingProgress
-                                                .cumulativeBytesLoaded /
-                                            (loadingProgress
-                                                    .expectedTotalBytes ??
-                                                1)
-                                        : null,
-                                  ),
-                                );
-                              }
-                            },
-                            errorBuilder: (BuildContext context, Object error,
-                                StackTrace? stackTrace) {
-                              return const Icon(Icons.error);
-                            },
-                          )
-                        : const Image(
-                            image: AssetImage('assets/images/profile.jpeg')),
-                  )),
-                  DataCell(Text('${eventData.devotee?.name}')),
-                  DataCell(Text('${eventData.eventId}')),
-                  DataCell(Text('${eventData.devoteeCode}')),
-                  DataCell(Text('${eventData.devotee?.sangha}')),
-                  DataCell(ToggleSwitch(
-                    minWidth: 90.0,
-                    initialLabelIndex:
-                        eventData.eventAttendance == true ? 0 : 1,
-                    cornerRadius: 20.0,
-                    activeFgColor: Colors.white,
-                    inactiveBgColor: Colors.white,
-                    inactiveFgColor: Colors.grey,
-                    borderColor: [Colors.grey],
-                    borderWidth: 1,
-                    totalSwitches: 2,
-                    labels: ['Yes', 'No'],
-                    activeBgColors: [
-                      [Colors.blue],
-                      [Colors.blue]
-                    ],
-                    onToggle: (indexx) async {
-                      if (indexx == 0) {
-                        EventModel eventReqData = EventModel(
-                          devoteeCode: eventData.devoteeCode,
-                          devoteeId: eventData.devoteeId,
-                          eventAntendeeId: Uuid().v4(),
-                          inDate: '2023-04-14',
-                          outDate: '2023-04-14',
-                          eventId: '1',
-                          eventName: 'Puri',
-                          eventAttendance: true,
-                        );
-                        print('true');
-                        await EventsAPI().addEvent(eventReqData);
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) {
-                            return AttendeeTableScreen();
-                          },
-                        ));
-                      } else {
-                        EventModel eventReqData = EventModel(
-                          devoteeCode: eventData.devoteeCode,
-                          devoteeId: eventData.devoteeId,
-                          eventAntendeeId: Uuid().v4(),
-                          inDate: '2023-04-14',
-                          outDate: '2023-04-14',
-                          eventId: '1',
-                          eventName: 'Puri',
-                          eventAttendance: false,
-                        );
-                        print('false');
-                        await EventsAPI().addEvent(eventReqData);
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) {
-                            return AttendeeTableScreen();
-                          },
-                        ));
-                      }
-                      print('switched to: $index');
-                    },
-                  ))
-                ]);
-              }));
+    if (allDevotees != null) {
+      setState(() {
+        for (int i = 0; i < allDevotees["data"].length; i++) {
+          allDevoteesCreatedByMe.add(allDevotees["data"][i]);
         }
-      },
-    );
-    // Counter variable to generate serial numbers
+        print("all devotee : $allDevoteesCreatedByMe");
+
+        totalPages = allDevotees["totalPages"];
+        dataCount = allDevotees["count"];
+        currentPage = allDevotees["currentPage"];
+      });
+      print("created by me from dashboard: ${allDevoteesCreatedByMe.length}");
+    } else {
+      print("No delegates by me !");
+    }
+  }
+
+  IconData _getIconForMenuOption(MenuOption option) {
+    switch (option) {
+      case MenuOption.home:
+        return Icons.home_outlined;
+      case MenuOption.createdByMe:
+        return Icons.card_membership_rounded;
+      case MenuOption.prasadCoupon:
+        return Icons.confirmation_num_outlined;
+      case MenuOption.create:
+        return Icons.card_membership_rounded;
+      case MenuOption.delegateReport:
+        return Icons.report_off_rounded;
+      case MenuOption.settings:
+        return Icons.settings_outlined;
+      case MenuOption.logout:
+        return Icons.logout_rounded;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Attendee List'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(
-              builder: (context) {
-                return DashboardPage();
-              },
-            ));
-          },
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Responsive(
-                      desktop: devoteeTable(context),
-                      tablet: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: devoteeTable(context),
-                      ),
-                      mobile: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: devoteeTable(context),
-                      ),
-                    ),
-                  ),
-                ],
+    return SelectionArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: PreferredSize(
+          preferredSize:
+              Size.fromHeight(Responsive.isMobile(context) ? 150 : 70),
+          child: Responsive(
+            desktop: AppBar(
+              toolbarHeight: 80,
+              automaticallyImplyLeading: false,
+              centerTitle: false,
+              title: const Responsive(
+                desktop: TitleAppBar(),
+                tablet: TitleAppBar(),
+                mobile: TitleAppBarMobile(),
               ),
-            ],
+              flexibleSpace: Padding(
+                padding: const EdgeInsets.only(right: 50),
+                child: Center(
+                  child: AppbarActionButtonWidget(
+                    pageFrom: "Dashboard",
+                  ),
+                ),
+              ),
+              actions: [
+                PopupMenuButton<MenuOption>(
+                  icon: const Icon(
+                    Icons.more_vert,
+                    color: Colors.white,
+                  ),
+                  onSelected: (MenuOption value) async {
+                    switch (value) {
+                      case MenuOption.home:
+                        if (NetworkHelper().currentDevotee?.role != "User") {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AttendeeTableScreen()),
+                          );
+                        }
+
+                        break;
+                      case MenuOption.createdByMe:
+                        await fetchDelegatesByMe();
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return DevoteeListPage(
+                              pageFrom: "Dashboard",
+                              status: "allDevotee",
+                              devoteeList: allDevoteesCreatedByMe,
+                              totalPages: totalPages,
+                              currentPage: currentPage,
+                              dataCount: dataCount,
+                            );
+                          },
+                        ));
+                        break;
+                      case MenuOption.prasadCoupon:
+                        bool showCoupon = NetworkHelper()
+                                    .currentDevotee
+                                    ?.role ==
+                                "PrasadScan" ||
+                            NetworkHelper().currentDevotee?.role ==
+                                "SecurityScan" ||
+                            NetworkHelper().currentDevotee?.role ==
+                                "PrasadAndSecurityScan" ||
+                            NetworkHelper().currentDevotee?.role == "Admin" ||
+                            NetworkHelper().currentDevotee?.role ==
+                                "SuperAdmin";
+                        if (context.mounted &&
+                            showCoupon &&
+                            selectedDates != null) {
+                          showDialog<String>(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                              backgroundColor: Colors.white,
+                              icon: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  IconButton(
+                                      color: Colors.deepOrange,
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      icon: const Icon(
+                                        Icons.close,
+                                        color: Colors.deepOrange,
+                                      )),
+                                ],
+                              ),
+                              content: PrasadCoupon(
+                                fromDashboard: true,
+                                selectedDates: selectedDates,
+                              ),
+                            ),
+                          );
+                        }
+                        break;
+                      case MenuOption.create:
+                        showDialog<void>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text('Create Delegate'),
+                                    IconButton(
+                                        color: Colors.deepOrange,
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        icon: const Icon(
+                                          Icons.close,
+                                          color: Colors.deepOrange,
+                                        ))
+                                  ],
+                                ),
+                                content: AddPageDilouge(
+                                  title: "addDevotee",
+                                  devoteeId: "",
+                                  role: NetworkHelper().currentDevotee?.role,
+                                  //onUpdateDevotee: (allDevotees) {},
+                                ));
+                          },
+                        );
+                        break;
+                      case MenuOption.delegateReport:
+                        showDialog<void>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return DelegateReportScreen();
+                          },
+                        );
+                        break;
+                      case MenuOption.settings:
+                        if (context.mounted &&
+                            NetworkHelper().currentDevotee?.role ==
+                                "SuperAdmin") {
+                          showDialog<void>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text('Change Timing'),
+                                    IconButton(
+                                        color: Colors.deepOrange,
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        icon: const Icon(
+                                          Icons.close,
+                                          color: Colors.deepOrange,
+                                        ))
+                                  ],
+                                ),
+                                content: const UpdateTime(),
+                              );
+                            },
+                          );
+                        }
+                        break;
+                      case MenuOption.logout:
+                        showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Thank You'),
+                                IconButton(
+                                    color: const Color(0XFF3f51b5),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    icon: const Icon(Icons.close))
+                              ],
+                            ),
+                            content: const Text('Do You Want to Logout?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.pop(context, 'Cancel'),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  FirebaseAuthentication().signOut();
+                                  //Networkhelper().setCurrentDevotee = DevoteeModel();
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) {
+                                      return const EmailSignIn();
+                                    },
+                                  ));
+                                  // Navigator.popUntil(context, (route) => route.isFirst);
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        );
+                        break;
+                    }
+                  },
+                  itemBuilder: (BuildContext context) =>
+                      MenuOption.values.map((MenuOption option) {
+                    return PopupMenuItem<MenuOption>(
+                      value: option,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(
+                            _getIconForMenuOption(option),
+                            color: option == MenuOption.prasadCoupon &&
+                                    selectedDates == null
+                                ? Colors.grey
+                                : Colors.deepOrange,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            option.value,
+                            style: TextStyle(
+                              color: option == MenuOption.prasadCoupon &&
+                                      selectedDates == null
+                                  ? Colors.grey
+                                  : Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
+            tablet: ResponsiveAppBar(),
+            mobile: ResponsiveAppBar(),
           ),
         ),
+        body: Column(
+          children: [
+            Text(
+              'List of Devotees Coming to Centenary Event',
+              style: TextStyle(fontSize: 28),
+            ),
+            AttendeeListPage()
+          ],
+        ),
+        //drawer: const AppDrawer(),
       ),
+    );
+  }
+}
+
+class ResponsiveAppBar extends StatefulWidget {
+  ResponsiveAppBar(
+      {super.key,
+      this.advanceStatus,
+      this.searchBy,
+      this.searchValue,
+      this.role,
+      this.showClearButton});
+
+  String? advanceStatus;
+  String? role;
+  String? searchBy;
+  String? searchValue;
+  bool? showClearButton;
+
+  @override
+  State<ResponsiveAppBar> createState() => _ResponsiveAppBarState();
+}
+
+class _ResponsiveAppBarState extends State<ResponsiveAppBar> {
+  List<DevoteeModel> allDevoteesCreatedByMe = [];
+  MenuOption option = MenuOption.create;
+  MenuOption? selectedMenu;
+  int totalPages = 0, dataCount = 0, currentPage = 1;
+
+  Future<void> fetchDelegatesByMe() async {
+    var currentUser = NetworkHelper().currentDevotee;
+    var allDevotees = await GetDevoteeAPI().devoteeListBycreatedById(
+      currentUser?.devoteeId.toString() ?? "",
+      1,
+      RemoteConfigHelper().getDataCountPerPage,
+      isAscending: NetworkHelper().getNameAscending,
+    );
+    if (allDevotees != null) {
+      setState(() {
+        for (int i = 0; i < allDevotees["data"].length; i++) {
+          allDevoteesCreatedByMe.add(allDevotees["data"][i]);
+        }
+        totalPages = allDevotees["totalPages"];
+        dataCount = allDevotees["count"];
+        currentPage = allDevotees["currentPage"];
+      });
+      print("created by me from dashboard: ${allDevoteesCreatedByMe.length}");
+    } else {
+      print("No delegates by me !");
+    }
+  }
+
+  IconData _getIconForMenuOption(MenuOption option) {
+    switch (option) {
+      case MenuOption.home:
+        return Icons.home_outlined;
+      case MenuOption.createdByMe:
+        return Icons.card_membership_rounded;
+      case MenuOption.prasadCoupon:
+        return Icons.confirmation_num_outlined;
+      case MenuOption.create:
+        return Icons.card_membership_rounded;
+      case MenuOption.delegateReport:
+        return Icons.report_off_outlined;
+      case MenuOption.settings:
+        return Icons.settings_outlined;
+      case MenuOption.logout:
+        return Icons.logout_rounded;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      toolbarHeight: 200,
+      automaticallyImplyLeading: false,
+      centerTitle: false,
+      title: widget.showClearButton == true
+          ? const SizedBox()
+          : const TitleAppBarMobile(),
+      actions: [
+        PopupMenuButton<MenuOption>(
+          icon: const Icon(
+            Icons.more_vert,
+            color: Colors.white,
+          ),
+          onSelected: (MenuOption value) async {
+            switch (value) {
+              case MenuOption.home:
+                if (widget.role != "User") {
+                  // change to hide home menu later for userdashboard
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AttendeeTableScreen()),
+                  );
+                }
+
+                break;
+              case MenuOption.createdByMe:
+                await fetchDelegatesByMe();
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) {
+                    return DevoteeListPage(
+                      pageFrom: "Dashboard",
+                      status: "allDevotee",
+                      devoteeList: allDevoteesCreatedByMe,
+                      totalPages: totalPages,
+                      currentPage: currentPage,
+                      dataCount: dataCount,
+                    );
+                  },
+                ));
+                break;
+              case MenuOption.prasadCoupon:
+                await fetchDelegatesByMe();
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) {
+                    return DevoteeListPage(
+                      pageFrom: "Dashboard",
+                      status: "allDevotee",
+                      devoteeList: allDevoteesCreatedByMe,
+                      totalPages: totalPages,
+                      currentPage: currentPage,
+                      dataCount: dataCount,
+                    );
+                  },
+                ));
+                break;
+              case MenuOption.create:
+                showDialog<void>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Create Delegate'),
+                            IconButton(
+                                color: Colors.deepOrange,
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                icon: const Icon(
+                                  Icons.close,
+                                  color: Colors.deepOrange,
+                                ))
+                          ],
+                        ),
+                        content: AddPageDilouge(
+                          title: "addDevotee",
+                          devoteeId: "",
+                          role: widget.role,
+                          //onUpdateDevotee: (allDevotees) {},
+                        ));
+                  },
+                );
+                break;
+              case MenuOption.delegateReport:
+                showDialog<void>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return DelegateReportScreen();
+                  },
+                );
+                break;
+              case MenuOption.settings:
+                if (context.mounted &&
+                    NetworkHelper().currentDevotee?.role == "SuperAdmin") {
+                  showDialog<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('Change Timing'),
+                              IconButton(
+                                  color: Colors.deepOrange,
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  icon: const Icon(
+                                    Icons.close,
+                                    color: Colors.deepOrange,
+                                  ))
+                            ],
+                          ),
+                          content: const UpdateTime());
+                    },
+                  );
+                }
+                break;
+              case MenuOption.logout:
+                showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Thank You'),
+                        IconButton(
+                            color: const Color(0XFF3f51b5),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: const Icon(Icons.close))
+                      ],
+                    ),
+                    content: const Text('Do You Want to Logout?'),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, 'Cancel'),
+                        child: const Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          FirebaseAuthentication().signOut();
+                          //Networkhelper().setCurrentDevotee = DevoteeModel();
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) {
+                              return const EmailSignIn();
+                            },
+                          ));
+                          // Navigator.popUntil(context, (route) => route.isFirst);
+                        },
+                        child: const Text('OK'),
+                      ),
+                    ],
+                  ),
+                );
+                break;
+            }
+          },
+          itemBuilder: (BuildContext context) =>
+              MenuOption.values.map((MenuOption option) {
+            return PopupMenuItem<MenuOption>(
+              value: option,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Icon(
+                    _getIconForMenuOption(option),
+                    color: Colors.deepOrange,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(option.value),
+                ],
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+      bottom: widget.role != "User"
+          ? PreferredSize(
+              preferredSize: const Size.fromHeight(0),
+              child: ResponsiveAppbarActionButtonWidget(
+                advanceStatus: widget.advanceStatus,
+                searchBy: widget.searchBy,
+                searchValue: widget.searchValue,
+                showClearButton: widget.showClearButton,
+              ),
+            )
+          : null,
     );
   }
 }
