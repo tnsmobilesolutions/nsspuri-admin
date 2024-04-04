@@ -15,13 +15,13 @@ import 'package:sdp/screen/appBar/logoutButton.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
 import 'package:sdp/utilities/network_helper.dart';
 
-class PuneSammilaniDashboard extends StatefulWidget {
-  const PuneSammilaniDashboard({super.key, this.onTap});
+class PuneSammilaniDetails extends StatefulWidget {
+  const PuneSammilaniDetails({super.key, this.onTap});
 
   final void Function(List<String> dates)? onTap;
 
   @override
-  State<PuneSammilaniDashboard> createState() => _PuneSammilaniDashboardState();
+  State<PuneSammilaniDetails> createState() => _PuneSammilaniDetailsState();
 }
 
 String todayDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
@@ -30,7 +30,7 @@ String yesterdayDate = DateFormat('yyyy-MM-dd')
 String dayBeforeYesterdayDate = DateFormat('yyyy-MM-dd')
     .format(DateTime.now().subtract(const Duration(days: 2)));
 
-class _PuneSammilaniDashboardState extends State<PuneSammilaniDashboard> {
+class _PuneSammilaniDetailsState extends State<PuneSammilaniDetails> {
   DateTime? selectedDate1;
   DateTime? selectedDate2;
   DateTime? selectedDate3;
@@ -529,29 +529,6 @@ class _PuneSammilaniDashboardState extends State<PuneSammilaniDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(Responsive.isMobile(context) ? 150 : 80),
-        child: Responsive(
-          desktop: AppBar(
-              toolbarHeight: 80,
-              automaticallyImplyLeading: false,
-              centerTitle: false,
-              title: const TitleAppBar(),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: CreateDelegateButton(role: "User"),
-                ),
-                const Padding(
-                  padding: EdgeInsets.all(18.0),
-                  child: LogoutButton(),
-                )
-              ]),
-          tablet: ResponsiveAppBar(role: "User"),
-          mobile: ResponsiveAppBar(role: "User"),
-        ),
-      ),
       body: isLoading == true
           ? const Center(
               child: CircularProgressIndicator(
