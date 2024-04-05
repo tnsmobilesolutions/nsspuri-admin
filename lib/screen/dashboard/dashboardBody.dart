@@ -8,6 +8,7 @@ import 'package:sdp/constant/print_image.dart';
 import 'package:sdp/model/dashboard_card_model.dart';
 import 'package:sdp/model/update_timing_model.dart';
 import 'package:sdp/screen/PaliaListScreen.dart/devotee_list_page.dart';
+import 'package:sdp/screen/dashboard/Pune_sammilani_dashboard.dart';
 import 'package:sdp/screen/dashboard/attendee_table.dart';
 import 'package:sdp/screen/dashboard/dashboard.dart';
 import 'package:sdp/screen/dashboard/pune_sammilani.dart';
@@ -37,6 +38,7 @@ class _DashboardBodyState extends State<DashboardBody> {
   bool isLoading = true;
   String? prasadTiming;
   Map<String, dynamic>? responseData;
+
   @override
   void initState() {
     super.initState();
@@ -67,7 +69,7 @@ class _DashboardBodyState extends State<DashboardBody> {
                           : () {
                               Navigator.push(context, MaterialPageRoute(
                                 builder: (context) {
-                                  return const PuneSammilaniDashboard();
+                                  return PuneSammilaniDashboard();
                                 },
                               ));
                             },

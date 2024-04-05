@@ -32,15 +32,6 @@ class AppbarActionButtonWidget extends StatefulWidget {
 }
 
 class _AppbarActionButtonWidgetState extends State<AppbarActionButtonWidget> {
-  // bool dataSubmitted = false,
-  //     paid = false,
-  //     rejected = false,
-  //     approved = false,
-  //     printed = false,
-  //     withdrawn = false,
-  //     lost = false,
-  //     reissued = false,
-  //     blackListed = false;
 
   List<DevoteeModel> devoteeList = [];
   String? selectedStatus;

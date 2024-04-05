@@ -1,249 +1,266 @@
 import 'package:flutter/material.dart';
-import 'package:sdp/API/events.dart';
-import 'package:sdp/model/event_model.dart';
-import 'package:sdp/responsive.dart';
-import 'package:sdp/screen/dashboard/dashboard.dart';
-import 'package:toggle_switch/toggle_switch.dart';
-
-import 'package:uuid/uuid.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:sdp/constant/sangha_list.dart';
+import 'package:sdp/screen/dashboard/attendee_list.dart';
+import 'package:sdp/utilities/color_palette.dart';
+import 'package:sdp/utilities/network_helper.dart';
 
 class AttendeeTableScreen extends StatefulWidget {
-  AttendeeTableScreen({
-    Key? key,
-    // required this.event, required this.devotee
-  }) : super(key: key);
-// EventModel event;
-//     DevoteeModel devotee;
+  const AttendeeTableScreen({Key? key});
 
   @override
   State<AttendeeTableScreen> createState() => _AttendeeTableScreenState();
 }
 
-class _AttendeeTableScreenState extends State<AttendeeTableScreen>
-    with TickerProviderStateMixin {
-  bool editpaliDate = false;
-  bool isAscending = false;
-  bool showMenu = false;
-  bool isLoading = true;
-
-  List<bool> selectedList = [];
-
-  Expanded headingText(String text) {
-    return Expanded(
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-        style: const TextStyle(
-            fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
-      ),
-    );
-  }
-  //  String getSLno(int index) {
-  //   List<int> slList = List.generate(
-  //     dataCountPerPage,
-  //     (index) => (currentPage - 1) * dataCountPerPage + index + 1,
-  //   );
-  //   return slList[index].toString();
-  // }
-
-  DataColumn dataColumn(BuildContext context, String header,
-      [Function(int, bool)? onSort]) {
-    return DataColumn(
-        onSort: onSort,
-        label: Flexible(
-          flex: 1,
-          child: Text(
-            header,
-            softWrap: true,
-            style: Theme.of(context).textTheme.titleMedium?.merge(
-                  const TextStyle(
-                    color: Colors.blue,
-                    fontSize: 18,
-                  ),
-                ),
-          ),
-        ));
-  }
-
-  int _counter = 1;
-  Widget devoteeTable(BuildContext context) {
-    return FutureBuilder(
-      future: EventsAPI().getAllEvent('1'),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else {
-          final allEvents = snapshot.data?['data'];
-          print('data------${snapshot.data}');
-          // Replace the following DataTable with your own data
-          return DataTable(
-              showBottomBorder: true,
-              columnSpacing: 30,
-              dataRowMaxHeight: 80,
-              columns: [
-                dataColumn(context, 'Sl. No'),
-                dataColumn(context, 'Image'),
-                dataColumn(context, 'Name'),
-                dataColumn(context, 'Event ID'),
-                dataColumn(context, 'Devotee Code'),
-                dataColumn(context, 'Sangha'),
-                dataColumn(context, 'Are you Coming to 14th Apr?'),
-              ],
-              rows: List<DataRow>.generate(allEvents.length, (index) {
-                EventModel eventData = EventModel.fromMap(allEvents[index]);
-                print('event data ------$eventData');
-                return DataRow(cells: [
-                  DataCell(Text('$_counter')), // Display serial number
-                  DataCell(SizedBox(
-                    height: 50,
-                    width: 50,
-                    child: eventData.devotee?.profilePhotoUrl != null &&
-                            eventData.devotee?.profilePhotoUrl!.isNotEmpty ==
-                                true
-                        ? Image.network(
-                            eventData.devotee?.profilePhotoUrl ?? '',
-                            height: 80,
-                            width: 80,
-                            loadingBuilder: (BuildContext context, Widget child,
-                                ImageChunkEvent? loadingProgress) {
-                              if (loadingProgress == null) {
-                                return child;
-                              } else {
-                                return Center(
-                                  child: CircularProgressIndicator(
-                                    value: loadingProgress.expectedTotalBytes !=
-                                            null
-                                        ? loadingProgress
-                                                .cumulativeBytesLoaded /
-                                            (loadingProgress
-                                                    .expectedTotalBytes ??
-                                                1)
-                                        : null,
-                                  ),
-                                );
-                              }
-                            },
-                            errorBuilder: (BuildContext context, Object error,
-                                StackTrace? stackTrace) {
-                              return const Icon(Icons.error);
-                            },
-                          )
-                        : const Image(
-                            image: AssetImage('assets/images/profile.jpeg')),
-                  )),
-                  DataCell(Text('${eventData.devotee?.name}')),
-                  DataCell(Text('${eventData.eventId}')),
-                  DataCell(Text('${eventData.devoteeCode}')),
-                  DataCell(Text('${eventData.devotee?.sangha}')),
-                  DataCell(ToggleSwitch(
-                    minWidth: 90.0,
-                    initialLabelIndex:
-                        eventData.eventAttendance == true ? 0 : 1,
-                    cornerRadius: 20.0,
-                    activeFgColor: Colors.white,
-                    inactiveBgColor: Colors.white,
-                    inactiveFgColor: Colors.grey,
-                    borderColor: const [Colors.grey],
-                    borderWidth: 1,
-                    totalSwitches: 2,
-                    labels: const ['Yes', 'No'],
-                    activeBgColors: const [
-                      [Colors.blue],
-                      [Colors.blue]
-                    ],
-                    onToggle: (indexx) async {
-                      if (indexx == 0) {
-                        EventModel eventReqData = EventModel(
-                          devoteeCode: eventData.devoteeCode,
-                          devoteeId: eventData.devoteeId,
-                          eventAntendeeId: const Uuid().v4(),
-                          inDate: '2023-04-14',
-                          outDate: '2023-04-14',
-                          eventId: '1',
-                          eventName: 'Puri',
-                          eventAttendance: true,
-                        );
-                        print('true');
-                        await EventsAPI().addEvent(eventReqData);
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) {
-                            return AttendeeTableScreen();
-                          },
-                        ));
-                      } else {
-                        EventModel eventReqData = EventModel(
-                          devoteeCode: eventData.devoteeCode,
-                          devoteeId: eventData.devoteeId,
-                          eventAntendeeId: const Uuid().v4(),
-                          inDate: '2023-04-14',
-                          outDate: '2023-04-14',
-                          eventId: '1',
-                          eventName: 'Puri',
-                          eventAttendance: false,
-                        );
-                        print('false');
-                        await EventsAPI().addEvent(eventReqData);
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) {
-                            return AttendeeTableScreen();
-                          },
-                        ));
-                      }
-                      print('switched to: $index');
-                    },
-                  ))
-                ]);
-              }));
-        }
-      },
-    );
-    // Counter variable to generate serial numbers
-  }
+class _AttendeeTableScreenState extends State<AttendeeTableScreen> {
+  String? _selectedSearchType;
+  TextEditingController sdpSearchController = TextEditingController();
+  String dataToShow = 'allData';
+  String? searchByData;
+  String? searchKeyWord;
+  List<String> searchBy = [
+    "name",
+    "sangha",
+    "emailId",
+    "status",
+    "devoteeCode",
+    "mobileNumber",
+    "bloodGroup"
+  ];
+  String? trackSearchType;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Attendee List'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(
-              builder: (context) {
-                return DashboardPage();
-              },
-            ));
-          },
+        toolbarHeight: 80,
+        automaticallyImplyLeading: false,
+        centerTitle: false,
+        title: Row(
+          children: [
+            Image.asset('assets/images/login.png',
+                fit: BoxFit.cover, height: 60.00, width: 60.00),
+            const SizedBox(width: 20),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                const SizedBox(
+                  width: 300,
+                  child: Text(
+                    'Sammilani Delegate',
+                    style: TextStyle(color: Colors.white),
+                    softWrap: true,
+                    overflow: TextOverflow.clip,
+                  ),
+                ),
+                SizedBox(
+                  width: 300,
+                  child: Text(
+                    "${NetworkHelper().getCurrentDevotee?.name} (${NetworkHelper().getCurrentDevotee?.role})",
+                    style: const TextStyle(color: Colors.white, fontSize: 15),
+                    softWrap: true,
+                    overflow: TextOverflow.clip,
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+        flexibleSpace: Padding(
+          padding: const EdgeInsets.only(right: 50, top: 15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Responsive(
-                      desktop: devoteeTable(context),
-                      tablet: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: devoteeTable(context),
+              Container(
+                height: 50,
+                width: 500,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    DropdownButton(
+                      padding: EdgeInsets.only(left: 8),
+                      style: const TextStyle(
+                        color: Color.fromARGB(255, 3, 3, 3),
+                        fontSize: 16,
                       ),
-                      mobile: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: devoteeTable(context),
+                      hint: const Text(
+                        'Search by',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      value: _selectedSearchType,
+                      onChanged: (value) {
+                        setState(() {
+                          if (_selectedSearchType != value) {
+                            sdpSearchController.clear();
+                          }
+                          _selectedSearchType = trackSearchType = value;
+                        });
+                      },
+                      items: searchBy.map(
+                        (val) {
+                          return DropdownMenuItem(
+                            value: val,
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text(
+                                val,
+                                style: TextStyle(
+                                  color: _selectedSearchType == val
+                                      ? Colors.black
+                                      : Colors.black,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ).toList(),
+                      iconEnabledColor: Colors.black,
+                      iconDisabledColor: Colors.black,
+                      iconSize: 30,
+                      icon: const Icon(Icons.arrow_drop_down_outlined,
+                          color: Colors.deepOrange),
+                      underline: const Text(''),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 6, bottom: 6),
+                      child: VerticalDivider(
+                        thickness: 2,
+                        color: Color.fromARGB(184, 255, 147, 114),
                       ),
                     ),
-                  ),
-                ],
+                    Expanded(
+                      child: _selectedSearchType != "sangha"
+                          ? TextFormField(
+                              controller: sdpSearchController,
+                              onFieldSubmitted: (value) {
+                                setState(() {
+                                  dataToShow = 'search';
+                                  searchByData = _selectedSearchType;
+                                  searchKeyWord = value;
+                                });
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Search',
+                                suffixIcon: IconButton(
+                                  onPressed: () async {
+                                    setState(() {
+                                      dataToShow = 'search';
+                                      searchByData = _selectedSearchType;
+                                      searchKeyWord = sdpSearchController.text;
+                                    });
+                                  },
+                                  icon: const Icon(Icons.search),
+                                  iconSize: 21,
+                                  color: Colors.deepOrange,
+                                ),
+                                border: InputBorder.none,
+                                hintStyle: const TextStyle(
+                                  color: Color.fromARGB(255, 100, 99, 99),
+                                ),
+                              ),
+                            )
+                          : TypeAheadFormField(
+                              noItemsFoundBuilder: (_) => const SizedBox(
+                                height: 70,
+                                child: Center(child: Text('No Item Found')),
+                              ),
+                              suggestionsBoxDecoration:
+                                  const SuggestionsBoxDecoration(
+                                color: SuggestionBoxColor,
+                                elevation: 5,
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(10),
+                                  bottomRight: Radius.circular(10),
+                                ),
+                              ),
+                              debounceDuration:
+                                  const Duration(milliseconds: 400),
+                              onSaved: (sangha) {
+                                sdpSearchController.text = sangha.toString();
+                                setState(() {
+                                  dataToShow = 'search';
+                                  searchByData = _selectedSearchType;
+                                  searchKeyWord = sangha;
+                                });
+                              },
+                              textFieldConfiguration: TextFieldConfiguration(
+                                controller: sdpSearchController,
+                                decoration: InputDecoration(
+                                  labelText: "Sangha Name",
+                                  focusColor: Colors.white,
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.never,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    borderSide: const BorderSide(
+                                      width: 0,
+                                      style: BorderStyle.none,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              suggestionsCallback: (value) async {
+                                List<String> sanghas = [];
+                                if (value.isNotEmpty) {
+                                  sanghas =
+                                      await SanghaList().getSuggestions(value);
+                                }
+                                return sanghas;
+                              },
+                              itemBuilder: (_, String suggestion) {
+                                return Row(
+                                  children: [
+                                    const SizedBox(width: 10, height: 50),
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(6.0),
+                                        child: Text(
+                                          suggestion,
+                                          maxLines: 6,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                );
+                              },
+                              onSuggestionSelected: (String sangha) async {
+                                if (sangha.isNotEmpty) {
+                                  setState(() {
+                                    sdpSearchController.text = sangha;
+                                    dataToShow = 'search';
+                                    searchByData = _selectedSearchType;
+                                    searchKeyWord = sangha;
+                                  });
+                                }
+                              },
+                            ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
         ),
+      ),
+      resizeToAvoidBottomInset: false,
+      body: Column(
+        children: [
+          const Text(
+            'List of Devotees Coming to Centenary Event',
+            style: TextStyle(fontSize: 28),
+          ),
+          AttendeeListPage(
+            dataToShow: dataToShow,
+            searchBy: searchByData,
+            searchKeyword: searchKeyWord,
+          ),
+        ],
       ),
     );
   }
