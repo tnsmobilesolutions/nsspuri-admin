@@ -307,41 +307,7 @@ class GetDevoteeAPI extends DioFuctionAPI {
     }
   }
 
-  Future<Map<String, dynamic>?> searchAttendees({
-    String? eventId,
-    String? searchBy,
-    String? searchKeyword,
-  }) async {
-    try {
-      final response = await getAPI(
-          "eventAttendees/$eventId?searchBy=$searchBy&search=$searchKeyword");
-      print('search attendees response: $response');
-      List<DevoteeModel> devotees = [];
-      final devoteelist = response["data"]["data"];
-      devoteelist.forEach((devotee) {
-        devotees.add(DevoteeModel.fromMap(devotee));
-      });
-      final count = response["data"]["count"];
-      final totalPages = response["data"]["totalPages"];
-      final currentPage = response["data"]["page"];
-      return {
-        "statusCode": 200,
-        "data": devotees,
-        "count": count,
-        "totalPages": totalPages,
-        "currentPage": currentPage,
-      };
-    } catch (e) {
-      print(e);
-      return {
-        "statusCode": 500,
-        "data": null,
-        "count": 0,
-        "totalPages": 0,
-        "currentPage": 1,
-      };
-    }
-  }
+ 
 
   Future<Map<String, dynamic>?> fetchAllSangha() async {
     try {

@@ -3,18 +3,18 @@ import 'package:sdp/API/events.dart';
 import 'package:sdp/firebase/firebase_remote_config.dart';
 import 'package:sdp/model/event_model.dart';
 import 'package:sdp/responsive.dart';
-import 'package:sdp/screen/dashboard/dashboard.dart';
 
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:uuid/uuid.dart';
 
 class AttendeeListPage extends StatefulWidget {
-  AttendeeListPage({
-    Key? key,
-    // required this.event, required this.devotee
-  }) : super(key: key);
-// EventModel event;
-//     DevoteeModel devotee;
+  AttendeeListPage({Key? key, required this.dataToShow,this.searchBy,this.searchKeyword
+      // required this.event, required this.devotee
+      })
+      : super(key: key);
+  String dataToShow;
+  String? searchBy;
+  String? searchKeyword;
 
   @override
   State<AttendeeListPage> createState() => _AttendeeListPageState();
@@ -40,13 +40,13 @@ class _AttendeeListPageState extends State<AttendeeListPage>
   @override
   void initState() {
     super.initState();
-    fetchAttendee();
+    // fetchAttendee();
   }
 
-  void fetchAttendee() async {
-    Map<String, dynamic>? apiResult = await EventsAPI().getAllEvent('1');
-    print("response: ***$apiResult");
-  }
+  // void fetchAttendee() async {
+  //   Map<String, dynamic>? apiResult = await EventsAPI().getAllEvent('1');
+  //   print("response: ***$apiResult");
+  // }
 
   Expanded headingText(String text) {
     return Expanded(
@@ -58,13 +58,6 @@ class _AttendeeListPageState extends State<AttendeeListPage>
       ),
     );
   }
-  //  String getSLno(int index) {
-  //   List<int> slList = List.generate(
-  //     dataCountPerPage,
-  //     (index) => (currentPage - 1) * dataCountPerPage + index + 1,
-  //   );
-  //   return slList[index].toString();
-  // }
 
   DataColumn dataColumn(BuildContext context, String header,
       [Function(int, bool)? onSort]) {
@@ -88,7 +81,7 @@ class _AttendeeListPageState extends State<AttendeeListPage>
   int _counter = 1;
   Widget devoteeTable(BuildContext context) {
     return FutureBuilder(
-      future: EventsAPI().getAllEvent('1'),
+      future: widget.dataToShow == 'allData' ? EventsAPI().getAllEvent('1'): EventsAPI().searchAttendees(eventId: '1',searchBy:widget.searchBy,searchKeyword:widget.searchKeyword),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -96,8 +89,6 @@ class _AttendeeListPageState extends State<AttendeeListPage>
           );
         } else {
           final allEvents = snapshot.data?['data']["data"];
-          print('data------${snapshot.data}');
-          // Replace the following DataTable with your own data
           return DataTable(
               showBottomBorder: true,
               columnSpacing: 30,
@@ -189,7 +180,7 @@ class _AttendeeListPageState extends State<AttendeeListPage>
                         await EventsAPI().addEvent(eventReqData);
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) {
-                            return AttendeeListPage();
+                            return AttendeeListPage(dataToShow: 'allData');
                           },
                         ));
                       } else {
@@ -207,7 +198,7 @@ class _AttendeeListPageState extends State<AttendeeListPage>
                         await EventsAPI().addEvent(eventReqData);
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) {
-                            return AttendeeListPage();
+                            return AttendeeListPage(dataToShow: 'allData');
                           },
                         ));
                       }
