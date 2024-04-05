@@ -15,6 +15,9 @@ class AttendeeTableScreen extends StatefulWidget {
 class _AttendeeTableScreenState extends State<AttendeeTableScreen> {
   String? _selectedSearchType;
   TextEditingController sdpSearchController = TextEditingController();
+  String dataToShow = 'allData';
+  String? searchByData;
+  String? searchKeyWord;
   List<String> searchBy = [
     "name",
     "sangha",
@@ -64,9 +67,10 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen> {
           ],
         ),
         flexibleSpace: Padding(
-          padding: const EdgeInsets.only(right: 50),
+          padding: const EdgeInsets.only(right: 50, top: 15),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
                 height: 50,
@@ -79,6 +83,7 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     DropdownButton(
+                      padding: EdgeInsets.only(left: 8),
                       style: const TextStyle(
                         color: Color.fromARGB(255, 3, 3, 3),
                         fontSize: 16,
@@ -133,13 +138,23 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen> {
                       child: _selectedSearchType != "sangha"
                           ? TextFormField(
                               controller: sdpSearchController,
-                              onChanged: (value) {
-                                setState(() {});
+                              onFieldSubmitted: (value) {
+                                setState(() {
+                                  dataToShow = 'search';
+                                  searchByData = _selectedSearchType;
+                                  searchKeyWord = value;
+                                });
                               },
                               decoration: InputDecoration(
                                 hintText: 'Search',
                                 suffixIcon: IconButton(
-                                  onPressed: () async {},
+                                  onPressed: () async {
+                                    setState(() {
+                                      dataToShow = 'search';
+                                      searchByData = _selectedSearchType;
+                                      searchKeyWord = sdpSearchController.text;
+                                    });
+                                  },
                                   icon: const Icon(Icons.search),
                                   iconSize: 21,
                                   color: Colors.deepOrange,
@@ -168,6 +183,11 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen> {
                                   const Duration(milliseconds: 400),
                               onSaved: (sangha) {
                                 sdpSearchController.text = sangha.toString();
+                                setState(() {
+                                  dataToShow = 'search';
+                                  searchByData = _selectedSearchType;
+                                  searchKeyWord = sangha;
+                                });
                               },
                               textFieldConfiguration: TextFieldConfiguration(
                                 controller: sdpSearchController,
@@ -213,6 +233,9 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen> {
                                 if (sangha.isNotEmpty) {
                                   setState(() {
                                     sdpSearchController.text = sangha;
+                                    dataToShow = 'search';
+                                    searchByData = _selectedSearchType;
+                                    searchKeyWord = sangha;
                                   });
                                 }
                               },
@@ -233,9 +256,9 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen> {
             style: TextStyle(fontSize: 28),
           ),
           AttendeeListPage(
-            dataToShow: sdpSearchController.text.isEmpty ? 'allData' : 'search',
-            searchBy: _selectedSearchType,
-            searchKeyword: sdpSearchController.text,
+            dataToShow: dataToShow,
+            searchBy: searchByData,
+            searchKeyword: searchKeyWord,
           ),
         ],
       ),

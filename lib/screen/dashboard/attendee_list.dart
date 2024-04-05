@@ -8,7 +8,8 @@ import 'package:toggle_switch/toggle_switch.dart';
 import 'package:uuid/uuid.dart';
 
 class AttendeeListPage extends StatefulWidget {
-  AttendeeListPage({Key? key, required this.dataToShow,this.searchBy,this.searchKeyword
+  AttendeeListPage(
+      {Key? key, required this.dataToShow, this.searchBy, this.searchKeyword
       // required this.event, required this.devotee
       })
       : super(key: key);
@@ -81,7 +82,12 @@ class _AttendeeListPageState extends State<AttendeeListPage>
   int _counter = 1;
   Widget devoteeTable(BuildContext context) {
     return FutureBuilder(
-      future: widget.dataToShow == 'allData' ? EventsAPI().getAllEvent('1'): EventsAPI().searchAttendees(eventId: '1',searchBy:widget.searchBy,searchKeyword:widget.searchKeyword),
+      future: widget.dataToShow == 'allData'
+          ? EventsAPI().getAllEvent('1')
+          : EventsAPI().searchAttendees(
+              eventId: '1',
+              searchBy: widget.searchBy,
+              searchKeyword: widget.searchKeyword),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
