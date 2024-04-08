@@ -249,18 +249,22 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen> {
         ),
       ),
       resizeToAvoidBottomInset: false,
-      body: Column(
-        children: [
-          const Text(
-            'List of Devotees Coming to Centenary Event',
-            style: TextStyle(fontSize: 28),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const Text(
+                'List of Devotees Coming to Centenary Event',
+                style: TextStyle(fontSize: 28),
+              ),
+              AttendeeListPage(
+                dataToShow: dataToShow,
+                searchBy: searchByData,
+                searchKeyword: searchKeyWord,
+              ),
+            ],
           ),
-          AttendeeListPage(
-            dataToShow: dataToShow,
-            searchBy: searchByData,
-            searchKeyword: searchKeyWord,
-          ),
-        ],
+        ),
       ),
     );
   }

@@ -36,30 +36,12 @@ class _AttendeeListPageState extends State<AttendeeListPage>
       dataCountPerPage,
       (index) => (currentPage - 1) * dataCountPerPage + index + 1,
     );
-    return slList[index].toString();
+    if (index < slList.length) {
+      return slList[index].toString();
+    } else {
+      return ''; // or handle the out-of-range case appropriately
+    }
   }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // fetchAttendee();
-  // }
-
-  // void fetchAttendee() async {
-  //   Map<String, dynamic>? apiResult = await EventsAPI().getAllEvent('1');
-  //   print("response: ***$apiResult");
-  // }
-
-  // Widget headingText(String text) {
-  //   return Expanded(
-  //     child: Text(
-  //       text,
-  //       textAlign: TextAlign.center,
-  //       style: const TextStyle(
-  //           fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
-  //     ),
-  //   );
-  // }
 
   DataColumn dataColumn(BuildContext context, String header,
       [Function(int, bool)? onSort]) {
