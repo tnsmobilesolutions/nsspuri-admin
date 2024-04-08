@@ -1,14 +1,13 @@
 import 'dart:convert';
 
 import 'package:sdp/API/dio_fuction.dart';
-import 'package:sdp/model/devotee_model.dart';
 import 'package:sdp/model/event_model.dart';
 
 class EventsAPI extends DioFuctionAPI {
   Future<Map<String, dynamic>> getSingleEvent(String eventAntendeeId) async {
     try {
       final response = await getAPI("eventAttendees/$eventAntendeeId");
-      print("count in api - ${response["data"]}");
+      // print("count in api - ${response["data"]}");
       return {"statusCode": 200, "data": response["data"]};
     } catch (e) {
       print(e);
@@ -19,7 +18,7 @@ class EventsAPI extends DioFuctionAPI {
   Future<Map<String, dynamic>> getAllEvent(String eventId) async {
     try {
       final response = await getAPI("eventAttendees/$eventId");
-      print("count in api - ${response["data"]}");
+      // print("count in api - ${response["data"]}");
       return {"statusCode": 200, "data": response["data"]};
     } catch (e) {
       print(e);

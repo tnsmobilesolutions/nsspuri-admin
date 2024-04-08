@@ -7,6 +7,7 @@ import 'package:sdp/responsive.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:uuid/uuid.dart';
 
+// ignore: must_be_immutable
 class AttendeeListPage extends StatefulWidget {
   AttendeeListPage(
       {Key? key, required this.dataToShow, this.searchBy, this.searchKeyword
@@ -38,27 +39,27 @@ class _AttendeeListPageState extends State<AttendeeListPage>
     return slList[index].toString();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    // fetchAttendee();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // fetchAttendee();
+  // }
 
   // void fetchAttendee() async {
   //   Map<String, dynamic>? apiResult = await EventsAPI().getAllEvent('1');
   //   print("response: ***$apiResult");
   // }
 
-  Expanded headingText(String text) {
-    return Expanded(
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-        style: const TextStyle(
-            fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
-      ),
-    );
-  }
+  // Widget headingText(String text) {
+  //   return Expanded(
+  //     child: Text(
+  //       text,
+  //       textAlign: TextAlign.center,
+  //       style: const TextStyle(
+  //           fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+  //     ),
+  //   );
+  // }
 
   DataColumn dataColumn(BuildContext context, String header,
       [Function(int, bool)? onSort]) {
@@ -110,7 +111,7 @@ class _AttendeeListPageState extends State<AttendeeListPage>
               ],
               rows: List<DataRow>.generate(allEvents.length, (index) {
                 EventModel eventData = EventModel.fromMap(allEvents[index]);
-                print('event data ------$eventData');
+                // print('event data ------$eventData');
                 return DataRow(cells: [
                   DataCell(Text(getSLno(index))), // Display serial number
                   DataCell(SizedBox(
