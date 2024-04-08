@@ -24,7 +24,7 @@ class GetDevoteeAPI extends DioFuctionAPI {
   Future<Map<String, dynamic>> prasadCountBySelectdate(String date) async {
     try {
       final response = await getAPI("prasadCountByselectdate?date=$date");
-      print("count in api - ${response["data"]}");
+      // print("count in api - ${response["data"]}");
       return {"statusCode": 200, "data": response["data"]};
     } catch (e) {
       print(e);
@@ -306,8 +306,6 @@ class GetDevoteeAPI extends DioFuctionAPI {
       };
     }
   }
-
- 
 
   Future<Map<String, dynamic>?> fetchAllSangha() async {
     try {

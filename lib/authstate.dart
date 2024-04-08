@@ -23,8 +23,6 @@ class _AuthStateState extends State<AuthState> {
       builder: (context, currentDevoteeSnapshot) {
         if (currentDevoteeSnapshot.connectionState == ConnectionState.waiting ||
             currentDevoteeSnapshot.hasError) {
-          print(
-              "Error fetching current devotee: ${currentDevoteeSnapshot.error}");
           return const Center(
             child: CircularProgressIndicator(),
           );
