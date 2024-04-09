@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:sdp/API/events.dart';
 import 'package:sdp/constant/sangha_list.dart';
 import 'package:sdp/screen/appBar/goto_home_button.dart';
 import 'package:sdp/screen/dashboard/attendee_list.dart';
@@ -258,9 +259,21 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const Text(
-                'List of Devotees Coming to Centenary Event',
-                style: TextStyle(fontSize: 28),
+              FutureBuilder(
+                future: EventsAPI().getAllEvent('1'),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                       final allEvents = snapshot.data?['data']["data"];
+                    return Text(
+                      'List of Devotees Coming to Centenary Event - ${allEvents.length}',
+                      style: TextStyle(fontSize: 28),
+                    );
+                  }
+                },
               ),
               AttendeeListPage(
                 dataToShow: dataToShow,
