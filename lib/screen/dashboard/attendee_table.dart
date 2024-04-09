@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:sdp/constant/sangha_list.dart';
+import 'package:sdp/screen/appBar/goto_home_button.dart';
 import 'package:sdp/screen/dashboard/attendee_list.dart';
 import 'package:sdp/utilities/color_palette.dart';
 import 'package:sdp/utilities/network_helper.dart';
@@ -244,6 +245,10 @@ class _AttendeeTableScreenState extends State<AttendeeTableScreen> {
                   ],
                 ),
               ),
+              SizedBox(
+                width: 8,
+              ),
+              const GotoHomeButton(),
             ],
           ),
         ),
